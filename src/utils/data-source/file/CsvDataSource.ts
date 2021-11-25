@@ -1,5 +1,5 @@
 import stringify from 'csv-stringify/lib/sync'
-import { parse } from "path";
+import parser from 'csv-parse/lib/sync'
 import { DataSource } from "../DataSource";
 
 export class CsvDataSource implements DataSource {
@@ -7,7 +7,7 @@ export class CsvDataSource implements DataSource {
 
   async read() {
     const cnt = await this.file.read()
-    const obj = await parse(cnt.toString())
+    const obj = await parser(cnt.toString())
     return obj
   }
 

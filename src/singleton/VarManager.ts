@@ -11,7 +11,7 @@ export class VarManager {
       this.globalVars[varObj] = vl
     } else if (varObj && typeof varObj === 'object') {
       Object.keys(varObj).forEach(key => {
-        const vl = this.get(varObj[key], { $: obj })
+        const vl = this.get(varObj[key], { _: obj })
         this.globalVars[key] = vl
       })
     }

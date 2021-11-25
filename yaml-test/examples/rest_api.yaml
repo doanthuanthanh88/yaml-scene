@@ -37,6 +37,8 @@
       content-type: application/json
     # body:
     #   file: !binary /Users/doanthuanthanh/code/github/yamlex/test/assets/data.csv
+    var:
+      status: ${_.response.status}
     validate:
       - title: Test status
         chai: ${expect(_.response.status).to.equal(200)}

@@ -8,7 +8,7 @@ steps:
   # - !fragment ./examples/loop/index.yaml
   # - !fragment ./examples/delay-each-step/index.yaml
   # - !fragment ./examples/script/javascript.yaml
-  # - !fragment ./examples/rest_api.yaml
+  - !fragment ./examples/rest_api.yaml
   # - !fragment ./examples/write-file/index.yaml
   # - !fragment ./examples/read-file/index.yaml
   # - !fragment ./examples/get_user_input.yaml

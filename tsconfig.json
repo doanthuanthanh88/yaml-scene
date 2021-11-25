@@ -23,14 +23,15 @@
         "./src/*"
       ],
       "@test/*": [
-        "test/*"
+        "./test/*"
       ]
     },
     "outDir": "dist"
   },
   "include": [
     "package.json",
-    "src"
+    "src",
+    "test"
   ],
   "exclude": [
     "node_modules",
