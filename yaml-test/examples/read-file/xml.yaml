@@ -1,0 +1,16 @@
+- ReadFile:
+    title: Read xml file 1 with password
+    type: xml
+    path: assets/data1.xml
+    decrypt:
+      password: thanh123
+    var: data
+
+- Echo: ${data}
+
+- ReadFile#xml:
+    title: Read xml file 2 without password
+    path: assets/data2.xml
+    var: data
+
+- Echo: ${data}

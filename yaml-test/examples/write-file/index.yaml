@@ -1,0 +1,5 @@
+- !fragment examples/write-file/text.yaml
+- !fragment examples/write-file/json.yaml
+- !fragment examples/write-file/xml.yaml
+- !fragment examples/write-file/yaml.yaml
+- !fragment examples/write-file/csv.yaml

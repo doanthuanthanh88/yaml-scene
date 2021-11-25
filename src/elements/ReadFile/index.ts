@@ -1,0 +1,40 @@
+import { TestCase } from '@app/TestCase';
+import { FileDataSourceFactory } from '@app/utils/data-source/file/FileDataSourceFactory';
+import { FileType } from '@app/utils/data-source/file/FileType';
+import { AES } from '@app/utils/encrypt/AES';
+import { Encrypt } from '@app/utils/encrypt/Encrypt';
+import { merge } from 'lodash';
+import { extname } from 'path';
+import { ElementProxy } from '../ElementProxy';
+
+export class ReadFile {
+  proxy: ElementProxy<ReadFile>
+
+  title: string
+  var: string
+  path: string
+  type: FileType
+  decrypt: {
+    password: string
+  }
+
+  init(props: any) {
+    merge(this, props)
+    if (!this.var) throw new Error('"var" is required')
+    if (!this.type) {
+      this.type = extname(this.path).substr(1).toLowerCase() as FileType
+    }
+  }
+
+  async exec() {
+    if (this.title) console.log(this.title, this.path)
+    let decrypt: Encrypt
+    if (this.decrypt?.password) {
+      decrypt = new AES(this.decrypt.password.toString())
+    }
+    const file = FileDataSourceFactory.GetDataSource(this.type, TestCase.GetPathFromRoot(this.path), decrypt)
+    const obj = await file.read()
+    this.proxy.setVar(this.var, obj)
+  }
+
+}

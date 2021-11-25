@@ -1,0 +1,19 @@
+- WriteFile:
+    title: Write json file 1 with password
+    type: json
+    encrypt:
+      password: thanh123
+    path: assets/data1.json
+    content:
+      - name: name 1
+        age: 1
+      - name: name 2
+        age: 3
+
+- WriteFile#json:
+    title: Write json file 2 without password
+    path: assets/data2.json
+    content:
+      - [name, age]
+      - [name01, 1]
+      - [name02, 2]

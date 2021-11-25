@@ -1,0 +1,39 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "esnext",
+    "declaration": true,
+    "removeComments": true,
+    "esModuleInterop": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "sourceMap": true,
+    "resolveJsonModule": true,
+    "typeRoots": [
+      "node_modules/@types",
+      "typings"
+    ],
+    "baseUrl": ".",
+    "rootDirs": [
+      "src",
+      "test"
+    ],
+    "paths": {
+      "@app/*": [
+        "./src/*"
+      ],
+      "@test/*": [
+        "test/*"
+      ]
+    },
+    "outDir": "dist"
+  },
+  "include": [
+    "package.json",
+    "src"
+  ],
+  "exclude": [
+    "node_modules",
+    "*.rm"
+  ]
+}

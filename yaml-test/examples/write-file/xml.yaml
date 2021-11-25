@@ -1,0 +1,19 @@
+- WriteFile:
+    title: Write xml file 1 with password
+    type: xml
+    encrypt:
+      password: thanh123
+    path: assets/data1.xml
+    content:
+      - name: name 1
+        age: 1
+      - name: name 2
+        age: 3
+
+- WriteFile#xml:
+    title: Write xml file 2 without password
+    path: assets/data2.xml
+    content:
+      name: name 1
+      age: 1
+      class: 01

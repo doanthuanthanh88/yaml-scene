@@ -1,0 +1,5 @@
+- !fragment examples/read-file/text.yaml
+- !fragment examples/read-file/json.yaml
+- !fragment examples/read-file/xml.yaml
+- !fragment examples/read-file/yaml.yaml
+- !fragment examples/read-file/csv.yaml

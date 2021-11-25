@@ -1,0 +1,16 @@
+- ReadFile:
+    title: Read csv file 1 with password
+    type: csv
+    decrypt:
+      password: thanh123
+    path: assets/data1.csv
+    var: data
+
+- Echo: ${data}
+
+- ReadFile#csv:
+    title: Read csv file 2 without password
+    path: assets/data2.csv
+    var: data
+
+- Echo: ${data}

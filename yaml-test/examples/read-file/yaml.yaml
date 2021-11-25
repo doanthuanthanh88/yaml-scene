@@ -1,0 +1,16 @@
+- ReadFile:
+    title: Read yaml file 1 with password
+    type: yaml
+    path: assets/data1.yaml
+    decrypt:
+      password: thanh123
+    var: data
+
+- Echo: ${data}
+
+- ReadFile#yaml:
+    title: Read yaml file 2 without password
+    path: assets/data2.yaml
+    var: data
+
+- Echo: ${data}

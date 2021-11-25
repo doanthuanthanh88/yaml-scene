@@ -1,0 +1,20 @@
+- Group:
+    title: Delay all of steps in a group
+    stepDelay: 1s
+    steps:
+      - Script#js: |
+          _.proxy.setVar('begin', Date.now())
+      - Echo: ${Date.now() - begin}
+      - Echo: ${Date.now() - begin}
+
+- Group:
+    title: Pause or delay
+    steps:
+      - Echo: <step 1>
+      - Pause:
+          title: step 2 run after 2s
+          time: 2s
+      - Echo: <step 2>
+      - Pause:
+          title: Wait to agree to go to step 3
+      - Echo: <step 3>

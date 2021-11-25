@@ -1,0 +1,79 @@
+{
+  "name": "yamlex",
+  "version": "1.0.0",
+  "description": "Do everything with yaml scenario file",
+  "keywords": [
+    "tool",
+    "api",
+    "scenario",
+    "test",
+    "rest",
+    "debug",
+    "dev"
+  ],
+  "main": "src",
+  "bin": {
+    "yamlex": "./bin/cli.js"
+  },
+  "scripts": {
+    "pub": "npm publish",
+    "dev": "npx nodemon --watch src --watch modules --ext .ts --exec 'node -r ts-node/register -r ./bin/tsconfig-paths-bootstrap.js --inspect-brk src/index.ts -e 'example=thanh' --env-file 'yaml-test/.env' yaml-test/index.yaml'",
+    "start": "npx nodemon --watch src --watch modules --ext .ts --exec 'node -r ts-node/register -r ./bin/tsconfig-paths-bootstrap.js --inspect src/index.ts yaml-test/index.yaml'",
+    "test": "jest",
+    "build": "yarn clean && yarn build:only && node bin/expose_example.js",
+    "build:only": "tsc && yarn build:resolve-module",
+    "build:resolve-module": "node bin/tsconfig",
+    "clean": "rm -rf dist",
+    "docker:build": "docker build -t doanthuanthanh88/testapi6 .",
+    "docker:pub": "docker buildx build --platform linux/arm64,linux/amd64 -t doanthuanthanh88/testapi6 . --push && docker pull doanthuanthanh88/testapi6"
+  },
+  "dependencies": {
+    "axios": "^0.24.0",
+    "chai": "^4.3.3",
+    "chalk": "^2.4.2",
+    "commander": "8.0.0",
+    "csv-parse": "^4.16.3",
+    "csv-stringify": "^5.6.5",
+    "curl-generator": "^0.1.0",
+    "form-data": "^4.0.0",
+    "js-yaml": "^3.12.2",
+    "jsonschema": "^1.2.10",
+    "lodash": "^4.17.11",
+    "mkdirp": "^1.0.4",
+    "prompts": "^2.4.0",
+    "to-json-schema": "^0.2.5",
+    "xml2js": "^0.4.23"
+  },
+  "devDependencies": {
+    "@types/chai": "^4.2.15",
+    "@types/csv-parse": "^1.2.2",
+    "@types/csv-stringify": "^3.1.0",
+    "@types/jest": "^27.0.3",
+    "@types/js-yaml": "^3.12.1",
+    "@types/lodash": "^4.14.122",
+    "@types/node": "^14.14.6",
+    "@types/prompts": "^2.0.14",
+    "@types/to-json-schema": "^0.2.0",
+    "@types/xml2js": "^0.4.9",
+    "jest": "^27.3.1",
+    "puppeteer": "^10.1.0",
+    "ts-jest": "^27.0.7",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.3.5"
+  },
+  "optionalDependencies": {},
+  "homepage": "https://github.com/doanthuanthanh88",
+  "author": {
+    "name": "Đoàn Thuận Thành",
+    "email": "doanthuanthanh88@gmail.com"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/doanthuanthanh88/yamlex"
+  },
+  "bugs": {
+    "url": "https://github.com/doanthuanthanh88/yamlex/issues",
+    "email": "doanthuanthanh88@gmail.com"
+  }
+}

@@ -1,0 +1,19 @@
+- WriteFile:
+    title: Write yaml file 1 with password
+    type: yaml
+    encrypt:
+      password: thanh123
+    path: assets/data1.yaml
+    content:
+      - name: name 1
+        age: 1
+      - name: name 2
+        age: 3
+
+- WriteFile#yaml:
+    title: Write yaml file 2 without password
+    path: assets/data2.yaml
+    content:
+      - [name, age]
+      - [name01, 1]
+      - [name02, 2]

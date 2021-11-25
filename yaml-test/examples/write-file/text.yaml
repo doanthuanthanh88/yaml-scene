@@ -1,0 +1,14 @@
+- WriteFile:
+    title: Write text file with password
+    type: text
+    encrypt:
+      password: thanh123
+    path: assets/data1.txt
+    content: |
+      Hello world
+
+- WriteFile:
+    title: Write text file without password
+    path: assets/data2.txt
+    content: |
+      Hello world

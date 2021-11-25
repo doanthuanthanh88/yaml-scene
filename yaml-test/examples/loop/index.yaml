@@ -1,0 +1,30 @@
+- Vars:
+    i: 0
+    arr: [1, 2, 3, 4, 5]
+    obj:
+      name: name 1
+      age: 123
+
+- Echo: Init
+
+- Group:
+    title: Loop each of items in an array
+    loop: ${arr}
+    steps:
+      - Echo: key is ${__.loopKey}
+      - Echo: value is ${__.loopValue}
+
+- Group:
+    title: Loop each of props in an object
+    loop: ${obj}
+    steps:
+      - Echo: key is ${__.loopKey}
+      - Echo: value is ${__.loopValue}
+
+- Group:
+    title: Loop with specific condition ${i}
+    loop: ${i < 10}
+    steps:
+      - Echo: ${i++}
+      - Vars:
+          i: ${i+1}

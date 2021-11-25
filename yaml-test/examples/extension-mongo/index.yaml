@@ -1,0 +1,9 @@
+# - Mongo:
+#     connection: mongodb://root:example@localhost/test
+#     queries:
+#       - db.col('User').find()
+
+- /Users/doanthuanthanh/code/github/yamlex-extension/mongo#Mongo:
+    connection: mongodb://root:example@localhost/test
+    queries:
+      - db.col('User').find()

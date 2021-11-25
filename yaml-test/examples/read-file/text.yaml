@@ -1,0 +1,16 @@
+- ReadFile:
+    title: Read text file 1 with password
+    path: assets/data1.txt
+    type: text
+    decrypt:
+      password: thanh123
+    var: data
+
+- Echo: ${data}
+
+- ReadFile:
+    title: Read text file 2 without password
+    path: assets/data2.txt
+    var: data
+
+- Echo: ${data}

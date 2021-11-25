@@ -1,0 +1,49 @@
+- InputKeyboard:
+    - title: Enter your name
+      # type: text
+      var: name
+      required: true
+    - title: Enter password
+      type: password
+      var: pass
+    - title: Enter secret key
+      type: invisible
+      var: secret
+    - title: Enter your age
+      type: number
+      var: age
+    - title: Enter birthday
+      type: date
+      var: birthday
+    - title: Sex
+      type: select
+      var: sex
+      choices:
+        - title: Male
+          value: 1
+        - title: Female
+          value: -1
+    - title: Hobby
+      type: multiselect
+      var: hobbies
+      choices:
+        - title: Play football
+          value: 0
+        - title: Backet ball
+          value: 1
+    - title: Agree terms and conditions
+      type: toggle
+      var: agr
+      required: true
+    - title: Are you sure to submit ?
+      type: confirm
+      var: submit
+- Echo: Name is ${name.toUpperCase()}
+- Echo: Password is ${pass}
+- Echo: Secret is ${secret}
+- Echo: Age is ${age}
+- Echo: birthday is ${birthday}
+- Echo: sex is ${sex}
+- Echo: hobby is ${hobbies}
+- Echo: agree is ${agr}
+- Echo: submit is ${submit}
