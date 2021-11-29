@@ -33,12 +33,13 @@ export class Summary {
         }
       }).once('TestCase.dispose', () => {
         this.time = Date.now() - this.time
-        console.log('---------------------------------')
-        console.group(chalk.cyan.bold(this.title), chalk.gray(`${this.time}ms`))
-        console.log(chalk.green('- Passed %d/%d'), this.passed, this.total)
-        console.log(chalk.red('- Failed %d/%d'), this.failed, this.total)
+        this.proxy.logger.info('---------------------------------')
+        console.group()
+        this.proxy.logger.info('%s %s', chalk.cyan.bold(this.title), chalk.gray(`${this.time}ms`))
+        this.proxy.logger.info(chalk.green('- Passed %d/%d'), this.passed, this.total)
+        this.proxy.logger.info(chalk.red('- Failed %d/%d'), this.failed, this.total)
         console.groupEnd()
-        console.log('---------------------------------')
+        this.proxy.logger.info('---------------------------------')
       })
   }
 }

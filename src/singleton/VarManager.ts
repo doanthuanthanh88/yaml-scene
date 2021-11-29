@@ -1,8 +1,14 @@
+import { Base64 } from "@app/utils/encrypt/Base64"
+
 export class VarManager {
   static readonly Instance = new VarManager()
 
   private readonly _navPattern = /^(\$\{){1}(.+)\}$/
-  globalVars = {} as { [key: string]: any }
+  globalVars = {
+    get $$base64() {
+      return Base64.GetInstance()
+    }
+  } as { [key: string]: any }
 
   set(varObj: any, obj: any, defaultKey?: string) {
     if (!obj) return

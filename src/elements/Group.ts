@@ -1,4 +1,5 @@
 import { TimeUtils } from "@app/utils/time";
+import chalk from "chalk";
 import { merge } from "lodash";
 import { Element } from "./Element";
 import { ElementFactory } from "./ElementFactory";
@@ -80,7 +81,8 @@ export class Group {
   }
 
   async exec() {
-    if (this.title) console.group(this.title)
+    if (this.title) this.proxy.logger.info('%s %s', chalk.blue(this.title), chalk.gray(`${this.description || ''}`))
+    console.group()
     for (const step of this.steps) {
       await step.prepare()
       await step.exec()
@@ -88,10 +90,11 @@ export class Group {
         await TimeUtils.Delay(this.stepDelay)
       }
     }
-    if (this.title) console.groupEnd()
+    console.groupEnd()
   }
 
   async dispose() {
+    if (!this.steps) return
     await Promise.all(this.steps.map(step => step?.dispose && step.dispose()))
   }
 

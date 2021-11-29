@@ -13,4 +13,12 @@ export class SelectQuestionImpl extends Question {
     this.choices = config.choices
   }
 
+  prepare(proxy) {
+    super.prepare(proxy)
+    this.choices?.forEach(choice => {
+      choice.title = proxy.getVar(choice.title)
+      choice.value = proxy.getVar(choice.value)
+    })
+  }
+
 }

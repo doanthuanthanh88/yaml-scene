@@ -18,9 +18,9 @@ export class Validate {
       if (this.chai) {
         this.proxy.getVar(this.chai, { expect })
       }
-      console.log(chalk.green('✔', this.title))
+      this.proxy.logger.info(chalk.green('✔', this.title))
     } catch (err) {
-      console.error(chalk.red('✘', this.title, err.message))
+      this.proxy.logger.error(chalk.red('✘', this.title, err.message))
       throw err
     }
   }

@@ -10,7 +10,7 @@ export class Echo {
 
   exec() {
     const message = this.proxy.getVar(this.message)
-    console.log((message && typeof message === 'object') ? JSON.stringify(message, null, '  ') : message)
+    this.proxy.logger.info((message && typeof message === 'object') ? JSON.stringify(message, null, '  ') : message)
   }
 
 }

@@ -9,7 +9,6 @@ export class Templates {
   group: ElementProxy<Group>
 
   init(items: Element[]) {
-    console.log('Loading templates...')
     this.group = ElementFactory.CreateElement<Group>('Group', this.proxy.tc)
     this.group.init({
       steps: items

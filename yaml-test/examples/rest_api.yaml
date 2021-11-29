@@ -13,7 +13,7 @@
     <-: base
     ->: api01
     title: test api
-    # debug: true
+    logLevel: info
     url: /a/:api/:name
     params:
       api: api
@@ -48,6 +48,7 @@
 - Api#Get:
     <-: api01
     ->: api02
+    logLevel: debug
     title: Test api 02
     validate:
       - title: Test status 1

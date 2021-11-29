@@ -1,7 +1,7 @@
 import { readFileSync } from "fs";
 import { safeLoadAll } from "js-yaml";
 import { merge } from "lodash";
-import { dirname } from "path";
+import { dirname, resolve } from "path";
 import { Helper } from "./Helper";
 import { VarManager } from "./singleton/VarManager";
 import { SCHEMA } from "./tags";
@@ -26,7 +26,7 @@ export class Main {
     await Main.helper.exec()
 
     const scenarioFile = Main.helper.yamlFile
-    TestCase.RootDir = dirname(Main.helper.yamlFile)
+    TestCase.RootDir = resolve(dirname(Main.helper.yamlFile))
 
     const scenarios = safeLoadAll(readFileSync(scenarioFile).toString(), null, {
       schema: SCHEMA

@@ -3,6 +3,7 @@ import { FileDataSourceFactory } from '@app/utils/data-source/file/FileDataSourc
 import { FileType } from '@app/utils/data-source/file/FileType';
 import { AES } from '@app/utils/encrypt/AES';
 import { Encrypt } from '@app/utils/encrypt/Encrypt';
+import chalk from 'chalk';
 import { merge } from 'lodash';
 import { extname } from 'path';
 import { ElementProxy } from '../ElementProxy';
@@ -27,7 +28,8 @@ export class ReadFile {
   }
 
   async exec() {
-    if (this.title) console.log(this.title, this.path)
+    if (this.title) this.proxy.logger.info('%s', this.title)
+    console.group()
     let decrypt: Encrypt
     if (this.decrypt?.password) {
       decrypt = new AES(this.decrypt.password.toString())
@@ -35,6 +37,8 @@ export class ReadFile {
     const file = FileDataSourceFactory.GetDataSource(this.type, TestCase.GetPathFromRoot(this.path), decrypt)
     const obj = await file.read()
     this.proxy.setVar(this.var, obj)
+    this.proxy.logger.debug('%s %s', chalk.magenta('- Read file at'), chalk.gray(this.path))
+    console.groupEnd()
   }
 
 }

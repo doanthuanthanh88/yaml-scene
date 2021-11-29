@@ -1,14 +1,14 @@
 import { Question } from "./Question"
-import { QuestionType } from "./QuestionType"
-import { SelectQuestionImpl } from "./question/SelectQuestionImpl"
-import { PasswordQuestionImpl } from "./question/PasswordQuestionImpl"
-import { InvisibleQuestionImpl } from "./question/InvisibleQuestionImpl"
-import { NumberQuestionImpl } from "./question/NumberQuestionImpl"
 import { ConfirmQuestionImpl } from "./question/ConfirmQuestionImpl"
-import { ToggleQuestionImpl } from "./question/ToggleQuestionImpl"
-import { MultiSelectQuestionImpl } from "./question/MultiSelectQuestionImpl"
 import { DateQuestionImpl } from "./question/DateQuestionImpl"
+import { InvisibleQuestionImpl } from "./question/InvisibleQuestionImpl"
+import { MultiSelectQuestionImpl } from "./question/MultiSelectQuestionImpl"
+import { NumberQuestionImpl } from "./question/NumberQuestionImpl"
+import { PasswordQuestionImpl } from "./question/PasswordQuestionImpl"
+import { SelectQuestionImpl } from "./question/SelectQuestionImpl"
 import { TextQuestionImpl } from "./question/TextQuestionImpl"
+import { ToggleQuestionImpl } from "./question/ToggleQuestionImpl"
+import { QuestionType } from "./QuestionType"
 
 export class QuestionBuilder {
   private _config = {} as Question & any
@@ -21,6 +21,11 @@ export class QuestionBuilder {
 
   title(title: string) {
     this._config.title = title
+    return this
+  }
+
+  default(defaultValue: any) {
+    this._config.default = defaultValue
     return this
   }
 

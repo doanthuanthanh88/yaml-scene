@@ -6,6 +6,7 @@ import { merge } from 'lodash';
 import { extname } from 'path';
 import { ElementProxy } from '../ElementProxy';
 import { FileDataSourceFactory } from '@app/utils/data-source/file/FileDataSourceFactory';
+import chalk from 'chalk';
 
 export class WriteFile {
   proxy: ElementProxy<WriteFile>
@@ -32,13 +33,16 @@ export class WriteFile {
   }
 
   async exec() {
-    if (this.title) console.log(this.title, this.path)
+    if (this.title) this.proxy.logger.info('%s', this.title)
+    console.group()
     let encrypt: Encrypt
     if (this.encrypt?.password) {
       encrypt = new AES(this.encrypt.password.toString())
     }
     const file = FileDataSourceFactory.GetDataSource(this.type, TestCase.GetPathFromRoot(this.path), encrypt)
     await file.write(this.content)
+    this.proxy.logger.debug('%s %s', chalk.magenta('- Write file to'), chalk.gray(this.path))
+    console.groupEnd()
   }
 
 }

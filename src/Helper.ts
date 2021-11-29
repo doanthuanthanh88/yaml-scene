@@ -127,6 +127,7 @@ export class Helper {
   loadEnv(baseConfig: any, ...files: object[] | string[]) {
     const castToObject = function (obj, pro, prefix) {
       for (let k in obj) {
+        if (k?.startsWith('$$')) continue
         if (typeof obj[k] === 'object') {
           obj[k] = castToObject(obj[k], pro, (prefix + k + '_').toLowerCase())
         } else if (Array.isArray(obj[k])) {

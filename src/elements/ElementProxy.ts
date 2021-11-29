@@ -1,12 +1,26 @@
 import { TemplateManager } from "@app/singleton/TemplateManager";
 import { VarManager } from "@app/singleton/VarManager";
 import { TestCase } from "@app/TestCase";
+import { LoggerFactory } from "@app/utils/logger";
 import { cloneDeep, merge } from "lodash";
 import { Element } from "./Element";
 
 export class ElementProxy<T> {
   _: any
   __: any
+  private _logLevel: string
+
+  get logLevel() {
+    return this._logLevel || this._?.logLevel || this.__?.logLevel || 'debug'
+  }
+
+  get logger() {
+    return LoggerFactory.GetLogger(this.logLevel)
+  }
+
+  changeLogLevel(level: string) {
+    this._logLevel = level
+  }
 
   constructor(public element: T, public tc: TestCase) {
     const self = this
@@ -20,6 +34,9 @@ export class ElementProxy<T> {
   }
 
   init(props: any) {
+    if (props?.logLevel) {
+      this._logLevel = props.logLevel
+    }
     if (this.element['init']) {
       return this.element['init'](props)
     }

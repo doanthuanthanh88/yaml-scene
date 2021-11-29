@@ -1,7 +1,9 @@
 import { TimeUtils } from "@app/utils/time"
+import chalk from "chalk"
 import { merge } from "lodash"
 import { ElementProxy } from "../ElementProxy"
-import { ConfirmQuestionImpl } from "../InputKeyboard/question/ConfirmQuestionImpl"
+import { QuestionBuilder } from "../InputKeyboard/QuestionBuilder"
+import { QuestionType } from "../InputKeyboard/QuestionType"
 
 export class Pause {
   proxy: ElementProxy<Pause>
@@ -23,7 +25,6 @@ export class Pause {
   }
 
   async exec() {
-    if (this.title) console.log(this.title)
     if (this.time) {
       await this.delay()
     } else {
@@ -32,9 +33,10 @@ export class Pause {
   }
 
   private async pause() {
-    const ques = new ConfirmQuestionImpl({
-      title: 'Continue ?'
-    })
+    const ques = new QuestionBuilder()
+      .type(QuestionType.CONFIRM)
+      .title(chalk.yellow(this.title || 'Continue'))
+      .build()
     const rs = await ques.exec()
     if (!rs) {
       throw new Error('Stop')
@@ -42,6 +44,7 @@ export class Pause {
   }
 
   private delay() {
+    if (this.title) this.proxy.logger.info(this.title)
     return new Promise((r) => {
       const time = TimeUtils.GetMsTime(this.time)
       setTimeout(() => {
