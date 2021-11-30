@@ -15,9 +15,12 @@ export class SelectQuestionImpl extends Question {
 
   prepare(proxy) {
     super.prepare(proxy)
-    this.choices?.forEach(choice => {
+    this.choices?.forEach((choice, i) => {
       choice.title = proxy.getVar(choice.title)
       choice.value = proxy.getVar(choice.value)
+      if (this.default !== undefined && this.default === choice.value) {
+        this.default = +i
+      }
     })
   }
 

@@ -10,16 +10,21 @@ export class InputKeyboard {
   private _questions = new Array<Question>()
 
   init(questionConfigs: any[]) {
-    this._questions = questionConfigs.map(({ type, title, required, choices, var: varName, default: df }) => {
+    this._questions = questionConfigs.map(({ type, title, required, choices, var: varName, default: df, format, mask }) => {
       const builder = new QuestionBuilder()
-      return builder
+      const ques = builder
         .type((type || QuestionType.TEXT) as QuestionType)
         .required(required)
         .title(chalk.cyan(title))
-        .choices(choices)
         .var(varName)
         .default(df)
-        .build()
+        .format(this.proxy.eval(format))
+      if (type === QuestionType.SELECT || type === QuestionType.MULTISELECT) {
+        ques.choices(choices)
+      } else if (type === QuestionType.DATE) {
+        ques.masks(mask)
+      }
+      return ques.build()
     })
   }
 

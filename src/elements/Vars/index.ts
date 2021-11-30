@@ -7,6 +7,7 @@ export class Vars {
 
   init(props: any) {
     this.vars = props
+    this.proxy.setVar(this.vars, {})
   }
 
   exec() {

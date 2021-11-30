@@ -9,13 +9,15 @@ export abstract class Question {
   abstract type: QuestionType
   var: string
   default: any
+  format: (vl: any) => any
 
-  constructor({ title, required, pattern, var: varName, default: df }: any) {
+  constructor({ title, required, pattern, var: varName, default: df, format }: any) {
     this.title = title
     this.required = required
     this.pattern = pattern
     this.var = varName
     this.default = df
+    this.format = format
   }
 
   prepare(proxy: ElementProxy<any>) {

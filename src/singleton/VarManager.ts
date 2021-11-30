@@ -1,19 +1,23 @@
 import { Base64 } from "@app/utils/encrypt/Base64"
+import chalk from "chalk"
 
 export class VarManager {
   static readonly Instance = new VarManager()
 
-  private readonly _navPattern = /^(\$\{){1}(.+)\}$/
+  private readonly _navPattern = /^(\$\{){1}([^\}]+)\}$/
   globalVars = {
     get $$base64() {
       return Base64.GetInstance()
+    },
+    get $$color() {
+      return chalk
     }
   } as { [key: string]: any }
 
   set(varObj: any, obj: any, defaultKey?: string) {
-    if (!obj) return
+    // if (!obj) return
     if (typeof varObj === 'string') {
-      const vl = this.get(defaultKey ? obj[defaultKey] : obj)
+      const vl = this.get(defaultKey ? eval(`obj.${defaultKey}`) : obj)
       this.globalVars[varObj] = vl
     } else if (varObj && typeof varObj === 'object') {
       Object.keys(varObj).forEach(key => {
@@ -39,8 +43,9 @@ export class VarManager {
       }
     } else if (typeof obj === 'string') {
       let vl;
-      let evalStr = `let {${Object.keys(ctx).join(',')}} = ctx;\n`
-      evalStr += `vl = ${obj}`
+      const evalStr = `vl = (({${Object.keys(ctx).join(',')}}) => { 
+        ${obj}
+      })(ctx)`
       eval(evalStr)
       return vl
     }

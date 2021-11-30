@@ -37,6 +37,13 @@ export class QuestionBuilder {
     return this
   }
 
+  format(format: (vl: any) => any) {
+    if (format) {
+      this._config.format = format
+    }
+    return this
+  }
+
   required(isRequired: boolean) {
     this._config.required = isRequired
     return this
@@ -44,6 +51,13 @@ export class QuestionBuilder {
 
   choices(choices: { title: string, value: string }[]) {
     this._config.choices = choices
+    return this
+  }
+
+  masks(mask = 'YYYY-MM-DD HH:mm:ss') {
+    if (this._type === QuestionType.DATE) {
+      this._config.mask = mask
+    }
     return this
   }
 

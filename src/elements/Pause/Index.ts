@@ -36,6 +36,7 @@ export class Pause {
     const ques = new QuestionBuilder()
       .type(QuestionType.CONFIRM)
       .title(chalk.yellow(this.title || 'Continue'))
+      .default(true)
       .build()
     const rs = await ques.exec()
     if (!rs) {

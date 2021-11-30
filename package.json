@@ -17,9 +17,10 @@
   },
   "scripts": {
     "pub": "npm publish",
-    "dev": "npx nodemon --watch src --watch modules --ext .ts --exec 'node -r ts-node/register -r ./bin/tsconfig-paths-bootstrap.js --inspect-brk src/index.ts -e 'example=thanh' --env-file 'yaml-test/.env' yaml-test/index.yaml'",
+    "dev": "npx nodemon --watch src --watch modules --ext .ts --exec 'node -r ts-node/register -r ./bin/tsconfig-paths-bootstrap.js --inspect-brk src/index.ts -e 'YOUTUBEURL=https://www.youtube.com/watch?v=D7r_Wuwf47I' --env-file 'yaml-test/.env' yaml-test/examples/download_youtube.yaml'",
     "start": "npx nodemon --watch src --watch modules --ext .ts --exec 'node -r ts-node/register -r ./bin/tsconfig-paths-bootstrap.js --inspect src/index.ts yaml-test/index.yaml'",
     "test": "jest",
+    "build:test": "yarn build && yarn global upgrade yamlex",
     "build": "yarn clean && yarn build:only && node bin/expose_example.js",
     "build:only": "tsc && yarn build:resolve-module",
     "build:resolve-module": "node bin/tsconfig",
