@@ -15,10 +15,14 @@ export class ElementFactory {
       const Clazzes = require(folder ? `./${folder}/${name}` : `./${name}`)
       Clazz = Clazzes[name]
       if (!Clazz) throw new Error(`Could not found "${folder}${name}"`)
-    } catch (err) {
-      const Clazzes = ExternalLibs.loadExternalLib(`${folder}`)
-      Clazz = Clazzes[name]
-      if (!Clazz) throw err
+    } catch (err1) {
+      try {
+        const Clazzes = ExternalLibs.loadExternalLib(`${folder}`)
+        Clazz = Clazzes[name]
+        if (!Clazz) throw err1
+      } catch (err2) {
+        throw new Error('\nError1: ' + err1.message + '\nError2: ' + err2.message)
+      }
     }
     let tag: any
     if (Clazz.prototype) {

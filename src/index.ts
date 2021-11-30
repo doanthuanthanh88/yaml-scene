@@ -1,6 +1,5 @@
 import { readFileSync } from "fs";
 import { safeLoadAll } from "js-yaml";
-import { merge } from "lodash";
 import { dirname, resolve } from "path";
 import { Helper } from "./Helper";
 import { VarManager } from "./singleton/VarManager";
@@ -13,25 +12,23 @@ export class Main {
   private static helper = new Helper();
 
   private static loadEnv() {
-    Main.helper.loadEnv(VarManager.Instance.globalVars, Main.helper.envFile ? TestCase.GetPathFromRoot(Main.helper.envFile) : undefined)
-    if (Main.helper.env) {
-      console.log(VarManager.Instance.globalVars)
-      merge(VarManager.Instance.globalVars, Main.helper.env)
-      console.log(VarManager.Instance.globalVars)
-    }
+    this.helper.loadEnv(VarManager.Instance.globalVars, this.helper.envFile ? TestCase.GetPathFromRoot(this.helper.envFile) : undefined, process.env, this.helper.env)
   }
 
   static async exec() {
 
-    await Main.helper.exec()
+    await this.helper.exec()
 
-    const scenarioFile = Main.helper.yamlFile
-    TestCase.RootDir = resolve(dirname(Main.helper.yamlFile))
+    const scenarioFile = this.helper.yamlFile
+    TestCase.RootDir = resolve(dirname(this.helper.yamlFile))
 
     const scenarios = safeLoadAll(readFileSync(scenarioFile).toString(), null, {
       schema: SCHEMA
     })
-    for (const scenario of scenarios) {
+    for (let scenario of scenarios) {
+      if (Array.isArray(scenario)) {
+        scenario = { title: scenarioFile, steps: scenario.flat() }
+      }
       const { externalLibs, ...testcaseProps } = scenario
       if (externalLibs) {
         await ExternalLibs.Setup(Array.isArray(externalLibs) ? externalLibs : [externalLibs])
@@ -41,7 +38,7 @@ export class Main {
         tc.time.begin = Date.now()
         tc.init()
         await tc.prepare()
-        Main.loadEnv()
+        this.loadEnv()
         await tc.exec()
       } finally {
         await tc.dispose()
@@ -57,8 +54,10 @@ export class Main {
   }
 }
 
-(async () => {
-  await Main.exec()
-})()
+Main.exec()
 
-// setTimeout(() => Main.exec(), 2000)
+// (async () => {
+//   await Main.exec()
+// })()
+
+// setTimeout(() => this.exec(), 2000)

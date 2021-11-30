@@ -11,7 +11,7 @@ export class ElementProxy<T> {
   private _logLevel: string
 
   get logLevel() {
-    return this._logLevel || this._?.logLevel || this.__?.logLevel || 'debug'
+    return this._logLevel || this._?.logLevel || this.__?.logLevel || 'info'
   }
 
   get logger() {

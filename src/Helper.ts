@@ -127,7 +127,7 @@ export class Helper {
   loadEnv(baseConfig: any, ...files: object[] | string[]) {
     const castToObject = function (obj, pro, prefix) {
       for (let k in obj) {
-        if (k?.startsWith('$$')) continue
+        if (typeof obj[k] === 'function' || k.startsWith('$$')) continue
         if (typeof obj[k] === 'object') {
           obj[k] = castToObject(obj[k], pro, (prefix + k + '_').toLowerCase())
         } else if (Array.isArray(obj[k])) {
@@ -188,13 +188,12 @@ export class Helper {
         }
         merge(config, env)
       } else {
-        merge(config, file)
+        merge(config, Object.keys(file).reduce((sum, e) => {
+          sum[e.toLowerCase()] = file[e]
+          return sum
+        }, {}))
       }
     })
-    merge(config, Object.keys(process.env).reduce((sum, e) => {
-      sum[e.toLowerCase()] = process.env[e]
-      return sum
-    }, {}))
     castToObject(baseConfig, config, '')
     if (baseConfig.NODE_ENV) process.env.NODE_ENV = baseConfig.NODE_ENV
     return baseConfig

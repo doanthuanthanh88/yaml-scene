@@ -229,7 +229,7 @@ export class Api {
 
   private applyToVar() {
     if (this.var && this.response) {
-      this.proxy.setVar(this.var, this, 'data')
+      this.proxy.setVar(this.var, this, 'response.data')
     }
   }
 
