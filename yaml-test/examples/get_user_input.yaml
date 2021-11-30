@@ -14,10 +14,24 @@
       var: age
     - title: Enter birthday
       type: date
+      mask: YYYY-MM-DD HH:mm:ss # Default for date
       var: birthday
+    - title: Enter current time
+      type: date
+      mask: HH:mm:ss
+      var: time
     - title: Sex
       type: select
       var: sex
+      default: -1
+      choices:
+        - title: Male
+          value: 1
+        - title: Female
+          value: -1
+    - title: Suggest Sex
+      type: autocomplete
+      var: suggestSex
       choices:
         - title: Male
           value: 1
@@ -26,24 +40,39 @@
     - title: Hobby
       type: multiselect
       var: hobbies
+      default:
+        - id0
+        - id1
       choices:
         - title: Play football
-          value: 0
+          value: id0
         - title: Backet ball
-          value: 1
+          value: id1
+    - title: Suggest Hobby
+      type: autocompleteMultiselect
+      var: suggestHobbies
+      choices:
+        - title: Play football
+          value: id0
+        - title: Backet ball
+          value: id1
     - title: Agree terms and conditions
       type: toggle
       var: agr
       required: true
     - title: Are you sure to submit ?
       type: confirm
+      default: true
       var: submit
 - Echo: Name is ${name.toUpperCase()}
 - Echo: Password is ${pass}
 - Echo: Secret is ${secret}
 - Echo: Age is ${age}
 - Echo: birthday is ${birthday}
+- Echo: current time is ${time}
 - Echo: sex is ${sex}
+- Echo: suggest sex is ${suggestSex}
 - Echo: hobby is ${hobbies}
+- Echo: suggest hobby is ${suggestHobbies}
 - Echo: agree is ${agr}
 - Echo: submit is ${submit}

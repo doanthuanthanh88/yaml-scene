@@ -1,4 +1,6 @@
 import { Question } from "./Question"
+import { AutoCompleteMultiSelectQuestionImpl } from "./question/AutoCompleteMultiSelectQuestionImpl"
+import { AutoCompleteQuestionImpl } from "./question/AutoCompleteQuestionImpl"
 import { ConfirmQuestionImpl } from "./question/ConfirmQuestionImpl"
 import { DateQuestionImpl } from "./question/DateQuestionImpl"
 import { InvisibleQuestionImpl } from "./question/InvisibleQuestionImpl"
@@ -79,6 +81,10 @@ export class QuestionBuilder {
         return new SelectQuestionImpl(this._config)
       case QuestionType.MULTISELECT:
         return new MultiSelectQuestionImpl(this._config)
+      case QuestionType.AUTOCOMPLETE:
+        return new AutoCompleteQuestionImpl(this._config)
+      case QuestionType.AUTOCOMPLETEMULTISELECT:
+        return new AutoCompleteMultiSelectQuestionImpl(this._config)
       case QuestionType.DATE:
         return new DateQuestionImpl(this._config)
       default:

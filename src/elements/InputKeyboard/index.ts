@@ -19,7 +19,7 @@ export class InputKeyboard {
         .var(varName)
         .default(df)
         .format(this.proxy.eval(format))
-      if (type === QuestionType.SELECT || type === QuestionType.MULTISELECT) {
+      if (type === QuestionType.SELECT || type === QuestionType.MULTISELECT || type === QuestionType.AUTOCOMPLETE || type === QuestionType.AUTOCOMPLETEMULTISELECT) {
         ques.choices(choices)
       } else if (type === QuestionType.DATE) {
         ques.masks(mask)

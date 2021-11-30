@@ -9,7 +9,7 @@ export enum QuestionType {
   TOGGLE = 'toggle',
   SELECT = 'select',
   MULTISELECT = 'multiselect',
-  // AUTOCOMPLETEMULTISELECT = 'autocompleteMultiselect',
-  // AUTOCOMPLETE = 'autocomplete',
+  AUTOCOMPLETEMULTISELECT = 'autocompleteMultiselect',
+  AUTOCOMPLETE = 'autocomplete',
   DATE = 'date',
 }

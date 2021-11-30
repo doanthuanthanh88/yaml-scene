@@ -3,7 +3,7 @@ import { QuestionType } from "../QuestionType";
 
 export class MultiSelectQuestionImpl extends Question {
   type = QuestionType.MULTISELECT
-  choices?: { title: string, value: any }[]
+  choices?: { title: string, value: any, selected?: boolean }[]
 
   constructor(config: any) {
     if (!config.choices) {
@@ -15,11 +15,16 @@ export class MultiSelectQuestionImpl extends Question {
 
   prepare(proxy) {
     super.prepare(proxy)
-    this.choices?.forEach((choice, i) => {
+    let df = this.default
+    if (df !== undefined) {
+      if (!Array.isArray(df)) df = [df]
+      this.default = []
+    }
+    this.choices?.forEach((choice) => {
       choice.title = proxy.getVar(choice.title)
       choice.value = proxy.getVar(choice.value)
-      if (this.default !== undefined && this.default === choice.value) {
-        this.default = +i
+      if (df?.includes(choice.value)) {
+        choice.selected = true
       }
     })
   }
