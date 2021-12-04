@@ -1,6 +1,7 @@
 import { TestCase } from "@app/TestCase"
 import { LogLevel } from "@app/utils/logger/LogLevel"
 import { ProgressBar } from "@app/utils/progress-bar/ProgressBar"
+import { ReaderProgressBar } from "@app/utils/progress-bar/ReaderProgressBar"
 import Axios from "axios"
 import chalk from "chalk"
 import FormData from 'form-data'
@@ -110,7 +111,7 @@ export class Api {
                 data.append(k, body[k])
               }
               merge(this.headers, data.getHeaders())
-              new ProgressBar(data, 'Upload Progress || {value} bytes || Speed: {speed}')
+              new ReaderProgressBar(data, 'Uploaded {value} bytes', new ProgressBar('Upload Progress || {value} bytes || Speed: {speed}'))
               return data
             }
           }
@@ -119,7 +120,7 @@ export class Api {
       } as any)
       if (this.saveTo) {
         const writer = createWriteStream(this.saveTo);
-        new ProgressBar(data, 'Download Progress || {value} bytes || Speed: {speed}')
+        new ReaderProgressBar(data, `Dowloaded {value} bytes`, new ProgressBar('Download Progress || {value} bytes || Speed: {speed}'))
         data.pipe(writer);
         data = await new Promise((resolve, reject) => {
           writer.on('finish', () => {

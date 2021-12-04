@@ -1,33 +1,43 @@
-import { SingleBar } from 'cli-progress'
-import { Readable, Writable } from 'stream';
+import { SingleBar } from 'cli-progress';
+import { IProgressBar } from './IProgressBar';
 
-export class ProgressBar {
-  constructor(stream: Readable | Writable, title: string) {
-    let bar: SingleBar
+export class ProgressBar implements IProgressBar {
+  isAutoListen: boolean
+  bar: SingleBar
+  isRunning = false
 
-    stream
-      .on('data', (buf: Buffer) => {
-        if (!bar) {
-          bar = new SingleBar({
-            format: title,
-            hideCursor: true,
-            clearOnComplete: true,
-          })
-          bar.start(0, 0)
-        }
+  constructor(title: string, opts = {
+    hideCursor: true,
+    clearOnComplete: true,
+  }) {
+    this.bar = new SingleBar(Object.assign({}, opts, {
+      format: title
+    }))
+  }
 
-        let len = buf.byteLength
-        bar.increment(len, {
-          speed: `${len} bytes`
-        })
-      })
-      .on('error', () => {
-        bar.stop()
-      })
-      .on('end', () => {
-        bar.stop()
-      })
+  increment(num: number, payload?: any) {
+    this.bar.increment(num, payload)
+  }
 
+  start(total: number, startValue: number, payload?: any) {
+    if (!this.isRunning) {
+      this.bar.start(total, startValue, payload)
+    }
+  }
+
+  get value() {
+    return this.bar['value'] as number
+  }
+
+  set title(title: string) {
+    this.bar['options'].format = title
+    this.bar.render()
+  }
+
+  stop() {
+    if (this.isRunning) {
+      this.bar.stop()
+    }
   }
 
 }
