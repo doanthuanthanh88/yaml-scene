@@ -31,7 +31,9 @@ export class TestCase {
 
   constructor() {
     this.events = new EventEmitter()
-    this.time = {} as any
+    this.time = {
+      begin: Date.now()
+    } as any
   }
 
   async init(scenarioFile?: string | object) {
@@ -92,5 +94,15 @@ export class TestCase {
   resolvePath(path: string) {
     if (!path) return path
     return path.startsWith('/') ? resolve(path) : join(this.rootDir, path)
+  }
+
+  printLog() {
+    this.time.end = Date.now()
+    console.group('Time summary')
+    console.log('- Initting', this.time.prepare - this.time.init, 'ms')
+    console.log('- Preparing', this.time.exec - this.time.prepare, 'ms')
+    console.log('- Executing', this.time.dispose - this.time.exec, 'ms')
+    console.log('- Dispose', this.time.end - this.time.dispose, 'ms')
+    console.groupEnd()
   }
 }

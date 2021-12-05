@@ -16,20 +16,13 @@ export class Main {
 
     const tc = TestCase.Instance
     try {
-      tc.time.begin = Date.now()
       await tc.init(this.helper.yamlFile)
       await tc.prepare()
       this.loadEnv()
       await tc.exec()
     } finally {
+      tc.printLog()
       await tc.dispose()
-      tc.time.end = Date.now()
-      console.group('Time summary')
-      console.log('- Initting', tc.time.prepare - tc.time.init, 'ms')
-      console.log('- Preparing', tc.time.exec - tc.time.prepare, 'ms')
-      console.log('- Executing', tc.time.dispose - tc.time.exec, 'ms')
-      console.log('- Dispose', tc.time.end - tc.time.dispose, 'ms')
-      console.groupEnd()
     }
   }
 }

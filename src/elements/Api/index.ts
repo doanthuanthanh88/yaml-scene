@@ -171,7 +171,7 @@ export class Api implements IElement {
           this.proxy.changeLogLevel('debug')
         }
       }
-      this.printDebug()
+      this.printLog()
       if (this.error) {
         this.proxy.tc.events.emit('Api.done', false)
         throw this.error
@@ -182,7 +182,7 @@ export class Api implements IElement {
     }
   }
 
-  private printDebug() {
+  private printLog() {
     if (this.proxy.logger.getLevel() <= LogLevel.DEBUG) {
       console.group()
       this.proxy.logger.debug(`%s`, chalk.red.underline(this.curl))
