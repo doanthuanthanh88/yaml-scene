@@ -3,7 +3,7 @@ import { VarManager } from "@app/singleton/VarManager"
 
 describe('Test assign value to global vars', () => {
   test('Simple value', async () => {
-    const elem = ElementFactory.CreateElement('Vars', null)
+    const elem = ElementFactory.CreateElement('Vars')
     elem.init({
       name: 'thanh'
     })
@@ -17,7 +17,7 @@ describe('Test assign value to global vars', () => {
   })
 
   test('Complex value', async () => {
-    const elem = ElementFactory.CreateElement('Vars', null)
+    const elem = ElementFactory.CreateElement('Vars')
     elem.init({
       name: 'thanh',
       hello: 'Say hello to ${name}'

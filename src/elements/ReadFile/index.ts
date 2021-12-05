@@ -1,4 +1,3 @@
-import { TestCase } from '@app/TestCase';
 import { FileDataSourceFactory } from '@app/utils/data-source/file/FileDataSourceFactory';
 import { FileType } from '@app/utils/data-source/file/FileType';
 import { AES } from '@app/utils/encrypt/AES';
@@ -34,7 +33,7 @@ export class ReadFile {
     if (this.decrypt?.password) {
       decrypt = new AES(this.decrypt.password.toString())
     }
-    const file = FileDataSourceFactory.GetDataSource(this.type, TestCase.GetPathFromRoot(this.path), decrypt)
+    const file = FileDataSourceFactory.GetDataSource(this.type, this.proxy.resolvePath(this.path), decrypt)
     const obj = await file.read()
     this.proxy.setVar(this.var, obj)
     this.proxy.logger.debug('%s %s', chalk.magenta('- Read file at'), chalk.gray(this.path))

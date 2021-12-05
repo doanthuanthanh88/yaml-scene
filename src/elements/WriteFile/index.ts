@@ -1,12 +1,11 @@
-import { TestCase } from '@app/TestCase';
+import { FileDataSourceFactory } from '@app/utils/data-source/file/FileDataSourceFactory';
+import { FileType } from '@app/utils/data-source/file/FileType';
 import { AES } from '@app/utils/encrypt/AES';
 import { Encrypt } from '@app/utils/encrypt/Encrypt';
-import { FileType } from '@app/utils/data-source/file/FileType';
+import chalk from 'chalk';
 import { merge } from 'lodash';
 import { extname } from 'path';
 import { ElementProxy } from '../ElementProxy';
-import { FileDataSourceFactory } from '@app/utils/data-source/file/FileDataSourceFactory';
-import chalk from 'chalk';
 
 export class WriteFile {
   proxy: ElementProxy<WriteFile>
@@ -39,7 +38,7 @@ export class WriteFile {
     if (this.encrypt?.password) {
       encrypt = new AES(this.encrypt.password.toString())
     }
-    const file = FileDataSourceFactory.GetDataSource(this.type, TestCase.GetPathFromRoot(this.path), encrypt)
+    const file = FileDataSourceFactory.GetDataSource(this.type, this.proxy.resolvePath(this.path), encrypt)
     await file.write(this.content)
     this.proxy.logger.debug('%s %s', chalk.magenta('- Write file to'), chalk.gray(this.path))
     console.groupEnd()

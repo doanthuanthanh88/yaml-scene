@@ -2,7 +2,7 @@ import prompts from 'prompts';
 import { ElementProxy } from '../ElementProxy';
 import { QuestionType } from "./QuestionType";
 
-export abstract class Question {
+export abstract class AbsQuestion {
   title: string
   required: boolean
   pattern: string
@@ -10,6 +10,16 @@ export abstract class Question {
   var: string
   default: any
   format: (vl: any) => any
+
+  get config() {
+    const { title: message, var: name, default: initial, ...props } = this
+    return {
+      initial,
+      message,
+      name,
+      ...props,
+    }
+  }
 
   constructor({ title, required, pattern, var: varName, default: df, format }: any) {
     this.title = title
@@ -32,18 +42,8 @@ export abstract class Question {
     if (!this.var) {
       this.var = `rd${Math.random()}`
     }
-    const response = await prompts(this.getConfig())
+    const response = await prompts(this.config)
     return response[this.var]
-  }
-
-  getConfig() {
-    const { title: message, var: name, default: initial, ...props } = this
-    return {
-      initial,
-      message,
-      name,
-      ...props,
-    }
   }
 
 }

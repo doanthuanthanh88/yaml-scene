@@ -17,7 +17,7 @@ describe.each([
   })
 
   test(`Write a ${type} file`, async () => {
-    const elem = ElementFactory.CreateElement('WriteFile', null)
+    const elem = ElementFactory.CreateElement('WriteFile')
     elem.init({
       path,
       type,
@@ -33,7 +33,7 @@ describe.each([
   })
 
   test(`Read a ${type} file`, async () => {
-    const elem = ElementFactory.CreateElement('ReadFile', null)
+    const elem = ElementFactory.CreateElement('ReadFile')
     elem.init({
       path,
       type,
@@ -49,7 +49,7 @@ describe.each([
   })
 
   test(`Write a ${type} file with password`, async () => {
-    const elem = ElementFactory.CreateElement('WriteFile', null)
+    const elem = ElementFactory.CreateElement('WriteFile')
     elem.init({
       path,
       type,
@@ -68,7 +68,7 @@ describe.each([
   })
 
   test(`Read a ${type} file`, async () => {
-    const elem = ElementFactory.CreateElement('ReadFile', null)
+    const elem = ElementFactory.CreateElement('ReadFile')
     elem.init({
       path,
       type,

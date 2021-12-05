@@ -36,7 +36,7 @@
     headers:
       content-type: application/json
     # body:
-    #   file: !binary /Users/doanthuanthanh/code/github/yamlex/test/assets/data.csv
+    #   file: !binary /Users/doanthuanthanh/code/github/runow/test/assets/data.csv
     var:
       status: ${_.response.status}
     validate:

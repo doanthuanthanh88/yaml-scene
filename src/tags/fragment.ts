@@ -6,6 +6,6 @@ import { SCHEMA } from '.'
 export const fragment = new Type('!fragment', {
   kind: 'scalar',
   construct: (filePath) => {
-    return safeLoad(readFileSync(TestCase.GetPathFromRoot(filePath)).toString(), { schema: SCHEMA })
+    return safeLoad(readFileSync(TestCase.Instance.resolvePath(filePath)).toString(), { schema: SCHEMA })
   }
 })

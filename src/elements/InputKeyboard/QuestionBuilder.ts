@@ -1,19 +1,28 @@
-import { Question } from "./Question"
-import { AutoCompleteMultiSelectQuestionImpl } from "./question/AutoCompleteMultiSelectQuestionImpl"
-import { AutoCompleteQuestionImpl } from "./question/AutoCompleteQuestionImpl"
-import { ConfirmQuestionImpl } from "./question/ConfirmQuestionImpl"
-import { DateQuestionImpl } from "./question/DateQuestionImpl"
-import { InvisibleQuestionImpl } from "./question/InvisibleQuestionImpl"
-import { MultiSelectQuestionImpl } from "./question/MultiSelectQuestionImpl"
-import { NumberQuestionImpl } from "./question/NumberQuestionImpl"
-import { PasswordQuestionImpl } from "./question/PasswordQuestionImpl"
-import { SelectQuestionImpl } from "./question/SelectQuestionImpl"
-import { TextQuestionImpl } from "./question/TextQuestionImpl"
-import { ToggleQuestionImpl } from "./question/ToggleQuestionImpl"
+import { AutoCompleteMultiSelectQuestion } from "./question/AutoCompleteMultiSelectQuestion"
+import { AutoCompleteQuestion } from "./question/AutoCompleteQuestion"
+import { ConfirmQuestion } from "./question/ConfirmQuestion"
+import { DateQuestion } from "./question/DateQuestion"
+import { InvisibleQuestion } from "./question/InvisibleQuestion"
+import { MultiSelectQuestion } from "./question/MultiSelectQuestion"
+import { NumberQuestion } from "./question/NumberQuestion"
+import { PasswordQuestion } from "./question/PasswordQuestion"
+import { SelectQuestion } from "./question/SelectQuestion"
+import { TextQuestion } from "./question/TextQuestion"
+import { ToggleQuestion } from "./question/ToggleQuestion"
 import { QuestionType } from "./QuestionType"
 
+type QuestionBuilderConfig = {
+  title?: string
+  default?: any
+  var?: string
+  format?: (vl: any) => any
+  required?: boolean
+  choices?: { title: string, value: string }[]
+  mask?: string
+}
+
 export class QuestionBuilder {
-  private _config = {} as Question & any
+  private _config: QuestionBuilderConfig = {}
   private _type: QuestionType
 
   type(type: QuestionType) {
@@ -66,27 +75,27 @@ export class QuestionBuilder {
   build() {
     switch (this._type) {
       case QuestionType.TEXT:
-        return new TextQuestionImpl(this._config)
+        return new TextQuestion(this._config)
       case QuestionType.PASSWORD:
-        return new PasswordQuestionImpl(this._config)
+        return new PasswordQuestion(this._config)
       case QuestionType.INVISIBLE:
-        return new InvisibleQuestionImpl(this._config)
+        return new InvisibleQuestion(this._config)
       case QuestionType.NUMBER:
-        return new NumberQuestionImpl(this._config)
+        return new NumberQuestion(this._config)
       case QuestionType.CONFIRM:
-        return new ConfirmQuestionImpl(this._config)
+        return new ConfirmQuestion(this._config)
       case QuestionType.TOGGLE:
-        return new ToggleQuestionImpl(this._config)
+        return new ToggleQuestion(this._config)
       case QuestionType.SELECT:
-        return new SelectQuestionImpl(this._config)
+        return new SelectQuestion(this._config)
       case QuestionType.MULTISELECT:
-        return new MultiSelectQuestionImpl(this._config)
+        return new MultiSelectQuestion(this._config)
       case QuestionType.AUTOCOMPLETE:
-        return new AutoCompleteQuestionImpl(this._config)
+        return new AutoCompleteQuestion(this._config)
       case QuestionType.AUTOCOMPLETEMULTISELECT:
-        return new AutoCompleteMultiSelectQuestionImpl(this._config)
+        return new AutoCompleteMultiSelectQuestion(this._config)
       case QuestionType.DATE:
-        return new DateQuestionImpl(this._config)
+        return new DateQuestion(this._config)
       default:
         throw new Error(`Could not found Question Type "${this.type}"`)
     }

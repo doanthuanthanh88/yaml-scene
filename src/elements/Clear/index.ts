@@ -1,9 +1,12 @@
-export class Clear {
+import { IElement } from "../IElement"
+
+export class Clear implements IElement {
+
   exec() {
     console.clear()
   }
 
   clone() {
-    return this as any
+    return this
   }
 }

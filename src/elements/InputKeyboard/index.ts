@@ -1,13 +1,15 @@
 import chalk from 'chalk';
 import prompts from 'prompts';
 import { ElementProxy } from '../ElementProxy';
-import { Question } from './Question';
+import { IElement } from '../IElement';
+import { AbsQuestion } from './AbsQuestion';
 import { QuestionBuilder } from './QuestionBuilder';
 import { QuestionType } from './QuestionType';
 
-export class InputKeyboard {
+export class InputKeyboard implements IElement {
   proxy: ElementProxy<InputKeyboard>
-  private _questions = new Array<Question>()
+
+  private _questions = new Array<AbsQuestion>()
 
   init(questionConfigs: any[]) {
     this._questions = questionConfigs.map(({ type, title, required, choices, var: varName, default: df, format, mask }) => {
@@ -35,7 +37,7 @@ export class InputKeyboard {
   }
 
   async exec() {
-    const response = await prompts(this._questions.map(question => question.getConfig()))
+    const response = await prompts(this._questions.map(question => question.config))
     if (response) {
       this.proxy.setVar(response, this)
     }

@@ -1,11 +1,9 @@
 import { ElementFactory } from "@app/elements/ElementFactory"
 import { VarManager } from "@app/singleton/VarManager"
-import { TestCase } from "@app/TestCase"
 
 describe('Test Api', () => {
   test('- Get API', async () => {
-    const tc = new TestCase({})
-    const elem = ElementFactory.CreateElement('Api', tc)
+    const elem = ElementFactory.CreateElement('Api')
     elem.init({
       title: "test api",
       baseURL: 'https://fastlane.rubiconproject.com',

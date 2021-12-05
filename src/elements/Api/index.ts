@@ -1,4 +1,3 @@
-import { TestCase } from "@app/TestCase"
 import { LogLevel } from "@app/utils/logger/LogLevel"
 import { ProgressBar } from "@app/utils/progress-bar/ProgressBar"
 import { ReaderProgressBar } from "@app/utils/progress-bar/ReaderProgressBar"
@@ -11,6 +10,7 @@ import { stringify } from 'querystring'
 import { VarManager } from "../../singleton/VarManager"
 import { ElementFactory } from "../ElementFactory"
 import { ElementProxy } from "../ElementProxy"
+import { IElement } from "../IElement"
 import { Validate } from "../Validate"
 import { Method } from "./Method"
 
@@ -22,7 +22,7 @@ const axios = Axios.create()
 //   return config
 // })
 
-export class Api {
+export class Api implements IElement {
   proxy: ElementProxy<Api>
 
   title: string
@@ -39,19 +39,33 @@ export class Api {
   time: number
   var: any
   validate: ElementProxy<Validate>[]
-  debug: boolean
   saveTo: string
 
-  get fullUrl() {
+  private get fullUrl() {
     const urlParams = this.params
     return VarManager.Instance.get(this.url.replace(/(\:(\w+))/g, `$\{urlParams.$2\}`), { urlParams })
+  }
+  private get contentType() {
+    return this.headers['content-type'] || this.headers['Content-Type']
+  }
+  private get curl() {
+    const { CurlGenerator } = require('curl-generator')
+    return CurlGenerator({
+      method: this.method as any,
+      headers: Object.keys(this.headers || {}).reduce((sum, e) => {
+        sum[e] = (this.headers[e] || '').toString()
+        return sum
+      }, {}),
+      body: this.body,
+      url: this.fullUrl
+    })
   }
 
   init(props: any) {
     merge(this, { method: Method.GET }, {
       ...props,
       validate: props.validate?.map(v => {
-        const _v = ElementFactory.CreateElement<Validate>('Validate', this.proxy.tc)
+        const _v = ElementFactory.CreateElement<Validate>('Validate')
         v['logLevel'] = props['logLevel']
         _v.init(v)
         return _v
@@ -74,12 +88,8 @@ export class Api {
     this.body = this.proxy.getVar(this.body)
     this.saveTo = this.proxy.getVar(this.saveTo)
     if (this.saveTo) {
-      this.saveTo = TestCase.GetPathFromRoot(this.saveTo)
+      this.saveTo = this.proxy.resolvePath(this.saveTo)
     }
-  }
-
-  private get contentType() {
-    return this.headers['content-type'] || this.headers['Content-Type']
   }
 
   async exec() {
@@ -175,6 +185,7 @@ export class Api {
   private printDebug() {
     if (this.proxy.logger.getLevel() <= LogLevel.DEBUG) {
       console.group()
+      this.proxy.logger.debug(`%s`, chalk.red.underline(this.curl))
       let fullUrl = `${this.baseURL}${this.fullUrl}`
       if (Object.keys(this.query).length) fullUrl += '?' + stringify(this.query, null, null, { encodeURIComponent: str => str })
       this.proxy.logger.debug('%s', chalk.red.bold('* Request * * * * * * * * * *'))

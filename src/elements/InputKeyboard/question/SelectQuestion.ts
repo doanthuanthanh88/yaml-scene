@@ -1,7 +1,7 @@
-import { Question } from "../Question";
+import { AbsQuestion } from "../AbsQuestion";
 import { QuestionType } from "../QuestionType";
 
-export class SelectQuestionImpl extends Question {
+export class SelectQuestion extends AbsQuestion {
   type = QuestionType.SELECT
   choices?: { title: string, value: any }[]
 

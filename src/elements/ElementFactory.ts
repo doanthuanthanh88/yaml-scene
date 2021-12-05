@@ -2,9 +2,10 @@ import { TestCase } from "@app/TestCase"
 import { ExternalLibs } from "@app/utils/external-libs"
 import { cloneDeep } from "lodash"
 import { ElementProxy } from "./ElementProxy"
+import { IElement } from './IElement'
 
 export class ElementFactory {
-  static CreateElement<T>(names: string, tc: TestCase) {
+  static CreateElement<T extends IElement>(names: string) {
     let [folder, name] = names.split('#')
     if (!name) {
       name = folder
@@ -30,6 +31,6 @@ export class ElementFactory {
     } else {
       tag = tag.clone ? tag.clone() : cloneDeep(tag)
     }
-    return new ElementProxy<T>(tag, tc)
+    return new ElementProxy<T>(tag, TestCase.Instance)
   }
 }

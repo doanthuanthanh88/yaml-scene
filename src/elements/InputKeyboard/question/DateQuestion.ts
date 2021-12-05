@@ -1,12 +1,13 @@
 import { ElementProxy } from "@app/elements/ElementProxy";
-import { Question } from "../Question";
+import { AbsQuestion } from "../AbsQuestion";
 import { QuestionType } from "../QuestionType";
 
-export class DateQuestionImpl extends Question {
+export class DateQuestion extends AbsQuestion {
   type = QuestionType.DATE
   mask: string
 
-  constructor({ mask, ...props }) {
+  constructor(_props: any) {
+    const { mask, ...props } = _props
     super(props)
     this.mask = mask
   }

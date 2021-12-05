@@ -1,4 +1,4 @@
-import { Element } from "../Element";
+import { IElement } from "../IElement";
 import { ElementFactory } from "../ElementFactory";
 import { ElementProxy } from "../ElementProxy";
 import { Group } from "../Group";
@@ -8,8 +8,8 @@ export class Templates {
 
   group: ElementProxy<Group>
 
-  init(items: Element[]) {
-    this.group = ElementFactory.CreateElement<Group>('Group', this.proxy.tc)
+  init(items: IElement[]) {
+    this.group = ElementFactory.CreateElement<Group>('Group')
     this.group.init({
       steps: items
     })

@@ -1,7 +1,7 @@
-import { Question } from "../Question";
+import { AbsQuestion } from "../AbsQuestion";
 import { QuestionType } from "../QuestionType";
 
-export class MultiSelectQuestionImpl extends Question {
+export class MultiSelectQuestion extends AbsQuestion {
   type = QuestionType.MULTISELECT
   choices?: { title: string, value: any, selected?: boolean }[]
 

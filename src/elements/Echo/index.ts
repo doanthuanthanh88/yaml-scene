@@ -1,7 +1,9 @@
 import { ElementProxy } from "../ElementProxy"
+import { IElement } from "../IElement"
 
-export class Echo {
+export class Echo implements IElement {
   proxy: ElementProxy<any>
+
   message: string
 
   init(message: string) {

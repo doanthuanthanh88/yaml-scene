@@ -10,10 +10,6 @@ export class Helper {
   envFile = '.env'
   externalModules = []
 
-  constructor() {
-
-  }
-
   async exec() {
     const packageJson = [
       join(__dirname, "../package.json"),

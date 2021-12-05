@@ -1,4 +1,4 @@
-import { Element } from "@app/elements/Element"
+import { IElement } from "@app/elements/IElement"
 import { cloneDeep } from "lodash"
 
 export class TemplateManager {
@@ -8,11 +8,11 @@ export class TemplateManager {
     return TemplateManager._Instance || (TemplateManager._Instance = new TemplateManager())
   }
 
-  private _elements = {} as { [name: string]: Element }
+  private _elements = {} as { [name: string]: IElement }
 
-  register(name: string, elem: Element) {
+  register(name: string, elem: IElement) {
     this._elements[name] = elem.clone ? elem.clone() : cloneDeep(elem)
-    this._elements[name]['proxy'] = null
+    this._elements[name].proxy = null
   }
 
   get(name: string) {

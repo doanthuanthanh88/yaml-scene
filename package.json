@@ -1,5 +1,5 @@
 {
-  "name": "yamlex",
+  "name": "runow",
   "version": "1.0.0",
   "description": "Do everything with yaml scenario file",
   "keywords": [
@@ -13,15 +13,16 @@
   ],
   "main": "src",
   "bin": {
-    "yamlex": "./bin/cli.js"
+    "runow": "./bin/cli.js"
   },
   "scripts": {
     "pub": "npm publish",
-    "dev": "npx nodemon --watch src --watch modules --ext .ts --exec 'node -r ts-node/register -r ./bin/tsconfig-paths-bootstrap.js --inspect-brk src/index.ts -e 'YOUTUBEURL=https://www.youtube.com/watch?v=D7r_Wuwf47I' --env-file 'yaml-test/.env' yaml-test/examples/download_youtube.yaml'",
+    "dev": "npx nodemon --watch src --watch modules --ext .ts --exec 'node -r ts-node/register -r ./bin/tsconfig-paths-bootstrap.js --inspect-brk src/index.ts -e 'YOUTUBEURL=https://www.youtube.com/watch?v=D7r_Wuwf47I' --env-file 'yaml-test/.env' /Users/doanthuanthanh/code/github/runow/yaml-test/examples/download_youtube.yaml'",
     "start": "npx nodemon --watch src --watch modules --ext .ts --exec 'node -r ts-node/register -r ./bin/tsconfig-paths-bootstrap.js --inspect src/index.ts yaml-test/index.yaml'",
     "test": "jest",
-    "build:test": "yarn build && yarn global upgrade yamlex",
-    "build": "yarn clean && yarn build:only && node bin/expose_example.js",
+    "build:test": "yarn build && yarn global upgrade runow",
+    "build": "yarn clean && yarn build:only",
+    "build1": "yarn clean && yarn build:only && node bin/expose_example.js",
     "build:only": "tsc && yarn build:resolve-module",
     "build:resolve-module": "node bin/tsconfig",
     "clean": "rm -rf dist",
@@ -60,7 +61,6 @@
     "@types/to-json-schema": "^0.2.0",
     "@types/xml2js": "^0.4.9",
     "jest": "^27.3.1",
-    "puppeteer": "^10.1.0",
     "ts-jest": "^27.0.7",
     "ts-node": "^9.1.1",
     "typescript": "^4.3.5"
@@ -74,10 +74,10 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/doanthuanthanh88/yamlex"
+    "url": "https://github.com/doanthuanthanh88/runow"
   },
   "bugs": {
-    "url": "https://github.com/doanthuanthanh88/yamlex/issues",
+    "url": "https://github.com/doanthuanthanh88/runow/issues",
     "email": "doanthuanthanh88@gmail.com"
   }
 }
