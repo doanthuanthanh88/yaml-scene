@@ -1,28 +1,30 @@
 import { Helper } from "./Helper";
+import { Scenario } from "./singleton/Scenario";
 import { VarManager } from "./singleton/VarManager";
-import { TestCase } from "./TestCase";
 
 export class Main {
 
   private static helper = new Helper();
 
   private static loadEnv() {
-    this.helper.loadEnv(VarManager.Instance.globalVars, TestCase.Instance.resolvePath(this.helper.envFile), process.env, this.helper.env)
+    this.helper.loadEnv(VarManager.Instance.vars, Scenario.Current.resolvePath(this.helper.envFile), process.env, this.helper.env)
   }
 
   static async exec() {
 
     await this.helper.exec()
 
-    const tc = TestCase.Instance
+    const scenario = Scenario.Current
     try {
-      await tc.init(this.helper.yamlFile)
-      await tc.prepare()
-      this.loadEnv()
-      await tc.exec()
+      await scenario.init(this.helper.yamlFile)
+      await scenario.prepare()
+      if (scenario.hasEnvVar) {
+        this.loadEnv()
+      }
+      await scenario.exec()
     } finally {
-      tc.printLog()
-      await tc.dispose()
+      scenario.printLog()
+      await scenario.dispose()
     }
   }
 }

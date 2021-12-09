@@ -173,10 +173,10 @@ export class Api implements IElement {
       }
       this.printLog()
       if (this.error) {
-        this.proxy.tc.events.emit('Api.done', false)
+        this.proxy.scenario.events.emit('Api.done', false)
         throw this.error
       } else {
-        this.proxy.tc.events.emit('Api.done', true)
+        this.proxy.scenario.events.emit('Api.done', true)
       }
       console.groupEnd()
     }

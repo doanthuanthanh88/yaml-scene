@@ -1,6 +1,6 @@
+import { Scenario } from "@app/singleton/Scenario";
 import { TemplateManager } from "@app/singleton/TemplateManager";
 import { VarManager } from "@app/singleton/VarManager";
-import { TestCase } from "@app/TestCase";
 import { LoggerFactory } from "@app/utils/logger";
 import { cloneDeep, merge } from "lodash";
 import { IElement } from "./IElement";
@@ -18,7 +18,7 @@ export class ElementProxy<T extends IElement> {
     return LoggerFactory.GetLogger(this.logLevel)
   }
 
-  constructor(public element: T, public tc: TestCase) {
+  constructor(public element: T, public scenario = Scenario.Current) {
     const self = this
     Object.defineProperty(element, 'proxy', {
       get() {
@@ -58,13 +58,13 @@ export class ElementProxy<T extends IElement> {
 
   clone() {
     if (this.element.clone) {
-      return new ElementProxy<T>(this.element.clone(), this.tc)
+      return new ElementProxy<T>(this.element.clone())
     }
-    return new ElementProxy<T>(cloneDeep(this.element), this.tc)
+    return new ElementProxy<T>(cloneDeep(this.element))
   }
 
   resolvePath(path: string) {
-    return TestCase.Instance.resolvePath(path)
+    return Scenario.Current.resolvePath(path)
   }
 
   changeLogLevel(level: string) {
@@ -86,7 +86,7 @@ export class ElementProxy<T extends IElement> {
   inherit(keys: string[]) {
     if (keys?.length) {
       keys.forEach(key => {
-        const temp = TemplateManager.Instance.get(key)
+        const temp = TemplateManager.Elements.get(key)
         const prop = merge({}, temp, this.element)
         merge(this.element, prop)
       })
@@ -95,7 +95,7 @@ export class ElementProxy<T extends IElement> {
 
   expose(key?: string) {
     if (key) {
-      TemplateManager.Instance.register(key, this.element)
+      TemplateManager.Elements.set(key, this.element)
     }
   }
 

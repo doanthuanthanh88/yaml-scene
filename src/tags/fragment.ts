@@ -1,4 +1,4 @@
-import { TestCase } from '@app/TestCase'
+import { Scenario } from '@app/singleton/Scenario'
 import { readFileSync } from 'fs'
 import { safeLoad, Type } from 'js-yaml'
 import { SCHEMA } from '.'
@@ -6,6 +6,6 @@ import { SCHEMA } from '.'
 export const fragment = new Type('!fragment', {
   kind: 'scalar',
   construct: (filePath) => {
-    return safeLoad(readFileSync(TestCase.Instance.resolvePath(filePath)).toString(), { schema: SCHEMA })
+    return safeLoad(readFileSync(Scenario.Current.resolvePath(filePath)).toString(), { schema: SCHEMA })
   }
 })

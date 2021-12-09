@@ -24,14 +24,14 @@ export class Summary {
 
   exec() {
     this.time = Date.now()
-    this.proxy.tc.events
+    this.proxy.scenario.events
       .on('Api.done', isPassed => {
         if (isPassed) {
           this.passed++
         } else {
           this.failed++
         }
-      }).once('TestCase.dispose', () => {
+      }).once('Scenario.dispose', () => {
         this.time = Date.now() - this.time
         this.proxy.logger.info('---------------------------------')
         console.group()

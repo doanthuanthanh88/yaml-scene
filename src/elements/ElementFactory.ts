@@ -1,4 +1,3 @@
-import { TestCase } from "@app/TestCase"
 import { ExternalLibs } from "@app/utils/external-libs"
 import { cloneDeep } from "lodash"
 import { ElementProxy } from "./ElementProxy"
@@ -31,6 +30,6 @@ export class ElementFactory {
     } else {
       tag = tag.clone ? tag.clone() : cloneDeep(tag)
     }
-    return new ElementProxy<T>(tag, TestCase.Instance)
+    return new ElementProxy<T>(tag)
   }
 }
