@@ -1,5 +1,13 @@
-const { compilerOptions } = require('../tsconfig.json')
 const path = require('path')
+const merge = require('lodash.merge')
+
+const curDir = path.resolve('.')
+let config = require(path.join(curDir, 'tsconfig.json'))
+if (config.extends) {
+  const base = require(path.join(curDir, config.extends))
+  config = merge({}, base, config)
+}
+const { compilerOptions } = config
 
 const map = {}
 for (let k in compilerOptions.paths) {

@@ -1,25 +1,21 @@
 {
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
+    "allowJs": true,
     "rootDirs": [
-      "src",
-      "test"
+      "src"
     ],
     "paths": {
       "@app/*": [
         "./src/*"
-      ],
-      "@test/*": [
-        "./test/*"
       ]
     }
   },
-  "include": [
-    "src",
-    "test"
+  "files": [
+    "bin/cli.js",
+    "package.json"
   ],
-  "exclude": [
-    "node_modules",
-    "*.rm"
+  "include": [
+    "src"
   ]
 }

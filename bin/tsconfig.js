@@ -1,11 +1,20 @@
 const fs = require('fs')
 const path = require('path')
-const dist = './dist/'
-const { compilerOptions } = require('../tsconfig.json')
+const merge = require('lodash.merge')
+
+const curDir = path.resolve('.')
+let config = require(path.join(curDir, 'tsconfig.build.json'))
+if (config.extends) {
+  const base = require(path.join(curDir, config.extends))
+  config = merge({}, base, config)
+}
+const dist = path.join(curDir, config.compilerOptions.outDir)
+
+const { compilerOptions } = config
 
 const map = {}
 for (let k in compilerOptions.paths) {
-  map[k.replace('/*', '')] = path.join(path.resolve(dist), compilerOptions.paths[k][0].replace('/*', ''))
+  map[k.replace('/*', '')] = path.join(dist, compilerOptions.paths[k][0].replace('/*', ''))
 }
 function handleFile(p, ps) {
   return new Promise((resolve, reject) => {
