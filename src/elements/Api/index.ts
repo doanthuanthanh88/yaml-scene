@@ -5,7 +5,9 @@ import Axios from "axios"
 import chalk from "chalk"
 import FormData from 'form-data'
 import { createWriteStream } from "fs"
-import { merge } from "lodash"
+import { Agent } from 'http'
+import { Agent as Agents } from 'https'
+import { merge, reject } from "lodash"
 import { stringify } from 'querystring'
 import { VarManager } from "../../singleton/VarManager"
 import { ElementFactory } from "../ElementFactory"
@@ -14,7 +16,8 @@ import { IElement } from "../IElement"
 import { Validate } from "../Validate"
 import { Method } from "./Method"
 
-const axios = Axios.create()
+// process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+
 // axios.interceptors.request.use(function (config) {
 //   // @ts-ignore
 //   const urlParams = config['urlParams']
@@ -98,6 +101,13 @@ export class Api implements IElement {
       this.proxy.logger.info(chalk.cyan.bold('‣', this.title), chalk.gray('-', `${this.method} ${this.url}`))
       console.group()
       this.time = Date.now()
+      const axios = Axios.create({
+        maxRedirects: Number.MAX_SAFE_INTEGER,
+        withCredentials: true,
+        httpAgent: new Agent(),
+        httpsAgent: new Agents(),
+
+      })
       let { status, statusText, headers: responseHeaders, data } = await axios.request({
         responseType: this.saveTo ? 'stream' : undefined,
         method,
@@ -106,7 +116,7 @@ export class Api implements IElement {
         urlParams: params,
         params: query,
         headers,
-        data: (() => {
+        data: await (async () => {
           if (body) {
             if (this.contentType?.includes('application/x-www-form-urlencoded')) {
               const data = new URLSearchParams()
@@ -121,7 +131,14 @@ export class Api implements IElement {
                 data.append(k, body[k])
               }
               merge(this.headers, data.getHeaders())
-              new ReaderProgressBar(data, 'Uploaded {value} bytes', new ProgressBar('Upload Progress || {value} bytes || Speed: {speed}'))
+              const progressBar = new ProgressBar('Upload Progress || {bar} | {percentage}% || {value}/{total} bytes || Speed: {speed}')
+              progressBar.total = await new Promise<number>((resolve) => {
+                data.getLength((err, len) => {
+                  if (err) return reject(err)
+                  resolve(len)
+                })
+              })
+              new ReaderProgressBar(data, 'Uploaded {value} bytes', progressBar)
               return data
             }
           }
@@ -129,16 +146,15 @@ export class Api implements IElement {
         })(),
       } as any)
       if (this.saveTo) {
-        const writer = createWriteStream(this.saveTo);
         new ReaderProgressBar(data, `Dowloaded {value} bytes`, new ProgressBar('Download Progress || {value} bytes || Speed: {speed}'))
-        data.pipe(writer);
-        data = await new Promise((resolve, reject) => {
-          writer.on('finish', () => {
-            this.proxy.logger.debug(chalk.magenta(`- Response saved at "${this.saveTo}"`))
-            resolve(new URL(this.saveTo, 'file://'))
-          })
+        await new Promise((resolve, reject) => {
+          const writer = createWriteStream(this.saveTo)
+          data.pipe(writer)
           writer.on('error', reject)
+          writer.on('close', resolve)
         })
+        this.proxy.logger.debug(chalk.magenta(`- Response saved at "${this.saveTo}"`))
+        data = new URL(this.saveTo, 'file://')
       }
       this.time = Date.now() - this.time
       this.response = {

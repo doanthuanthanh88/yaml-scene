@@ -3,6 +3,7 @@ import { ElementProxy } from "./ElementProxy";
 export interface IElement {
   // Proxy object which provides some utils functions (logger...)
   proxy?: ElementProxy<any>
+  async?: boolean
 
   // Init attribute from yaml to object
   init?(props: any)

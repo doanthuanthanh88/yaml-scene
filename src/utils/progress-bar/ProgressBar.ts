@@ -2,6 +2,10 @@ import { SingleBar } from 'cli-progress';
 import { IProgressBar } from './IProgressBar';
 
 export class ProgressBar implements IProgressBar {
+  // static GetSizeName(val: number) {
+  //   return ['Bytes', 'Kb', 'Mb', 'Gb', 'Tb'][Math.floor(Math.log2(val) / 10)]
+  // }
+
   isAutoListen: boolean
   bar: SingleBar
   isRunning = false
@@ -22,7 +26,16 @@ export class ProgressBar implements IProgressBar {
   start(total: number, startValue: number, payload?: any) {
     if (!this.isRunning) {
       this.bar.start(total, startValue, payload)
+      this.isRunning = true
     }
+  }
+
+  set total(total: number) {
+    this.bar.setTotal(total)
+  }
+
+  get total() {
+    return this.bar.getTotal()
   }
 
   get value() {

@@ -1,6 +1,10 @@
 {
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
+    "declaration": true,
+    "removeComments": true,
+    "sourceMap": true,
+    "resolveJsonModule": true,
     "allowJs": true,
     "rootDirs": [
       "src"
