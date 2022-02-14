@@ -1,5 +1,6 @@
 import { readFileSync } from 'fs'
 import { safeLoad } from 'js-yaml'
+import { homedir } from 'os'
 import { basename, dirname, join, resolve } from 'path'
 import { EventEmitter } from 'stream'
 import { ElementFactory } from '../elements/ElementFactory'
@@ -94,7 +95,7 @@ export class Scenario {
 
   resolvePath(path: string) {
     if (!path) return path
-    return path.startsWith('/') ? resolve(path) : join(this.rootDir, path)
+    return path.startsWith('~/') ? join(homedir(), path) : path.startsWith('/') ? resolve(path) : join(this.rootDir, path)
   }
 
   printLog() {

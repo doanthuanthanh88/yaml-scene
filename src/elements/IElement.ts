@@ -4,6 +4,7 @@ export interface IElement {
   // Proxy object which provides some utils functions (logger...)
   proxy?: ElementProxy<any>
   async?: boolean
+  delay?: number
 
   // Init attribute from yaml to object
   init?(props: any)

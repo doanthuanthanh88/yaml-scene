@@ -26,13 +26,13 @@ export class Pause {
 
   async exec() {
     if (this.time) {
-      await this.delay()
+      await this._delay()
     } else {
-      await this.pause()
+      await this._pause()
     }
   }
 
-  private async pause() {
+  private async _pause() {
     const ques = new QuestionBuilder()
       .type(QuestionType.CONFIRM)
       .title(chalk.yellow(this.title || 'Continue'))
@@ -44,7 +44,7 @@ export class Pause {
     }
   }
 
-  private delay() {
+  private _delay() {
     if (this.title) this.proxy.logger.info(this.title)
     return new Promise((r) => {
       const time = TimeUtils.GetMsTime(this.time)

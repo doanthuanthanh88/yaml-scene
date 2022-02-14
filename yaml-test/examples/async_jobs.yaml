@@ -1,0 +1,17 @@
+- Group:
+    title: Run async jobs
+    stepDelay: 2s
+    steps:
+      - Group:
+          async: true
+          delay: 1s
+          steps:
+            - Echo: Hello 1
+      - Group:
+          async: true
+          steps:
+            - Echo: Hello 2
+      - Group:
+          async: true
+          steps:
+            - Echo: Hello 3

@@ -1,14 +1,16 @@
 externalLibs:
-  - /Users/doanthuanthanh/code/github/yamlex/test/external-libs
+  - ~/code/github/runow/yaml-test/external-libs/custom.js
 vars:
   example: ABC
 steps:
   - Api#Summary: OK
+  - !fragment ./examples/async_jobs.yaml
+  # - !fragment ./examples/upload.yaml
   # - !fragment ./examples/extension-mongo/index.yaml
   # - !fragment ./examples/loop/index.yaml
   # - !fragment ./examples/delay-each-step/index.yaml
   # - !fragment ./examples/script/javascript.yaml
-  - !fragment ./examples/rest_api.yaml
+  # - !fragment ./examples/rest_api.yaml
   # - !fragment ./examples/write-file/index.yaml
   # - !fragment ./examples/read-file/index.yaml
   # - !fragment ./examples/get_user_input.yaml
@@ -28,12 +30,12 @@ steps:
 
 # - InputFile:
 #     title: Read task json
-#     path: /Users/doanthuanthanh/code/github/yamlex/.vscode/tasks.json
+#     path: ~/code/github/runow/.vscode/tasks.json
 #     var: rs
 # - OutputFile:
 #     title: Save to task 1
 #     content: ${rs}
-#     saveTo: /Users/doanthuanthanh/code/github/yamlex/.vscode/tasks1.json
+#     saveTo: ~/code/github/runow/.vscode/tasks1.json
 # - Echo: ${JSON.stringify(rs)}
 # - Echo: OK MEN 1
 # - Pause: 1s
@@ -70,7 +72,7 @@ steps:
 #     headers:
 #       content-type: application/json
 #     # body:
-#     #   file: !binary /Users/doanthuanthanh/code/github/yamlex/test/assets/data.csv
+#     #   file: !binary yaml-test/assets/data1.csv
 #     validate:
 #       - title: Test status
 #         chai: ${expect(_.status).to.equal(200)}
