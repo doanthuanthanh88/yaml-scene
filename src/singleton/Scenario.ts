@@ -95,7 +95,7 @@ export class Scenario {
 
   resolvePath(path: string) {
     if (!path) return path
-    return path.startsWith('~/') ? join(homedir(), path) : path.startsWith('/') ? resolve(path) : join(this.rootDir, path)
+    return path.startsWith('~/') ? path.replace(/^\~/, homedir()) : path.startsWith('/') ? resolve(path) : join(this.rootDir, path)
   }
 
   printLog() {

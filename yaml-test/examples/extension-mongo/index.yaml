@@ -3,7 +3,12 @@
 #     queries:
 #       - db.col('User').find()
 
-- ~/code/github/runow-extension/mongo#Mongo:
+- ~/code/github/yamlex-extension/mongo#Mongo:
     connection: mongodb://root:example@localhost/test
+    logLevel: debug
+    title: Test mongo local
     queries:
-      - db.col('User').find()
+      - title: Get list users
+        query: db.col('User').find()
+        var: rs
+- Echo: ${rs}

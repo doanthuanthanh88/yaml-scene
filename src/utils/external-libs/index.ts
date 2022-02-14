@@ -1,3 +1,4 @@
+import { Scenario } from "@app/singleton/Scenario";
 import chalk from "chalk";
 import { spawn } from "child_process";
 import { existsSync, readFileSync } from "fs";
@@ -31,7 +32,7 @@ export class ExternalLibs {
   }
 
   static async Setup(libDirs: string[]) {
-    await ExternalLibs.loadLibPaths(libDirs)
+    await ExternalLibs.loadLibPaths(libDirs?.map(dir => Scenario.Current.resolvePath(dir)))
   }
 
   private static async loadLibPaths(libDirs?: string[]) {
@@ -78,7 +79,7 @@ export class ExternalLibs {
         return modulePath;
       } catch { }
     }
-    modulePath = name
+    modulePath = Scenario.Current.resolvePath(name)
     try {
       require.resolve(modulePath);
       return modulePath;
