@@ -3,8 +3,9 @@ externalLibs:
 vars:
   example: ABC
 steps:
-  - Api#Summary: OK
-  - !fragment ./examples/async_jobs.yaml
+  # - Api#Summary: OK
+  - !fragment ./examples/document/doc_comment_guide.yaml
+  # - !fragment ./examples/async_jobs.yaml
   # - !fragment ./examples/upload.yaml
   # - !fragment ./examples/extension-mongo/index.yaml
   # - !fragment ./examples/loop/index.yaml

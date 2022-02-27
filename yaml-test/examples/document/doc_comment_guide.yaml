@@ -1,0 +1,6 @@
+- Doc#CommentGuide: 
+    includes: 
+      - /workspaces/runow/src
+    excludes: []
+    includePattern: ".+\\.ts$"
+    outFile: ../GUIDE.md
