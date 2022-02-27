@@ -1,0 +1,18 @@
+- Post:
+    url: https://file.io/
+    headers:
+      authority: file.io
+      user-agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.93 Safari/537.36
+      content-type: multipart/form-data
+      accept: application/json
+      cache-control: no-cache
+      x-requested-with: XMLHttpRequest
+      sec-ch-ua-platform: "macOS"
+      origin: https://www.file.io
+      sec-fetch-site: same-site
+      sec-fetch-mode: cors
+      sec-fetch-dest: empty
+      referer: https://www.file.io/
+      accept-language: vi-VN,vi;q=0.9,en-US;q=0.8,en;q=0.7,fr-FR;q=0.6,fr;q=0.5
+    body:
+      file: !binary /Users/doanthuanthanh/code/github/runow/yaml-test/examples/upload.yaml
