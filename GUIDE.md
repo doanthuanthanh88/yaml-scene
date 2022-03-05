@@ -23,6 +23,9 @@ It uses `aes-128-cbc` to encrypt content with a password.
 Refer to [ReadFile](.) to decrypt content|  
 | INPUT | --- |
 |[InputKeyboard](#InputKeyboard)| Get user input from keyboard|  
+| TAGS | --- |
+|[!fragment](#!fragment)| Load scenes from another file into current file|  
+|[!binary](#!binary)| Transform file to binary|  
 | --- | --- |
 |[Clear](#Clear)| Clear screen|  
 |[Echo](#Echo)| Print data to screen|  
@@ -408,6 +411,27 @@ Get user input from keyboard
       default: true
       var: submit
 ```
+## !fragment <a name="!fragment"></a>
+Load scenes from another file into current file
+```yaml
+- Group: 
+    steps:
+      - !fragment ./examples/scene_1.yaml
+      - Echo: Loaded scene 1 successfully
+
+      - !fragment ./examples/scene_2.yaml
+      - Echo: Loaded scene 2 successfully
+```
+## !binary <a name="!binary"></a>
+Transform file to binary
+```yaml
+- Post:
+    url: http://localhost/upload
+    headers:
+      content-type: multipart/form-data
+    body:
+      file: !binary ~/data.json
+```
 ## Clear <a name="Clear"></a>
 Clear screen
 ```yaml
@@ -417,7 +441,18 @@ Clear screen
 Print data to screen
 ```yaml
 - Echo: Hello world
-- Echo: ${msg}
+- Echo~green: Green text
+- Echo~blue: Blue text
+- Echo~red: Red text
+- Echo~yellow: Yellow text
+- Echo~cyan: Cyan text
+
+- Vars:
+    user:
+      name: thanh
+      lang: vi
+
+- Echo.schema: ${user}
 ```
 ## Group <a name="Group"></a>
 Group contains 1 or many elements

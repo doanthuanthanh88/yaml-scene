@@ -15,10 +15,11 @@ export class Helper {
       join(__dirname, "../package.json"),
       join(__dirname, "./package.json"),
     ].find((src) => existsSync(src));
-    const { version, description, name, repository } = require(packageJson);
+    const { version, description, name, bin, repository } = require(packageJson);
     const self = this
     const cmd = await program
       .name(name)
+      .aliases(Object.keys(bin).filter(e => e !== name))
       .description(description)
       .version(version, "-v, --version")
       .argument("<file>", "Scenario path or file", undefined, "index.yaml")

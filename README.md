@@ -18,4 +18,7 @@ Create scenes to do everything base on yaml file
 # How to create a yaml scene file
 Please follow [guideline document](./GUIDE.md) to create a scene file for your self.
 
+# Examples
+Please go to [here](./yaml-test/examples) to see examples
+
 Goodluck and fun :)
