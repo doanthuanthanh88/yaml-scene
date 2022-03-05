@@ -8,11 +8,11 @@ import { CommentParser } from './CommentParser';
 import { CommentScanner } from './CommentScanner';
 
 /**
- * Doc#CommentGuide
+ * Doc~CommentGuide
  * @group Doc
  * @description Auto scan file to detect the comment format which is generated to markdown document
  * @example
-- CommentGuide: 
+- Doc~CommentGuide: 
     includes: 
       - src
     excludes: []

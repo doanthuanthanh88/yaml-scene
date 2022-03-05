@@ -3,6 +3,22 @@ import { ElementFactory } from "../ElementFactory";
 import { ElementProxy } from "../ElementProxy";
 import { Group } from "../Group";
 
+/**
+ * Templates
+ * @description Declare elements which not `inited` or `run`  
+ * It's only used for `extends` or `inherit` purposes
+ * @example
+- Templates:
+    - Get:
+        ->: base    # Declare a template with name is "base"
+        baseURL: http://localhost
+
+- Get:
+    <-: base        # Extends "base" in template then add more information or overrided them before executing
+    url: /product/:id
+    params:
+      id: 1
+ */
 export class Templates {
   proxy: ElementProxy<Templates>
 

@@ -8,7 +8,7 @@
 
 - Echo: ${data}
 
-- ReadFile#xml:
+- ReadFile~xml:
     title: Read xml file 2 without password
     path: assets/data2.xml
     var: data

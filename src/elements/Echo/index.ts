@@ -1,6 +1,13 @@
 import { ElementProxy } from "../ElementProxy"
 import { IElement } from "../IElement"
 
+/**
+ * Echo
+ * @description Print data to screen
+ * @example
+- Echo: Hello world
+- Echo: ${msg}
+ */
 export class Echo implements IElement {
   proxy: ElementProxy<any>
 

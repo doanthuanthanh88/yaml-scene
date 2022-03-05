@@ -1,5 +1,17 @@
 import { ElementProxy } from "../ElementProxy"
 
+/**
+ * Vars
+ * @description Declare variables in scene
+ * @example
+- Vars:
+    userA:
+      name: thanh
+      age: 11
+
+- Echo: ${userA}
+- Echo: ${userA.name}
+ */
 export class Vars {
   proxy: ElementProxy<any>
 

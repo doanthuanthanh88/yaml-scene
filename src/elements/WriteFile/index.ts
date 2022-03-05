@@ -7,6 +7,113 @@ import { merge } from 'lodash';
 import { extname } from 'path';
 import { ElementProxy } from '../ElementProxy';
 
+/**
+ * WriteFile
+ * @description Write content to a file  
+ * It uses `aes-128-cbc` to encrypt content with a password.  
+ * Refer to [ReadFile](.) to decrypt content
+ * @group File
+ * @example
+### Text file
+- WriteFile:
+    title: Write text file with password
+    encrypt:
+      password: thanh123
+    path: assets/data1.txt
+    content: |
+      Hello world
+
+- WriteFile:
+    title: Write text file without password
+    path: assets/data2.txt
+    content: |
+      Hello world
+
+### CSV File
+
+- WriteFile~csv:
+    title: Write csv file 1 with password
+    path: assets/data1.csv
+    encrypt:
+      password: thanh123
+    content:
+      - name: name 1
+        age: 1
+      - name: name 2
+        age: 3
+
+- WriteFile~csv:
+    title: Write csv file 2 without password
+    path: assets/data2.csv
+    content:
+      - [name, age]
+      - [name01, 1]
+      - [name02, 2]
+
+### JSON File
+
+- WriteFile~json:
+    title: Write json file 1 with password
+    encrypt:
+      password: thanh123
+    path: assets/data1.json
+    content:
+      - name: name 1
+        age: 1
+      - name: name 2
+        age: 3
+
+- WriteFile~json:
+    title: Write json file 2 without password
+    path: assets/data2.json
+    content:
+      - [name, age]
+      - [name01, 1]
+      - [name02, 2]
+
+### XML File
+
+- WriteFile~xml:
+    title: Write xml file 1 with password
+    encrypt:
+      password: thanh123
+    path: assets/data1.xml
+    content:
+      - name: name 1
+        age: 1
+      - name: name 2
+        age: 3
+
+- WriteFile~xml:
+    title: Write xml file 2 without password
+    path: assets/data2.xml
+    content:
+      name: name 1
+      age: 1
+      class: 01
+
+### YAML File
+
+- WriteFile~yaml:
+    title: Write yaml file 1 with password
+    encrypt:
+      password: thanh123
+    path: assets/data1.yaml
+    content:
+      - name: name 1
+        age: 1
+      - name: name 2
+        age: 3
+
+- WriteFile~yaml:
+    title: Write yaml file 2 without password
+    path: assets/data2.yaml
+    content:
+      - [name, age]
+      - [name01, 1]
+      - [name02, 2]
+
+ */
 export class WriteFile {
   proxy: ElementProxy<WriteFile>
 

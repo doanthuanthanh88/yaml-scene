@@ -2,6 +2,14 @@ import chalk from "chalk"
 import { merge } from "lodash"
 import { ElementProxy } from "../ElementProxy"
 
+/**
+ * Api~Summary
+ * @description Summary after all of apis in scene executed done.
+ * @group Api
+ * @example
+- Api~Summary:
+    title: Testing result
+ */
 export class Summary {
   proxy: ElementProxy<Summary>
 

@@ -15,4 +15,4 @@
       referer: https://www.file.io/
       accept-language: vi-VN,vi;q=0.9,en-US;q=0.8,en;q=0.7,fr-FR;q=0.6,fr;q=0.5
     body:
-      file: !binary /Users/doanthuanthanh/code/github/runow/yaml-test/examples/upload.yaml
+      file: !binary ~/code/github/yaml-scene/yaml-test/examples/upload.yaml

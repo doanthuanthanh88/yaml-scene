@@ -1,9 +1,9 @@
 externalLibs:
-  - ~/code/github/runow/yaml-test/external-libs/custom.js
+  - ~/code/github/yaml-scene/yaml-test/external-libs/custom.js
 vars:
   example: ABC
 steps:
-  # - Api#Summary: OK
+  # - Api~Summary: OK
   - !fragment ./examples/document/doc_comment_guide.yaml
   # - !fragment ./examples/async_jobs.yaml
   # - !fragment ./examples/upload.yaml
@@ -17,9 +17,9 @@ steps:
   # - !fragment ./examples/get_user_input.yaml
   # - Vars:
   #     url: https://fastlane.rubiconproject.com
-  # - custom#echo1:
+  # - custom~echo1:
   #     title: echo title 1
-# - custom#echo2:
+# - custom~echo2:
 #     title: echo title 2
 # - Api.Summary:
 #     title: Result
@@ -31,12 +31,12 @@ steps:
 
 # - InputFile:
 #     title: Read task json
-#     path: ~/code/github/runow/.vscode/tasks.json
+#     path: ~/code/github/yaml-scene/.vscode/tasks.json
 #     var: rs
 # - OutputFile:
 #     title: Save to task 1
 #     content: ${rs}
-#     saveTo: ~/code/github/runow/.vscode/tasks1.json
+#     saveTo: ~/code/github/yaml-scene/.vscode/tasks1.json
 # - Echo: ${JSON.stringify(rs)}
 # - Echo: OK MEN 1
 # - Pause: 1s

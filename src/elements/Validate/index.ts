@@ -3,6 +3,18 @@ import chalk from "chalk"
 import { merge } from 'lodash'
 import { ElementProxy } from '../ElementProxy'
 
+/**
+ * Validate
+ * @description Validate data in running progress  
+ * Currently only support chai `https://www.chaijs.com`
+ * @example
+- Validate:
+    title: Validate number
+    chai: ${expect(10).to.equal(200)}
+- Validate:
+    title: Test response
+    chai: ${expect(userInfo).to.have.property('display_name')}
+ */
 export class Validate {
   proxy: ElementProxy<Validate>
 

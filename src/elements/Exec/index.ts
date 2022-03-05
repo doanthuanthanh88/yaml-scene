@@ -4,6 +4,18 @@ import { merge } from 'lodash';
 import { ElementProxy } from '../ElementProxy';
 import { IElement } from '../IElement';
 
+/**
+ * Exec
+ * @group External
+ * @description Execute external command
+ * @example
+- Exec:
+    title: Show yarn global directories
+    args:
+      - yarn
+      - global
+      - dir
+ */
 export class Exec implements IElement {
   proxy: ElementProxy<Exec>
 

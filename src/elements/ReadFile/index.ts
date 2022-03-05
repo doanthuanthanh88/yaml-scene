@@ -7,6 +7,83 @@ import { merge } from 'lodash';
 import { extname } from 'path';
 import { ElementProxy } from '../ElementProxy';
 
+/**
+ * ReadFile
+ * @description Read a file then set content to a variable  
+ * It uses `aes-128-cbc` to decrypt content with a password.  
+ * Refer to [WriteFile](.) to encrypt content
+ * @group File
+ * @example
+### Text file
+- ReadFile:
+    title: Read text file 1 with password
+    path: assets/data1.txt
+    decrypt:
+      password: thanh123
+    var: data
+
+- ReadFile:
+    title: Read text file 2 without password
+    path: assets/data2.txt
+    var: data
+
+### CSV File
+
+- ReadFile~csv:
+    title: Read csv file 1 with password
+    decrypt:
+      password: thanh123
+    path: assets/data1.csv
+    var: data
+
+- ReadFile~csv:
+    title: Read csv file 2 without password
+    path: assets/data2.csv
+    var: data
+
+### JSON File
+
+- ReadFile~json:
+    title: Read json file 1 with password
+    path: assets/data1.json
+    decrypt:
+      password: thanh123
+    var: data
+
+- ReadFile~json:
+    title: Read json file 2 without password
+    path: assets/data2.json
+    var: data
+
+### XML file
+
+- ReadFile~xml:
+    title: Read xml file 1 with password
+    path: assets/data1.xml
+    decrypt:
+      password: thanh123
+    var: data
+
+- ReadFile~xml:
+    title: Read xml file 2 without password
+    path: assets/data2.xml
+    var: data
+
+### YAML file
+
+- ReadFile~yaml:
+    title: Read yaml file 1 with password
+    path: assets/data1.yaml
+    decrypt:
+      password: thanh123
+    var: data
+
+- ReadFile~yaml:
+    title: Read yaml file 2 without password
+    path: assets/data2.yaml
+    var: data
+
+ */
 export class ReadFile {
   proxy: ElementProxy<ReadFile>
 

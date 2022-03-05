@@ -5,6 +5,28 @@ import { ElementFactory } from "../ElementFactory";
 import { ElementProxy } from "../ElementProxy";
 import { IElement } from "../IElement";
 
+/**
+ * Group
+ * @description Group contains 1 or many elements
+ * @example
+- Group:
+    title: Run async jobs
+    stepDelay: 2s
+    steps:
+      - Group:
+          async: true
+          delay: 1s
+          steps:
+            - Echo: Hello 1
+      - Group:
+          async: true
+          steps:
+            - Echo: Hello 2
+      - Group:
+          async: true
+          steps:
+            - Echo: Hello 3
+ */
 export class Group implements IElement {
   proxy: ElementProxy<Group>
   title: string

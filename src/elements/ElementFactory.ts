@@ -4,8 +4,11 @@ import { ElementProxy } from "./ElementProxy"
 import { IElement } from './IElement'
 
 export class ElementFactory {
+  // Doc~CommentGuide
+  private static readonly CHAR_SPLIT_FOLDER_CLASS = '~'
+
   static CreateElement<T extends IElement>(names: string) {
-    let [folder, name] = names.split('#')
+    let [folder, name] = names.split(ElementFactory.CHAR_SPLIT_FOLDER_CLASS)
     if (!name) {
       name = folder
       folder = ''

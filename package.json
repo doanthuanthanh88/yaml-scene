@@ -1,5 +1,5 @@
 {
-  "name": "runow",
+  "name": "yaml-scene",
   "version": "1.0.0",
   "description": "Do everything with yaml scenario file",
   "keywords": [
@@ -13,14 +13,16 @@
   ],
   "main": "src",
   "bin": {
-    "runow": "./bin/cli.js"
+    "yas": "./bin/cli.js"
   },
   "scripts": {
     "pub": "npm publish",
+    "dev1": "npx nodemon --watch src --watch test --ext .ts --exec 'node -r ts-node/register -r ./bin/tsconfig-paths-bootstrap.js --inspect-brk src/elements/Doc/index.ts'",
     "dev": "npx nodemon --watch src --watch test --ext .ts --exec 'node -r ts-node/register -r ./bin/tsconfig-paths-bootstrap.js --inspect-brk src/index.ts -e 'YOUTUBEURL=https://www.youtube.com/watch?v=D7r_Wuwf47I' --env-file 'yaml-test/.env' yaml-test/index.yaml'",
-    "start": "npx nodemon --watch src --watch test --ext .ts --exec 'node -r ts-node/register -r ./bin/tsconfig-paths-bootstrap.js src/index.ts --env-file 'yaml-test/.env' yaml-test/index.yaml'",
+    "start": "npx nodemon --watch src --watch test --ext .ts --exec 'node -r ts-node/register -r ./bin/tsconfig-paths-bootstrap.js src/index.ts --env-file 'yaml-test/.env' /Users/doanthuanthanh/code/github/yaml-scene/yaml-test/examples/download_youtube.yaml'",
     "test": "jest",
-    "build:test": "yarn build && yarn global upgrade runow",
+    "jsdoc": "npx jsdoc -c conf.json",
+    "build:test": "yarn build && yarn global upgrade yaml-scene",
     "build": "yarn clean && yarn build:only",
     "build1": "yarn clean && yarn build:only && node bin/expose_example.js",
     "build:only": "tsc --project tsconfig.build.json && yarn build:resolve-module",
@@ -74,10 +76,10 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/doanthuanthanh88/runow"
+    "url": "https://github.com/doanthuanthanh88/yaml-scene"
   },
   "bugs": {
-    "url": "https://github.com/doanthuanthanh88/runow/issues",
+    "url": "https://github.com/doanthuanthanh88/yaml-scene/issues",
     "email": "doanthuanthanh88@gmail.com"
   }
 }

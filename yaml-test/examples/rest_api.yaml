@@ -1,4 +1,4 @@
-- Api#Summary:
+- Api~Summary:
     title: Result
 
 - Vars:
@@ -36,7 +36,7 @@
     headers:
       content-type: application/json
     # body:
-    #   file: !binary /Users/doanthuanthanh/code/github/runow/test/assets/data.csv
+    #   file: !binary ~/code/github/yaml-scene/test/assets/data.csv
     var:
       status: ${_.response.status}
     validate:

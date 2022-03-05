@@ -1,5 +1,11 @@
 import { IElement } from "../IElement"
 
+/**
+ * Clear
+ * @description Clear screen
+ * @example
+ - Clear:
+ */
 export class Clear implements IElement {
 
   exec() {

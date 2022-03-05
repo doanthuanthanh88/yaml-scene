@@ -8,7 +8,7 @@
 
 - Echo: ${data}
 
-- ReadFile#yaml:
+- ReadFile~yaml:
     title: Read yaml file 2 without password
     path: assets/data2.yaml
     var: data

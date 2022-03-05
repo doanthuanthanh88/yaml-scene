@@ -1,6 +1,6 @@
-- Doc#CommentGuide: 
+- Doc~CommentGuide: 
     includes: 
-      - /workspaces/runow/src
+      - /workspaces/yaml-scene/src
     excludes: []
     includePattern: ".+\\.ts$"
     outFile: ../GUIDE.md

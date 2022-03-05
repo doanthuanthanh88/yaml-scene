@@ -4,7 +4,7 @@ export class CommentInfo implements DataModel {
   name: string;
   description?: string;
   example?: string;
-  group?: string;
+  group: string;
   order?: number;
 
   _current = 'name';

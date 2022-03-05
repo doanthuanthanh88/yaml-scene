@@ -10,7 +10,7 @@
       - name: name 2
         age: 3
 
-- WriteFile#xml:
+- WriteFile~xml:
     title: Write xml file 2 without password
     path: assets/data2.xml
     content:

@@ -2,7 +2,7 @@
     title: Delay all of steps in a group
     stepDelay: 1s
     steps:
-      - Script#js: |
+      - Script~js: |
           _.proxy.setVar('begin', Date.now())
       - Echo: ${Date.now() - begin}
       - Echo: ${Date.now() - begin}
