@@ -1,6 +1,6 @@
 {
   "name": "yaml-scene",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "Do everything with yaml scenario file",
   "keywords": [
     "tool",
@@ -17,20 +17,15 @@
     "yaml-scene": "./bin/cli.js"
   },
   "scripts": {
-    "pub": "npm publish",
-    "dev1": "npx nodemon --watch src --watch test --ext .ts --exec 'node -r ts-node/register -r ./bin/tsconfig-paths-bootstrap.js --inspect-brk src/elements/Doc/index.ts'",
-    "dev": "npx nodemon --watch src --watch test --ext .ts --exec 'node -r ts-node/register -r ./bin/tsconfig-paths-bootstrap.js --inspect-brk src/index.ts -e 'YOUTUBEURL=https://www.youtube.com/watch?v=D7r_Wuwf47I' --env-file 'yaml-test/.env' yaml-test/index.yaml'",
-    "start": "npx nodemon --watch src --watch test --ext .ts --exec 'node -r ts-node/register -r ./bin/tsconfig-paths-bootstrap.js src/index.ts --env-file 'yaml-test/.env' /Users/doanthuanthanh/code/github/yaml-scene/yaml-test/examples/download_youtube.yaml'",
+    "prepare": "npm run build",
+    "dev": "npx nodemon --watch src --watch test --ext .ts --exec 'node -r ts-node/register -r ./bin/tsconfig-paths-bootstrap.js --inspect-brk src/index.ts --env-file 'yaml-test/.env' yaml-test/index.yaml'",
+    "start": "npx nodemon --watch src --watch test --ext .ts --exec 'node -r ts-node/register -r ./bin/tsconfig-paths-bootstrap.js src/index.ts --env-file 'yaml-test/.env' /yaml-test/examples/download_youtube.yaml'",
     "test": "jest",
     "doc": "node -r ts-node/register -r ./bin/tsconfig-paths-bootstrap.js src/index.ts 'yaml-test/examples/document/doc_comment_guide.yaml'",
-    "build:test": "yarn build && yarn global upgrade yaml-scene",
-    "build": "yarn clean && yarn build:only",
-    "build1": "yarn clean && yarn build:only && node bin/expose_example.js",
+    "build": "npm run clean && npm run build:only",
     "build:only": "tsc --project tsconfig.build.json && yarn build:resolve-module",
     "build:resolve-module": "node bin/tsconfig",
-    "clean": "rm -rf dist",
-    "docker:build": "docker build -t doanthuanthanh88/testapi6 .",
-    "docker:pub": "docker buildx build --platform linux/arm64,linux/amd64 -t doanthuanthanh88/testapi6 . --push && docker pull doanthuanthanh88/testapi6"
+    "clean": "rm -rf dist"
   },
   "dependencies": {
     "axios": "^0.24.0",
