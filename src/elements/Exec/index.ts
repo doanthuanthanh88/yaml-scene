@@ -35,7 +35,9 @@ export class Exec implements IElement {
   }
 
   prepare() {
-    this.title = this.proxy.getVar(this.title)
+    if (this.title) this.title = this.proxy.getVar(this.title)
+    if (!this.args) this.args = []
+    this.args = this.proxy.getVar(this.args)
   }
 
   exec() {

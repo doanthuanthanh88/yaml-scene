@@ -1,0 +1,18 @@
+- Vars:
+    name: 'thanh'
+
+- Script~sh: |
+    echo '${name}'
+    yarn global dir
+
+- Script~sh:
+    args:
+      - sh
+      - ${_.file}
+      - arg1
+      - arg2
+    content: |
+      echo ${_.file}
+      echo ${name}
+      echo $1
+      echo $2

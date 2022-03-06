@@ -31,6 +31,7 @@ Refer to [ReadFile](.) to decrypt content|
 |[Echo](#Echo)| Print data to screen|  
 |[Group](#Group)| Group contains 1 or many elements|  
 |[Script~js](#Script~js)| Embed javascript code into scene|  
+|[Script~sh](#Script~sh)| Embed shell script into scene|  
 |[Templates](#Templates)| Declare elements which not `inited` or `run`  
 It's only used for `extends` or `inherit` purposes|  
 |[Validate](#Validate)| Validate data in running progress  
@@ -486,6 +487,30 @@ Embed javascript code into scene
     _.proxy.setVar('newName', name + 10)
 
 - Echo: New value ${newName}
+```
+## Script~sh <a name="Script~sh"></a>
+Embed shell script into scene
+```yaml
+- Vars:
+    name: 'thanh'
+
+### Short
+- Script~sh: |
+    echo '${name}'
+    yarn global dir
+
+### Full
+- Script~sh:
+    args:
+      - sh          # Specific path to sh or bash binary
+      - ${_.file}   # This content will be writed to this path then execute it
+      - arg1
+      - arg2
+    content: |
+      echo ${_.file}
+      echo ${name}
+      echo $1
+      echo $2
 ```
 ## Templates <a name="Templates"></a>
 Declare elements which not `inited` or `run`  
