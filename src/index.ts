@@ -10,7 +10,7 @@ export class Main {
     this.helper.loadEnv(VarManager.Instance.vars, Scenario.Current.resolvePath(this.helper.envFile), process.env, this.helper.env)
   }
 
-  static async exec() {
+  static async Exec() {
 
     await this.helper.exec()
 
@@ -29,10 +29,4 @@ export class Main {
   }
 }
 
-Main.exec()
-
-// (async () => {
-//   await Main.exec()
-// })()
-
-// setTimeout(() => this.exec(), 2000)
+Main.Exec()
