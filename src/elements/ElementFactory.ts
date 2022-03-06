@@ -1,4 +1,4 @@
-import { ExternalLibs } from "@app/utils/external-libs"
+import { Extensions } from "@app/utils/extensions"
 import { cloneDeep } from "lodash"
 import { ElementProxy } from "./ElementProxy"
 import { IElement } from './IElement'
@@ -20,7 +20,7 @@ export class ElementFactory {
       if (!Clazz) throw new Error(`Could not found "${folder}${name}"`)
     } catch (err1) {
       try {
-        const Clazzes = ExternalLibs.loadExternalLib(`${folder}`)
+        const Clazzes = Extensions.Load(`${folder}`)
         Clazz = Clazzes[name]
         if (!Clazz) throw err1
       } catch (err2) {

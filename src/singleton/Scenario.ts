@@ -7,7 +7,7 @@ import { ElementFactory } from '../elements/ElementFactory'
 import { ElementProxy } from '../elements/ElementProxy'
 import { Group } from '../elements/Group'
 import { SCHEMA } from '../tags'
-import { ExternalLibs } from '../utils/external-libs'
+import { Extensions } from '../utils/extensions'
 import { VarManager } from './VarManager'
 
 /**
@@ -18,8 +18,8 @@ import { VarManager } from './VarManager'
  * @example
 title: Scene name                 # Scene name
 description: Scene description    # Scene description
-externalLibs:                     # External elements
-  - ~/code/github/yaml-scene/yaml-test/external-libs/custom.js
+extensions:                     # Extension elements
+  - ~/code/github/yaml-scene/yaml-test/extensions/custom.js
 vars:                             # Declare global variables, which can be replaced by env
   url: http://localhost:3000
   token: ...
@@ -87,14 +87,14 @@ export class Scenario {
       }
     }
 
-    const { externalLibs, vars, ...scenarioProps } = scenario
+    const { extensions, vars, ...scenarioProps } = scenario
 
     this.title = scenarioProps.title
     this.description = scenarioProps.description
 
-    // Load external librarries
-    if (externalLibs) {
-      await ExternalLibs.Setup(Array.isArray(externalLibs) ? externalLibs : [externalLibs])
+    // Load extensions
+    if (extensions) {
+      await Extensions.Setup(Array.isArray(extensions) ? extensions : [extensions])
     }
     // Load global variables which is overrided by env variables
     if (vars) {
