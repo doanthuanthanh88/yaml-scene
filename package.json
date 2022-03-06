@@ -23,8 +23,9 @@
     "test": "jest",
     "doc": "node -r ts-node/register -r ./bin/tsconfig-paths-bootstrap.js src/index.ts 'yaml-test/examples/document/doc_comment_guide.yaml'",
     "build": "npm run clean && npm run build:only",
-    "build:only": "tsc --project tsconfig.build.json && yarn build:resolve-module",
+    "build:only": "tsc --project tsconfig.build.json && npm run build:resolve-module && npm run build:resolve-package",
     "build:resolve-module": "node bin/tsconfig",
+    "build:resolve-package": "node bin/update_package",
     "clean": "rm -rf dist"
   },
   "dependencies": {
