@@ -38,9 +38,30 @@ It's only used for `extends` or `inherit` purposes|
 Currently only support chai `https://www.chaijs.com`|  
 |[Vars](#Vars)| Declare variables in scene|  
   
+# Standard Scenario file
+*A standard scenario file*  
+```yaml  
+title: Scene name                 # Scene name
+description: Scene description    # Scene description
+externalLibs:                     # External elements
+  - ~/code/github/yaml-scene/yaml-test/external-libs/custom.js
+vars:                             # Declare global variables, which can be replaced by env
+  url: http://localhost:3000
+  token: ...
+steps:                            # Includes all which you want to do
+  - !fragment ./scene1.yaml
+  - !fragment ./scene2.yaml
+```
+# Simple Scenario file
+*A simple scenario file*  
+```yaml  
+- !fragment ./scene1.yaml
+- !fragment ./scene2.yaml
+```
+  
 # Details
 ## Post <a name="Post"></a>
-Send a Post request via http
+Send a Post request via http  
 ```yaml
 - Post:
     title: Create a new product
@@ -55,7 +76,7 @@ Send a Post request via http
     var: newProduct
 ```
 ## Patch <a name="Patch"></a>
-Send a Patch request via http
+Send a Patch request via http  
 ```yaml
 - Patch:
     title: Update product name
@@ -70,7 +91,7 @@ Send a Patch request via http
         chai: ${expect(_.response.status).to.equal(204)}
 ```
 ## Put <a name="Put"></a>
-Send a Put request via http
+Send a Put request via http  
 ```yaml
 - Put:
     title: Update product
@@ -87,7 +108,7 @@ Send a Put request via http
     var: updatedProduct
 ```
 ## Get <a name="Get"></a>
-Send a GET request via http
+Send a GET request via http  
 ```yaml
 - Get:
     title: Get product details
@@ -100,7 +121,7 @@ Send a GET request via http
         chai: ${expect(_.response.status).to.equal(200)}
 ```
 ## Delete <a name="Delete"></a>
-Send a DELETE request via http
+Send a DELETE request via http  
 ```yaml
 - Delete:
     title: Delete a product
@@ -113,7 +134,7 @@ Send a DELETE request via http
         chai: ${expect(_.response.status).to.equal(200)}
 ```
 ## Head <a name="Head"></a>
-Send a Head request via http
+Send a Head request via http  
 ```yaml
 - Head:
     title: Ping a product
@@ -126,13 +147,13 @@ Send a Head request via http
         chai: ${expect(_.response.status).to.equal(204)}
 ```
 ## Api~Summary <a name="Api~Summary"></a>
-Summary after all of apis in scene executed done.
+Summary after all of apis in scene executed done.  
 ```yaml
 - Api~Summary:
     title: Testing result
 ```
 ## Doc~CommentGuide <a name="Doc~CommentGuide"></a>
-Auto scan file to detect the comment format which is generated to markdown document
+Auto scan file to detect the comment format which is generated to markdown document  
 ```yaml
 - Doc~CommentGuide: 
     includes: 
@@ -142,7 +163,7 @@ Auto scan file to detect the comment format which is generated to markdown docum
     outFile: /tmp/doc.md
 ```
 ## Exec <a name="Exec"></a>
-Execute external command
+Execute external command  
 ```yaml
 - Exec:
     title: Show yarn global directories
@@ -154,7 +175,7 @@ Execute external command
 ## ReadFile <a name="ReadFile"></a>
 Read a file then set content to a variable  
 It uses `aes-128-cbc` to decrypt content with a password.  
-Refer to [WriteFile](.) to encrypt content
+Refer to [WriteFile](.) to encrypt content  
 ```yaml
 ### Text file
 - ReadFile:
@@ -229,7 +250,7 @@ Refer to [WriteFile](.) to encrypt content
 ## WriteFile <a name="WriteFile"></a>
 Write content to a file  
 It uses `aes-128-cbc` to encrypt content with a password.  
-Refer to [ReadFile](.) to decrypt content
+Refer to [ReadFile](.) to decrypt content  
 ```yaml
 ### Text file
 - WriteFile:
@@ -332,7 +353,7 @@ Refer to [ReadFile](.) to decrypt content
 
 ```
 ## InputKeyboard <a name="InputKeyboard"></a>
-Get user input from keyboard
+Get user input from keyboard  
 ```yaml
 - InputKeyboard:
     - title: Enter your name
@@ -413,7 +434,7 @@ Get user input from keyboard
       var: submit
 ```
 ## !fragment <a name="!fragment"></a>
-Load scenes from another file into current file
+Load scenes from another file into current file  
 ```yaml
 - Group: 
     steps:
@@ -424,7 +445,7 @@ Load scenes from another file into current file
       - Echo: Loaded scene 2 successfully
 ```
 ## !binary <a name="!binary"></a>
-Transform file to binary
+Transform file to binary  
 ```yaml
 - Post:
     url: http://localhost/upload
@@ -434,12 +455,12 @@ Transform file to binary
       file: !binary ~/data.json
 ```
 ## Clear <a name="Clear"></a>
-Clear screen
+Clear screen  
 ```yaml
  - Clear:
 ```
 ## Echo <a name="Echo"></a>
-Print data to screen
+Print data to screen  
 ```yaml
 - Echo: Hello world
 - Echo~green: Green text
@@ -456,7 +477,7 @@ Print data to screen
 - Echo.schema: ${user}
 ```
 ## Group <a name="Group"></a>
-Group contains 1 or many elements
+Group contains 1 or many elements  
 ```yaml
 - Group:
     title: Run async jobs
@@ -477,7 +498,7 @@ Group contains 1 or many elements
             - Echo: Hello 3
 ```
 ## Script~js <a name="Script~js"></a>
-Embed javascript code into scene
+Embed javascript code into scene  
 ```yaml
 - Vars:
     name: 10
@@ -489,7 +510,7 @@ Embed javascript code into scene
 - Echo: New value ${newName}
 ```
 ## Script~sh <a name="Script~sh"></a>
-Embed shell script into scene
+Embed shell script into scene  
 ```yaml
 - Vars:
     name: 'thanh'
@@ -514,7 +535,7 @@ Embed shell script into scene
 ```
 ## Templates <a name="Templates"></a>
 Declare elements which not `inited` or `run`  
-It's only used for `extends` or `inherit` purposes
+It's only used for `extends` or `inherit` purposes  
 ```yaml
 - Templates:
     - Get:
@@ -529,7 +550,7 @@ It's only used for `extends` or `inherit` purposes
 ```
 ## Validate <a name="Validate"></a>
 Validate data in running progress  
-Currently only support chai `https://www.chaijs.com`
+Currently only support chai `https://www.chaijs.com`  
 ```yaml
 - Validate:
     title: Validate number
@@ -539,7 +560,7 @@ Currently only support chai `https://www.chaijs.com`
     chai: ${expect(userInfo).to.have.property('display_name')}
 ```
 ## Vars <a name="Vars"></a>
-Declare variables in scene
+Declare variables in scene  
 ```yaml
 - Vars:
     userA:

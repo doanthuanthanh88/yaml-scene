@@ -6,6 +6,7 @@ export class CommentInfo implements DataModel {
   example?: string;
   group: string;
   order?: number;
+  h1?: number
 
   _current = 'name';
 
@@ -14,6 +15,9 @@ export class CommentInfo implements DataModel {
     if (m) {
       if (m[2]) {
         this._current = m[2];
+        if (this._current === 'h1') {
+          this.h1 = +this._current || 1
+        }
       }
       if (!this[this._current]) {
         this[this._current] = '';

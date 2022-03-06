@@ -10,6 +10,34 @@ import { SCHEMA } from '../tags'
 import { ExternalLibs } from '../utils/external-libs'
 import { VarManager } from './VarManager'
 
+/**
+ * Standard Scenario file
+ * @h1
+ * @order 1
+ * @description A standard scenario file
+ * @example
+title: Scene name                 # Scene name
+description: Scene description    # Scene description
+externalLibs:                     # External elements
+  - ~/code/github/yaml-scene/yaml-test/external-libs/custom.js
+vars:                             # Declare global variables, which can be replaced by env
+  url: http://localhost:3000
+  token: ...
+steps:                            # Includes all which you want to do
+  - !fragment ./scene1.yaml
+  - !fragment ./scene2.yaml
+ */
+
+/**
+ * Simple Scenario file
+ * @h1
+ * @order 2
+ * @description A simple scenario file
+ * @example
+- !fragment ./scene1.yaml
+- !fragment ./scene2.yaml
+ */
+
 export class Scenario {
   private static _Instance: Scenario
 
@@ -18,6 +46,8 @@ export class Scenario {
   }
 
   events: EventEmitter
+  title?: string
+  description?: string
 
   private rootDir: string
   private rootGroup: ElementProxy<Group>
@@ -58,6 +88,10 @@ export class Scenario {
     }
 
     const { externalLibs, vars, ...scenarioProps } = scenario
+
+    this.title = scenarioProps.title
+    this.description = scenarioProps.description
+
     // Load external librarries
     if (externalLibs) {
       await ExternalLibs.Setup(Array.isArray(externalLibs) ? externalLibs : [externalLibs])
@@ -69,7 +103,7 @@ export class Scenario {
     }
     // Load Scenario
     if (Array.isArray(scenarioProps)) {
-      this.rootGroup.init({ steps: scenarioProps })
+      this.rootGroup.init({ steps: scenarioProps, title: this.title, description: this.description })
     } else {
       this.rootGroup.init(scenarioProps)
     }
