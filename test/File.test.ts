@@ -1,6 +1,7 @@
-import { ElementFactory } from "@app/elements/ElementFactory"
+import { Simulator } from "@app/Simulator"
 import { VarManager } from "@app/singleton/VarManager"
 import { existsSync, unlinkSync } from "fs"
+import { tmpdir } from "os"
 import { join } from "path"
 
 describe.each([
@@ -10,80 +11,58 @@ describe.each([
   { type: 'yaml', filename: 'data.yaml', data: { "say": "hello world" } },
   { type: 'xml', filename: 'data.xml', data: { "say": "hello world" } },
 ])('Test to "ReadFile" and "WriteFile"', ({ type, filename, data }) => {
-  const path = join(__dirname, filename)
+  const path = join(tmpdir(), filename)
 
   afterAll(() => {
     unlinkSync(path)
   })
 
   test(`Write a ${type} file`, async () => {
-    const elem = ElementFactory.CreateElement('WriteFile')
-    elem.init({
-      path,
-      type,
-      content: data
-    })
-    try {
-      await elem.prepare()
-      await elem.exec()
-      expect(existsSync(path)).toBe(true)
-    } finally {
-      await elem.dispose()
-    }
+    await Simulator.Run(`
+- Vars:
+    data: ${JSON.stringify(data)}
+- WriteFile:
+    path: ${path}
+    type: ${type}
+    content: \${data}
+`)
+    expect(existsSync(path)).toBe(true)
   })
 
   test(`Read a ${type} file`, async () => {
-    const elem = ElementFactory.CreateElement('ReadFile')
-    elem.init({
-      path,
-      type,
-      var: 'content'
-    })
-    try {
-      await elem.prepare()
-      await elem.exec()
-      expect(VarManager.Instance.globalVars.content).toStrictEqual(data)
-    } finally {
-      await elem.dispose()
-    }
+    await Simulator.Run(`
+- ReadFile:
+    path: ${path}
+    type: ${type}
+    var: content
+`)
+    expect(VarManager.Instance.vars.content).toStrictEqual(data)
   })
 
   test(`Write a ${type} file with password`, async () => {
-    const elem = ElementFactory.CreateElement('WriteFile')
-    elem.init({
-      path,
-      type,
-      encrypt: {
-        password: 'thanh123'
-      },
-      content: data
-    })
-    try {
-      await elem.prepare()
-      await elem.exec()
-      expect(existsSync(path)).toBe(true)
-    } finally {
-      await elem.dispose()
-    }
+    await Simulator.Run(`
+- Vars:
+    data: ${JSON.stringify(data)}
+- WriteFile:
+    path: ${path}
+    type: ${type}
+    content: \${data}
+    encrypt:
+      password: thanh123
+`)
+    expect(existsSync(path)).toBe(true)
   })
 
-  test(`Read a ${type} file`, async () => {
-    const elem = ElementFactory.CreateElement('ReadFile')
-    elem.init({
-      path,
-      type,
-      decrypt: {
-        password: 'thanh123'
-      },
-      var: 'content'
-    })
-    try {
-      await elem.prepare()
-      await elem.exec()
-      expect(VarManager.Instance.globalVars.content).toStrictEqual(data)
-    } finally {
-      await elem.dispose()
-    }
+  test(`Read a ${type} file with password`, async () => {
+    await Simulator.Run(`
+- ReadFile:
+    path: ${path}
+    type: ${type}
+    var: content
+    decrypt:
+      password: thanh123
+`)
+    expect(VarManager.Instance.vars.content).toStrictEqual(data)
   })
 
 })

@@ -1,13 +1,16 @@
 import { existsSync, unlinkSync, writeFileSync } from "fs";
 import { merge } from "lodash";
+import { setDefaultLevel } from "loglevel";
 import { tmpdir } from "os";
 import { join } from "path";
 import { Scenario } from "./singleton/Scenario";
 import { VarManager } from "./singleton/VarManager";
 
-export class Test {
+export class Simulator {
 
-  static async Exec(steps: string, env?: any) {
+  static async Run(steps: string, env?: any, logLevel = 'error' as any) {
+    setDefaultLevel(logLevel)
+
     const scenario = Scenario.Current
     const tmpFile = join(tmpdir(), Date.now() + '_' + Math.random() + ".yaml")
     try {

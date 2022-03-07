@@ -41,7 +41,7 @@ export class Exec implements IElement {
   }
 
   exec() {
-    if (this.title) console.log(this.title)
+    if (this.title) this.proxy.logger.info(this.title)
     const [cmd, ...args] = this.args
     this.prc = spawn(cmd, args, {
       shell: this.shell,
@@ -50,11 +50,11 @@ export class Exec implements IElement {
     const msgs = []
     this.prc.stdout.on('data', msg => {
       const _msg = msg.toString()
-      if (!this.slient) console.log(chalk.gray(_msg))
+      if (!this.slient) this.proxy.logger.trace(chalk.gray(_msg))
       msgs.push(_msg)
     })
     this.prc.stderr.on('data', err => {
-      if (!this.slient) console.error(err.toString())
+      if (!this.slient) this.proxy.logger.error(err.toString())
     })
     return new Promise<string>((resolve) => {
       this.prc.on('close', code => {
