@@ -199,7 +199,7 @@ export class Api implements IElement {
   }
 
   private printLog() {
-    if (this.proxy.logger.getLevel() <= LogLevel.DEBUG) {
+    if (this.proxy.logger.getLevel() <= LogLevel.TRACE) {
       console.group()
       this.proxy.logger.debug(`%s`, chalk.red.underline(this.curl))
       let fullUrl = `${this.baseURL}${this.fullUrl}`

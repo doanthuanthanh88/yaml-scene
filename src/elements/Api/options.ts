@@ -2,13 +2,13 @@ import { Api } from ".";
 import { Method } from "./Method";
 
 /**
- * Head
- * @description Send a Head request via http
+ * Api~options
+ * @description Send a Options request via http
  * @group Api
  * @order 6
  * @example
-- Head:
-    title: Ping a product
+- Api~options:
+    title: Test CORs a product
     baseURL: http://localhost:3000
     url: /product/:id
     params:
@@ -17,9 +17,9 @@ import { Method } from "./Method";
       - title: Response status is valid
         chai: ${expect(_.response.status).to.equal(204)}
  */
-export class Head extends Api {
+export class options extends Api {
   init(props) {
-    props.method = Method.HEAD
+    props.method = Method.OPTIONS
     super.init(props)
   }
 }

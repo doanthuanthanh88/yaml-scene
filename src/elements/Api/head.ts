@@ -2,26 +2,24 @@ import { Api } from ".";
 import { Method } from "./Method";
 
 /**
- * Patch
- * @description Send a Patch request via http
+ * Api~head
+ * @description Send a Head request via http
  * @group Api
- * @order 2
+ * @order 6
  * @example
-- Patch:
-    title: Update product name
+- Api~head:
+    title: Ping a product
     baseURL: http://localhost:3000
     url: /product/:id
     params:
       id: 1
-    body:
-      name: updated name
     validate:
       - title: Response status is valid
         chai: ${expect(_.response.status).to.equal(204)}
  */
-export class Patch extends Api {
+export class head extends Api {
   init(props) {
-    props.method = Method.PATCH
+    props.method = Method.HEAD
     super.init(props)
   }
 }

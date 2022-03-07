@@ -5,7 +5,7 @@ externalLibs:
 vars:
   example: ABC
 steps:
-  # - Api~Summary: OK
+  # - Api~summary: OK
   - !fragment ./examples/script/bash.yaml
   # - !fragment ./examples/document/doc_comment_guide.yaml
   # - !fragment ./examples/async_jobs.yaml

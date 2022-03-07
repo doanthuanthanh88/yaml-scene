@@ -3,13 +3,14 @@
 | Element | Description |  
 |---|---|  
 | API | --- |
-|[Post](#Post)| Send a Post request via http|  
-|[Patch](#Patch)| Send a Patch request via http|  
-|[Put](#Put)| Send a Put request via http|  
-|[Get](#Get)| Send a GET request via http|  
-|[Delete](#Delete)| Send a DELETE request via http|  
-|[Head](#Head)| Send a Head request via http|  
-|[Api~Summary](#Api~Summary)| Summary after all of apis in scene executed done.|  
+|[Api~post](#Api~post)| Send a Post request via http|  
+|[Api~patch](#Api~patch)| Send a Patch request via http|  
+|[Api~put](#Api~put)| Send a Put request via http|  
+|[Api~get](#Api~get)| Send a GET request via http|  
+|[Api~del](#Api~del)| Send a DELETE request via http|  
+|[Api~head](#Api~head)| Send a Head request via http|  
+|[Api~options](#Api~options)| Send a Options request via http|  
+|[Api~summary](#Api~summary)| Summary after all of apis in scene executed done.|  
 | DOC | --- |
 |[Doc~CommentGuide](#Doc~CommentGuide)| Auto scan file to detect the comment format which is generated to markdown document|  
 | EXTERNAL | --- |
@@ -67,10 +68,10 @@ steps:                            # Includes all which you want to do
 ```
   
 # Details
-## Post <a name="Post"></a>
+## Api~post <a name="Api~post"></a>
 Send a Post request via http  
 ```yaml
-- Post:
+- Api~post:
     title: Create a new product
     baseURL: http://localhost:3000
     url: /product
@@ -82,10 +83,10 @@ Send a Post request via http
         chai: ${expect(_.response.status).to.equal(200)}
     var: newProduct
 ```
-## Patch <a name="Patch"></a>
+## Api~patch <a name="Api~patch"></a>
 Send a Patch request via http  
 ```yaml
-- Patch:
+- Api~patch:
     title: Update product name
     baseURL: http://localhost:3000
     url: /product/:id
@@ -97,10 +98,10 @@ Send a Patch request via http
       - title: Response status is valid
         chai: ${expect(_.response.status).to.equal(204)}
 ```
-## Put <a name="Put"></a>
+## Api~put <a name="Api~put"></a>
 Send a Put request via http  
 ```yaml
-- Put:
+- Api~put:
     title: Update product
     baseURL: http://localhost:3000
     url: /product/:id
@@ -114,10 +115,10 @@ Send a Put request via http
         chai: ${expect(_.response.status).to.equal(204)}
     var: updatedProduct
 ```
-## Get <a name="Get"></a>
+## Api~get <a name="Api~get"></a>
 Send a GET request via http  
 ```yaml
-- Get:
+- Api~get:
     title: Get product details
     baseURL: http://localhost:3000
     url: /product/:id
@@ -127,10 +128,10 @@ Send a GET request via http
       - title: Response status is valid
         chai: ${expect(_.response.status).to.equal(200)}
 ```
-## Delete <a name="Delete"></a>
+## Api~del <a name="Api~del"></a>
 Send a DELETE request via http  
 ```yaml
-- Delete:
+- Api~del:
     title: Delete a product
     baseURL: http://localhost:3000
     url: /product/:id
@@ -140,10 +141,10 @@ Send a DELETE request via http
       - title: Response status is valid
         chai: ${expect(_.response.status).to.equal(200)}
 ```
-## Head <a name="Head"></a>
+## Api~head <a name="Api~head"></a>
 Send a Head request via http  
 ```yaml
-- Head:
+- Api~head:
     title: Ping a product
     baseURL: http://localhost:3000
     url: /product/:id
@@ -153,10 +154,23 @@ Send a Head request via http
       - title: Response status is valid
         chai: ${expect(_.response.status).to.equal(204)}
 ```
-## Api~Summary <a name="Api~Summary"></a>
+## Api~options <a name="Api~options"></a>
+Send a Options request via http  
+```yaml
+- Api~options:
+    title: Test CORs a product
+    baseURL: http://localhost:3000
+    url: /product/:id
+    params:
+      id: 1
+    validate:
+      - title: Response status is valid
+        chai: ${expect(_.response.status).to.equal(204)}
+```
+## Api~summary <a name="Api~summary"></a>
 Summary after all of apis in scene executed done.  
 ```yaml
-- Api~Summary:
+- Api~summary:
     title: Testing result
 ```
 ## Doc~CommentGuide <a name="Doc~CommentGuide"></a>

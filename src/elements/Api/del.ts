@@ -2,12 +2,12 @@ import { Api } from ".";
 import { Method } from "./Method";
 
 /**
- * Delete
+ * Api~del
  * @description Send a DELETE request via http
  * @group Api
  * @order 5
  * @example
-- Delete:
+- Api~del:
     title: Delete a product
     baseURL: http://localhost:3000
     url: /product/:id
@@ -17,7 +17,7 @@ import { Method } from "./Method";
       - title: Response status is valid
         chai: ${expect(_.response.status).to.equal(200)}
  */
-export class Delete extends Api {
+export class del extends Api {
   init(props) {
     props.method = Method.DELETE
     super.init(props)
