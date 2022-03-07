@@ -43,8 +43,15 @@ Currently only support chai `https://www.chaijs.com`|
 ```yaml  
 title: Scene name                 # Scene name
 description: Scene description    # Scene description
-externalLibs:                     # External elements
-  - ~/code/github/yaml-scene/yaml-test/external-libs/custom.js
+logLevel: debug                   # How to show log is debug)
+                                  # - slient: Dont show anything
+                                  # - error: Show error log
+                                  # - warn: Show warning log
+                                  # - info: Show infor, error log
+                                  # - debug: Show log details, infor, error log ( Default )
+                                  # - trace: Show all of log
+extensions:                       # Extension elements
+  - ~/code/github/yaml-scene/yaml-test/extensions/custom.js
 vars:                             # Declare global variables, which can be replaced by env
   url: http://localhost:3000
   token: ...

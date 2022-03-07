@@ -1,3 +1,4 @@
+import { LoggerFactory } from '@app/utils/logger'
 import { readFileSync } from 'fs'
 import { safeLoad } from 'js-yaml'
 import { homedir } from 'os'
@@ -18,7 +19,14 @@ import { VarManager } from './VarManager'
  * @example
 title: Scene name                 # Scene name
 description: Scene description    # Scene description
-extensions:                     # Extension elements
+logLevel: debug                   # How to show log is debug)
+                                  # - slient: Dont show anything
+                                  # - error: Show error log
+                                  # - warn: Show warning log
+                                  # - info: Show infor, error log
+                                  # - debug: Show log details, infor, error log ( Default )
+                                  # - trace: Show all of log
+extensions:                       # Extension elements
   - ~/code/github/yaml-scene/yaml-test/extensions/custom.js
 vars:                             # Declare global variables, which can be replaced by env
   url: http://localhost:3000
@@ -87,10 +95,11 @@ export class Scenario {
       }
     }
 
-    const { extensions, vars, ...scenarioProps } = scenario
+    const { extensions, vars, logLevel = 'debug', ...scenarioProps } = scenario
 
     this.title = scenarioProps.title
     this.description = scenarioProps.description
+    if (logLevel) LoggerFactory.GetLogger().setDefaultLevel(logLevel)
 
     // Load extensions
     if (extensions) {

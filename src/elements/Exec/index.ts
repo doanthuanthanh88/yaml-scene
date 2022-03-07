@@ -50,7 +50,7 @@ export class Exec implements IElement {
     const msgs = []
     this.prc.stdout.on('data', msg => {
       const _msg = msg.toString()
-      if (!this.slient) this.proxy.logger.trace(chalk.gray(_msg))
+      if (!this.slient) this.proxy.logger.debug(chalk.gray(_msg))
       msgs.push(_msg)
     })
     this.prc.stderr.on('data', err => {

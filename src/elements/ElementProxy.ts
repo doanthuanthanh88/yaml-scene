@@ -11,7 +11,7 @@ export class ElementProxy<T extends IElement> {
   private _logLevel: string
 
   get logLevel() {
-    return this._logLevel || this._?.logLevel || this.__?.logLevel || 'info'
+    return this._logLevel || this._?.logLevel || this.__?.logLevel
   }
 
   get logger() {
