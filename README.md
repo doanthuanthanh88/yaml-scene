@@ -23,4 +23,9 @@ Please go to [here](./yaml-test/examples) to see examples
 
 ---
 
+# More information
+- Project at [github](https://github.com/doanthuanthanh88/yaml-scene)
+- Package at [npm](https://www.npmjs.com/package/yaml-scene)
+- Docker images at [docker](https://hub.docker.com/repository/docker/doanthuanthanh88/yaml-scene)
+
 Goodluck and fun :)
