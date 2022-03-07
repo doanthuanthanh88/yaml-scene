@@ -1,0 +1,10 @@
+.devcontainer
+.github
+.vscode
+node_modules
+Dockerfile
+*.md
+yaml-test
+test
+jest.config.js
+LICENSE

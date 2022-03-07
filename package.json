@@ -1,6 +1,6 @@
 {
   "name": "yaml-scene",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Do everything with yaml scenario file",
   "keywords": [
     "tool",
@@ -18,6 +18,7 @@
   },
   "scripts": {
     "prepare": "npm run build",
+    "installmodule": "npm install --production --prefix ./dist",
     "dev": "npx nodemon --watch src --watch test --ext .ts --exec 'node -r ts-node/register -r ./bin/tsconfig-paths-bootstrap.js --inspect-brk src/index.ts --env-file 'yaml-test/.env' yaml-test/index.yaml'",
     "start": "npx nodemon --watch src --watch test --ext .ts --exec 'node -r ts-node/register -r ./bin/tsconfig-paths-bootstrap.js src/index.ts --env-file 'yaml-test/.env' /yaml-test/examples/download_youtube.yaml'",
     "test": "jest",
