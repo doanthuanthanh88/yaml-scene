@@ -16,7 +16,7 @@ export class Main {
 
     const scenario = Scenario.Current
     try {
-      await scenario.init(this.helper.yamlFile)
+      await scenario.init(this.helper.yamlFile, this.helper.password)
       await scenario.prepare()
       if (scenario.hasEnvVar) {
         this.loadEnv()

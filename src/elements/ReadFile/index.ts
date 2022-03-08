@@ -97,7 +97,6 @@ export class ReadFile {
 
   init(props: any) {
     merge(this, props)
-    if (!this.var) throw new Error('"var" is required')
     if (!this.type) {
       this.type = extname(this.path).substr(1).toLowerCase() as FileType
     }
@@ -112,9 +111,10 @@ export class ReadFile {
     }
     const file = FileDataSourceFactory.GetDataSource(this.type, this.proxy.resolvePath(this.path), decrypt)
     const obj = await file.read()
-    this.proxy.setVar(this.var, obj)
+    if (this.var) this.proxy.setVar(this.var, obj)
     this.proxy.logger.debug('%s %s', chalk.magenta('- Read file at'), chalk.gray(this.path))
     console.groupEnd()
+    return obj
   }
 
 }

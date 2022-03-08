@@ -11,7 +11,11 @@ export class LoggerFactory {
     if (LoggerFactory._INSTANCE[level])
       return LoggerFactory._INSTANCE[level]
     LoggerFactory._INSTANCE[level] = logger.getLogger(level)
-    LoggerFactory._INSTANCE[level].setDefaultLevel(level as any)
+    if (level === 'slient') {
+      LoggerFactory._INSTANCE[level].disableAll(true)
+    } else {
+      LoggerFactory._INSTANCE[level].setDefaultLevel(level as any)
+    }
     return LoggerFactory._INSTANCE[level]
   }
 }

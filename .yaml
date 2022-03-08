@@ -1,8 +1,0 @@
-- Dev:
-    - Debug: yarn dev
-    - Start: yarn start
-- Test:
-    - Unit test: yarn test
-- Git:
-    - Build: yarn build
-    - Publish: npm pub

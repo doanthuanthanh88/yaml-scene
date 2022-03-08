@@ -1,8 +1,7 @@
 import { LoggerFactory } from '@app/utils/logger'
-import { readFileSync } from 'fs'
 import { safeLoad } from 'js-yaml'
 import { homedir } from 'os'
-import { basename, dirname, join, resolve } from 'path'
+import { basename, dirname, extname, join, resolve } from 'path'
 import { EventEmitter } from 'stream'
 import { ElementFactory } from '../elements/ElementFactory'
 import { ElementProxy } from '../elements/ElementProxy'
@@ -19,6 +18,7 @@ import { VarManager } from './VarManager'
  * @example
 title: Scene name                 # Scene name
 description: Scene description    # Scene description
+password:                         # File will be encrypted to $FILE_NAME.encrypt to share to someone run it for privacy
 logLevel: debug                   # How to show log is debug)
                                   # - slient: Dont show anything
                                   # - error: Show error log
@@ -48,6 +48,7 @@ steps:                            # Includes all which you want to do
 
 export class Scenario {
   private static _Instance: Scenario
+  private static readonly SALTED_PASSWORD = '|-YAML-SCENE-|'
 
   static get Current(): Scenario | never {
     return Scenario._Instance || (Scenario._Instance = new Scenario())
@@ -56,6 +57,7 @@ export class Scenario {
   events: EventEmitter
   title?: string
   description?: string
+  password?: string
 
   private rootDir: string
   private rootGroup: ElementProxy<Group>
@@ -76,7 +78,7 @@ export class Scenario {
     } as any
   }
 
-  async init(scenarioFile = 'index.yaml' as string | object) {
+  async init(scenarioFile = 'index.yaml' as string | object, password?: string) {
     this.time.init = Date.now()
     this.events.emit('Scenario.init')
 
@@ -84,21 +86,28 @@ export class Scenario {
 
     let scenario: any
 
-    if (typeof scenarioFile === 'string') {
-      scenarioFile = resolve(scenarioFile)
-      this.rootDir = dirname(scenarioFile)
-      scenario = safeLoad(readFileSync(scenarioFile).toString(), {
-        schema: SCHEMA
-      }) as any
-      if (Array.isArray(scenario)) {
-        scenario = { title: basename(scenarioFile), steps: scenario.flat() }
-      }
+    if (typeof scenarioFile !== 'string') throw new Error('Scenario must be a path of file')
+    scenarioFile = resolve(scenarioFile)
+    this.rootDir = dirname(scenarioFile)
+    const fileContent = await this.getScenarioFileContent(scenarioFile, this.getPassword(password))
+    scenario = safeLoad(fileContent, {
+      schema: SCHEMA
+    }) as any
+    if (Array.isArray(scenario)) {
+      scenario = { title: basename(scenarioFile), steps: scenario.flat() }
     }
 
-    const { extensions, vars, logLevel = 'debug', ...scenarioProps } = scenario
+    const { password: pwd, extensions, vars, logLevel = 'info', ...scenarioProps } = scenario
+    if (!scenarioProps) throw new Error('File scenario is not valid')
 
     this.title = scenarioProps.title
     this.description = scenarioProps.description
+
+    if (pwd && extname(scenarioFile)) {
+      this.password = this.getPassword(pwd)
+      await this.saveToEncryptFile(fileContent, this.password, join(dirname(scenarioFile), basename(scenarioFile).split('.')[0]))
+    }
+
     if (logLevel) LoggerFactory.GetLogger().setDefaultLevel(logLevel)
 
     // Load extensions
@@ -149,5 +158,37 @@ export class Scenario {
     console.log('- Executing', this.time.dispose - this.time.exec, 'ms')
     console.log('- Dispose', this.time.end - this.time.dispose, 'ms')
     console.groupEnd()
+  }
+
+  private getPassword(password: string) {
+    return password && `${Scenario.SALTED_PASSWORD}${password}`
+  }
+
+  private async getScenarioFileContent(scenarioFile: string, password: string) {
+    const rf = ElementFactory.CreateElement('ReadFile')
+    await rf.element.init({
+      path: scenarioFile,
+      type: 'text',
+      decrypt: {
+        password
+      }
+    })
+    const fileContent = await rf.element.exec()
+    await rf.dispose()
+    return fileContent
+  }
+
+  private async saveToEncryptFile(content: string, password: string, fileOut: string) {
+    const rf = ElementFactory.CreateElement('WriteFile')
+    await rf.element.init({
+      content,
+      path: fileOut,
+      type: 'text',
+      encrypt: {
+        password
+      }
+    })
+    await rf.exec()
+    await rf.dispose()
   }
 }
