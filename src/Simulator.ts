@@ -1,15 +1,19 @@
 import { existsSync, unlinkSync, writeFileSync } from "fs";
 import { merge } from "lodash";
-import { setDefaultLevel } from "loglevel";
 import { tmpdir } from "os";
 import { join } from "path";
 import { Scenario } from "./singleton/Scenario";
 import { VarManager } from "./singleton/VarManager";
+import { LoggerFactory } from "./utils/logger";
 
 export class Simulator {
 
   static async Run(steps: string, env?: any, logLevel = 'error' as any) {
-    setDefaultLevel(logLevel)
+    if (logLevel === 'slient') {
+      LoggerFactory.GetLogger().disableAll()
+    } else {
+      LoggerFactory.GetLogger().setDefaultLevel(logLevel)
+    }
 
     const scenario = Scenario.Current
     const tmpFile = join(tmpdir(), Date.now() + '_' + Math.random() + ".yaml")

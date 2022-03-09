@@ -108,7 +108,13 @@ export class Scenario {
       await this.saveToEncryptFile(fileContent, this.password, join(dirname(scenarioFile), basename(scenarioFile).split('.')[0]))
     }
 
-    if (logLevel) LoggerFactory.GetLogger().setDefaultLevel(logLevel)
+    if (logLevel) {
+      if (logLevel === 'slient') {
+        LoggerFactory.GetLogger().disableAll()
+      } else {
+        LoggerFactory.GetLogger().setDefaultLevel(logLevel)
+      }
+    }
 
     // Load extensions
     if (extensions) {
