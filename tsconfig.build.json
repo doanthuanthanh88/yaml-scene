@@ -16,9 +16,7 @@
     }
   },
   "files": [
-    "bin/cli.js",
-    "package.json",
-    "package-lock.json"
+    "bin/cli.js"
   ],
   "include": [
     "src"
