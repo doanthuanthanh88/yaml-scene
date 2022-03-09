@@ -1,6 +1,6 @@
 {
   "name": "yaml-scene",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Do everything with yaml scenario file",
   "keywords": [
     "tool",
@@ -17,7 +17,7 @@
     "yaml-scene": "./bin/cli.js"
   },
   "publishConfig": {
-    "tag": "beta"
+    "tag": "beta.1"
   },
   "scripts": {
     "prepare": "npm run build",
