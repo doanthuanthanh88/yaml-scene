@@ -7,7 +7,7 @@ vars:
 steps:
   # - Api~summary: OK
   - !fragment ./examples/script/bash.yaml
-  # - !fragment ./examples/document/doc_comment_guide.yaml
+  # - !fragment ./examples/document/doc_guide.yaml
   # - !fragment ./examples/async_jobs.yaml
   # - !fragment ./examples/upload.yaml
   # - !fragment ./examples/extension-mongo/index.yaml

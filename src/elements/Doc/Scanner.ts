@@ -1,16 +1,17 @@
+import { DataModel } from '@app/utils/doc/DataModel';
 import { DataParser } from '@app/utils/doc/DataParser';
 import { Exporter } from '@app/utils/doc/Exporter';
-import { Scanner } from '@app/utils/doc/Scanner';
+import { Scanner as IScanner } from '@app/utils/doc/Scanner';
 import { statSync } from 'fs';
 import { readdir } from 'fs/promises';
 import { join } from 'path';
 import { EventEmitter } from 'stream';
 
-export class CommentScanner implements Scanner {
+export class Scanner implements IScanner {
 
   event: EventEmitter
 
-  constructor(public exporter: Exporter, public ParserClass: new (...args) => DataParser) {
+  constructor(public exporter: Exporter<DataModel>, public ParserClass: new (...args) => DataParser) {
     this.event = new EventEmitter()
   }
 

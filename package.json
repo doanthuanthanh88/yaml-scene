@@ -1,6 +1,6 @@
 {
   "name": "yaml-scene",
-  "version": "1.0.0-beta.0",
+  "version": "1.0.0-beta.1",
   "description": "Do everything with yaml scenario file",
   "keywords": [
     "tool",
@@ -17,7 +17,8 @@
     "yaml-scene": "./bin/cli.js"
   },
   "publishConfig": {
-    "tag": "beta"
+    "tag": "beta",
+    "access": "public"
   },
   "scripts": {
     "prepare": "npm run build",
@@ -25,7 +26,7 @@
     "dev": "npx nodemon --watch src --watch test --ext .ts --exec 'node -r ts-node/register -r ./bin/tsconfig-paths-bootstrap.js --inspect-brk src/index.ts --env-file 'yaml-test/.env' yaml-test/index.yaml'",
     "start": "npx nodemon --watch src --watch test --ext .ts --exec 'node -r ts-node/register -r ./bin/tsconfig-paths-bootstrap.js src/index.ts --env-file 'yaml-test/.env' /yaml-test/examples/download_youtube.yaml'",
     "test": "jest",
-    "doc": "node -r ts-node/register -r ./bin/tsconfig-paths-bootstrap.js src/index.ts 'yaml-test/examples/document/doc_comment_guide.yaml'",
+    "doc": "node -r ts-node/register -r ./bin/tsconfig-paths-bootstrap.js src/index.ts 'yaml-test/examples/document/doc_guide.yaml'",
     "build": "npm run clean && npm run build:only",
     "build:only": "tsc --project tsconfig.build.json && npm run build:resolve-module && npm run build:resolve-package",
     "build:resolve-module": "node bin/tsconfig",

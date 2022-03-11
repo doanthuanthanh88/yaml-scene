@@ -8,11 +8,11 @@
 |[Api~put](#Api~put)| Send a Put request via http|  
 |[Api~get](#Api~get)| Send a GET request via http|  
 |[Api~del](#Api~del)| Send a DELETE request via http|  
+|[Api~summary](#Api~summary)| Summary after all of apis in scene executed done.|  
 |[Api~head](#Api~head)| Send a Head request via http|  
 |[Api~options](#Api~options)| Send a Options request via http|  
-|[Api~summary](#Api~summary)| Summary after all of apis in scene executed done.|  
 | DOC | --- |
-|[Doc~CommentGuide](#Doc~CommentGuide)| Auto scan file to detect the comment format which is generated to markdown document|  
+|[Doc~guide](#Doc~guide)| Auto scan file to detect the comment format which is generated to markdown document|  
 | EXTERNAL | --- |
 |[Exec](#Exec)| Execute external command|  
 | FILE | --- |
@@ -40,10 +40,12 @@ Currently only support chai `https://www.chaijs.com`|
 |[Vars](#Vars)| Declare variables in scene|  
   
 # Standard Scenario file
-*A standard scenario file*  
-```yaml  
+A standard scenario file  
+
+```yaml
 title: Scene name                 # Scene name
 description: Scene description    # Scene description
+password:                         # File will be encrypted to $FILE_NAME.encrypt to share to someone run it for privacy
 logLevel: debug                   # How to show log is debug)
                                   # - slient: Dont show anything
                                   # - error: Show error log
@@ -60,16 +62,22 @@ steps:                            # Includes all which you want to do
   - !fragment ./scene1.yaml
   - !fragment ./scene2.yaml
 ```
+
+
 # Simple Scenario file
-*A simple scenario file*  
-```yaml  
+A simple scenario file  
+
+```yaml
 - !fragment ./scene1.yaml
 - !fragment ./scene2.yaml
 ```
+
+
   
 # Details
 ## Api~post <a name="Api~post"></a>
 Send a Post request via http  
+
 ```yaml
 - Api~post:
     title: Create a new product
@@ -83,8 +91,11 @@ Send a Post request via http
         chai: ${expect(_.response.status).to.equal(200)}
     var: newProduct
 ```
+
+
 ## Api~patch <a name="Api~patch"></a>
 Send a Patch request via http  
+
 ```yaml
 - Api~patch:
     title: Update product name
@@ -98,8 +109,11 @@ Send a Patch request via http
       - title: Response status is valid
         chai: ${expect(_.response.status).to.equal(204)}
 ```
+
+
 ## Api~put <a name="Api~put"></a>
 Send a Put request via http  
+
 ```yaml
 - Api~put:
     title: Update product
@@ -115,8 +129,11 @@ Send a Put request via http
         chai: ${expect(_.response.status).to.equal(204)}
     var: updatedProduct
 ```
+
+
 ## Api~get <a name="Api~get"></a>
 Send a GET request via http  
+
 ```yaml
 - Api~get:
     title: Get product details
@@ -128,8 +145,11 @@ Send a GET request via http
       - title: Response status is valid
         chai: ${expect(_.response.status).to.equal(200)}
 ```
+
+
 ## Api~del <a name="Api~del"></a>
 Send a DELETE request via http  
+
 ```yaml
 - Api~del:
     title: Delete a product
@@ -141,8 +161,20 @@ Send a DELETE request via http
       - title: Response status is valid
         chai: ${expect(_.response.status).to.equal(200)}
 ```
+
+
+## Api~summary <a name="Api~summary"></a>
+Summary after all of apis in scene executed done.  
+
+```yaml
+- Api~summary:
+    title: Testing result
+```
+
+
 ## Api~head <a name="Api~head"></a>
 Send a Head request via http  
+
 ```yaml
 - Api~head:
     title: Ping a product
@@ -154,8 +186,11 @@ Send a Head request via http
       - title: Response status is valid
         chai: ${expect(_.response.status).to.equal(204)}
 ```
+
+
 ## Api~options <a name="Api~options"></a>
 Send a Options request via http  
+
 ```yaml
 - Api~options:
     title: Test CORs a product
@@ -167,24 +202,24 @@ Send a Options request via http
       - title: Response status is valid
         chai: ${expect(_.response.status).to.equal(204)}
 ```
-## Api~summary <a name="Api~summary"></a>
-Summary after all of apis in scene executed done.  
-```yaml
-- Api~summary:
-    title: Testing result
-```
-## Doc~CommentGuide <a name="Doc~CommentGuide"></a>
+
+
+## Doc~guide <a name="Doc~guide"></a>
 Auto scan file to detect the comment format which is generated to markdown document  
+
 ```yaml
-- Doc~CommentGuide: 
+- Doc~guide: 
     includes: 
       - src
     excludes: []
     includePattern: ".+\\.ts$"
     outFile: /tmp/doc.md
 ```
+
+
 ## Exec <a name="Exec"></a>
 Execute external command  
+
 ```yaml
 - Exec:
     title: Show yarn global directories
@@ -193,10 +228,13 @@ Execute external command
       - global
       - dir
 ```
+
+
 ## ReadFile <a name="ReadFile"></a>
 Read a file then set content to a variable  
 It uses `aes-128-cbc` to decrypt content with a password.  
 Refer to [WriteFile](.) to encrypt content  
+
 ```yaml
 ### Text file
 - ReadFile:
@@ -268,10 +306,13 @@ Refer to [WriteFile](.) to encrypt content
     var: data
 
 ```
+
+
 ## WriteFile <a name="WriteFile"></a>
 Write content to a file  
 It uses `aes-128-cbc` to encrypt content with a password.  
 Refer to [ReadFile](.) to decrypt content  
+
 ```yaml
 ### Text file
 - WriteFile:
@@ -373,8 +414,11 @@ Refer to [ReadFile](.) to decrypt content
       - [name02, 2]
 
 ```
+
+
 ## InputKeyboard <a name="InputKeyboard"></a>
 Get user input from keyboard  
+
 ```yaml
 - InputKeyboard:
     - title: Enter your name
@@ -454,8 +498,11 @@ Get user input from keyboard
       default: true
       var: submit
 ```
+
+
 ## !fragment <a name="!fragment"></a>
 Load scenes from another file into current file  
+
 ```yaml
 - Group: 
     steps:
@@ -465,8 +512,11 @@ Load scenes from another file into current file
       - !fragment ./examples/scene_2.yaml
       - Echo: Loaded scene 2 successfully
 ```
+
+
 ## !binary <a name="!binary"></a>
 Transform file to binary  
+
 ```yaml
 - Post:
     url: http://localhost/upload
@@ -475,13 +525,19 @@ Transform file to binary
     body:
       file: !binary ~/data.json
 ```
+
+
 ## Clear <a name="Clear"></a>
 Clear screen  
+
 ```yaml
  - Clear:
 ```
+
+
 ## Echo <a name="Echo"></a>
 Print data to screen  
+
 ```yaml
 - Echo: Hello world
 - Echo~green: Green text
@@ -497,8 +553,11 @@ Print data to screen
 
 - Echo.schema: ${user}
 ```
+
+
 ## Group <a name="Group"></a>
 Group contains 1 or many elements  
+
 ```yaml
 - Group:
     title: Run async jobs
@@ -518,8 +577,11 @@ Group contains 1 or many elements
           steps:
             - Echo: Hello 3
 ```
+
+
 ## Script~js <a name="Script~js"></a>
 Embed javascript code into scene  
+
 ```yaml
 - Vars:
     name: 10
@@ -530,8 +592,11 @@ Embed javascript code into scene
 
 - Echo: New value ${newName}
 ```
+
+
 ## Script~sh <a name="Script~sh"></a>
 Embed shell script into scene  
+
 ```yaml
 - Vars:
     name: 'thanh'
@@ -554,9 +619,12 @@ Embed shell script into scene
       echo $1
       echo $2
 ```
+
+
 ## Templates <a name="Templates"></a>
 Declare elements which not `inited` or `run`  
 It's only used for `extends` or `inherit` purposes  
+
 ```yaml
 - Templates:
     - Get:
@@ -569,9 +637,12 @@ It's only used for `extends` or `inherit` purposes
     params:
       id: 1
 ```
+
+
 ## Validate <a name="Validate"></a>
 Validate data in running progress  
 Currently only support chai `https://www.chaijs.com`  
+
 ```yaml
 - Validate:
     title: Validate number
@@ -580,8 +651,11 @@ Currently only support chai `https://www.chaijs.com`
     title: Test response
     chai: ${expect(userInfo).to.have.property('display_name')}
 ```
+
+
 ## Vars <a name="Vars"></a>
 Declare variables in scene  
+
 ```yaml
 - Vars:
     userA:
@@ -591,3 +665,6 @@ Declare variables in scene
 - Echo: ${userA}
 - Echo: ${userA.name}
 ```
+
+
+  

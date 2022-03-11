@@ -1,4 +1,4 @@
-- Doc~CommentGuide: 
+- Doc~guide: 
     logLevel: debug
     includes: 
       - /workspaces/yaml-scene/src

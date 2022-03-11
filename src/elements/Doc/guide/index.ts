@@ -5,21 +5,21 @@ import { merge } from "lodash";
 import { CommentExporter } from './CommentExporter';
 import { CommentInfo } from './CommentInfo';
 import { CommentParser } from './CommentParser';
-import { CommentScanner } from './CommentScanner';
+import { Scanner } from '../Scanner';
 
 /**
- * Doc~CommentGuide
+ * Doc~guide
  * @group Doc
  * @description Auto scan file to detect the comment format which is generated to markdown document
  * @example
-- Doc~CommentGuide: 
+- Doc~guide: 
     includes: 
       - src
     excludes: []
     includePattern: ".+\\.ts$"
     outFile: /tmp/doc.md
  */
-export class CommentGuide implements IElement {
+export class guide implements IElement {
   proxy: ElementProxy<any>
 
   includes?: string[]
@@ -43,7 +43,7 @@ export class CommentGuide implements IElement {
 
   async exec() {
     this.proxy.logger.info('Scanning document...')
-    const scanner = new CommentScanner(new CommentExporter(new FileDataSource(this.outFile)), CommentParser)
+    const scanner = new Scanner(new CommentExporter(new FileDataSource(this.outFile)), CommentParser)
     scanner.event.on('scanfile', path => this.proxy.logger.debug('-', path))
     const commentModels = new Array<CommentInfo>()
     await Promise.all(
