@@ -1,4 +1,4 @@
-FROM node AS builder
+FROM node:alpine AS builder
 WORKDIR /app
 
 COPY . .
@@ -6,10 +6,8 @@ RUN npm install
 RUN npm run installmodule
 
 ####################
-FROM alpine
+FROM node:alpine
 WORKDIR /test
-
-RUN apk add --update nodejs
 
 COPY --from=builder /app/dist /opt/yaml-scene
 
