@@ -117,9 +117,8 @@ export class Scenario {
     }
 
     // Load extensions
-    if (extensions) {
-      await Extensions.Setup(Array.isArray(extensions) ? extensions : [extensions])
-    }
+    await Extensions.Setup(extensions && (Array.isArray(extensions) ? extensions : [extensions]))
+
     // Load global variables which is overrided by env variables
     if (vars) {
       VarManager.Instance.set(vars, null)
