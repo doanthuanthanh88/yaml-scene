@@ -21,8 +21,8 @@
     "access": "public"
   },
   "scripts": {
-    "prepare": "npm run build",
-    "installmodule": "npm install --production --prefix ./dist",
+    "prepack": "npm run build",
+    "postpack": "npm install --production --prefix ./dist",
     "dev": "npx nodemon --watch src --watch test --ext .ts --exec 'node -r ts-node/register -r ./bin/tsconfig-paths-bootstrap.js --inspect-brk src/index.ts --env-file 'yaml-test/.env' yaml-test/index.yaml'",
     "start": "npx nodemon --watch src --watch test --ext .ts --exec 'node -r ts-node/register -r ./bin/tsconfig-paths-bootstrap.js src/index.ts --env-file 'yaml-test/.env' /yaml-test/examples/download_youtube.yaml'",
     "test": "npx jest",

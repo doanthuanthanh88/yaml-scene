@@ -51,6 +51,9 @@ function replace(p) {
 }
 
 replace(path.resolve(dist))
+
+fs.copyFileSync(path.resolve('.npmignore'), path.resolve('dist/.npmignore'))
+
 // fs.mkdirSync(path.resolve('dist/components/doc/DocSequence/mmdc'))
 // fs.copyFileSync(path.resolve('src/components/doc/DocSequence/mmdc/index.html'), path.resolve('dist/components/doc/DocSequence/mmdc/index.html'))
 // fs.copyFileSync(path.resolve('src/components/doc/DocSequence/mmdc/mmdc.js'), path.resolve('dist/components/doc/DocSequence/mmdc/mmdc.js'))

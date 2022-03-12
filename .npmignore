@@ -13,9 +13,5 @@
 .dockerignore
 .gitignore
 
-dist
 npm-debug.log
-test
-docs
-scenes
 node_modules

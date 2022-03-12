@@ -2,8 +2,8 @@ FROM node:alpine AS builder
 WORKDIR /app
 
 COPY . .
-RUN npm install
-RUN npm run installmodule
+RUN npm ci
+RUN npm pack
 
 ####################
 FROM node:alpine
