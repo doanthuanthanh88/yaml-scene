@@ -12,7 +12,8 @@
 |[Api~head](#Api~head)| Send a Head request via http|  
 |[Api~options](#Api~options)| Send a Options request via http|  
 | DOC | --- |
-|[Doc~guide](#Doc~guide)| Auto scan file to detect the comment format which is generated to markdown document|  
+|[Doc~ApiMD](#Doc~ApiMD)| Document api to markdown format|  
+|[Doc~GuideMD](#Doc~GuideMD)| Auto scan file to detect the comment format which is generated to markdown document|  
 | EXTERNAL | --- |
 |[Exec](#Exec)| Execute external command|  
 | FILE | --- |
@@ -204,11 +205,23 @@ Send a Options request via http
 ```
 
 
-## Doc~guide <a name="Doc~guide"></a>
+## Doc~ApiMD <a name="Doc~ApiMD"></a>
+Document api to markdown format  
+
+```yaml
+- Doc~ApiMD:
+    title: Post service
+    description: Demo CRUD API to generate to markdown document
+    signature: "[Doan Thuan Thanh](mailto:doanthuanthanh88@gmail.com)"
+    outFile: ./api_document_details.md
+```
+
+
+## Doc~GuideMD <a name="Doc~GuideMD"></a>
 Auto scan file to detect the comment format which is generated to markdown document  
 
 ```yaml
-- Doc~guide: 
+- Doc~GuideMD: 
     includes: 
       - src
     excludes: []

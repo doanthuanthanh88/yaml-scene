@@ -44,14 +44,20 @@ export class Api implements IElement {
   validate: ElementProxy<Validate>[]
   saveTo: string
 
-  private get fullUrl() {
+  get fullUrl() {
     const urlParams = this.params
     return VarManager.Instance.get(this.url.replace(/(\:(\w+))/g, `$\{urlParams.$2\}`), { urlParams })
   }
-  private get contentType() {
+
+  get contentType() {
     return this.headers['content-type'] || this.headers['Content-Type']
   }
-  private get curl() {
+
+  get responseContentType() {
+    return this.response?.headers['content-type'] || this.response?.headers['Content-Type']
+  }
+
+  get curl() {
     const { CurlGenerator } = require('curl-generator')
     return CurlGenerator({
       method: this.method as any,
@@ -93,6 +99,7 @@ export class Api implements IElement {
     if (this.saveTo) {
       this.saveTo = this.proxy.resolvePath(this.saveTo)
     }
+    if (!this.headers['content-type']) this.headers['content-type'] = 'application/json'
   }
 
   async exec() {
@@ -189,10 +196,10 @@ export class Api implements IElement {
       }
       this.printLog()
       if (this.error) {
-        this.proxy.scenario.events.emit('Api.done', false)
+        this.proxy.scenario.events.emit('api.done', false, this)
         throw this.error
       } else {
-        this.proxy.scenario.events.emit('Api.done', true)
+        this.proxy.scenario.events.emit('api.done', true, this)
       }
       console.groupEnd()
     }

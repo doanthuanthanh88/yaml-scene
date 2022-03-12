@@ -4,7 +4,7 @@ import { ElementProxy } from "./ElementProxy"
 import { IElement } from './IElement'
 
 export class ElementFactory {
-  // Doc~guide
+  // Doc~GuideMD
   private static readonly CHAR_SPLIT_FOLDER_CLASS = '~'
 
   static CreateElement<T extends IElement>(names: string) {

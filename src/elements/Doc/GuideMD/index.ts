@@ -8,18 +8,18 @@ import { CommentParser } from './CommentParser';
 import { Scanner } from '../Scanner';
 
 /**
- * Doc~guide
+ * Doc~GuideMD
  * @group Doc
  * @description Auto scan file to detect the comment format which is generated to markdown document
  * @example
-- Doc~guide: 
+- Doc~GuideMD: 
     includes: 
       - src
     excludes: []
     includePattern: ".+\\.ts$"
     outFile: /tmp/doc.md
  */
-export class guide implements IElement {
+export class GuideMD implements IElement {
   proxy: ElementProxy<any>
 
   includes?: string[]

@@ -61,7 +61,7 @@ export class Scenario {
 
   private rootDir: string
   private rootGroup: ElementProxy<Group>
-  private time: {
+  time: {
     begin: number
     init: number,
     prepare: number,
@@ -80,7 +80,7 @@ export class Scenario {
 
   async init(scenarioFile = 'index.yaml' as string | object, password?: string) {
     this.time.init = Date.now()
-    this.events.emit('Scenario.init')
+    this.events.emit('scenario.init')
 
     this.rootGroup = ElementFactory.CreateElement<Group>('Group')
 
@@ -134,19 +134,19 @@ export class Scenario {
 
   async prepare() {
     this.time.prepare = Date.now()
-    this.events.emit('Scenario.prepare')
+    this.events.emit('scenario.prepare')
     await this.rootGroup.prepare()
   }
 
   async exec() {
     this.time.exec = Date.now()
-    this.events.emit('Scenario.exec')
+    this.events.emit('scenario.exec')
     await this.rootGroup.exec()
   }
 
   async dispose() {
     this.time.dispose = Date.now()
-    // this.events.emit('Scenario.dispose')
+    this.events.emit('scenario.dispose')
     await this.rootGroup.dispose()
   }
 

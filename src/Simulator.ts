@@ -26,7 +26,6 @@ export class Simulator {
       await scenario.exec()
     } finally {
       await scenario.dispose()
-
       if (existsSync(tmpFile)) unlinkSync(tmpFile)
     }
   }
