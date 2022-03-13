@@ -1,7 +1,7 @@
 const { writeFileSync, readFileSync, copyFileSync } = require('fs')
 const { join } = require('path')
 
-new Array('package.json', 'package-lock.json', 'yarn.lock', 'README.md', 'GUIDE.md')
+new Array('package.json', 'yarn.lock', '.npmignore', 'README.md', 'GUIDE.md')
   .forEach(file => {
     const fout = join(__dirname, '..', 'dist', file)
     const fin = join(__dirname, '..', file)

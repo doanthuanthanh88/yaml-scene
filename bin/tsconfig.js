@@ -52,13 +52,6 @@ function replace(p) {
 
 replace(path.resolve(dist))
 
-fs.copyFileSync(path.resolve('.npmignore'), path.resolve('dist/.npmignore'))
-
-// fs.mkdirSync(path.resolve('dist/components/doc/DocSequence/mmdc'))
-// fs.copyFileSync(path.resolve('src/components/doc/DocSequence/mmdc/index.html'), path.resolve('dist/components/doc/DocSequence/mmdc/index.html'))
-// fs.copyFileSync(path.resolve('src/components/doc/DocSequence/mmdc/mmdc.js'), path.resolve('dist/components/doc/DocSequence/mmdc/mmdc.js'))
-// fs.copyFileSync(path.resolve('src/components/doc/DocSequence/mmdc/mermaid.min.js'), path.resolve('dist/components/doc/DocSequence/mmdc/mermaid.min.js'))
-
 Promise.all(jobs).then((ps) => {
   console.log(`Replaced to resolve ${ps.length} modules`)
 }).catch(console.err)

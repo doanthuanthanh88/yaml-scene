@@ -21,18 +21,16 @@
     "access": "public"
   },
   "scripts": {
-    "prepack": "npm run build",
-    "postpack": "npm install --production --prefix ./dist",
+    "prepack": "yarn build",
+    "postpack": "yarn install --production --modules-folder ./dist/node_modules",
     "dev": "npx nodemon --watch src --watch test --ext .ts --exec 'node -r ts-node/register -r ./bin/tsconfig-paths-bootstrap.js --inspect-brk src/index.ts --env-file 'yaml-test/.env' yaml-test/index.yaml'",
     "start": "npx nodemon --watch src --watch test --ext .ts --exec 'node -r ts-node/register -r ./bin/tsconfig-paths-bootstrap.js src/index.ts --env-file 'yaml-test/.env' /yaml-test/examples/download_youtube.yaml'",
     "test": "npx jest",
     "test:debug": "npx --node-options=\"--inspect-brk\" jest",
     "doc": "node -r ts-node/register -r ./bin/tsconfig-paths-bootstrap.js src/index.ts 'yaml-test/examples/document/doc_guide.yaml'",
-    "build": "npm run clean && npm run build:only",
-    "build:only": "tsc --project tsconfig.build.json && npm run build:resolve-module && npm run build:resolve-package",
-    "build:resolve-module": "node bin/tsconfig",
-    "build:resolve-package": "node bin/update_package",
-    "clean": "rm -rf dist"
+    "prebuild": "rm -rf dist",
+    "build": "tsc --project tsconfig.build.json",
+    "postbuild": "node bin/tsconfig && node bin/update_package"
   },
   "dependencies": {
     "axios": "^0.24.0",
