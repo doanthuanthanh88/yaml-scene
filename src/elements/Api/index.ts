@@ -9,7 +9,6 @@ import { Agent } from 'http'
 import { Agent as Agents } from 'https'
 import { merge, reject } from "lodash"
 import { stringify } from 'querystring'
-import { VarManager } from "../../singleton/VarManager"
 import { ElementFactory } from "../ElementFactory"
 import { ElementProxy } from "../ElementProxy"
 import { IElement } from "../IElement"
@@ -46,7 +45,7 @@ export class Api implements IElement {
 
   get fullUrl() {
     const urlParams = this.params
-    return VarManager.Instance.get(this.url.replace(/(\:(\w+))/g, `$\{urlParams.$2\}`), { urlParams })
+    return this.proxy.scenario.variableManager.get(this.url.replace(/(\:(\w+))/g, `$\{urlParams.$2\}`), { urlParams })
   }
 
   get contentType() {
@@ -74,7 +73,7 @@ export class Api implements IElement {
     merge(this, { method: Method.GET }, {
       ...props,
       validate: props.validate?.map(v => {
-        const _v = ElementFactory.CreateElement<Validate>('Validate')
+        const _v = ElementFactory.CreateElement<Validate>('Validate', this.proxy.scenario)
         v['logLevel'] = props['logLevel']
         _v.init(v)
         return _v

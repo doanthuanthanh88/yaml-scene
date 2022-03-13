@@ -1,7 +1,7 @@
 import { Scenario } from '@app/singleton/Scenario'
 import { readFileSync } from 'fs'
 import { safeLoad, Type } from 'js-yaml'
-import { SCHEMA } from '.'
+import { YAMLSchema } from '.'
 
 /**
  * !fragment
@@ -16,9 +16,15 @@ import { SCHEMA } from '.'
       - !fragment ./examples/scene_2.yaml
       - Echo: Loaded scene 2 successfully
  */
-export const fragment = new Type('!fragment', {
-  kind: 'scalar',
-  construct: (filePath) => {
-    return safeLoad(readFileSync(Scenario.Current.resolvePath(filePath)).toString(), { schema: SCHEMA })
+export class FragmentScalar extends Type {
+  constructor(scenario: Scenario) {
+    super('!fragment', {
+      kind: 'scalar',
+      construct: (filePath) => {
+        return safeLoad(readFileSync(scenario.resolvePath(filePath)).toString(), {
+          schema: YAMLSchema.Create(scenario)
+        })
+      }
+    })
   }
-})
+}

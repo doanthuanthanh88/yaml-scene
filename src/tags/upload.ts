@@ -1,3 +1,4 @@
+import { Scenario } from '@app/singleton/Scenario'
 import { createReadStream, ReadStream } from 'fs'
 import { Type } from 'js-yaml'
 
@@ -13,11 +14,14 @@ import { Type } from 'js-yaml'
     body:
       file: !binary ~/data.json
  */
-export const binary = new Type('!binary', {
-  kind: 'scalar',
-  instanceOf: ReadStream,
-  construct: (data) => {
-    const file = data
-    return createReadStream(file)
+export class BinaryScalar extends Type {
+  constructor(scenario: Scenario) {
+    super('!binary', {
+      kind: 'scalar',
+      instanceOf: ReadStream,
+      construct: (file) => {
+        return createReadStream(scenario.resolvePath(file))
+      }
+    })
   }
-})
+}

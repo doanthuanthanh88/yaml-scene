@@ -22,7 +22,8 @@ export class js {
   }
 
   async exec() {
-    await this.proxy.eval(this.content)
+    const rs = await this.proxy.eval(this.content)
+    return rs
   }
 
 }

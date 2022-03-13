@@ -1,4 +1,4 @@
-import { Extensions } from "@app/utils/extensions"
+import { Scenario } from "@app/singleton/Scenario"
 import { cloneDeep } from "lodash"
 import { ElementProxy } from "./ElementProxy"
 import { IElement } from './IElement'
@@ -7,7 +7,7 @@ export class ElementFactory {
   // Doc~GuideMD
   private static readonly CHAR_SPLIT_FOLDER_CLASS = '~'
 
-  static CreateElement<T extends IElement>(names: string) {
+  static CreateElement<T extends IElement>(names: string, scenario: Scenario) {
     let [folder, name] = names.split(ElementFactory.CHAR_SPLIT_FOLDER_CLASS)
     if (!name) {
       name = folder
@@ -20,7 +20,7 @@ export class ElementFactory {
       if (!Clazz) throw new Error(`Could not found "${folder}${name}"`)
     } catch (err1) {
       try {
-        const Clazzes = Extensions.Load(`${folder}`)
+        const Clazzes = scenario.extensions.load(`${folder}`)
         Clazz = Clazzes[name]
         if (!Clazz) throw err1
       } catch (err2) {
@@ -33,6 +33,6 @@ export class ElementFactory {
     } else {
       tag = tag.clone ? tag.clone() : cloneDeep(tag)
     }
-    return new ElementProxy<T>(tag)
+    return new ElementProxy<T>(tag, scenario)
   }
 }

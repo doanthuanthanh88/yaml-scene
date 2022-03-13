@@ -1,22 +1,29 @@
-import logger from 'loglevel'
-import { Logger as Logger1 } from 'loglevel'
-
-// logger.setDefaultLevel('debug')
+import { Logger as Logger1, getLogger } from 'loglevel'
 
 export class LoggerFactory {
-  private static _INSTANCE = {} as { [level: string]: Logger1 }
+  private loggers = {} as { [level: string]: Logger1 }
+  private static readonly GLOBAL_LOGGER_NAME = Symbol(0)
 
-  static GetLogger(level?: string) {
-    if (!level) return logger
-    if (LoggerFactory._INSTANCE[level])
-      return LoggerFactory._INSTANCE[level]
-    LoggerFactory._INSTANCE[level] = logger.getLogger(level)
+  getLogger(level = '') {
+    if (this.loggers[level])
+      return this.loggers[level]
+
+    this.loggers[level] = getLogger(level || LoggerFactory.GLOBAL_LOGGER_NAME)
+
     if (level === 'slient') {
-      LoggerFactory._INSTANCE[level].disableAll(true)
-    } else {
-      LoggerFactory._INSTANCE[level].setDefaultLevel(level as any)
+      this.loggers[level].disableAll(true)
+    } else if (level) {
+      this.loggers[level].setDefaultLevel(level as any)
     }
-    return LoggerFactory._INSTANCE[level]
+    return this.loggers[level]
+  }
+
+  setLogger(name?: string, logLevel?: any) {
+    if (logLevel === 'slient') {
+      this.getLogger(name).disableAll()
+    } else {
+      this.getLogger(name).setDefaultLevel(logLevel)
+    }
   }
 }
 

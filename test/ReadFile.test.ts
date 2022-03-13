@@ -1,6 +1,5 @@
 import { Simulator } from "@app/Simulator"
-import { VarManager } from "@app/singleton/VarManager"
-import { existsSync, unlinkSync } from "fs"
+import { unlinkSync } from "fs"
 import { tmpdir } from "os"
 import { join } from "path"
 
@@ -13,11 +12,7 @@ describe.each([
 ])('Test to "ReadFile" and "WriteFile"', ({ type, filename, data }) => {
   const path = join(tmpdir(), filename)
 
-  afterAll(() => {
-    unlinkSync(path)
-  })
-
-  test(`Write a ${type} file`, async () => {
+  beforeAll(async () => {
     await Simulator.Run(`
 - Vars:
     data: ${JSON.stringify(data)}
@@ -25,44 +20,40 @@ describe.each([
     path: ${path}
     type: ${type}
     content: \${data}
-`)
-    expect(existsSync(path)).toBe(true)
-  })
-
-  test(`Read a ${type} file`, async () => {
-    await Simulator.Run(`
-- ReadFile:
-    path: ${path}
-    type: ${type}
-    var: content
-`)
-    expect(VarManager.Instance.vars.content).toStrictEqual(data)
-  })
-
-  test(`Write a ${type} file with password`, async () => {
-    await Simulator.Run(`
-- Vars:
-    data: ${JSON.stringify(data)}
 - WriteFile:
-    path: ${path}
+    path: ${path}.encrypted
     type: ${type}
     content: \${data}
     encrypt:
       password: thanh123
 `)
-    expect(existsSync(path)).toBe(true)
+  })
+
+  afterAll(() => {
+    unlinkSync(`${path}`)
+    unlinkSync(`${path}.encrypted`)
+  })
+
+  test(`Read a ${type} file`, async () => {
+    const scenario = await Simulator.Run(`
+- ReadFile:
+    path: ${path}
+    type: ${type}
+    var: content
+`)
+    expect(scenario.variableManager.vars.content).toStrictEqual(data)
   })
 
   test(`Read a ${type} file with password`, async () => {
-    await Simulator.Run(`
+    const scenario = await Simulator.Run(`
 - ReadFile:
-    path: ${path}
+    path: ${path}.encrypted
     type: ${type}
     var: content
     decrypt:
       password: thanh123
 `)
-    expect(VarManager.Instance.vars.content).toStrictEqual(data)
+    expect(scenario.variableManager.vars.content).toStrictEqual(data)
   })
 
 })

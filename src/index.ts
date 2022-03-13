@@ -1,31 +1,28 @@
 import { Helper } from "./Helper";
 import { Scenario } from "./singleton/Scenario";
-import { VarManager } from "./singleton/VarManager";
 
 export class Main {
 
   private static helper = new Helper();
 
-  private static loadEnv() {
-    this.helper.loadEnv(VarManager.Instance.vars, Scenario.Current.resolvePath(this.helper.envFile), process.env, this.helper.env)
-  }
-
   static async Exec() {
 
     await this.helper.exec()
 
-    const scenario = Scenario.Current
+    const scenario = new Scenario()
+    scenario.loggerFactory.setLogger(undefined, 'info')
     try {
       await scenario.init(this.helper.yamlFile, this.helper.password)
       await scenario.prepare()
       if (scenario.hasEnvVar) {
-        this.loadEnv()
+        this.helper.loadEnv(scenario.variableManager.vars, scenario.resolvePath(this.helper.envFile), process.env, this.helper.env)
       }
       await scenario.exec()
     } finally {
       scenario.printLog()
       await scenario.dispose()
     }
+    return scenario
   }
 }
 

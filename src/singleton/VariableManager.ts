@@ -1,6 +1,6 @@
 
 
-export class Variable {
+export class VariableManager {
   private static readonly _NavPattern = /^(\$\{){1}([^\}]+)\}$/
 
   readonly vars = {} as { [key: string]: any }
@@ -67,7 +67,7 @@ export class Variable {
       let vl;
       let evalStr = `let {${Object.keys(ctx).join(',')}} = ctx;\n`
       let m
-      if (m = obj.match(Variable._NavPattern)) {
+      if (m = obj.match(VariableManager._NavPattern)) {
         evalStr += `vl = ${m[2]}`
       } else {
         evalStr += `vl = \`${obj}\``

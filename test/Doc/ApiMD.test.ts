@@ -1,5 +1,4 @@
 import { Simulator } from "@app/Simulator"
-import { VarManager } from "@app/singleton/VarManager"
 import jsonServer from 'json-server'
 import { reject } from "lodash"
 import { join } from "path"
@@ -55,7 +54,7 @@ describe('Test to generate api document', () => {
   })
 
   test('Export to api document markdown', async () => {
-    await Simulator.Run(`
+    const scenario = await Simulator.Run(`
 - Templates:
   - Api:
       ->: base
@@ -111,11 +110,11 @@ describe('Test to generate api document', () => {
     description: Demo CRUD API to generate to markdown document
     signature: "[Doan Thuan Thanh](mailto:doanthuanthanh88@gmail.com)"
     outFile: ${join(__dirname, 'ApiMD.md')}
-`, undefined, 'slient')
-    expect(VarManager.Instance.vars.posts).toHaveLength(1)
-    expect(VarManager.Instance.vars.newOne?.id).toBe(2)
-    expect(VarManager.Instance.vars.updatedOne.title).toBe('json-server 2 updated')
-    expect(VarManager.Instance.vars.details.title).toBe('json-server 2 updated')
-    expect(VarManager.Instance.vars.status).toBe(200)
-  }, 60000)
+`)
+    expect(scenario.variableManager.vars.posts).toHaveLength(1)
+    expect(scenario.variableManager.vars.newOne?.id).toBe(2)
+    expect(scenario.variableManager.vars.updatedOne.title).toBe('json-server 2 updated')
+    expect(scenario.variableManager.vars.details.title).toBe('json-server 2 updated')
+    expect(scenario.variableManager.vars.status).toBe(200)
+  })
 })

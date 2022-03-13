@@ -1,5 +1,4 @@
 import { Api } from '@app/elements/Api';
-import { Scenario } from '@app/singleton/Scenario';
 import { DataSource } from '@app/utils/data-source/DataSource';
 import { Exporter as IExporter } from '@app/utils/doc/Exporter';
 import { omit } from 'lodash';
@@ -85,7 +84,7 @@ export class Exporter implements IExporter<Api> {
   }
 
   export(apis: Api[]) {
-    const mdMenu = [`# ${this.md.title || Scenario.Current.title}`, `${this.md.description || Scenario.Current.description || ''}`];
+    const mdMenu = [`# ${this.md.title || this.md.proxy.scenario.title}`, `${this.md.description || this.md.proxy.scenario.description || ''}`];
     const mdDetails = [];
 
     if (this.md.signature) {

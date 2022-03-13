@@ -1,8 +1,13 @@
+import { Scenario } from "@app/singleton/Scenario";
 import { Schema } from "js-yaml";
-import { fragment } from "./fragment";
-import { binary } from "./upload";
+import { FragmentScalar } from "./fragment";
+import { BinaryScalar } from "./upload";
 
-export const SCHEMA = Schema.create([
-  binary,
-  fragment
-])
+export class YAMLSchema {
+  static Create(scenario: Scenario) {
+    return Schema.create([
+      new BinaryScalar(scenario),
+      new FragmentScalar(scenario)
+    ])
+  }
+}

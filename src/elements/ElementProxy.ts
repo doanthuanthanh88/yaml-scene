@@ -1,7 +1,4 @@
 import { Scenario } from "@app/singleton/Scenario";
-import { TemplateManager } from "@app/singleton/TemplateManager";
-import { VarManager } from "@app/singleton/VarManager";
-import { LoggerFactory } from "@app/utils/logger";
 import { cloneDeep, merge } from "lodash";
 import { IElement } from "./IElement";
 
@@ -15,10 +12,10 @@ export class ElementProxy<T extends IElement> {
   }
 
   get logger() {
-    return LoggerFactory.GetLogger(this.logLevel)
+    return this.scenario.loggerFactory.getLogger(this.logLevel)
   }
 
-  constructor(public element: T, public scenario = Scenario.Current) {
+  constructor(public element: T, public scenario: Scenario) {
     const self = this
     Object.defineProperty(element, 'proxy', {
       get() {
@@ -58,13 +55,13 @@ export class ElementProxy<T extends IElement> {
 
   clone() {
     if (this.element.clone) {
-      return new ElementProxy<T>(this.element.clone())
+      return new ElementProxy<T>(this.element.clone(), this.scenario)
     }
-    return new ElementProxy<T>(cloneDeep(this.element))
+    return new ElementProxy<T>(cloneDeep(this.element), this.scenario)
   }
 
   resolvePath(path: string) {
-    return Scenario.Current.resolvePath(path)
+    return this.scenario.resolvePath(path)
   }
 
   changeLogLevel(level: string) {
@@ -72,21 +69,21 @@ export class ElementProxy<T extends IElement> {
   }
 
   setVar(varObj: any, obj: any, defaultKey?: string) {
-    return VarManager.Instance.set(varObj, obj, defaultKey)
+    return this.scenario.variableManager.set(varObj, obj, defaultKey)
   }
 
   eval(obj: any, baseContext = {} as any) {
-    return VarManager.Instance.eval(obj, { ...baseContext, _: this._, __: this.__ })
+    return this.scenario.variableManager.eval(obj, { ...baseContext, _: this._, __: this.__ })
   }
 
   getVar(obj: any, baseContext = {}) {
-    return VarManager.Instance.get(obj, { ...baseContext, _: this._, __: this.__ })
+    return this.scenario.variableManager.get(obj, { ...baseContext, _: this._, __: this.__ })
   }
 
   inherit(keys: string[]) {
     if (keys?.length) {
       keys.forEach(key => {
-        const temp = TemplateManager.Elements.get(key)
+        const temp = this.scenario.templateManager.get(key)
         const prop = merge({}, temp, this.element)
         merge(this.element, prop)
       })
@@ -95,7 +92,7 @@ export class ElementProxy<T extends IElement> {
 
   expose(key?: string) {
     if (key) {
-      TemplateManager.Elements.set(key, this.element)
+      this.scenario.templateManager.set(key, this.element)
     }
   }
 

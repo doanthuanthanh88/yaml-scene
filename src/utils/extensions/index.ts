@@ -5,36 +5,40 @@ import { existsSync, readFileSync } from "fs";
 import { join } from "path";
 
 export class Extensions {
-  private static ExtensionElements = {}
-  public static ExtensionPaths = new Array<string>()
+  private extensionElements = {}
+  public extensionPaths = new Array<string>()
 
-  static Load(p: string) {
+  constructor(public scenario: Scenario) {
+
+  }
+
+  load(p: string) {
     // for (const p of modules) {
-    if (Extensions.ExtensionElements[p]) {
-      return Extensions.ExtensionElements[p]
+    if (this.extensionElements[p]) {
+      return this.extensionElements[p]
     }
 
     let obj: any;
     let modulePath = "System";
     try {
-      modulePath = Extensions.GetPathGlobalModule(p);
+      modulePath = this.getPathGlobalModule(p);
       obj = require(modulePath);
-      Extensions.ExtensionElements[p] = obj
-      // Extensions.ExternalModules.add(obj);
+      this.extensionElements[p] = obj
+      // this.ExternalModules.add(obj);
       try {
         const packageJson = JSON.parse(readFileSync(join(modulePath, 'package.json')).toString())
-        console.log(chalk.bold.gray(`${packageJson.name} (v${packageJson.version})`), chalk.gray.underline(packageJson.repository?.url || ''), chalk.italic.gray(`${packageJson.description || ''}`))
+        this.scenario.loggerFactory.getLogger().info(chalk.bold.gray(`${packageJson.name} (v${packageJson.version})`), chalk.gray.underline(packageJson.repository?.url || ''), chalk.italic.gray(`${packageJson.description || ''}`))
       } catch { }
       // console.group()
       // for (let k in obj) {
-      //   if (Extensions.ExtensionElements[k]) {
+      //   if (this.extensionElements[k]) {
       //     console.log(
       //       chalk.yellow(
       //         `Warn: Tag ${k} has declared. Could not redeclare in ${modulePath}`
       //       )
       //     );
       //   }
-      //   Extensions.ExtensionElements[k] = obj[k];
+      //   this.extensionElements[k] = obj[k];
       //   console.log(chalk.gray.bold('- ' + k), chalk.italic.gray(`(${modulePath})`));
       // }
       // console.groupEnd()
@@ -46,18 +50,18 @@ export class Extensions {
     // }
   }
 
-  static async Setup(libDirs: string[]) {
-    await Extensions.LoadExtensionPaths(libDirs?.map(dir => Scenario.Current.resolvePath(dir)))
+  async setup(libDirs: string[]) {
+    await this.loadextensionPaths(libDirs?.map(dir => this.scenario.resolvePath(dir)))
   }
 
-  private static async LoadExtensionPaths(libDirs?: string[]) {
-    if (!Extensions.ExtensionPaths.length) {
-      if (libDirs) Extensions.ExtensionPaths.push(...libDirs)
+  private async loadextensionPaths(libDirs?: string[]) {
+    if (!this.extensionPaths.length) {
+      if (libDirs) this.extensionPaths.push(...libDirs)
       await Promise.all([
         (async () => {
           try {
-            const rs = await Extensions.ExecShell("npm", ["root", "-g"])
-            Extensions.ExtensionPaths.push(
+            const rs = await this.execShell("npm", ["root", "-g"])
+            this.extensionPaths.push(
               ...rs.split('\n')
                 .map((f) => f?.trim())
                 .filter((f) => f && existsSync(f))
@@ -68,8 +72,8 @@ export class Extensions {
         })(),
         (async () => {
           try {
-            const rs = await Extensions.ExecShell("yarn", ["global", "dir"])
-            Extensions.ExtensionPaths.push(
+            const rs = await this.execShell("yarn", ["global", "dir"])
+            this.extensionPaths.push(
               ...rs.split('\n')
                 .map((f) => {
                   f = f?.trim();
@@ -85,16 +89,16 @@ export class Extensions {
     }
   }
 
-  private static GetPathGlobalModule(name: string) {
+  private getPathGlobalModule(name: string) {
     let modulePath = undefined;
-    for (const i in Extensions.ExtensionPaths) {
-      modulePath = join(Extensions.ExtensionPaths[i], name);
+    for (const i in this.extensionPaths) {
+      modulePath = join(this.extensionPaths[i], name);
       try {
         require.resolve(modulePath);
         return modulePath;
       } catch { }
     }
-    modulePath = Scenario.Current.resolvePath(name)
+    modulePath = this.scenario.resolvePath(name)
     try {
       require.resolve(modulePath);
       return modulePath;
@@ -104,7 +108,7 @@ export class Extensions {
     );
   }
 
-  private static ExecShell(cmd: string, args: string[]) {
+  private execShell(cmd: string, args: string[]) {
     return new Promise<string>((resolve, reject) => {
       const sp = spawn(cmd, args)
       let succ = ''

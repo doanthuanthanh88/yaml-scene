@@ -1,10 +1,10 @@
 import { Simulator } from "@app/Simulator"
-import { VarManager } from "@app/singleton/VarManager"
 import jsonServer from 'json-server'
 import { reject } from "lodash"
 
 describe('Test CRUD', () => {
   let server: any
+  const port = 3003
 
   beforeAll(() => {
     return new Promise((resolve) => {
@@ -18,7 +18,7 @@ describe('Test CRUD', () => {
         const app = jsonServer.create()
         app.use(middlewares)
         app.use(router)
-        server = app.listen(3000, () => {
+        server = app.listen(port, () => {
           resolve(undefined)
         })
       } catch (err) {
@@ -36,27 +36,27 @@ describe('Test CRUD', () => {
   })
 
   test('Get all of posts', async () => {
-    await Simulator.Run(`
+    const scenario = await Simulator.Run(`
 - Templates:
   - Api:
       ->: base
-      baseURL: http://localhost:3000
+      baseURL: http://localhost:${port}
 
 - Api~get:
     <-: base
     title: Get all of posts
     url: /posts
     var: posts
-`, undefined, 'slient')
-    expect(VarManager.Instance.vars.posts).toHaveLength(1)
+`)
+    expect(scenario.variableManager.vars.posts).toHaveLength(1)
   })
 
   test('Create a new posts', async () => {
-    await Simulator.Run(`
+    const scenario = await Simulator.Run(`
 - Templates:
   - Api:
       ->: base
-      baseURL: http://localhost:3000
+      baseURL: http://localhost:${port}
 
 - Api~post:
     <-: base
@@ -67,16 +67,16 @@ describe('Test CRUD', () => {
       title: json-server 2
       author: typicode 2
     var: newOne
-`, undefined, 'slient')
-    expect(VarManager.Instance.vars.newOne?.id).toBe(2)
+`)
+    expect(scenario.variableManager.vars.newOne?.id).toBe(2)
   })
 
   test('Update a post', async () => {
-    await Simulator.Run(`
+    const scenario = await Simulator.Run(`
 - Templates:
   - Api:
       ->: base
-      baseURL: http://localhost:3000
+      baseURL: http://localhost:${port}
 
 - Api~put:
     <-: base
@@ -89,16 +89,16 @@ describe('Test CRUD', () => {
       title: json-server 2 updated
       author: typicode 2 updated
     var: updatedOne
-`, undefined, 'slient')
-    expect(VarManager.Instance.vars.updatedOne.title).toBe('json-server 2 updated')
+`)
+    expect(scenario.variableManager.vars.updatedOne.title).toBe('json-server 2 updated')
   })
 
   test('Get a post details', async () => {
-    await Simulator.Run(`
+    const scenario = await Simulator.Run(`
 - Templates:
   - Api:
       ->: base
-      baseURL: http://localhost:3000
+      baseURL: http://localhost:${port}
 
 - Api~get:
     <-: base
@@ -107,16 +107,16 @@ describe('Test CRUD', () => {
     params:
       id: 2
     var: details
-`, undefined, 'slient')
-    expect(VarManager.Instance.vars.details.title).toBe('json-server 2 updated')
+`)
+    expect(scenario.variableManager.vars.details.title).toBe('json-server 2 updated')
   })
 
   test('Delete a post', async () => {
-    await Simulator.Run(`
+    const scenario = await Simulator.Run(`
 - Templates:
   - Api:
       ->: base
-      baseURL: http://localhost:3000
+      baseURL: http://localhost:${port}
 
 - Api~del:
     <-: base
@@ -126,7 +126,7 @@ describe('Test CRUD', () => {
       id: 2
     var: 
       status: \${_.response.status}
-`, undefined, 'slient')
-    expect(VarManager.Instance.vars.status).toBe(200)
+`)
+    expect(scenario.variableManager.vars.status).toBe(200)
   })
 })

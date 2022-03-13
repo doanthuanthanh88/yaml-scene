@@ -1,4 +1,7 @@
+import { VariableManager } from '@app/singleton/VariableManager'
+import { Base64 } from '@app/utils/encrypt/Base64'
 import { LoggerFactory } from '@app/utils/logger'
+import chalk from 'chalk'
 import { safeLoad } from 'js-yaml'
 import { homedir } from 'os'
 import { basename, dirname, extname, join, resolve } from 'path'
@@ -6,9 +9,9 @@ import { EventEmitter } from 'stream'
 import { ElementFactory } from '../elements/ElementFactory'
 import { ElementProxy } from '../elements/ElementProxy'
 import { Group } from '../elements/Group'
-import { SCHEMA } from '../tags'
+import { YAMLSchema } from '../tags'
 import { Extensions } from '../utils/extensions'
-import { VarManager } from './VarManager'
+import { TemplateManager } from './TemplateManager'
 
 /**
  * Standard Scenario file
@@ -47,14 +50,14 @@ steps:                            # Includes all which you want to do
  */
 
 export class Scenario {
-  private static _Instance: Scenario
   private static readonly SALTED_PASSWORD = '|-YAML-SCENE-|'
 
-  static get Current(): Scenario | never {
-    return Scenario._Instance || (Scenario._Instance = new Scenario())
-  }
-
   events: EventEmitter
+  templateManager: TemplateManager
+  variableManager: VariableManager
+  loggerFactory: LoggerFactory
+  extensions: Extensions
+
   title?: string
   description?: string
   password?: string
@@ -72,6 +75,17 @@ export class Scenario {
   hasEnvVar: boolean
 
   constructor() {
+    this.variableManager = new VariableManager({
+      get $$base64() {
+        return Base64.GetInstance()
+      },
+      get $$color() {
+        return chalk
+      }
+    })
+    this.extensions = new Extensions(this)
+    this.loggerFactory = new LoggerFactory()
+    this.templateManager = new TemplateManager()
     this.events = new EventEmitter()
     this.time = {
       begin: Date.now()
@@ -82,7 +96,7 @@ export class Scenario {
     this.time.init = Date.now()
     this.events.emit('scenario.init')
 
-    this.rootGroup = ElementFactory.CreateElement<Group>('Group')
+    this.rootGroup = ElementFactory.CreateElement<Group>('Group', this)
 
     let scenario: any
 
@@ -91,13 +105,13 @@ export class Scenario {
     this.rootDir = dirname(scenarioFile)
     const fileContent = await this.getScenarioFileContent(scenarioFile, this.getPassword(password))
     scenario = safeLoad(fileContent, {
-      schema: SCHEMA
+      schema: YAMLSchema.Create(this)
     }) as any
     if (Array.isArray(scenario)) {
       scenario = { title: basename(scenarioFile), steps: scenario.flat() }
     }
 
-    const { password: pwd, extensions, vars, logLevel = 'info', ...scenarioProps } = scenario
+    const { password: pwd, extensions, vars, logLevel, ...scenarioProps } = scenario
     if (!scenarioProps) throw new Error('File scenario is not valid')
 
     this.title = scenarioProps.title
@@ -109,19 +123,15 @@ export class Scenario {
     }
 
     if (logLevel) {
-      if (logLevel === 'slient') {
-        LoggerFactory.GetLogger().disableAll()
-      } else {
-        LoggerFactory.GetLogger().setDefaultLevel(logLevel)
-      }
+      this.loggerFactory.setLogger(undefined, logLevel)
     }
 
     // Load extensions
-    await Extensions.Setup(extensions && (Array.isArray(extensions) ? extensions : [extensions]))
+    await this.extensions.setup(extensions && (Array.isArray(extensions) ? extensions : [extensions]))
 
     // Load global variables which is overrided by env variables
     if (vars) {
-      VarManager.Instance.set(vars, null)
+      this.variableManager.set(vars, null)
       this.hasEnvVar = true
     }
     // Load Scenario
@@ -170,7 +180,7 @@ export class Scenario {
   }
 
   private async getScenarioFileContent(scenarioFile: string, password: string) {
-    const rf = ElementFactory.CreateElement('ReadFile')
+    const rf = ElementFactory.CreateElement('ReadFile', this)
     await rf.element.init({
       path: scenarioFile,
       type: 'text',
@@ -184,7 +194,7 @@ export class Scenario {
   }
 
   private async saveToEncryptFile(content: string, password: string, fileOut: string) {
-    const rf = ElementFactory.CreateElement('WriteFile')
+    const rf = ElementFactory.CreateElement('WriteFile', this)
     await rf.element.init({
       content,
       path: fileOut,

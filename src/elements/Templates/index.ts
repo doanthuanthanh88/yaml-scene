@@ -25,7 +25,7 @@ export class Templates {
   group: ElementProxy<Group>
 
   init(items: IElement[]) {
-    this.group = ElementFactory.CreateElement<Group>('Group')
+    this.group = ElementFactory.CreateElement<Group>('Group', this.proxy.scenario)
     this.group.init({
       steps: items
     })

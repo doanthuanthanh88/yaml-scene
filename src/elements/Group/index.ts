@@ -47,7 +47,7 @@ export class Group implements IElement {
     const arrs = steps.flat(Number.MAX_SAFE_INTEGER)
     this.steps = arrs.map(step => {
       const [name, vl] = Object.entries(step)[0]
-      const elem = ElementFactory.CreateElement<IElement>(name as any)
+      const elem = ElementFactory.CreateElement<IElement>(name as any, this.proxy.scenario)
       elem.init(vl)
       return elem
     })
