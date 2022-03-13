@@ -2,8 +2,9 @@ FROM node:alpine AS builder
 WORKDIR /app
 
 COPY . .
-RUN npm ci
-RUN npm pack
+RUN yarn install
+RUN yarn build
+RUN yarn install:dist
 
 ####################
 FROM node:alpine
