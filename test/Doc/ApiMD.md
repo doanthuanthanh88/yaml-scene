@@ -1,7 +1,7 @@
 # Post service
 Demo CRUD API to generate to markdown document
 > Developed by [Doan Thuan Thanh](mailto:doanthuanthanh88@gmail.com)  
-> Updated at 3/13/2022, 1:48:54 PM  
+> Updated at 3/14/2022, 6:06:41 PM  
 
 | | API title | URL |  
 |---|---|---|  
@@ -32,6 +32,9 @@ curl "/posts" -X POST -H "content-type: application/json" -d "{\"id\":2,\"title\
 
 </details>
 
+
+
+<br/>
 
 ## REQUEST
 ### Request body
@@ -113,6 +116,9 @@ curl "/posts/2" -X DELETE -H "content-type: application/json"
 </details>
 
 
+
+<br/>
+
 ## REQUEST
 ### Params
 <details>
@@ -179,6 +185,9 @@ curl "/posts/2" -X GET -H "content-type: application/json"
 
 </details>
 
+
+
+<br/>
 
 ## REQUEST
 ### Params
@@ -254,6 +263,9 @@ curl "/posts" -X GET -H "content-type: application/json"
 </details>
 
 
+
+<br/>
+
 ## REQUEST
 ## RESPONSE
 ### Response data
@@ -273,7 +285,7 @@ curl "/posts" -X GET -H "content-type: application/json"
     ],
     "creator": {
       "name": "thanh",
-      "created_time": 1647179332111
+      "created_time": 1647255999369
     },
     "tags": [
       {
@@ -330,6 +342,9 @@ curl "/posts/2" -X PUT -H "content-type: application/json" -d "{\"id\":2,\"title
 
 </details>
 
+
+
+<br/>
 
 ## REQUEST
 ### Params

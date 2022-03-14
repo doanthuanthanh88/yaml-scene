@@ -4,7 +4,7 @@ import { tmpdir } from "os"
 import { join } from "path"
 
 describe('Test scripts', () => {
-  const tmpFile = join(tmpdir(), Date.now().toString())
+  const tmpFile = join(tmpdir(), Math.random().toString())
 
   afterAll(() => {
     unlinkSync(tmpFile)

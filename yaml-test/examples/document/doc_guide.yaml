@@ -1,7 +1,7 @@
-- Doc~GuideMD: 
+- Doc~GuideMD:
     logLevel: debug
-    includes: 
-      - /workspaces/yaml-scene/src
+    includes:
+      - ../../../src
     excludes: []
     includePattern: ".+\\.ts$"
     outFile: ../../../GUIDE.md

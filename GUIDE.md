@@ -7,6 +7,7 @@
 |[Api~patch](#Api~patch)| Send a Patch request via http|  
 |[Api~put](#Api~put)| Send a Put request via http|  
 |[Api~get](#Api~get)| Send a GET request via http|  
+|[Api](#Api)| Send a request via http with custom method|  
 |[Api~del](#Api~del)| Send a DELETE request via http|  
 |[Api~summary](#Api~summary)| Summary after all of apis in scene executed done.|  
 |[Api~head](#Api~head)| Send a Head request via http|  
@@ -82,6 +83,7 @@ Send a Post request via http
 ```yaml
 - Api~post:
     title: Create a new product
+    doc: true
     baseURL: http://localhost:3000
     url: /product
     body:
@@ -100,6 +102,7 @@ Send a Patch request via http
 ```yaml
 - Api~patch:
     title: Update product name
+    doc: true
     baseURL: http://localhost:3000
     url: /product/:id
     params:
@@ -118,6 +121,7 @@ Send a Put request via http
 ```yaml
 - Api~put:
     title: Update product
+    doc: true
     baseURL: http://localhost:3000
     url: /product/:id
     params:
@@ -138,6 +142,25 @@ Send a GET request via http
 ```yaml
 - Api~get:
     title: Get product details
+    doc: true
+    baseURL: http://localhost:3000
+    url: /product/:id
+    params:
+      id: 1
+    validate:
+      - title: Response status is valid
+        chai: ${expect(_.response.status).to.equal(200)}
+```
+
+
+## Api <a name="Api"></a>
+Send a request via http with custom method  
+
+```yaml
+- Api:
+    title: Get product details
+    doc: true
+    method: GET
     baseURL: http://localhost:3000
     url: /product/:id
     params:
@@ -179,6 +202,7 @@ Send a Head request via http
 ```yaml
 - Api~head:
     title: Ping a product
+    doc: true
     baseURL: http://localhost:3000
     url: /product/:id
     params:

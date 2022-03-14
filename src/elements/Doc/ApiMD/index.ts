@@ -35,7 +35,7 @@ export class ApiMD {
     merge(this, props)
     this.proxy.scenario.events
       .on('api.done', (isPassed: boolean, api) => {
-        if (isPassed) {
+        if (isPassed && !!api.doc) {
           this.apis.push(api)
         }
       })
@@ -48,7 +48,7 @@ export class ApiMD {
   async exec() {
     await TimeUtils.Delay('1s')
     const exporter = new Exporter(new FileDataSource(this.outFile), this)
-    exporter.export(this.apis)
+    exporter.export(this.apis.sort((a, b) => a.title > b.title ? 1 : -1))
     this.proxy.logger.info(`Document is generated at ${this.outFile}`)
   }
 

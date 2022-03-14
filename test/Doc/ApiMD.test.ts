@@ -1,4 +1,5 @@
 import { Simulator } from "@app/Simulator"
+import { readFileSync } from "fs"
 import jsonServer from 'json-server'
 import { reject } from "lodash"
 import { join } from "path"
@@ -58,6 +59,7 @@ describe('Test to generate api document', () => {
 - Templates:
   - Api:
       ->: base
+      doc: true
       baseURL: http://localhost:3000
 
 - Api~get:
@@ -96,6 +98,15 @@ describe('Test to generate api document', () => {
       id: 2
     var: details
 
+- Api~get:
+    <-: base
+    doc: false
+    title: This is not documented
+    url: /posts/:id
+    params:
+      id: 2
+    var: details
+
 - Api~del:
     <-: base
     title: Delete a post
@@ -116,5 +127,9 @@ describe('Test to generate api document', () => {
     expect(scenario.variableManager.vars.updatedOne.title).toBe('json-server 2 updated')
     expect(scenario.variableManager.vars.details.title).toBe('json-server 2 updated')
     expect(scenario.variableManager.vars.status).toBe(200)
+
+    const cnt = readFileSync(`${join(__dirname, 'ApiMD.md')}`).toString()
+    expect(cnt).toContain('Get a post details')
+    expect(cnt).not.toContain('This is not documented')
   })
 })

@@ -4,7 +4,7 @@ import { tmpdir } from "os"
 import { join } from "path"
 
 describe('Test scripts', () => {
-  const tmpFile = join(tmpdir(), Date.now().toString())
+  const tmpFile = join(tmpdir(), Math.random().toString())
 
   afterAll(() => {
     unlinkSync(tmpFile)
@@ -14,10 +14,10 @@ describe('Test scripts', () => {
 
     await Simulator.Run(`
 - Script~sh: |
-    echo -n  "Hello world" > "${tmpFile}"
+    echo "Hello world" > "${tmpFile}"
 `)
     expect(existsSync(tmpFile)).toBe(true)
-    expect(readFileSync(tmpFile).toString()).toBe('Hello world')
+    expect(readFileSync(tmpFile).toString().trim()).toBe('Hello world')
   })
 
 })

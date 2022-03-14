@@ -9,6 +9,7 @@ import { Method } from "./Method";
  * @example
 - Api~head:
     title: Ping a product
+    doc: true
     baseURL: http://localhost:3000
     url: /product/:id
     params:

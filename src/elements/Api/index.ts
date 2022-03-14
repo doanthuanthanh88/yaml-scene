@@ -1,6 +1,7 @@
 import { LogLevel } from "@app/utils/logger/LogLevel"
 import { ProgressBar } from "@app/utils/progress-bar/ProgressBar"
 import { ReaderProgressBar } from "@app/utils/progress-bar/ReaderProgressBar"
+import { TimeUtils } from "@app/utils/time"
 import Axios from "axios"
 import chalk from "chalk"
 import FormData from 'form-data'
@@ -24,14 +25,34 @@ import { Method } from "./Method"
 //   return config
 // })
 
+/**
+ * Api
+ * @description Send a request via http with custom method
+ * @group Api
+ * @order 4
+ * @example
+- Api:
+    title: Get product details
+    doc: true
+    method: GET
+    baseURL: http://localhost:3000
+    url: /product/:id
+    params:
+      id: 1
+    validate:
+      - title: Response status is valid
+        chai: ${expect(_.response.status).to.equal(200)}
+ */
 export class Api implements IElement {
   proxy: ElementProxy<Api>
 
   title: string
   description: string
+  doc: boolean
   method: Method
   baseURL: string
   url: string
+  timeout?: number
   query: any
   params: any
   headers: any
@@ -74,8 +95,10 @@ export class Api implements IElement {
       ...props,
       validate: props.validate?.map(v => {
         const _v = ElementFactory.CreateElement<Validate>('Validate', this.proxy.scenario)
-        v['logLevel'] = props['logLevel']
+        v.changeLogLevel(props.logLevel)
         _v.init(v)
+        _v._ = this.proxy._
+        _v.__ = this.proxy.__
         return _v
       })
     })
@@ -89,6 +112,10 @@ export class Api implements IElement {
     this.title = this.proxy.getVar(this.title)
     this.description = this.proxy.getVar(this.description)
     this.baseURL = this.proxy.getVar(this.baseURL) || ''
+    this.timeout = this.proxy.getVar(this.timeout)
+    if (this.timeout) {
+      this.timeout = TimeUtils.GetMsTime(this.timeout)
+    }
     this.url = this.proxy.getVar(this.url)
     this.params = this.proxy.getVar(this.params) || {}
     this.query = this.proxy.getVar(this.query) || {}
@@ -112,6 +139,7 @@ export class Api implements IElement {
         withCredentials: true,
         httpAgent: new Agent(),
         httpsAgent: new Agents(),
+        timeout: this.timeout
 
       })
       let { status, statusText, headers: responseHeaders, data } = await axios.request({

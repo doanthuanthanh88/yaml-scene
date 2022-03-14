@@ -115,7 +115,7 @@ ${api.curl}
 
 </details>
 `, '')
-      details.push('## REQUEST')
+      details.push('', '<br/>', '', '## REQUEST')
 
       if (api.params && Object.keys(api.params).length) {
         details.push(`### Params

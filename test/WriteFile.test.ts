@@ -10,7 +10,7 @@ describe.each([
   { type: 'yaml', filename: 'data.yaml', data: { "say": "hello world" } },
   { type: 'xml', filename: 'data.xml', data: { "say": "hello world" } },
 ])('Test to "ReadFile" and "WriteFile"', ({ type, filename, data }) => {
-  const path = join(tmpdir(), filename)
+  const path = join(tmpdir(), Math.random() + filename)
 
   afterAll(() => {
     unlinkSync(`${path}`)

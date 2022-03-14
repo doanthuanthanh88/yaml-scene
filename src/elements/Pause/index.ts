@@ -12,10 +12,10 @@ export class Pause {
   time: number
 
   init(props: any) {
-    if (props && typeof props !== 'object') {
-      this.time = props
-    } else {
+    if (props && typeof props === 'object') {
       merge(this, props)
+    } else {
+      this.time = props
     }
   }
 
