@@ -6,10 +6,12 @@ import { join } from "path";
 
 export class Extensions {
   private extensionElements = {}
-  public extensionPaths = new Array<string>()
+  private extensionPaths = new Set<string>()
 
-  constructor(public scenario: Scenario) {
+  constructor(public scenario: Scenario) { }
 
+  getGlobalExtension(name: string) {
+    return this.extensionElements[name]
   }
 
   load(p: string) {
@@ -50,49 +52,74 @@ export class Extensions {
     // }
   }
 
-  async setup(libDirs: string[]) {
-    await this.loadextensionPaths(libDirs?.map(dir => this.scenario.resolvePath(dir)))
+  async registerGlobalExtension(libDirs: string[]) {
+    const localDirs = new Set<string>()
+    libDirs?.forEach((dir) => {
+      const path = this.scenario.resolvePath(dir)
+      if (existsSync(path)) {
+        try {
+          // If is file
+          const localModule = require(path)
+          Object.keys(localModule).forEach(name => this.extensionElements[name] = localModule[name])
+        } catch (err) {
+          // If is directory
+          localDirs.add(path)
+        }
+      } else {
+        this.extensionPaths.forEach(path => {
+          const npmYarnModule = join(path, dir)
+          if (existsSync(npmYarnModule)) {
+            const modules = require(npmYarnModule)
+            Object.keys(modules).forEach(name => this.extensionElements[name] = modules[name])
+          }
+        })
+      }
+    })
+    localDirs.forEach(ld => this.extensionPaths.add(ld))
   }
 
-  private async loadextensionPaths(libDirs?: string[]) {
-    if (!this.extensionPaths.length) {
-      if (libDirs) this.extensionPaths.push(...libDirs)
-      await Promise.all([
-        (async () => {
-          try {
-            const rs = await this.execShell("npm", ["root", "-g"])
-            this.extensionPaths.push(
-              ...rs.split('\n')
-                .map((f) => f?.trim())
-                .filter((f) => f && existsSync(f))
-            );
-          } catch (err) {
-            console.error(err);
-          }
-        })(),
-        (async () => {
-          try {
-            const rs = await this.execShell("yarn", ["global", "dir"])
-            this.extensionPaths.push(
-              ...rs.split('\n')
-                .map((f) => {
-                  f = f?.trim();
-                  return f ? join(f, "node_modules") : f;
-                })
-                .filter((f) => f && existsSync(f))
-            );
-          } catch (err) {
-            console.error(err);
-          }
-        })(),
-      ]);
-    }
+  async setup(libDirs: string[]) {
+    await this.loadNpmYarnGlobalPaths()
+    await this.registerGlobalExtension(libDirs)
+  }
+
+  private async loadNpmYarnGlobalPaths() {
+    const globalDirs = await Promise.all([
+      (async () => {
+        try {
+          const rs = await this.execShell("npm", ["root", "-g"])
+          return rs.split('\n')
+            .map((f) => f?.trim())
+            .filter((f) => f && existsSync(f))
+        } catch (err) {
+          console.error(err);
+        }
+        return []
+      })(),
+      (async () => {
+        try {
+          const rs = await this.execShell("yarn", ["global", "dir"])
+          return rs.split('\n')
+            .map((f) => {
+              f = f?.trim();
+              return f ? join(f, "node_modules") : f;
+            })
+            .filter((f) => f && existsSync(f))
+        } catch (err) {
+          console.error(err);
+        }
+        return []
+      })(),
+    ]).then(([npmGlobalDirs, yarnGlobalDirs]) => {
+      return npmGlobalDirs.concat(yarnGlobalDirs)
+    })
+    globalDirs.forEach(gd => this.extensionPaths.add(gd))
   }
 
   private getPathGlobalModule(name: string) {
     let modulePath = undefined;
-    for (const i in this.extensionPaths) {
-      modulePath = join(this.extensionPaths[i], name);
+    for (const path of this.extensionPaths) {
+      modulePath = join(path, name);
       try {
         require.resolve(modulePath);
         return modulePath;

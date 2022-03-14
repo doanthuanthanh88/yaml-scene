@@ -55,14 +55,23 @@ logLevel: debug                   # How to show log is debug)
                                   # - info: Show infor, error log
                                   # - debug: Show log details, infor, error log ( Default )
                                   # - trace: Show all of log
-extensions:                       # Extension elements
-  - ~/code/github/yaml-scene/yaml-test/extensions/custom.js
+extensions:                       # Extension elements.
+  - ./cuz_extensions/custom1.js   # - Load elements from a file (Ex: elem1)
+  - ./cuz_extensions/custom2.js   # - Load elements from a file (Ex: elem2)
+  - ./cuz_extensions              # - Load elements from a folder (Ex: custom1~elem1, custom2~elem2)
+  - yas-grpc                      # - Load elements from npm/yarn global dirs
 vars:                             # Declare global variables, which can be replaced by env
   url: http://localhost:3000
   token: ...
 steps:                            # Includes all which you want to do
   - !fragment ./scene1.yaml
   - !fragment ./scene2.yaml
+  - elem1:                            
+  - elem2:
+  - custom1~elem1:
+  - custom2~elem2:
+  - call:                                 # Load doc from yas-grpc which declared in extensions
+  - yas-sequence-diagram~SequenceDiagram: # Load yas-sequence-diagram from npm/yarn global dirs then use class SequenceDiagram to handle
 ```
 
 

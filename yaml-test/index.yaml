@@ -6,7 +6,8 @@ vars:
   example: ABC
 steps:
   # - Api~summary: OK
-  - !fragment ./examples/script/bash.yaml
+  # - !fragment ./examples/custom-extension/echo_extensions.yaml
+  # - !fragment ./examples/document/doc_guide.yaml
   # - !fragment ./examples/document/doc_guide.yaml
   # - !fragment ./examples/async_jobs.yaml
   # - !fragment ./examples/upload.yaml

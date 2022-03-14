@@ -1,0 +1,13 @@
+logLevel: debug
+extensions:
+- yas-grpc
+- ./custom.js
+- ./
+steps:
+- ex1/custom1~echo11: 
+    title: echo 01
+- echo1: 
+    title: echo 02
+- yas-grpc/src/DocMD~DocMD:
+- yas-grpc~doc:
+- doc:

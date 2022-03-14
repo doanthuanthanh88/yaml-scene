@@ -20,8 +20,11 @@ export class ElementFactory {
       if (!Clazz) throw new Error(`Could not found "${folder}${name}"`)
     } catch (err1) {
       try {
-        const Clazzes = scenario.extensions.load(`${folder}`)
-        Clazz = Clazzes[name]
+        Clazz = scenario.extensions.getGlobalExtension(name)
+        if (!Clazz) {
+          const Clazzes = scenario.extensions.load(`${folder}`)
+          Clazz = Clazzes[name]
+        }
         if (!Clazz) throw err1
       } catch (err2) {
         throw new Error('\nError1: ' + err1.message + '\nError2: ' + err2.message)
@@ -31,6 +34,7 @@ export class ElementFactory {
     if (Clazz.prototype) {
       tag = new Clazz()
     } else {
+      tag = Clazz
       tag = tag.clone ? tag.clone() : cloneDeep(tag)
     }
     return new ElementProxy<T>(tag, scenario)
