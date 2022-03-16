@@ -45,11 +45,11 @@ export class CommentInfo implements DataModel {
       case 'custom':
         return `${this.example}`
       default:
-        return `
+        return this.example ? `
 \`\`\`${this.exampleType || 'yaml'}
 ${this.example}
 \`\`\`
-`
+` : ''
     }
   }
 }

@@ -43,6 +43,78 @@ It's only used for `extends` or `inherit` purposes|
 Currently only support chai `https://www.chaijs.com`|  
 |[Vars](#Vars)| Declare variables in scene|  
   
+# Default attributes
+Attributes in all of elements  
+
+
+## if
+Check condition before decided to run this element or not  
+
+```yaml
+- Vars:
+    isEnd: true
+
+- Echo: 
+    if: ${sayHello}
+    title: Hello
+
+- Sleep:
+    if: ${sayHello}
+    title: Sleep before say goodbye after say hello
+
+- Echo: 
+    if: ${!sayHello}
+    title: Goodbye
+```
+
+
+## async
+Run element asynchronized which not blocked others  
+
+```yaml
+- Group:
+    title: Run async jobs
+    stepDelay: 2s
+    steps:
+      - Group:
+          async: true
+          steps:
+            - Echo: Hello 1
+      - Group:
+          async: true
+          steps:
+            - Echo: Hello 2
+      - Group:
+          async: true
+          steps:
+            - Echo: Hello 3
+```
+
+
+## delay
+Delay after a specific time before keep playing the nexts  
+
+```yaml
+- Group:
+    title: Delay all of steps in a group
+    stepDelay: 1s
+    steps:
+      - Script~Js: |
+          _.proxy.setVar('begin', Date.now())
+      - Echo: ${Date.now() - begin}
+      - Echo: ${Date.now() - begin}
+
+- Group:
+    title: Pause or delay
+    steps:
+      - Echo: <step 1>
+      - Pause:
+          title: step 2 run after 2s
+          time: 2s
+      - Echo: <step 2>
+```
+
+
 # Standard Scenario file
 A standard scenario file  
 

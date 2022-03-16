@@ -4,7 +4,7 @@
     steps:
       - Group:
           async: true
-          delay: 1s
+          delay: 3s
           steps:
             - Echo: Hello 1
       - Group:

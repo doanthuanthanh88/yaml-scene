@@ -1,4 +1,3 @@
-import { TimeUtils } from "@app/utils/time";
 import chalk from "chalk";
 import { merge } from "lodash";
 import { ElementFactory } from "../ElementFactory";
@@ -42,10 +41,10 @@ export class Group implements IElement {
   private steps: ElementProxy<IElement>[]
 
   init(_props: any) {
-    const { steps = [], ...props } = _props
+    const { steps, ...props } = _props
     merge(this, props)
-    const arrs = steps.flat(Number.MAX_SAFE_INTEGER)
-    this.steps = arrs.map(step => {
+    const arrs = steps?.flat(Number.MAX_SAFE_INTEGER)
+    this.steps = (arrs || []).map(step => {
       const [name, vl] = Object.entries(step)[0]
       const elem = ElementFactory.CreateElement<IElement>(name as any, this.proxy.scenario)
       elem.init(vl)
@@ -87,20 +86,19 @@ export class Group implements IElement {
   }
 
   async exec() {
-    if (this.delay) {
-      await TimeUtils.Delay(this.delay)
-    }
     if (this.title) this.proxy.logger.info('%s %s', chalk.blue(this.title), chalk.gray(`${this.description || ''}`))
     console.group()
     const proms = []
     for (const step of this.steps) {
-      if (step.element.async) {
-        await step.prepare()
+      if (step.async) {
         if (await step.isValid()) {
-          if (this.stepDelay && !step.element.delay) {
-            step.element.delay = this.stepDelay
-          }
-          proms.push(step.exec())
+          proms.push((async (step) => {
+            await step.prepare()
+            if (this.stepDelay && !step.delay) {
+              step.delay = this.stepDelay
+            }
+            await step.exec()
+          })(step))
         }
         continue
       }
@@ -110,8 +108,8 @@ export class Group implements IElement {
       }
       if (await step.isValid()) {
         await step.prepare()
-        if (this.stepDelay && !step.element.delay) {
-          step.element.delay = this.stepDelay
+        if (this.stepDelay && !step.delay) {
+          step.delay = this.stepDelay
         }
         await step.exec()
       }

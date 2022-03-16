@@ -23,7 +23,7 @@ export class CommentExporter implements Exporter<CommentInfo> {
     Array.from(groups.keys()).sort().forEach(group => {
       const sortedGroups = groups.get(group).sort((a, b) => {
         if (a.order === b.order === undefined) {
-          return a.name > b.name ? 1 : 0
+          return a.name > b.name ? 1 : -1
         }
         if (a.order === undefined) a.order = Number.MAX_SAFE_INTEGER
         if (b.order === undefined) b.order = Number.MAX_SAFE_INTEGER
