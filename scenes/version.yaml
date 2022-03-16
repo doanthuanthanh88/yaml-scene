@@ -26,6 +26,7 @@
     if: ${ok}
     logLevel: debug
     content: |
+      git checkout test/Doc/ApiMD.md
       npm version ${version} --preid=${preid} -m "${comment}"
       git push
       git push --tags
