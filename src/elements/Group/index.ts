@@ -96,21 +96,25 @@ export class Group implements IElement {
     for (const step of this.steps) {
       if (step.element.async) {
         await step.prepare()
-        if (this.stepDelay && !step.element.delay) {
-          step.element.delay = this.stepDelay
+        if (await step.isValid()) {
+          if (this.stepDelay && !step.element.delay) {
+            step.element.delay = this.stepDelay
+          }
+          proms.push(step.exec())
         }
-        proms.push(step.exec())
         continue
       }
       if (proms.length) {
         await Promise.all(proms)
         proms.splice(0, proms.length)
       }
-      await step.prepare()
-      if (this.stepDelay && !step.element.delay) {
-        step.element.delay = this.stepDelay
+      if (await step.isValid()) {
+        await step.prepare()
+        if (this.stepDelay && !step.element.delay) {
+          step.element.delay = this.stepDelay
+        }
+        await step.exec()
       }
-      await step.exec()
     }
     if (proms.length) {
       await Promise.all(proms)

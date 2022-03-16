@@ -1,6 +1,6 @@
 {
   "name": "yaml-scene",
-  "version": "1.0.0",
+  "version": "1.0.0-beta.6",
   "description": "Do everything with yaml scenario file",
   "keywords": [
     "tool",
@@ -27,9 +27,10 @@
     "build": "tsc --project tsconfig.build.json",
     "postbuild": "node bin/tsconfig && node bin/update_package",
     "clean": "rm -rf dist",
-    "preversion1": "yarn test",
-    "version1": "yarn build",
-    "postversion1": "git push && git push --tags && yarn clean"
+    "updateVersion": "node -r ts-node/register -r ./bin/tsconfig-paths-bootstrap.js src/index.ts ./scenes/version.yaml",
+    "preversion": "yarn test",
+    "version": "yarn build",
+    "postversion": "git push && git push --tags && yarn clean"
   },
   "dependencies": {
     "axios": "^0.24.0",

@@ -6,6 +6,7 @@ export class ElementProxy<T extends IElement> {
   _: any
   __: any
   private _logLevel: string
+  if?: any
 
   get logLevel() {
     return this._logLevel || this._?.logLevel || this.__?.logLevel
@@ -33,6 +34,7 @@ export class ElementProxy<T extends IElement> {
     if (props?.ref) {
       this.scenario.variableManager.vars[props.ref] = this.element
     }
+    this.if = props?.if
     if (this.element.init) {
       return this.element.init(props)
     }
@@ -42,6 +44,18 @@ export class ElementProxy<T extends IElement> {
     if (this.element.prepare) {
       await this.element.prepare()
     }
+  }
+
+  async isValid() {
+    let isOk = true
+    if (this.if !== undefined) {
+      if (typeof this.if === 'string') {
+        isOk = await this.getVar(this.if)
+      } else {
+        isOk = this.if
+      }
+    }
+    return isOk
   }
 
   async exec() {

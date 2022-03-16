@@ -1,6 +1,5 @@
 import { existsSync, writeFileSync } from "fs";
 import { unlink } from "fs/promises";
-import { merge } from "lodash";
 import { tmpdir } from "os";
 import { join } from "path";
 import { Exec } from "../Exec";
@@ -34,26 +33,37 @@ export class Sh extends Exec {
   content: string
   bin: string
   file: string
+  mode: number
+
+  constructor() {
+    super()
+    this.mode = 777
+  }
 
   init(props: any) {
     this.file = join(tmpdir(), Date.now() + '_' + Math.random() + '.sh')
+    this.args = []
     if (typeof props === 'string') {
       this.content = props
-      this.args = ['sh', this.file]
     } else {
-      merge(this, props)
-      const idx = this.args.findIndex(a => a === '${file}')
-      if (idx !== -1) {
-        this.args[idx] = this.file
-      }
+      super.init(props)
     }
-    if (!this.content) throw new Error('Shell script is required')
   }
 
   prepare() {
     this.content = this.proxy.getVar(this.content)
     this.args = this.proxy.getVar(this.args)
-    writeFileSync(this.file, this.content)
+    if (!this.content) throw new Error('Shell script is required')
+    if (!this.args?.length) {
+      this.args = ['sh', `${this.file}`]
+    }
+    const idx = this.args.findIndex(a => a === '${file}')
+    if (idx !== -1) {
+      this.args[idx] = this.file
+    }
+    writeFileSync(this.file, this.content, {
+      mode: this.mode
+    })
     return super.prepare()
   }
 
