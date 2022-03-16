@@ -27,10 +27,9 @@
     "build": "tsc --project tsconfig.build.json",
     "postbuild": "node bin/tsconfig && node bin/update_package",
     "clean": "rm -rf dist",
-    "updateVersion": "node -r ts-node/register -r ./bin/tsconfig-paths-bootstrap.js src/index.ts ./scenes/version.yaml",
-    "preversion": "yarn test",
-    "version": "yarn build",
-    "postversion": "git push && git push --tags && yarn clean"
+    "prenewtag": "yarn test && yarn build",
+    "newtag": "node -r ts-node/register -r ./bin/tsconfig-paths-bootstrap.js src/index.ts ./scenes/version.yaml",
+    "postnewtag": "yarn clean"
   },
   "dependencies": {
     "axios": "^0.24.0",

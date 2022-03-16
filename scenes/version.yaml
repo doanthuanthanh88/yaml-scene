@@ -27,3 +27,5 @@
     logLevel: debug
     content: |
       npm version ${version} --preid=${preid} -m "${comment}"
+      git push
+      git push --tags
