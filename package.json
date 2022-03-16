@@ -1,6 +1,6 @@
 {
   "name": "yaml-scene",
-  "version": "1.0.0-beta.6",
+  "version": "1.0.0-beta.7",
   "description": "Do everything with yaml scenario file",
   "keywords": [
     "tool",
@@ -23,12 +23,13 @@
     "test": "npx jest --detectOpenHandles",
     "test:debug": "npx --node-options=\"--inspect-brk\" jest --detectOpenHandles",
     "doc": "node -r ts-node/register -r ./bin/tsconfig-paths-bootstrap.js src/index.ts 'yaml-test/examples/document/doc_guide.yaml'",
-    "prebuild": "rm -rf dist",
+    "prebuild": "yarn clean",
     "build": "tsc --project tsconfig.build.json",
     "postbuild": "node bin/tsconfig && node bin/update_package",
-    "preversion": "yarn test",
-    "version": "yarn build",
-    "postversion11": "git push && git push --tags"
+    "clean": "rm -rf dist",
+    "preversion1": "yarn test",
+    "version1": "yarn build",
+    "postversion1": "git push && git push --tags && yarn clean"
   },
   "dependencies": {
     "axios": "^0.24.0",
