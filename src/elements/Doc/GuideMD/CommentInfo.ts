@@ -1,5 +1,7 @@
 import { DataModel } from "@app/utils/doc/DataModel";
 
+const DEFAULT_ORDER = 5
+
 export class CommentInfo implements DataModel {
   name: string;
   description?: string;
@@ -13,7 +15,7 @@ export class CommentInfo implements DataModel {
   _current = 'name';
 
   constructor() {
-    this.order = 5
+    this.order = DEFAULT_ORDER
   }
 
   add(txt: string) {

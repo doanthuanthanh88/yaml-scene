@@ -1,11 +1,11 @@
 - Vars:
     name: 'thanh'
 
-- Script~sh: |
+- Script~Sh: |
     echo '${name}'
     yarn global dir
 
-- Script~sh:
+- Script~Sh:
     logLevel: trace
     args:
       - sh

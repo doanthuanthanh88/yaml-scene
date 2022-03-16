@@ -1,3 +1,4 @@
+import { merge } from "lodash"
 import { AutoCompleteMultiSelectQuestion } from "./question/AutoCompleteMultiSelectQuestion"
 import { AutoCompleteQuestion } from "./question/AutoCompleteQuestion"
 import { ConfirmQuestion } from "./question/ConfirmQuestion"
@@ -27,6 +28,11 @@ export class QuestionBuilder {
 
   type(type: QuestionType) {
     this._type = type
+    return this
+  }
+
+  opts(opts: any) {
+    merge(this._config, { opts })
     return this
   }
 

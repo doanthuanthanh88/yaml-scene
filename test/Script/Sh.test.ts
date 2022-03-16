@@ -13,7 +13,7 @@ describe('Test scripts', () => {
   test('Run shell script', async () => {
 
     await Simulator.Run(`
-- Script~sh: |
+- Script~Sh: |
     echo "Hello world" > "${tmpFile}"
 `)
     expect(existsSync(tmpFile)).toBe(true)

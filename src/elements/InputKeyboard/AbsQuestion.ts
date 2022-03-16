@@ -1,3 +1,4 @@
+import { stdin } from 'process';
 import prompts from 'prompts';
 import { ElementProxy } from '../ElementProxy';
 import { QuestionType } from "./QuestionType";
@@ -10,9 +11,10 @@ export abstract class AbsQuestion {
   var: string
   default: any
   format: (vl: any) => any
+  opts: any
 
   get config() {
-    const { title: message, var: name, default: initial, ...props } = this
+    const { title: message, var: name, opts, default: initial, ...props } = this
     return {
       initial,
       message,
@@ -21,13 +23,14 @@ export abstract class AbsQuestion {
     }
   }
 
-  constructor({ title, required, pattern, var: varName, default: df, format }: any) {
+  constructor({ title, required, pattern, var: varName, default: df, format, opts }: any) {
     this.title = title
     this.required = required
     this.pattern = pattern
     this.var = varName
     this.default = df
     this.format = format
+    this.opts = opts
   }
 
   prepare(proxy: ElementProxy<any>) {
@@ -42,8 +45,14 @@ export abstract class AbsQuestion {
     if (!this.var) {
       this.var = `rd${Math.random()}`
     }
-    const response = await prompts(this.config)
+    const response = await prompts(this.config, this.opts)
     return response[this.var]
+  }
+
+  sendKey(opts = { key: '\r', name: 'return' }, sin = stdin) {
+    sin.emit('keypress', opts.key, {
+      name: opts.name
+    })
   }
 
 }

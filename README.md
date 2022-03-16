@@ -21,6 +21,10 @@ Please follow [guideline document](./GUIDE.md) to create a scene file for your s
 ## Examples
 Please go to [here](./yaml-test/examples) to see examples
 
+## Write a extension by yourself
+- A [Extension template project](https://github.com/doanthuanthanh88/yaml-scene-extensions) which provides commands to unit test, build, document... to deploy to npm or something like that
+- [Extension file](./yaml-test/examples/custom-extension/custom.js) which is implemented a extension interface
+
 ## Sharing scenarios
 
 1. Auto download a mp3 file from youtube
@@ -42,6 +46,11 @@ Please go to [here](./yaml-test/examples) to see examples
     doanthuanthanh88/yaml-scene \
     yas /test/download_youtube example
   ```
+
+### Sharing extensions
+1. [yas-sequence-diagram](https://github.com/doanthuanthanh88/yas-sequence-diagram)
+2. [yas-grpc](https://github.com/doanthuanthanh88/yas-grpc)
+
 
 ### More information
 - Project at [github](https://github.com/doanthuanthanh88/yaml-scene)

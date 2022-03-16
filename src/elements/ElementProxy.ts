@@ -30,6 +30,9 @@ export class ElementProxy<T extends IElement> {
     if (props?.logLevel) {
       this._logLevel = props.logLevel
     }
+    if (props?.ref) {
+      this.scenario.variableManager.vars[props.ref] = this.element
+    }
     if (this.element.init) {
       return this.element.init(props)
     }

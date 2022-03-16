@@ -7,7 +7,7 @@ export class TimeUtils {
   }
   static Delay(time: number | string) {
     return new Promise((resolve) => {
-      setTimeout(resolve, TimeUtils.GetMsTime(time))
+      setTimeout(() => resolve(true), TimeUtils.GetMsTime(time))
     })
   }
 }

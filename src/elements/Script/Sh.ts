@@ -6,19 +6,19 @@ import { join } from "path";
 import { Exec } from "../Exec";
 
 /**
- * Script~sh
+ * Script~Sh
  * @description Embed shell script into scene
  * @example
 - Vars:
     name: 'thanh'
 
 ### Short
-- Script~sh: |
+- Script~Sh: |
     echo '${name}'
     yarn global dir
 
 ### Full
-- Script~sh:
+- Script~Sh:
     args:
       - sh          # Specific path to sh or bash binary
       - ${_.file}   # This content will be writed to this path then execute it
@@ -30,7 +30,7 @@ import { Exec } from "../Exec";
       echo $1
       echo $2
  */
-export class sh extends Exec {
+export class Sh extends Exec {
   content: string
   bin: string
   file: string

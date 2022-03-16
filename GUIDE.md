@@ -33,8 +33,10 @@ Refer to [ReadFile](.) to decrypt content|
 |[Clear](#Clear)| Clear screen|  
 |[Echo](#Echo)| Print data to screen|  
 |[Group](#Group)| Group contains 1 or many elements|  
-|[Script~js](#Script~js)| Embed javascript code into scene|  
-|[Script~sh](#Script~sh)| Embed shell script into scene|  
+|[Pause](#Pause)| Program will be paused and wait user input|  
+|[Script~Js](#Script~Js)| Embed javascript code into scene|  
+|[Script~Sh](#Script~Sh)| Embed shell script into scene|  
+|[Sleep](#Sleep)| Program will be delayed at here after specific time then it keeps playing next steps|  
 |[Templates](#Templates)| Declare elements which not `inited` or `run`  
 It's only used for `extends` or `inherit` purposes|  
 |[Validate](#Validate)| Validate data in running progress  
@@ -625,14 +627,33 @@ Group contains 1 or many elements
 ```
 
 
-## Script~js <a name="Script~js"></a>
+## Pause <a name="Pause"></a>
+Program will be paused and wait user input  
+
+```yaml
+- Pause:
+    title: It keeps playing when user enter OR after 1 second, user not enter then it keeps playing
+    timeout: 1s
+
+- Pause: 2s       # Sleep 2 seconds then it keeps playing
+
+- Pause:
+    title: Sleep 3 seconds then it keeps playing
+    time: 3s
+
+- Pause:          # It will be paused until user enter
+
+```
+
+
+## Script~Js <a name="Script~Js"></a>
 Embed javascript code into scene  
 
 ```yaml
 - Vars:
     name: 10
 
-- Script~js: |
+- Script~Js: |
     console.log('oldValue', name)
     _.proxy.setVar('newName', name + 10)
 
@@ -640,7 +661,7 @@ Embed javascript code into scene
 ```
 
 
-## Script~sh <a name="Script~sh"></a>
+## Script~Sh <a name="Script~Sh"></a>
 Embed shell script into scene  
 
 ```yaml
@@ -648,12 +669,12 @@ Embed shell script into scene
     name: 'thanh'
 
 ### Short
-- Script~sh: |
+- Script~Sh: |
     echo '${name}'
     yarn global dir
 
 ### Full
-- Script~sh:
+- Script~Sh:
     args:
       - sh          # Specific path to sh or bash binary
       - ${_.file}   # This content will be writed to this path then execute it
@@ -664,6 +685,33 @@ Embed shell script into scene
       echo ${name}
       echo $1
       echo $2
+```
+
+
+## Sleep <a name="Sleep"></a>
+Program will be delayed at here after specific time then it keeps playing next steps  
+
+```yaml
+- Sleep: 10s
+- Sleep: 
+    title: Sleep 10s
+    time: 10s
+
+- Sleep: 10m
+- Sleep: 
+    title: Sleep 10 minutes
+    time: 10m
+
+- Sleep: 10h
+- Sleep: 
+    title: Sleep 10 hours
+    time: 10h
+
+- Sleep: 1000
+- Sleep: 
+    title: Sleep 1000 miliseconds
+    time: 1000
+
 ```
 
 
