@@ -10,8 +10,8 @@ import { ElementProxy } from "../ElementProxy"
 - Api~summary:
     title: Testing result
  */
-export class summary {
-  proxy: ElementProxy<summary>
+export class Summary {
+  proxy: ElementProxy<Summary>
 
   title: string
 

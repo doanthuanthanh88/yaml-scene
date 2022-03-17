@@ -20,7 +20,7 @@ import { Method } from "./Method";
         chai: ${expect(_.response.status).to.equal(200)}
     var: newProduct
  */
-export class post extends Api {
+export class Post extends Api {
   init(props) {
     props.method = Method.POST
     super.init(props)

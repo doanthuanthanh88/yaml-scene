@@ -18,7 +18,7 @@ import { Method } from "./Method";
       - title: Response status is valid
         chai: ${expect(_.response.status).to.equal(200)}
  */
-export class get extends Api {
+export class Get extends Api {
   init(props) {
     props.method = Method.GET
     super.init(props)

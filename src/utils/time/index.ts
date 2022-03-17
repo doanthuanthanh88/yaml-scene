@@ -10,4 +10,12 @@ export class TimeUtils {
       setTimeout(() => resolve(true), TimeUtils.GetMsTime(time))
     })
   }
+  static async Until(condition: boolean, timeInterval: any) {
+    return new Promise(async (resolve) => {
+      while (!condition) {
+        await TimeUtils.Delay(timeInterval)
+      }
+      resolve(condition)
+    })
+  }
 }

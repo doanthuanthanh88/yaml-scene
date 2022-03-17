@@ -1,20 +1,27 @@
+import { Serve } from "@app/elements/Api/serve"
+import { ElementFactory } from "@app/elements/ElementFactory"
 import { Simulator } from "@app/Simulator"
+import { TimeUtils } from "@app/utils/time"
 import { readFileSync } from "fs"
-import jsonServer from 'json-server'
-import { reject } from "lodash"
 import { join } from "path"
 
 describe('Test to generate api document', () => {
-  let server: any
+  let serve: any
 
-  beforeAll(() => {
-    return new Promise((resolve) => {
-      try {
-        const router = jsonServer.router({
-          "posts": [
+  beforeAll(async () => {
+    const scenario = await Simulator.Run()
+    serve = ElementFactory.CreateElement<Serve>('Api~serve', scenario)
+    serve.init({
+      host: 'localhost',
+      port: 3000,
+      routers: [
+        {
+          path: '/posts',
+          CRUD: true,
+          init: [
             {
               "id": 1,
-              "title": "json-server",
+              "title": "title",
               "labels": ["news", "user"],
               "creator": {
                 "name": "thanh",
@@ -32,26 +39,16 @@ describe('Test to generate api document', () => {
               ]
             }
           ]
-        })
-        const middlewares = jsonServer.defaults()
-        const app = jsonServer.create()
-        app.use(middlewares)
-        app.use(router)
-        server = app.listen(3000, () => {
-          resolve(undefined)
-        })
-      } catch (err) {
-        reject(err)
-      }
+        }
+      ]
     })
-  })
+    await serve.prepare()
+    serve.exec()
+    await TimeUtils.Delay('3s')
+  }, 60000)
 
-  afterAll(() => {
-    return new Promise((resolve, reject) => {
-      server.close((err) => {
-        !err ? resolve(undefined) : reject(err)
-      })
-    })
+  afterAll(async () => {
+    await serve.dispose()
   })
 
   test('Export to api document markdown', async () => {
@@ -74,7 +71,7 @@ describe('Test to generate api document', () => {
     url: /posts
     body:
       id: 2
-      title: json-server 2
+      title: title 2
       author: typicode 2
     var: newOne
 
@@ -86,7 +83,7 @@ describe('Test to generate api document', () => {
       id: 2
     body:
       id: 2
-      title: json-server 2 updated
+      title: title 2 updated
       author: typicode 2 updated
     var: updatedOne
 
@@ -107,7 +104,7 @@ describe('Test to generate api document', () => {
       id: 2
     var: details
 
-- Api~del:
+- Api~delete:
     <-: base
     title: Delete a post
     url: /posts/:id
@@ -124,12 +121,12 @@ describe('Test to generate api document', () => {
 `)
     expect(scenario.variableManager.vars.posts).toHaveLength(1)
     expect(scenario.variableManager.vars.newOne?.id).toBe(2)
-    expect(scenario.variableManager.vars.updatedOne.title).toBe('json-server 2 updated')
-    expect(scenario.variableManager.vars.details.title).toBe('json-server 2 updated')
-    expect(scenario.variableManager.vars.status).toBe(200)
+    expect(scenario.variableManager.vars.updatedOne.title).toBe('title 2 updated')
+    expect(scenario.variableManager.vars.details.title).toBe('title 2 updated')
+    expect(scenario.variableManager.vars.status).toBe(204)
 
     const cnt = readFileSync(`${join(__dirname, 'ApiMD.md')}`).toString()
     expect(cnt).toContain('Get a post details')
     expect(cnt).not.toContain('This is not documented')
-  })
+  }, 60000)
 })

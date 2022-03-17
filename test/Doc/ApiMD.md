@@ -1,7 +1,7 @@
 # Post service
 Demo CRUD API to generate to markdown document
 > Developed by [Doan Thuan Thanh](mailto:doanthuanthanh88@gmail.com)  
-> Updated at 3/16/2022, 5:08:32 PM  
+> Updated at 3/17/2022, 4:09:37 PM  
 
 | | API title | URL |  
 |---|---|---|  
@@ -19,7 +19,7 @@ Demo CRUD API to generate to markdown document
 
 
 - `POST /posts`
-- ✅  &nbsp; **201**  *Created*
+- ✅  &nbsp; **200**  *CREATE*
 
 
 
@@ -27,7 +27,7 @@ Demo CRUD API to generate to markdown document
 <summary><b>cURL</b></summary>
 
 ```sh
-curl "/posts" -X POST -H "content-type: application/json" -d "{\"id\":2,\"title\":\"json-server 2\",\"author\":\"typicode 2\"}"
+curl "/posts" -X POST -H "content-type: application/json" -d "{\"id\":2,\"title\":\"title 2\",\"author\":\"typicode 2\"}"
 ```
 
 </details>
@@ -46,7 +46,7 @@ curl "/posts" -X POST -H "content-type: application/json" -d "{\"id\":2,\"title\
 ```json
 {
   "id": 2,
-  "title": "json-server 2",
+  "title": "title 2",
   "author": "typicode 2"
 }
 ```
@@ -75,7 +75,7 @@ curl "/posts" -X POST -H "content-type: application/json" -d "{\"id\":2,\"title\
 ```json
 {
   "id": 2,
-  "title": "json-server 2",
+  "title": "title 2",
   "author": "typicode 2"
 }
 ```
@@ -102,7 +102,7 @@ curl "/posts" -X POST -H "content-type: application/json" -d "{\"id\":2,\"title\
 
 
 - `DELETE /posts/:id`
-- ✅  &nbsp; **200**  *OK*
+- ✅  &nbsp; **204**  *REMOVE*
 
 
 
@@ -144,13 +144,13 @@ curl "/posts/2" -X DELETE -H "content-type: application/json"
 
 ## RESPONSE
 ### Response data
-`Content-Type: *application/json; charset=utf-8*`  
+`Content-Type: *undefined*`  
 
 <details>
   <summary>Example</summary>
 
 ```json
-{}
+""
 ```
 
 </details>
@@ -160,7 +160,7 @@ curl "/posts/2" -X DELETE -H "content-type: application/json"
 
 | Name | Type |
 | --- | --- |
-|  `@ROOT` | object |
+|  `@ROOT` | string |
 
 </details>
 
@@ -172,7 +172,7 @@ curl "/posts/2" -X DELETE -H "content-type: application/json"
 
 
 - `GET /posts/:id`
-- ✅  &nbsp; **200**  *OK*
+- ✅  &nbsp; **200**  *DETAILS*
 
 
 
@@ -222,7 +222,7 @@ curl "/posts/2" -X GET -H "content-type: application/json"
 ```json
 {
   "id": 2,
-  "title": "json-server 2 updated",
+  "title": "title 2 updated",
   "author": "typicode 2 updated"
 }
 ```
@@ -249,7 +249,7 @@ curl "/posts/2" -X GET -H "content-type: application/json"
 
 
 - `GET /posts`
-- ✅  &nbsp; **200**  *OK*
+- ✅  &nbsp; **200**  *FIND*
 
 
 
@@ -278,14 +278,14 @@ curl "/posts" -X GET -H "content-type: application/json"
 [
   {
     "id": 1,
-    "title": "json-server",
+    "title": "title",
     "labels": [
       "news",
       "user"
     ],
     "creator": {
       "name": "thanh",
-      "created_time": 1647450510546
+      "created_time": 1647533372794
     },
     "tags": [
       {
@@ -329,7 +329,7 @@ curl "/posts" -X GET -H "content-type: application/json"
 
 
 - `PUT /posts/:id`
-- ✅  &nbsp; **200**  *OK*
+- ✅  &nbsp; **200**  *UPDATE*
 
 
 
@@ -337,7 +337,7 @@ curl "/posts" -X GET -H "content-type: application/json"
 <summary><b>cURL</b></summary>
 
 ```sh
-curl "/posts/2" -X PUT -H "content-type: application/json" -d "{\"id\":2,\"title\":\"json-server 2 updated\",\"author\":\"typicode 2 updated\"}"
+curl "/posts/2" -X PUT -H "content-type: application/json" -d "{\"id\":2,\"title\":\"title 2 updated\",\"author\":\"typicode 2 updated\"}"
 ```
 
 </details>
@@ -378,7 +378,7 @@ curl "/posts/2" -X PUT -H "content-type: application/json" -d "{\"id\":2,\"title
 ```json
 {
   "id": 2,
-  "title": "json-server 2 updated",
+  "title": "title 2 updated",
   "author": "typicode 2 updated"
 }
 ```
@@ -407,7 +407,7 @@ curl "/posts/2" -X PUT -H "content-type: application/json" -d "{\"id\":2,\"title
 ```json
 {
   "id": 2,
-  "title": "json-server 2 updated",
+  "title": "title 2 updated",
   "author": "typicode 2 updated"
 }
 ```

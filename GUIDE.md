@@ -8,7 +8,12 @@
 |[Api~put](#Api~put)| Send a Put request via http|  
 |[Api~get](#Api~get)| Send a GET request via http|  
 |[Api](#Api)| Send a request via http with custom method|  
-|[Api~del](#Api~del)| Send a DELETE request via http|  
+|[Api~delete](#Api~delete)| Send a DELETE request via http|  
+|[Api~serve](#Api~serve)| Mock API server  
+- Serve static file
+- Support upload file then save to server
+- Serve RESTFul API data 
+- Create APIs which auto handle CRUD data|  
 |[Api~summary](#Api~summary)| Summary after all of apis in scene executed done.|  
 |[Api~head](#Api~head)| Send a Head request via http|  
 |[Api~options](#Api~options)| Send a Options request via http|  
@@ -254,11 +259,11 @@ Send a request via http with custom method
 ```
 
 
-## Api~del <a name="Api~del"></a>
+## Api~delete <a name="Api~delete"></a>
 Send a DELETE request via http  
 
 ```yaml
-- Api~del:
+- Api~delete:
     title: Delete a product
     baseURL: http://localhost:3000
     url: /product/:id
@@ -267,6 +272,70 @@ Send a DELETE request via http
     validate:
       - title: Response status is valid
         chai: ${expect(_.response.status).to.equal(200)}
+```
+
+
+## Api~serve <a name="Api~serve"></a>
+Mock API server  
+- Serve static file
+- Support upload file then save to server
+- Serve RESTFul API data 
+- Create APIs which auto handle CRUD data  
+
+```yaml
+- Api~serve:
+    title: Mock http request to serve data
+    https: true                                 # Serve content via https
+    https:                                      # Serve content via https with custom cert and key
+      key: 
+      cert: 
+    host: 0.0.0.0                               # Server host
+    port: 8000                                  # Server port
+
+    routers:                                    # Defined routes
+
+      # Serve static files
+      - serveIn: [./assets]                     # All of files in list will be served after request to
+
+      # Serve upload API
+      - path: /upload                           # Upload path. Default method is POST
+        method: POST                            # Request method (POST, PUT, PATCH, DELETE, HEAD)
+                                                # - Default method is POST
+        uploadTo: ./uploadDir                   # Directory includes uploading files
+
+      # Create APIs which auto handle CRUD data
+      - path: '/posts'                          # Request path
+        CRUD: true                              # Auto create full RESTful API
+                                                # - GET    /posts            : Return list posts
+                                                # - GET    /posts/:id        : Return post details by id
+                                                # - POST   /posts            : Create a new post
+                                                # - PUT    /posts/:id        : Replace entity of post to new post
+                                                # - PATCH  /posts/:id        : Only update some properties of post
+                                                # - DELETE /posts/:id        : Delete a post by id
+        init: [                                 # Init data
+          {
+            "id": 1,
+            "label": "label 01"
+          }
+        ]
+
+      # Create a API which you can customize response, path....
+      - method: GET                             # Request method (POST, PUT, PATCH, DELETE, HEAD)
+                                                # - Default method is GET
+        path: /posts/:id                        # Request path
+        response:                               # Response data
+          status: 200                           # - Response status
+          statusMessage: OK                     # - Response status message
+          headers:                              # - Response headers
+            server: nginx
+          data: [                               # - Response data. 
+            {                                   #   - Use some variables to replace value to response
+              "id": ${+$params.id},             # $params:  Request params (/:id)
+              "title": "title 1",               # $headers: Request headers
+              "author": "thanh"                 # $query:   Request querystring (?name=thanh)
+              "des": "des 1",                   # $body:    Request body
+            }                                   # $request: Request
+          ]                                     # $ctx:     Context
 ```
 
 

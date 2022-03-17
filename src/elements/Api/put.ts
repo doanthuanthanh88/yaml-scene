@@ -22,7 +22,7 @@ import { Method } from "./Method";
         chai: ${expect(_.response.status).to.equal(204)}
     var: updatedProduct
  */
-export class put extends Api {
+export class Put extends Api {
   init(props) {
     props.method = Method.PUT
     super.init(props)

@@ -103,7 +103,7 @@ export class Scenario {
 
   async init(scenarioFile = 'index.yaml' as string | object, password?: string) {
     this.time.init = Date.now()
-    this.events.emit('scenario.init')
+    this.events.emit('scenario.init', this)
 
     let scenario: any
 
@@ -152,19 +152,19 @@ export class Scenario {
 
   async prepare() {
     this.time.prepare = Date.now()
-    this.events.emit('scenario.prepare')
+    this.events.emit('scenario.prepare', this)
     await this.rootGroup.prepare()
   }
 
   async exec() {
     this.time.exec = Date.now()
-    this.events.emit('scenario.exec')
+    this.events.emit('scenario.exec', this)
     await this.rootGroup.exec()
   }
 
   async dispose() {
     this.time.dispose = Date.now()
-    this.events.emit('scenario.dispose')
+    this.events.emit('scenario.dispose', this)
     await this.rootGroup?.dispose()
   }
 

@@ -15,7 +15,7 @@
     url: /posts
     body:
       id: 2
-      title: json-server 2
+      title: title 2
       author: typicode 2
     var: newOne
 
@@ -27,7 +27,7 @@
       id: 2
     body:
       id: 2
-      title: json-server 2 updated
+      title: title 2 updated
       author: typicode 2 updated
     var: updatedOne
 
@@ -39,7 +39,7 @@
       id: 2
     var: details
 
-- Api~del:
+- Api~delete:
     <-: base
     title: Delete a post
     url: /posts/:id
