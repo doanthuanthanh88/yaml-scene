@@ -18,6 +18,11 @@ export class CommentInfo implements DataModel {
     this.order = DEFAULT_ORDER
   }
 
+  get description1() {
+    if (!this.description) return ''
+    return this.description.split('\n')[0].trim() + ' ...'
+  }
+
   add(txt: string) {
     const m = txt.match(/^(\@(\w+)\s?)?(.*)/);
     if (m) {

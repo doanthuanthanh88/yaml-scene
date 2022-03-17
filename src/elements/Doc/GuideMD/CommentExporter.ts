@@ -48,7 +48,7 @@ ${h2.examples}
         } else {
           mdMenu.push(`| --- | --- |`);
         }
-        mdMenu.push(...infos.map(info => `|[${info.name}](#${info.name})| ${info.description || ''}|  `));
+        mdMenu.push(...infos.map(info => `|[${info.name}](#${info.name})| ${info.description1}|  `));
         mdExample.push(...infos.map(info => `## ${info.name} <a name="${info.name}"></a>
 ${info.description || ''}  
 ${info.examples}

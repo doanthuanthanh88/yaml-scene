@@ -3,50 +3,40 @@
 | Element | Description |  
 |---|---|  
 | API | --- |
-|[Api~post](#Api~post)| Send a Post request via http|  
-|[Api~patch](#Api~patch)| Send a Patch request via http|  
-|[Api~put](#Api~put)| Send a Put request via http|  
-|[Api~get](#Api~get)| Send a GET request via http|  
-|[Api](#Api)| Send a request via http with custom method|  
-|[Api~delete](#Api~delete)| Send a DELETE request via http|  
-|[Api~serve](#Api~serve)| Mock API server  
-- Serve static file
-- Support upload file then save to server
-- Serve RESTFul API data 
-- Create APIs which auto handle CRUD data|  
-|[Api~summary](#Api~summary)| Summary after all of apis in scene executed done.|  
-|[Api~head](#Api~head)| Send a Head request via http|  
-|[Api~options](#Api~options)| Send a Options request via http|  
+|[Api~post](#Api~post)| Send a Post request via http ...|  
+|[Api~patch](#Api~patch)| Send a Patch request via http ...|  
+|[Api~put](#Api~put)| Send a Put request via http ...|  
+|[Api~get](#Api~get)| Send a GET request via http ...|  
+|[Api](#Api)| Send a request via http with custom method ...|  
+|[Api~delete](#Api~delete)| Send a DELETE request via http ...|  
+|[Api~serve](#Api~serve)| Mock API server ...|  
+|[Api~summary](#Api~summary)| Summary after all of apis in scene executed done. ...|  
+|[Api~head](#Api~head)| Send a Head request via http ...|  
+|[Api~options](#Api~options)| Send a Options request via http ...|  
 | DOC | --- |
-|[Doc~ApiMD](#Doc~ApiMD)| Document api to markdown format|  
-|[Doc~GuideMD](#Doc~GuideMD)| Auto scan file to detect the comment format which is generated to markdown document|  
+|[Doc~ApiMD](#Doc~ApiMD)| Document api to markdown format ...|  
+|[Doc~GuideMD](#Doc~GuideMD)| Auto scan file to detect the comment format which is generated to markdown document ...|  
 | EXTERNAL | --- |
-|[Exec](#Exec)| Execute external command|  
+|[Exec](#Exec)| Execute external command ...|  
 | FILE | --- |
-|[ReadFile](#ReadFile)| Read a file then set content to a variable  
-It uses `aes-128-cbc` to decrypt content with a password.  
-Refer to [WriteFile](.) to encrypt content|  
-|[WriteFile](#WriteFile)| Write content to a file  
-It uses `aes-128-cbc` to encrypt content with a password.  
-Refer to [ReadFile](.) to decrypt content|  
+|[ReadFile](#ReadFile)| Read a file then set content to a variable ...|  
+|[WriteFile](#WriteFile)| Write content to a file ...|  
 | INPUT | --- |
-|[InputKeyboard](#InputKeyboard)| Get user input from keyboard|  
+|[InputKeyboard](#InputKeyboard)| Get user input from keyboard ...|  
 | TAGS | --- |
-|[!fragment](#!fragment)| Load scenes from another file into current file|  
-|[!binary](#!binary)| Transform file to binary|  
+|[!fragment](#!fragment)| Load scenes from another file into current file ...|  
+|[!binary](#!binary)| Transform file to binary ...|  
 | --- | --- |
-|[Clear](#Clear)| Clear screen|  
-|[Echo](#Echo)| Print data to screen|  
-|[Group](#Group)| Group contains 1 or many elements|  
-|[Pause](#Pause)| Program will be paused and wait user input|  
-|[Script~Js](#Script~Js)| Embed javascript code into scene|  
-|[Script~Sh](#Script~Sh)| Embed shell script into scene|  
-|[Sleep](#Sleep)| Program will be delayed at here after specific time then it keeps playing next steps|  
-|[Templates](#Templates)| Declare elements which not `inited` or `run`  
-It's only used for `extends` or `inherit` purposes|  
-|[Validate](#Validate)| Validate data in running progress  
-Currently only support chai `https://www.chaijs.com`|  
-|[Vars](#Vars)| Declare variables in scene|  
+|[Clear](#Clear)| Clear screen ...|  
+|[Echo](#Echo)| Print data to screen ...|  
+|[Group](#Group)| Group contains 1 or many elements ...|  
+|[Pause](#Pause)| Program will be paused and wait user input ...|  
+|[Script~Js](#Script~Js)| Embed javascript code into scene ...|  
+|[Script~Sh](#Script~Sh)| Embed shell script into scene ...|  
+|[Sleep](#Sleep)| Program will be delayed at here after specific time then it keeps playing next steps ...|  
+|[Templates](#Templates)| Declare elements which not `inited` or `run` ...|  
+|[Validate](#Validate)| Validate data in running progress ...|  
+|[Vars](#Vars)| Declare variables in scene ...|  
   
 # Default attributes
 Attributes in all of elements  
