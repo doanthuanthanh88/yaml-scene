@@ -19,33 +19,28 @@ import { TemplateManager } from './TemplateManager'
  * @order 1
  * @description A standard scenario file
  * @example
-title: Scene name                 # Scene name
-description: Scene description    # Scene description
-password:                         # File will be encrypted to $FILE_NAME.encrypt to share to someone run it for privacy
-logLevel: debug                   # How to show log is debug)
-                                  # - slient: Dont show anything
-                                  # - error: Show error log
-                                  # - warn: Show warning log
-                                  # - info: Show infor, error log
-                                  # - debug: Show log details, infor, error log ( Default )
-                                  # - trace: Show all of log
-extensions:                       # Extension elements.
-  - ./cuz_extensions/custom1.js   # - Load elements from a file (Ex: elem1)
-  - ./cuz_extensions/custom2.js   # - Load elements from a file (Ex: elem2)
-  - ./cuz_extensions              # - Load elements from a folder (Ex: custom1~elem1, custom2~elem2)
-  - yas-grpc                      # - Load elements from npm/yarn global dirs
-vars:                             # Declare global variables, which can be replaced by env
+title: Scene name                                   # Scene name
+description: Scene description                      # Scene description
+password:                                           # File will be encrypted to $FILE_NAME.encrypt to share to someone run it for privacy
+logLevel: debug                                     # How to show log is debug)
+                                                    # - slient: Dont show anything
+                                                    # - error: Show error log
+                                                    # - warn: Show warning log
+                                                    # - info: Show infor, error log
+                                                    # - debug: Show log details, infor, error log ( Default )
+                                                    # - trace: Show all of log
+extensions:                                         # Extension elements.
+  extension_name1: ./cuz_extensions/custom1.js      # - Load a element in a file with exports.default (extension_name1:)
+  extensions_folders: ./cuz_extensions              # - Load elements in files in the folder with file name is element name (extensions_folders/custom1:)
+vars:                                               # Declare global variables, which can be replaced by env
   url: http://localhost:3000
   token: ...
-steps:                            # Includes all which you want to do
+steps:                                              # Includes all which you want to do
   - !fragment ./scene1.yaml
   - !fragment ./scene2.yaml
-  - elem1:                            
-  - elem2:
-  - custom1~elem1:
-  - custom2~elem2:
-  - call:                                 # Load doc from yas-grpc which declared in extensions
-  - yas-sequence-diagram~SequenceDiagram: # Load yas-sequence-diagram from npm/yarn global dirs then use class SequenceDiagram to handle
+  - extension_name1:
+  - extensions_folders/custom1:
+  - yas-sequence-diagram~SequenceDiagram:           # Load yas-sequence-diagram from npm/yarn global dirs then use class SequenceDiagram to handle
  */
 
 /**
@@ -134,7 +129,7 @@ export class Scenario {
     }
 
     // Load extensions
-    await this.extensions.setup(extensions && (Array.isArray(extensions) ? extensions : [extensions]))
+    await this.extensions.setup(extensions)
 
     // Load global variables which is overrided by env variables
     if (vars) {

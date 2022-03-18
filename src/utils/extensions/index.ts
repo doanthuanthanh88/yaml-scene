@@ -6,7 +6,9 @@ import { join } from "path";
 
 export class Extensions {
   private extensionElements = {}
-  private extensionPaths = new Set<string>()
+  private globalExtensionPaths = new Set<string>()
+  private localExtensionPaths = {}
+
 
   constructor(public scenario: Scenario) { }
 
@@ -23,7 +25,12 @@ export class Extensions {
     let obj: any;
     let modulePath = "System";
     try {
-      modulePath = this.getPathGlobalModule(p);
+      modulePath = this.getPathLocalModule(p) || this.getPathGlobalModule(p);
+      if (!modulePath) {
+        throw new Error(
+          `Please install module "${p}" \n    \`npm install -g ${p}\` \n OR \n    \`yarn global add ${p}\``
+        )
+      }
       obj = require(modulePath).default;
       this.extensionElements[p] = obj
       // this.ExternalModules.add(obj);
@@ -52,35 +59,33 @@ export class Extensions {
     // }
   }
 
-  async registerGlobalExtension(libDirs: string[]) {
-    const localDirs = new Set<string>()
-    libDirs?.forEach((dir) => {
-      const path = this.scenario.resolvePath(dir)
+  async registerGlobalExtension(extensions: { [name: string]: string }) {
+    Object.entries(extensions).forEach(([name, pathExt]) => {
+      const path = this.scenario.resolvePath(pathExt)
       if (existsSync(path)) {
         try {
           // If is file
-          const localModule = require(path)
-          Object.keys(localModule).forEach(name => this.extensionElements[name] = localModule[name])
+          const localModule = require(path)?.default
+          this.extensionElements[name] = localModule
         } catch (err) {
           // If is directory
-          localDirs.add(path)
+          this.localExtensionPaths[name] = path
         }
       } else {
-        this.extensionPaths.forEach(path => {
-          const npmYarnModule = join(path, dir)
+        this.globalExtensionPaths.forEach(path => {
+          const npmYarnModule = join(path, pathExt)
           if (existsSync(npmYarnModule)) {
-            const modules = require(npmYarnModule)
-            Object.keys(modules).forEach(name => this.extensionElements[name] = modules[name])
+            const globalModule = require(npmYarnModule)
+            this.extensionElements[npmYarnModule] = globalModule
           }
         })
       }
     })
-    localDirs.forEach(ld => this.extensionPaths.add(ld))
   }
 
-  async setup(libDirs: string[]) {
+  async setup(extensions = {} as { [name: string]: string }) {
     await this.loadNpmYarnGlobalPaths()
-    await this.registerGlobalExtension(libDirs)
+    await this.registerGlobalExtension(extensions)
   }
 
   private async loadNpmYarnGlobalPaths() {
@@ -113,12 +118,25 @@ export class Extensions {
     ]).then(([npmGlobalDirs, yarnGlobalDirs]) => {
       return npmGlobalDirs.concat(yarnGlobalDirs)
     })
-    globalDirs.forEach(gd => this.extensionPaths.add(gd))
+    globalDirs.forEach(gd => this.globalExtensionPaths.add(gd))
+  }
+
+  private getPathLocalModule(name: string) {
+    let modulePath = undefined;
+    const localExtensionKey = Object.keys(this.localExtensionPaths).find(prefix => name.startsWith(prefix))
+    if (localExtensionKey) {
+      const path = this.localExtensionPaths[localExtensionKey]
+      modulePath = join(path, name.replace(new RegExp(`^${localExtensionKey}\\/?`), ''))
+      try {
+        require.resolve(modulePath);
+        return modulePath;
+      } catch { }
+    }
   }
 
   private getPathGlobalModule(name: string) {
     let modulePath = undefined;
-    for (const path of this.extensionPaths) {
+    for (const path of this.globalExtensionPaths) {
       modulePath = join(path, name);
       try {
         require.resolve(modulePath);
@@ -130,9 +148,6 @@ export class Extensions {
       require.resolve(modulePath);
       return modulePath;
     } catch { }
-    throw new Error(
-      `Please install module "${name}" \n    \`npm install -g ${name}\` \n OR \n    \`yarn global add ${name}\``
-    );
   }
 
   private execShell(cmd: string, args: string[]) {
