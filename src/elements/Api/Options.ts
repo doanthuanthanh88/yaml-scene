@@ -2,29 +2,24 @@ import { Api } from ".";
 import { Method } from "./Method";
 
 /**
- * Api~put
- * @description Send a Put request via http
+ * Api~Options
+ * @description Send a Options request via http
  * @group Api
- * @order 3
+ * @order 5
  * @example
-- Api~put:
-    title: Update product
-    doc: true
+- Api~Options:
+    title: Test CORs a product
     baseURL: http://localhost:3000
     url: /product/:id
     params:
-      id: ${newProduct.id}
-    body:
-      name: updated name
-      quantity: 11
+      id: 1
     validate:
       - title: Response status is valid
         chai: ${expect(_.response.status).to.equal(204)}
-    var: updatedProduct
  */
-export class Put extends Api {
+export class Options extends Api {
   init(props) {
-    props.method = Method.PUT
+    props.method = Method.OPTIONS
     super.init(props)
   }
 }

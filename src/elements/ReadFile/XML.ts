@@ -1,10 +1,10 @@
 import { FileType } from '@app/utils/data-source/file/FileType';
 import { ReadFile } from '.';
 
-export class json extends ReadFile {
+export class XML extends ReadFile {
 
   init(props: any) {
-    props.type = FileType.JSON
+    props.type = FileType.XML
     super.init(props)
   }
 

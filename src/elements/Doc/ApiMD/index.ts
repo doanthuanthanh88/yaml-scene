@@ -8,7 +8,7 @@ import { Exporter } from "./Exporter"
 /**
  * Doc~ApiMD
  * @description Document api to markdown format
- * @group Doc
+ * @group Doc, Api
  * @example
 - Doc~ApiMD:
     title: Post service

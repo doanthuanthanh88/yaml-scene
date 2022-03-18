@@ -6,7 +6,7 @@ import { YAMLSchema } from '.'
 /**
  * !fragment
  * @description Load scenes from another file into current file
- * @group Tags
+ * @group !Tags
  * @example
 - Group: 
     steps:

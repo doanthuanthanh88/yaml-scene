@@ -62,7 +62,7 @@ export class Helper {
             e = e.trim();
             if (e) {
               const idx = e.indexOf("=");
-              if (idx !== -1) sum[e.substr(0, idx)] = e.substr(idx + 1);
+              if (idx !== -1) sum[e.substring(0, idx)] = e.substring(idx + 1);
             }
             return sum;
           }, {});
@@ -125,9 +125,15 @@ export class Helper {
         let env = {}
         try {
           if (file && statSync(file)) {
-            readFileSync(file).toString().split('\n').map(e => e.trim()).filter(e => e && !e.startsWith('#')).forEach(e => {
-              env[e.substr(0, e.indexOf('=')).trim().toLowerCase()] = e.substr(e.indexOf('=') + 1).trim()
-            })
+            readFileSync(file)
+              .toString()
+              .split('\n')
+              .map(e => e.trim())
+              .filter(e => e && !e.startsWith('#'))
+              .forEach(e => {
+                const idx = e.indexOf('=')
+                env[e.substring(0, idx).trim().toLowerCase()] = e.substring(idx + 1).trim()
+              })
           }
         } catch (err) {
           console.warn(`Could not found config file at ${file}`)

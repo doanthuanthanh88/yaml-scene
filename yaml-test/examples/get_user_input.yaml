@@ -1,4 +1,4 @@
-- InputKeyboard:
+- UserInput:
     - title: Enter your name
       # type: text
       var: name

@@ -7,11 +7,11 @@ import { QuestionBuilder } from './QuestionBuilder';
 import { QuestionType } from './QuestionType';
 
 /**
- * InputKeyboard
+ * UserInput
  * @description Get user input from keyboard
  * @group Input
  * @example
-- InputKeyboard:
+- UserInput:
     - title: Enter your name
       type: text # Default is text if not specific
       var: name
@@ -89,8 +89,8 @@ import { QuestionType } from './QuestionType';
       default: true
       var: submit
  */
-export class InputKeyboard implements IElement {
-  proxy: ElementProxy<InputKeyboard>
+export class UserInput implements IElement {
+  proxy: ElementProxy<UserInput>
 
   private _questions = new Array<AbsQuestion>()
 

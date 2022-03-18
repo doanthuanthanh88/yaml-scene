@@ -1,7 +1,7 @@
 import { FileType } from '@app/utils/data-source/file/FileType';
-import { WriteFile } from '.';
+import { ReadFile } from '.';
 
-export class json extends WriteFile {
+export class JSON extends ReadFile {
 
   init(props: any) {
     props.type = FileType.JSON

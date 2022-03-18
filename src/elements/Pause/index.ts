@@ -3,8 +3,8 @@ import chalk from "chalk"
 import { merge } from "lodash"
 import { ElementFactory } from "../ElementFactory"
 import { ElementProxy } from "../ElementProxy"
-import { QuestionBuilder } from "../InputKeyboard/QuestionBuilder"
-import { QuestionType } from "../InputKeyboard/QuestionType"
+import { QuestionBuilder } from "../UserInput/QuestionBuilder"
+import { QuestionType } from "../UserInput/QuestionType"
 import { Sleep } from "../Sleep"
 
 /**

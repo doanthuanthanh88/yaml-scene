@@ -1,44 +1,71 @@
 import chalk from "chalk"
+import { merge } from "lodash"
 import { ElementProxy } from "../ElementProxy"
 import { IElement } from "../IElement"
+import { FormatFactory } from "./format/FormatFactory"
+import { IFormat } from "./format/IFormat"
 
 /**
  * Echo
  * @description Print data to screen
+ * @group Output
  * @example
-- Echo: Hello world
-- Echo~green: Green text
-- Echo~blue: Blue text
-- Echo~red: Red text
-- Echo~yellow: Yellow text
-- Echo~cyan: Cyan text
+- Echo: Hello world                       # Print white text
+
+- Echo~Green: Green text                  # Print green text
+
+- Echo~Blue: Blue text                    # Print blue text
+
+- Echo~Red: Red text                      # Print red text
+
+- Echo~Yellow: Yellow text                # Print yellow text
+
+- Echo~Cyan: Cyan text                    # Print cyan text
+
+- Echo~Gray: Gray text                    # Print gray text
+
+- Echo:                                   
+    message: Hello
+    color: green
+    pretty: true
 
 - Vars:
     user:
       name: thanh
-      lang: vi
+      sex: male
 
-- Echo.schema: ${user}
+- Echo~Schema: ${user}                    # Print object schema
+
+- Echo~Schema:
+    message: ${user}
+    color: gray
+    pretty: true
+
  */
 export class Echo implements IElement {
   proxy: ElementProxy<any>
 
-  message: string
+  message: string | object
   color?: string
+  type?: 'schema'
+  pretty?: boolean
 
-  init(message: string) {
-    this.message = message
+  get formater(): IFormat {
+    return this.type !== 'schema' ? FormatFactory.Get('DataFormat') : FormatFactory.Get('SchemaFormat')
   }
 
-  format(txt: string) {
-    // txt = (txt && typeof txt === 'object') ? JSON.stringify(txt, null, '  ') : txt
-    if (!this.color) return txt
-    return chalk[this.color](txt)
+  init(opts: any) {
+    if (typeof opts === 'object') {
+      merge(this, opts)
+    } else {
+      this.message = opts
+    }
   }
 
   exec() {
     const message = this.proxy.getVar(this.message)
-    this.proxy.logger.info(this.format(message))
+    const txt = this.formater.format(message, this.pretty)
+    this.proxy.logger.info(this.color ? chalk[this.color](txt) : txt)
   }
 
 }

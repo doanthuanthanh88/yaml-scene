@@ -11,7 +11,7 @@ describe('Api CRUD, serve', () => {
   beforeAll(() => {
     return new Promise(async (resolve) => {
       await Simulator.Run(`
-- Api~serve:
+- Api~Serve:
     title: Mock http request
     port: ${port}
     ref: server
@@ -96,7 +96,7 @@ describe('Api CRUD, serve', () => {
       ->: base
       baseURL: http://localhost:${port}
 
-- Api~get:
+- Api~Get:
     <-: base
     title: Get all of posts
     url: /posts
@@ -112,7 +112,7 @@ describe('Api CRUD, serve', () => {
       ->: base
       baseURL: http://localhost:${port}
 
-- Api~post:
+- Api~Post:
     <-: base
     title: Create a new post
     url: /posts
@@ -132,7 +132,7 @@ describe('Api CRUD, serve', () => {
       ->: base
       baseURL: http://localhost:${port}
 
-- Api~put:
+- Api~Put:
     <-: base
     title: Update a post
     url: /posts/:id
@@ -154,7 +154,7 @@ describe('Api CRUD, serve', () => {
       ->: base
       baseURL: http://localhost:${port}
 
-- Api~patch:
+- Api~Patch:
     <-: base
     title: Update a post
     url: /posts/:id
@@ -176,7 +176,7 @@ describe('Api CRUD, serve', () => {
       ->: base
       baseURL: http://localhost:${port}
 
-- Api~get:
+- Api~Get:
     <-: base
     title: Get a post details
     url: /posts/:id
@@ -194,7 +194,7 @@ describe('Api CRUD, serve', () => {
       ->: base
       baseURL: http://localhost:${port}
 
-- Api~delete:
+- Api~Delete:
     <-: base
     title: Delete a post
     url: /posts/:id
@@ -213,7 +213,7 @@ describe('Api CRUD, serve', () => {
       ->: base
       baseURL: http://localhost:${port}
 
-- Api~post:
+- Api~Post:
     <-: base
     title: Upload a file to server
     url: /upload
@@ -240,7 +240,7 @@ describe('Api CRUD, serve', () => {
           ->: base
           baseURL: http://localhost:${port}
     
-    - Api~get:
+    - Api~Get:
         <-: base
         title: Get a static file
         url: /test1.txt

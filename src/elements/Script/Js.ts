@@ -3,6 +3,7 @@ import { ElementProxy } from "../ElementProxy";
 /**
  * Script~Js
  * @description Embed javascript code into scene
+ * @group External
  * @example
 - Vars:
     name: 10

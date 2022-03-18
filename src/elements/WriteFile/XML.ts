@@ -1,7 +1,7 @@
 import { FileType } from '@app/utils/data-source/file/FileType';
-import { ReadFile } from '.';
+import { WriteFile } from '.';
 
-export class xml extends ReadFile {
+export class XML extends WriteFile {
 
   init(props: any) {
     props.type = FileType.XML

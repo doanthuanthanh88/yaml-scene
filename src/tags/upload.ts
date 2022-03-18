@@ -5,7 +5,7 @@ import { Type } from 'js-yaml'
 /**
  * !binary
  * @description Transform file to binary
- * @group Tags
+ * @group !Tags
  * @example
 - Post:
     url: http://localhost/upload

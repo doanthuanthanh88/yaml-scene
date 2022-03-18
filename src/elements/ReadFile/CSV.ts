@@ -1,7 +1,7 @@
 import { FileType } from '@app/utils/data-source/file/FileType';
-import { WriteFile } from '.';
+import { ReadFile } from '.';
 
-export class csv extends WriteFile {
+export class CSV extends ReadFile {
 
   init(props: any) {
     props.type = FileType.CSV

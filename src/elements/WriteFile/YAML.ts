@@ -1,10 +1,10 @@
 import { FileType } from '@app/utils/data-source/file/FileType';
-import { ReadFile } from '.';
+import { WriteFile } from '.';
 
-export class csv extends ReadFile {
+export class YAML extends WriteFile {
 
   init(props: any) {
-    props.type = FileType.CSV
+    props.type = FileType.YAML
     super.init(props)
   }
 

@@ -3,6 +3,7 @@ import { IElement } from "../IElement"
 /**
  * Clear
  * @description Clear screen
+ * @group Output
  * @example
  - Clear:
  */

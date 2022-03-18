@@ -19,7 +19,7 @@
   "scripts": {
     "install:dist": "yarn install --production --modules-folder ./dist/node_modules",
     "dev": "npx nodemon --watch src --watch test --ext .ts --exec 'node -r ts-node/register -r ./bin/tsconfig-paths-bootstrap.js --inspect-brk src/index.ts --env-file 'yaml-test/.env' yaml-test/index.yaml'",
-    "start": "npx nodemon --watch src --watch test --ext .ts --exec 'node -r ts-node/register -r ./bin/tsconfig-paths-bootstrap.js src/index.ts --env-file 'yaml-test/.env' yaml-test/index.yaml'",
+    "start": "node -r ts-node/register -r ./bin/tsconfig-paths-bootstrap.js src/index.ts",
     "test": "npx jest --detectOpenHandles",
     "test:debug": "npx --node-options=\"--inspect-brk\" jest --detectOpenHandles",
     "doc": "node -r ts-node/register -r ./bin/tsconfig-paths-bootstrap.js src/index.ts 'yaml-test/examples/document/doc_guide.yaml'",

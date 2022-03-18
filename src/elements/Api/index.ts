@@ -29,17 +29,28 @@ import { Method } from "./Method"
  * Api
  * @description Send a request via http with custom method
  * @group Api
- * @order 4
+ * @order 3
  * @example
 - Api:
-    title: Get product details
-    doc: true
-    method: GET
-    baseURL: http://localhost:3000
+    title: Update a product                                     # Api name
+    description: It's only serve content for admin              # Api description
+    doc: true                                                   # Push it to queue to export to doc in element `Doc~ApiMD`
+    method: PUT                                                 # Request method (GET, POST, PUT, DELETE, PATCH, OPTIONS, HEAD)
+    baseURL: http://localhost:3000                              
     url: /product/:id
-    params:
+    params:                                                     # Request params. (In the example, url is "/product/1")
       id: 1
-    validate:
+    query:                                                      # Request querystring (In the example, url is appended "?order=name")
+      order: name
+    headers:                                                    # Request headers
+      authorization: ...
+    body: {                                                     # Request body which used in [POST, PUT, PATCH...] methods
+      name: "thanh",
+      file: !binary ./my_file.txt                               # Use !binary to upload a file to server (content-type: multipart/form-data)
+    }
+    timeout: 1s                                                 # Request timeout
+    saveTo: /file_downloaded.txt                                # Request file from server then download and save to this path
+    validate:                                                   # Validate response after request done. (Reference to #Validate)
       - title: Response status is valid
         chai: ${expect(_.response.status).to.equal(200)}
  */

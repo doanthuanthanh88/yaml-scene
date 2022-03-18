@@ -10,7 +10,7 @@ describe('Test to generate api document', () => {
 
   beforeAll(async () => {
     const scenario = await Simulator.Run()
-    serve = ElementFactory.CreateElement<Serve>('Api~serve', scenario)
+    serve = ElementFactory.CreateElement<Serve>('Api~Serve', scenario)
     serve.init({
       host: 'localhost',
       port: 3000,
@@ -59,13 +59,13 @@ describe('Test to generate api document', () => {
       doc: true
       baseURL: http://localhost:3000
 
-- Api~get:
+- Api~Get:
     <-: base
     title: Get all of posts
     url: /posts
     var: posts
 
-- Api~post:
+- Api~Post:
     <-: base
     title: Create a new post
     url: /posts
@@ -75,7 +75,7 @@ describe('Test to generate api document', () => {
       author: typicode 2
     var: newOne
 
-- Api~put:
+- Api~Put:
     <-: base
     title: Update a post
     url: /posts/:id
@@ -87,7 +87,7 @@ describe('Test to generate api document', () => {
       author: typicode 2 updated
     var: updatedOne
 
-- Api~get:
+- Api~Get:
     <-: base
     title: Get a post details
     url: /posts/:id
@@ -95,7 +95,7 @@ describe('Test to generate api document', () => {
       id: 2
     var: details
 
-- Api~get:
+- Api~Get:
     <-: base
     doc: false
     title: This is not documented
@@ -104,7 +104,7 @@ describe('Test to generate api document', () => {
       id: 2
     var: details
 
-- Api~delete:
+- Api~Delete:
     <-: base
     title: Delete a post
     url: /posts/:id

@@ -12,7 +12,7 @@ import { cloneDeep, merge } from 'lodash';
 import { CRUDModel } from './CRUDModel';
 
 /**
- * Api~serve
+ * Api~Serve
  * @description Mock API server  
 - Serve static file
 - Support upload file then save to server
@@ -20,7 +20,7 @@ import { CRUDModel } from './CRUDModel';
 - Create APIs which auto handle CRUD data
  * @group Api
  * @example
-- Api~serve:
+- Api~Serve:
     title: Mock http request to serve data
     https: true                                 # Serve content via https
     https:                                      # Serve content via https with custom cert and key

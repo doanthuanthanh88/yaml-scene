@@ -1,4 +1,4 @@
-- Api~summary:
+- Api~Summary:
     title: Result
 
 - Vars:
@@ -9,7 +9,7 @@
         ->: base
         baseURL: ${url}
 
-- Api~get:
+- Api~Get:
     <-: base
     ->: api01
     title: test api
@@ -45,7 +45,7 @@
       - title: Test response
         chai: ${expect(_.response.data).to.have.property('reason')}
 
-- Api~get:
+- Api~Get:
     <-: api01
     ->: api02
     logLevel: debug

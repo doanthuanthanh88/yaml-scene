@@ -2,37 +2,41 @@
 *Describe all of elements in tool. (meaning, how to use...)*
 | Element | Description |  
 |---|---|  
+| !TAGS | --- |
+|[!fragment](#!fragment)| Load scenes from another file into current file ...|  
+|[!binary](#!binary)| Transform file to binary ...|  
 | API | --- |
-|[Api~post](#Api~post)| Send a Post request via http ...|  
-|[Api~patch](#Api~patch)| Send a Patch request via http ...|  
-|[Api~put](#Api~put)| Send a Put request via http ...|  
-|[Api~get](#Api~get)| Send a GET request via http ...|  
 |[Api](#Api)| Send a request via http with custom method ...|  
-|[Api~delete](#Api~delete)| Send a DELETE request via http ...|  
-|[Api~serve](#Api~serve)| Mock API server ...|  
-|[Api~summary](#Api~summary)| Summary after all of apis in scene executed done. ...|  
-|[Api~head](#Api~head)| Send a Head request via http ...|  
-|[Api~options](#Api~options)| Send a Options request via http ...|  
+|[Api~Delete](#Api~Delete)| Send a DELETE request via http ...|  
+|[Api~Get](#Api~Get)| Send a GET request via http ...|  
+|[Api~Patch](#Api~Patch)| Send a Patch request via http ...|  
+|[Api~Post](#Api~Post)| Send a Post request via http ...|  
+|[Api~Put](#Api~Put)| Send a Put request via http ...|  
+|[Api~Head](#Api~Head)| Send a Head request via http ...|  
+|[Api~Options](#Api~Options)| Send a Options request via http ...|  
+|[Api~Serve](#Api~Serve)| Mock API server ...|  
+|[Api~Summary](#Api~Summary)| Summary after all of apis in scene executed done. ...|  
+|[Doc~ApiMD](#Doc~ApiMD)| Document api to markdown format ...|  
 | DOC | --- |
 |[Doc~ApiMD](#Doc~ApiMD)| Document api to markdown format ...|  
 |[Doc~GuideMD](#Doc~GuideMD)| Auto scan file to detect the comment format which is generated to markdown document ...|  
 | EXTERNAL | --- |
 |[Exec](#Exec)| Execute external command ...|  
+|[Script~Js](#Script~Js)| Embed javascript code into scene ...|  
+|[Script~Sh](#Script~Sh)| Embed shell script into scene ...|  
 | FILE | --- |
 |[ReadFile](#ReadFile)| Read a file then set content to a variable ...|  
 |[WriteFile](#WriteFile)| Write content to a file ...|  
 | INPUT | --- |
-|[InputKeyboard](#InputKeyboard)| Get user input from keyboard ...|  
-| TAGS | --- |
-|[!fragment](#!fragment)| Load scenes from another file into current file ...|  
-|[!binary](#!binary)| Transform file to binary ...|  
-| --- | --- |
+|[ReadFile](#ReadFile)| Read a file then set content to a variable ...|  
+|[UserInput](#UserInput)| Get user input from keyboard ...|  
+| OUTPUT | --- |
 |[Clear](#Clear)| Clear screen ...|  
 |[Echo](#Echo)| Print data to screen ...|  
+|[WriteFile](#WriteFile)| Write content to a file ...|  
+| --- | --- |
 |[Group](#Group)| Group contains 1 or many elements ...|  
 |[Pause](#Pause)| Program will be paused and wait user input ...|  
-|[Script~Js](#Script~Js)| Embed javascript code into scene ...|  
-|[Script~Sh](#Script~Sh)| Embed shell script into scene ...|  
 |[Sleep](#Sleep)| Program will be delayed at here after specific time then it keeps playing next steps ...|  
 |[Templates](#Templates)| Declare elements which not `inited` or `run` ...|  
 |[Validate](#Validate)| Validate data in running progress ...|  
@@ -155,79 +159,30 @@ A simple scenario file
 
   
 # Details
-## Api~post <a name="Api~post"></a>
-Send a Post request via http  
+## !fragment <a name="!fragment"></a>
+Load scenes from another file into current file  
 
 ```yaml
-- Api~post:
-    title: Create a new product
-    doc: true
-    baseURL: http://localhost:3000
-    url: /product
-    body:
-      name: updated name
-      quantity: 10
-    validate:
-      - title: Response status is valid
-        chai: ${expect(_.response.status).to.equal(200)}
-    var: newProduct
+- Group: 
+    steps:
+      - !fragment ./examples/scene_1.yaml
+      - Echo: Loaded scene 1 successfully
+
+      - !fragment ./examples/scene_2.yaml
+      - Echo: Loaded scene 2 successfully
 ```
 
 
-## Api~patch <a name="Api~patch"></a>
-Send a Patch request via http  
+## !binary <a name="!binary"></a>
+Transform file to binary  
 
 ```yaml
-- Api~patch:
-    title: Update product name
-    doc: true
-    baseURL: http://localhost:3000
-    url: /product/:id
-    params:
-      id: 1
+- Post:
+    url: http://localhost/upload
+    headers:
+      content-type: multipart/form-data
     body:
-      name: updated name
-    validate:
-      - title: Response status is valid
-        chai: ${expect(_.response.status).to.equal(204)}
-```
-
-
-## Api~put <a name="Api~put"></a>
-Send a Put request via http  
-
-```yaml
-- Api~put:
-    title: Update product
-    doc: true
-    baseURL: http://localhost:3000
-    url: /product/:id
-    params:
-      id: ${newProduct.id}
-    body:
-      name: updated name
-      quantity: 11
-    validate:
-      - title: Response status is valid
-        chai: ${expect(_.response.status).to.equal(204)}
-    var: updatedProduct
-```
-
-
-## Api~get <a name="Api~get"></a>
-Send a GET request via http  
-
-```yaml
-- Api~get:
-    title: Get product details
-    doc: true
-    baseURL: http://localhost:3000
-    url: /product/:id
-    params:
-      id: 1
-    validate:
-      - title: Response status is valid
-        chai: ${expect(_.response.status).to.equal(200)}
+      file: !binary ~/data.json
 ```
 
 
@@ -236,36 +191,198 @@ Send a request via http with custom method
 
 ```yaml
 - Api:
-    title: Get product details
-    doc: true
-    method: GET
-    baseURL: http://localhost:3000
+    title: Update a product                                     # Api name
+    description: It's only serve content for admin              # Api description
+    doc: true                                                   # Push it to queue to export to doc in element `Doc~ApiMD`
+    method: PUT                                                 # Request method (GET, POST, PUT, DELETE, PATCH, OPTIONS, HEAD)
+    baseURL: http://localhost:3000                              
     url: /product/:id
-    params:
+    params:                                                     # Request params. (In the example, url is "/product/1")
       id: 1
-    validate:
+    query:                                                      # Request querystring (In the example, url is appended "?order=name")
+      order: name
+    headers:                                                    # Request headers
+      authorization: ...
+    body: {                                                     # Request body which used in [POST, PUT, PATCH...] methods
+      name: "thanh",
+      file: !binary ./my_file.txt                               # Use !binary to upload a file to server (content-type: multipart/form-data)
+    }
+    timeout: 1s                                                 # Request timeout
+    saveTo: /file_downloaded.txt                                # Request file from server then download and save to this path
+    validate:                                                   # Validate response after request done. (Reference to #Validate)
       - title: Response status is valid
         chai: ${expect(_.response.status).to.equal(200)}
 ```
 
 
-## Api~delete <a name="Api~delete"></a>
+## Api~Delete <a name="Api~Delete"></a>
 Send a DELETE request via http  
 
 ```yaml
-- Api~delete:
-    title: Delete a product
+- Api~Delete:
+    title: Delete a product                                     # Api name
+    description: It's only serve content for admin              # Api description
+    doc: true                                                   # Push it to queue to export to doc in element `Doc~ApiMD`
+    baseURL: http://localhost:3000                              
+    url: /product/:id
+    params:                                                     # Request params. (In the example, url is "/product/1")
+      id: 1
+    query:                                                      # Request querystring (In the example, url is appended "?order=name")
+      order: name
+    headers:                                                    # Request headers
+      authorization: ...
+    timeout: 1s                                                 # Request timeout
+    validate:                                                   # Validate response after request done. (Reference to #Validate)
+      - title: Response status is valid
+        chai: ${expect(_.response.status).to.equal(204)}
+```
+
+
+## Api~Get <a name="Api~Get"></a>
+Send a GET request via http  
+
+```yaml
+- Api~Get:
+    title: Get product details                                  # Api name
+    description: It's only serve content for admin              # Api description
+    doc: true                                                   # Push it to queue to export to doc in element `Doc~ApiMD`
+    baseURL: http://localhost:3000                              
+    url: /product/:id
+    params:                                                     # Request params. (In the example, url is "/product/1")
+      id: 1
+    query:                                                      # Request querystring (In the example, url is appended "?order=name")
+      order: name
+    headers:                                                    # Request headers
+      authorization: ...
+    timeout: 1s                                                 # Request timeout
+    saveTo: /file_downloaded.txt                                # Request file from server then download and save to this path
+    validate:                                                   # Validate response after request done. (Reference to #Validate)
+      - title: Response status is valid
+        chai: ${expect(_.response.status).to.equal(200)}
+```
+
+
+## Api~Patch <a name="Api~Patch"></a>
+Send a Patch request via http  
+
+```yaml
+- Api~Patch:
+    title: Update a product                                     # Api name
+    description: It's only serve content for admin              # Api description
+    doc: true                                                   # Push it to queue to export to doc in element `Doc~ApiMD`
+    baseURL: http://localhost:3000                              
+    url: /product/:id
+    params:                                                     # Request params. (In the example, url is "/product/1")
+      id: 1
+    query:                                                      # Request querystring (In the example, url is appended "?order=name")
+      order: name
+    headers:                                                    # Request headers
+      authorization: ...
+    body: {                                                     # Request body which used in [POST, PUT, PATCH...] methods
+      name: "thanh",
+      file: !binary ./my_file.txt                               # Use !binary to upload a file to server (content-type: multipart/form-data)
+    }
+    timeout: 1s                                                 # Request timeout
+    validate:                                                   # Validate response after request done. (Reference to #Validate)
+      - title: Response status is valid
+        chai: ${expect(_.response.status).to.equal(200)}
+```
+
+
+## Api~Post <a name="Api~Post"></a>
+Send a Post request via http  
+
+```yaml
+- Api~Post:
+    title: Create a new product                                 # Api name
+    description: It's only serve content for admin              # Api description
+    doc: true                                                   # Push it to queue to export to doc in element `Doc~ApiMD`
+    baseURL: http://localhost:3000                              
+    url: /:companyID/product
+    params:                                                     # Request params. (In the example, url is "/1/product")
+      companyID: 1
+    query:                                                      # Request querystring (In the example, url is appended "?order=name")
+      order: name
+    headers:                                                    # Request headers
+      authorization: ...
+    body: {                                                     # Request body which used in [POST, PUT, PATCH...] methods
+      name: "thanh",
+      file: !binary ./my_file.txt                               # Use !binary to upload a file to server (content-type: multipart/form-data)
+    }
+    timeout: 1s                                                 # Request timeout
+    validate:                                                   # Validate response after request done. (Reference to #Validate)
+      - title: Response status is valid
+        chai: ${expect(_.response.status).to.equal(200)}
+```
+
+
+## Api~Put <a name="Api~Put"></a>
+Send a Put request via http  
+
+```yaml
+- Api~Put:
+    title: Update a product                                     # Api name
+    description: It's only serve content for admin              # Api description
+    doc: true                                                   # Push it to queue to export to doc in element `Doc~ApiMD`
+    baseURL: http://localhost:3000                              
+    url: /product/:id
+    params:                                                     # Request params. (In the example, url is "/product/1")
+      id: 1
+    query:                                                      # Request querystring (In the example, url is appended "?order=name")
+      order: name
+    headers:                                                    # Request headers
+      authorization: ...
+    body: {                                                     # Request body which used in [POST, PUT, PATCH...] methods
+      name: "thanh",
+      file: !binary ./my_file.txt                               # Use !binary to upload a file to server (content-type: multipart/form-data)
+    }
+    timeout: 1s                                                 # Request timeout
+    validate:                                                   # Validate response after request done. (Reference to #Validate)
+      - title: Response status is valid
+        chai: ${expect(_.response.status).to.equal(200)}
+```
+
+
+## Api~Head <a name="Api~Head"></a>
+Send a Head request via http  
+
+```yaml
+- Api~Head:
+    title: Check product is availabled                          # Api name
+    description: It's only serve content for admin              # Api description
+    doc: true                                                   # Push it to queue to export to doc in element `Doc~ApiMD`
+    baseURL: http://localhost:3000                              
+    url: /product/:id
+    params:                                                     # Request params. (In the example, url is "/product/1")
+      id: 1
+    query:                                                      # Request querystring (In the example, url is appended "?order=name")
+      order: name
+    headers:                                                    # Request headers
+      authorization: ...
+    timeout: 1s                                                 # Request timeout
+    validate:                                                   # Validate response after request done. (Reference to #Validate)
+      - title: Response status is valid
+        chai: ${expect(_.response.status).to.equal(204)}
+```
+
+
+## Api~Options <a name="Api~Options"></a>
+Send a Options request via http  
+
+```yaml
+- Api~Options:
+    title: Test CORs a product
     baseURL: http://localhost:3000
     url: /product/:id
     params:
       id: 1
     validate:
       - title: Response status is valid
-        chai: ${expect(_.response.status).to.equal(200)}
+        chai: ${expect(_.response.status).to.equal(204)}
 ```
 
 
-## Api~serve <a name="Api~serve"></a>
+## Api~Serve <a name="Api~Serve"></a>
 Mock API server  
 - Serve static file
 - Support upload file then save to server
@@ -273,7 +390,7 @@ Mock API server
 - Create APIs which auto handle CRUD data  
 
 ```yaml
-- Api~serve:
+- Api~Serve:
     title: Mock http request to serve data
     https: true                                 # Serve content via https
     https:                                      # Serve content via https with custom cert and key
@@ -329,45 +446,12 @@ Mock API server
 ```
 
 
-## Api~summary <a name="Api~summary"></a>
+## Api~Summary <a name="Api~Summary"></a>
 Summary after all of apis in scene executed done.  
 
 ```yaml
-- Api~summary:
+- Api~Summary:
     title: Testing result
-```
-
-
-## Api~head <a name="Api~head"></a>
-Send a Head request via http  
-
-```yaml
-- Api~head:
-    title: Ping a product
-    doc: true
-    baseURL: http://localhost:3000
-    url: /product/:id
-    params:
-      id: 1
-    validate:
-      - title: Response status is valid
-        chai: ${expect(_.response.status).to.equal(204)}
-```
-
-
-## Api~options <a name="Api~options"></a>
-Send a Options request via http  
-
-```yaml
-- Api~options:
-    title: Test CORs a product
-    baseURL: http://localhost:3000
-    url: /product/:id
-    params:
-      id: 1
-    validate:
-      - title: Response status is valid
-        chai: ${expect(_.response.status).to.equal(204)}
 ```
 
 
@@ -409,6 +493,48 @@ Execute external command
 ```
 
 
+## Script~Js <a name="Script~Js"></a>
+Embed javascript code into scene  
+
+```yaml
+- Vars:
+    name: 10
+
+- Script~Js: |
+    console.log('oldValue', name)
+    _.proxy.setVar('newName', name + 10)
+
+- Echo: New value ${newName}
+```
+
+
+## Script~Sh <a name="Script~Sh"></a>
+Embed shell script into scene  
+
+```yaml
+- Vars:
+    name: 'thanh'
+
+### Short
+- Script~Sh: |
+    echo '${name}'
+    yarn global dir
+
+### Full
+- Script~Sh:
+    args:
+      - sh          # Specific path to sh or bash binary
+      - ${_.file}   # This content will be writed to this path then execute it
+      - arg1
+      - arg2
+    content: |
+      echo ${_.file}
+      echo ${name}
+      echo $1
+      echo $2
+```
+
+
 ## ReadFile <a name="ReadFile"></a>
 Read a file then set content to a variable  
 It uses `aes-128-cbc` to decrypt content with a password.  
@@ -430,56 +556,56 @@ Refer to [WriteFile](.) to encrypt content
 
 ### CSV File
 
-- ReadFile~csv:
+- ReadFile~CSV:
     title: Read csv file 1 with password
     decrypt:
       password: thanh123
     path: assets/data1.csv
     var: data
 
-- ReadFile~csv:
+- ReadFile~CSV:
     title: Read csv file 2 without password
     path: assets/data2.csv
     var: data
 
 ### JSON File
 
-- ReadFile~json:
+- ReadFile~JSON:
     title: Read json file 1 with password
     path: assets/data1.json
     decrypt:
       password: thanh123
     var: data
 
-- ReadFile~json:
+- ReadFile~JSON:
     title: Read json file 2 without password
     path: assets/data2.json
     var: data
 
 ### XML file
 
-- ReadFile~xml:
+- ReadFile~XML:
     title: Read xml file 1 with password
     path: assets/data1.xml
     decrypt:
       password: thanh123
     var: data
 
-- ReadFile~xml:
+- ReadFile~XML:
     title: Read xml file 2 without password
     path: assets/data2.xml
     var: data
 
 ### YAML file
 
-- ReadFile~yaml:
+- ReadFile~YAML:
     title: Read yaml file 1 with password
     path: assets/data1.yaml
     decrypt:
       password: thanh123
     var: data
 
-- ReadFile~yaml:
+- ReadFile~YAML:
     title: Read yaml file 2 without password
     path: assets/data2.yaml
     var: data
@@ -510,7 +636,7 @@ Refer to [ReadFile](.) to decrypt content
 
 ### CSV File
 
-- WriteFile~csv:
+- WriteFile~CSV:
     title: Write csv file 1 with password
     path: assets/data1.csv
     encrypt:
@@ -521,7 +647,7 @@ Refer to [ReadFile](.) to decrypt content
       - name: name 2
         age: 3
 
-- WriteFile~csv:
+- WriteFile~CSV:
     title: Write csv file 2 without password
     path: assets/data2.csv
     content:
@@ -531,7 +657,7 @@ Refer to [ReadFile](.) to decrypt content
 
 ### JSON File
 
-- WriteFile~json:
+- WriteFile~JSON:
     title: Write json file 1 with password
     encrypt:
       password: thanh123
@@ -542,7 +668,7 @@ Refer to [ReadFile](.) to decrypt content
       - name: name 2
         age: 3
 
-- WriteFile~json:
+- WriteFile~JSON:
     title: Write json file 2 without password
     path: assets/data2.json
     content:
@@ -552,7 +678,7 @@ Refer to [ReadFile](.) to decrypt content
 
 ### XML File
 
-- WriteFile~xml:
+- WriteFile~XML:
     title: Write xml file 1 with password
     encrypt:
       password: thanh123
@@ -563,7 +689,7 @@ Refer to [ReadFile](.) to decrypt content
       - name: name 2
         age: 3
 
-- WriteFile~xml:
+- WriteFile~XML:
     title: Write xml file 2 without password
     path: assets/data2.xml
     content:
@@ -573,7 +699,7 @@ Refer to [ReadFile](.) to decrypt content
 
 ### YAML File
 
-- WriteFile~yaml:
+- WriteFile~YAML:
     title: Write yaml file 1 with password
     encrypt:
       password: thanh123
@@ -584,7 +710,7 @@ Refer to [ReadFile](.) to decrypt content
       - name: name 2
         age: 3
 
-- WriteFile~yaml:
+- WriteFile~YAML:
     title: Write yaml file 2 without password
     path: assets/data2.yaml
     content:
@@ -595,11 +721,11 @@ Refer to [ReadFile](.) to decrypt content
 ```
 
 
-## InputKeyboard <a name="InputKeyboard"></a>
+## UserInput <a name="UserInput"></a>
 Get user input from keyboard  
 
 ```yaml
-- InputKeyboard:
+- UserInput:
     - title: Enter your name
       type: text # Default is text if not specific
       var: name
@@ -679,33 +805,6 @@ Get user input from keyboard
 ```
 
 
-## !fragment <a name="!fragment"></a>
-Load scenes from another file into current file  
-
-```yaml
-- Group: 
-    steps:
-      - !fragment ./examples/scene_1.yaml
-      - Echo: Loaded scene 1 successfully
-
-      - !fragment ./examples/scene_2.yaml
-      - Echo: Loaded scene 2 successfully
-```
-
-
-## !binary <a name="!binary"></a>
-Transform file to binary  
-
-```yaml
-- Post:
-    url: http://localhost/upload
-    headers:
-      content-type: multipart/form-data
-    body:
-      file: !binary ~/data.json
-```
-
-
 ## Clear <a name="Clear"></a>
 Clear screen  
 
@@ -718,19 +817,37 @@ Clear screen
 Print data to screen  
 
 ```yaml
-- Echo: Hello world
-- Echo~green: Green text
-- Echo~blue: Blue text
-- Echo~red: Red text
-- Echo~yellow: Yellow text
-- Echo~cyan: Cyan text
+- Echo: Hello world                       # Print white text
+
+- Echo~Green: Green text                  # Print green text
+
+- Echo~Blue: Blue text                    # Print blue text
+
+- Echo~Red: Red text                      # Print red text
+
+- Echo~Yellow: Yellow text                # Print yellow text
+
+- Echo~Cyan: Cyan text                    # Print cyan text
+
+- Echo~Gray: Gray text                    # Print gray text
+
+- Echo:                                   
+    message: Hello
+    color: green
+    pretty: true
 
 - Vars:
     user:
       name: thanh
-      lang: vi
+      sex: male
 
-- Echo.schema: ${user}
+- Echo~Schema: ${user}                    # Print object schema
+
+- Echo~Schema:
+    message: ${user}
+    color: gray
+    pretty: true
+
 ```
 
 
@@ -774,48 +891,6 @@ Program will be paused and wait user input
 
 - Pause:          # It will be paused until user enter
 
-```
-
-
-## Script~Js <a name="Script~Js"></a>
-Embed javascript code into scene  
-
-```yaml
-- Vars:
-    name: 10
-
-- Script~Js: |
-    console.log('oldValue', name)
-    _.proxy.setVar('newName', name + 10)
-
-- Echo: New value ${newName}
-```
-
-
-## Script~Sh <a name="Script~Sh"></a>
-Embed shell script into scene  
-
-```yaml
-- Vars:
-    name: 'thanh'
-
-### Short
-- Script~Sh: |
-    echo '${name}'
-    yarn global dir
-
-### Full
-- Script~Sh:
-    args:
-      - sh          # Specific path to sh or bash binary
-      - ${_.file}   # This content will be writed to this path then execute it
-      - arg1
-      - arg2
-    content: |
-      echo ${_.file}
-      echo ${name}
-      echo $1
-      echo $2
 ```
 
 

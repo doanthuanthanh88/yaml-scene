@@ -12,7 +12,7 @@ import { ElementProxy } from '../ElementProxy';
  * @description Write content to a file  
  * It uses `aes-128-cbc` to encrypt content with a password.  
  * Refer to [ReadFile](.) to decrypt content
- * @group File
+ * @group File, Output
  * @example
 ### Text file
 - WriteFile:
@@ -31,7 +31,7 @@ import { ElementProxy } from '../ElementProxy';
 
 ### CSV File
 
-- WriteFile~csv:
+- WriteFile~CSV:
     title: Write csv file 1 with password
     path: assets/data1.csv
     encrypt:
@@ -42,7 +42,7 @@ import { ElementProxy } from '../ElementProxy';
       - name: name 2
         age: 3
 
-- WriteFile~csv:
+- WriteFile~CSV:
     title: Write csv file 2 without password
     path: assets/data2.csv
     content:
@@ -52,7 +52,7 @@ import { ElementProxy } from '../ElementProxy';
 
 ### JSON File
 
-- WriteFile~json:
+- WriteFile~JSON:
     title: Write json file 1 with password
     encrypt:
       password: thanh123
@@ -63,7 +63,7 @@ import { ElementProxy } from '../ElementProxy';
       - name: name 2
         age: 3
 
-- WriteFile~json:
+- WriteFile~JSON:
     title: Write json file 2 without password
     path: assets/data2.json
     content:
@@ -73,7 +73,7 @@ import { ElementProxy } from '../ElementProxy';
 
 ### XML File
 
-- WriteFile~xml:
+- WriteFile~XML:
     title: Write xml file 1 with password
     encrypt:
       password: thanh123
@@ -84,7 +84,7 @@ import { ElementProxy } from '../ElementProxy';
       - name: name 2
         age: 3
 
-- WriteFile~xml:
+- WriteFile~XML:
     title: Write xml file 2 without password
     path: assets/data2.xml
     content:
@@ -94,7 +94,7 @@ import { ElementProxy } from '../ElementProxy';
 
 ### YAML File
 
-- WriteFile~yaml:
+- WriteFile~YAML:
     title: Write yaml file 1 with password
     encrypt:
       password: thanh123
@@ -105,7 +105,7 @@ import { ElementProxy } from '../ElementProxy';
       - name: name 2
         age: 3
 
-- WriteFile~yaml:
+- WriteFile~YAML:
     title: Write yaml file 2 without password
     path: assets/data2.yaml
     content:
@@ -129,7 +129,7 @@ export class WriteFile {
     merge(this, props)
     if (!this.content) throw new Error('"content" is required')
     if (!this.type) {
-      this.type = extname(this.path).substr(1).toLowerCase() as FileType
+      this.type = extname(this.path).replace(/\./g, '').toLowerCase() as FileType
     }
   }
 

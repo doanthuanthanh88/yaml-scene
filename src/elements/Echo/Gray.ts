@@ -1,5 +1,5 @@
 import { Echo } from ".";
 
-export class gray extends Echo {
+export class Gray extends Echo {
   color = 'gray'
 }

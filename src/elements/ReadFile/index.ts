@@ -12,7 +12,7 @@ import { ElementProxy } from '../ElementProxy';
  * @description Read a file then set content to a variable  
  * It uses `aes-128-cbc` to decrypt content with a password.  
  * Refer to [WriteFile](.) to encrypt content
- * @group File
+ * @group File, Input
  * @example
 ### Text file
 - ReadFile:
@@ -29,56 +29,56 @@ import { ElementProxy } from '../ElementProxy';
 
 ### CSV File
 
-- ReadFile~csv:
+- ReadFile~CSV:
     title: Read csv file 1 with password
     decrypt:
       password: thanh123
     path: assets/data1.csv
     var: data
 
-- ReadFile~csv:
+- ReadFile~CSV:
     title: Read csv file 2 without password
     path: assets/data2.csv
     var: data
 
 ### JSON File
 
-- ReadFile~json:
+- ReadFile~JSON:
     title: Read json file 1 with password
     path: assets/data1.json
     decrypt:
       password: thanh123
     var: data
 
-- ReadFile~json:
+- ReadFile~JSON:
     title: Read json file 2 without password
     path: assets/data2.json
     var: data
 
 ### XML file
 
-- ReadFile~xml:
+- ReadFile~XML:
     title: Read xml file 1 with password
     path: assets/data1.xml
     decrypt:
       password: thanh123
     var: data
 
-- ReadFile~xml:
+- ReadFile~XML:
     title: Read xml file 2 without password
     path: assets/data2.xml
     var: data
 
 ### YAML file
 
-- ReadFile~yaml:
+- ReadFile~YAML:
     title: Read yaml file 1 with password
     path: assets/data1.yaml
     decrypt:
       password: thanh123
     var: data
 
-- ReadFile~yaml:
+- ReadFile~YAML:
     title: Read yaml file 2 without password
     path: assets/data2.yaml
     var: data
@@ -98,7 +98,7 @@ export class ReadFile {
   init(props: any) {
     merge(this, props)
     if (!this.type) {
-      this.type = extname(this.path).substr(1).toLowerCase() as FileType
+      this.type = extname(this.path).replace(/\./g, '').toLowerCase() as FileType
     }
   }
 

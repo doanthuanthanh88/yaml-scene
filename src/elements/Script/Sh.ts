@@ -7,6 +7,7 @@ import { Exec } from "../Exec";
 /**
  * Script~Sh
  * @description Embed shell script into scene
+ * @group External
  * @example
 - Vars:
     name: 'thanh'

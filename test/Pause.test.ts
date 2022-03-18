@@ -1,7 +1,7 @@
 import { Simulator } from "@app/Simulator"
 
 test('Pause', async () => {
-  const scenario = await Simulator.Run(`
+    const scenario = await Simulator.Run(`
 - Vars:
     begin: \${Date.now()}
 
@@ -25,9 +25,7 @@ test('Pause', async () => {
     end3: \${Date.now()}
 
 `)
-  expect(Math.floor((scenario.variableManager.vars.end1 - scenario.variableManager.vars.begin) / 100) * 100).toEqual(1000)
-  expect(Math.floor((scenario.variableManager.vars.end2 - scenario.variableManager.vars.end1) / 100) * 100).toEqual(1000)
-  expect(Math.floor((scenario.variableManager.vars.end3 - scenario.variableManager.vars.end2) / 100) * 100).toEqual(1000)
-
-  process.stdin.write('OK\r\n')
+    expect(Math.floor((scenario.variableManager.vars.end1 - scenario.variableManager.vars.begin) / 100) * 100).toEqual(1000)
+    expect(Math.floor((scenario.variableManager.vars.end2 - scenario.variableManager.vars.end1) / 100) * 100).toEqual(1000)
+    expect(Math.floor((scenario.variableManager.vars.end3 - scenario.variableManager.vars.end2) / 100) * 100).toEqual(1000)
 }, 60000)

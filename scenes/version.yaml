@@ -1,4 +1,4 @@
-- InputKeyboard:
+- UserInput:
     - title: Version
       type: select
       var: version
@@ -16,7 +16,7 @@
     - title: Comment
       var: comment
 
-- InputKeyboard:
+- UserInput:
     - title: npm version ${version} --preid=${preid} -m "${comment}"
       type: confirm
       default: true
