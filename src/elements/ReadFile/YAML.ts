@@ -1,7 +1,7 @@
 import { FileType } from '@app/utils/data-source/file/FileType';
-import { ReadFile } from '.';
+import ReadFile from '.';
 
-export class YAML extends ReadFile {
+export default class YAML extends ReadFile {
 
   init(props: any) {
     props.type = FileType.YAML

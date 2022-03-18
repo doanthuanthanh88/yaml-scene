@@ -1,6 +1,6 @@
 import { expect } from 'chai'
 import chalk from "chalk"
-import { merge } from 'lodash'
+import merge from "lodash.merge";
 import { ElementProxy } from '../ElementProxy'
 
 /**
@@ -15,7 +15,7 @@ import { ElementProxy } from '../ElementProxy'
     title: Test response
     chai: ${expect(userInfo).to.have.property('display_name')}
  */
-export class Validate {
+export default class Validate {
   proxy: ElementProxy<Validate>
 
   title: string

@@ -1,16 +1,16 @@
-import { Api } from ".";
+import Api from ".";
 import { Method } from "./Method";
 
 /**
- * Api~Post
+ * Api/Post
  * @description Send a Post request via http
  * @group Api
  * @order 4
  * @example
-- Api~Post:
+- Api/Post:
     title: Create a new product                                 # Api name
     description: It's only serve content for admin              # Api description
-    doc: true                                                   # Push it to queue to export to doc in element `Doc~ApiMD`
+    doc: true                                                   # Push it to queue to export to doc in element `Doc/Api/MD`
     baseURL: http://localhost:3000                              
     url: /:companyID/product
     params:                                                     # Request params. (In the example, url is "/1/product")
@@ -28,7 +28,7 @@ import { Method } from "./Method";
       - title: Response status is valid
         chai: ${expect(_.response.status).to.equal(200)}
  */
-export class Post extends Api {
+export default class Post extends Api {
   init(props) {
     props.method = Method.POST
     super.init(props)

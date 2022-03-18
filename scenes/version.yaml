@@ -22,7 +22,7 @@
       default: true
       var: ok
     
-- Script~Sh:
+- Script/Sh:
     if: ${ok}
     logLevel: debug
     content: |

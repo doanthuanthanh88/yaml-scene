@@ -1,16 +1,16 @@
-import { Api } from ".";
+import Api from ".";
 import { Method } from "./Method";
 
 /**
- * Api~Patch
+ * Api/Patch
  * @description Send a Patch request via http
  * @group Api
  * @order 4
  * @example
-- Api~Patch:
+- Api/Patch:
     title: Update a product                                     # Api name
     description: It's only serve content for admin              # Api description
-    doc: true                                                   # Push it to queue to export to doc in element `Doc~ApiMD`
+    doc: true                                                   # Push it to queue to export to doc in element `Doc/Api/MD`
     baseURL: http://localhost:3000                              
     url: /product/:id
     params:                                                     # Request params. (In the example, url is "/product/1")
@@ -28,7 +28,7 @@ import { Method } from "./Method";
       - title: Response status is valid
         chai: ${expect(_.response.status).to.equal(200)}
  */
-export class Patch extends Api {
+export default class Patch extends Api {
   init(props) {
     props.method = Method.PATCH
     super.init(props)

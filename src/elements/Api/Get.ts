@@ -1,16 +1,16 @@
-import { Api } from ".";
+import Api from ".";
 import { Method } from "./Method";
 
 /**
- * Api~Get
+ * Api/Get
  * @description Send a GET request via http
  * @group Api
  * @order 4
  * @example
-- Api~Get:
+- Api/Get:
     title: Get product details                                  # Api name
     description: It's only serve content for admin              # Api description
-    doc: true                                                   # Push it to queue to export to doc in element `Doc~ApiMD`
+    doc: true                                                   # Push it to queue to export to doc in element `Doc/Api/MD`
     baseURL: http://localhost:3000                              
     url: /product/:id
     params:                                                     # Request params. (In the example, url is "/product/1")
@@ -25,7 +25,7 @@ import { Method } from "./Method";
       - title: Response status is valid
         chai: ${expect(_.response.status).to.equal(200)}
  */
-export class Get extends Api {
+export default class Get extends Api {
   init(props) {
     props.method = Method.GET
     super.init(props)

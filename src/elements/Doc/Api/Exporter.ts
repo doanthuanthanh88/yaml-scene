@@ -1,9 +1,9 @@
-import { Api } from '@app/elements/Api';
+import Api from '@app/elements/Api';
 import { DataSource } from '@app/utils/data-source/DataSource';
 import { Exporter as IExporter } from '@app/utils/doc/Exporter';
-import { omit } from 'lodash';
+import omit from 'lodash.omit';
 import { escape } from 'querystring';
-import { ApiMD } from '.';
+import MD from './MD';
 
 export class Exporter implements IExporter<Api> {
   readonly ignoreRequestHeaders = ['content-type']
@@ -24,7 +24,7 @@ export class Exporter implements IExporter<Api> {
     'connection',
   ]
 
-  constructor(private datasource: DataSource, public md: ApiMD) {
+  constructor(private datasource: DataSource, public md: MD) {
   }
 
   objectToMDType(obj) {

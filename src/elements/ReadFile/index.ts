@@ -3,7 +3,7 @@ import { FileType } from '@app/utils/data-source/file/FileType';
 import { AES } from '@app/utils/encrypt/AES';
 import { Encrypt } from '@app/utils/encrypt/Encrypt';
 import chalk from 'chalk';
-import { merge } from 'lodash';
+import merge from "lodash.merge";
 import { extname } from 'path';
 import { ElementProxy } from '../ElementProxy';
 
@@ -29,62 +29,62 @@ import { ElementProxy } from '../ElementProxy';
 
 ### CSV File
 
-- ReadFile~CSV:
+- ReadFile/CSV:
     title: Read csv file 1 with password
     decrypt:
       password: thanh123
     path: assets/data1.csv
     var: data
 
-- ReadFile~CSV:
+- ReadFile/CSV:
     title: Read csv file 2 without password
     path: assets/data2.csv
     var: data
 
 ### JSON File
 
-- ReadFile~JSON:
+- ReadFile/JSON:
     title: Read json file 1 with password
     path: assets/data1.json
     decrypt:
       password: thanh123
     var: data
 
-- ReadFile~JSON:
+- ReadFile/JSON:
     title: Read json file 2 without password
     path: assets/data2.json
     var: data
 
 ### XML file
 
-- ReadFile~XML:
+- ReadFile/XML:
     title: Read xml file 1 with password
     path: assets/data1.xml
     decrypt:
       password: thanh123
     var: data
 
-- ReadFile~XML:
+- ReadFile/XML:
     title: Read xml file 2 without password
     path: assets/data2.xml
     var: data
 
 ### YAML file
 
-- ReadFile~YAML:
+- ReadFile/YAML:
     title: Read yaml file 1 with password
     path: assets/data1.yaml
     decrypt:
       password: thanh123
     var: data
 
-- ReadFile~YAML:
+- ReadFile/YAML:
     title: Read yaml file 2 without password
     path: assets/data2.yaml
     var: data
 
  */
-export class ReadFile {
+export default class ReadFile {
   proxy: ElementProxy<ReadFile>
 
   title: string

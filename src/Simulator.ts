@@ -1,5 +1,5 @@
 import { existsSync, unlinkSync, writeFileSync } from "fs";
-import { merge } from "lodash";
+import merge from "lodash.merge";
 import { tmpdir } from "os";
 import { join } from "path";
 import { Scenario } from "./singleton/Scenario";

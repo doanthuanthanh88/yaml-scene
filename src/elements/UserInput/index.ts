@@ -89,7 +89,7 @@ import { QuestionType } from './QuestionType';
       default: true
       var: submit
  */
-export class UserInput implements IElement {
+export default class UserInput implements IElement {
   proxy: ElementProxy<UserInput>
 
   private _questions = new Array<AbsQuestion>()

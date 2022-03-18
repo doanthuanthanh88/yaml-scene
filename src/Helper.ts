@@ -1,6 +1,6 @@
 import { program } from "commander";
 import { existsSync, readFileSync, statSync } from "fs";
-import { merge } from "lodash";
+import merge from "lodash.merge";
 import { join } from "path";
 
 export class Helper {

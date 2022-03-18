@@ -24,7 +24,7 @@ export class Extensions {
     let modulePath = "System";
     try {
       modulePath = this.getPathGlobalModule(p);
-      obj = require(modulePath);
+      obj = require(modulePath).default;
       this.extensionElements[p] = obj
       // this.ExternalModules.add(obj);
       try {

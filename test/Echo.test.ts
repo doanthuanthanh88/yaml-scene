@@ -4,17 +4,17 @@ test('Echo', async () => {
   await Simulator.Run(`
   - Echo: Hello world                       # Print white text
 
-  - Echo~Green: Green text                  # Print green text
+  - Echo/Green: Green text                  # Print green text
   
-  - Echo~Blue: Blue text                    # Print blue text
+  - Echo/Blue: Blue text                    # Print blue text
   
-  - Echo~Red: Red text                      # Print red text
+  - Echo/Red: Red text                      # Print red text
   
-  - Echo~Yellow: Yellow text                # Print yellow text
+  - Echo/Yellow: Yellow text                # Print yellow text
   
-  - Echo~Cyan: Cyan text                    # Print cyan text
+  - Echo/Cyan: Cyan text                    # Print cyan text
   
-  - Echo~Gray: Gray text                    # Print gray text
+  - Echo/Gray: Gray text                    # Print gray text
   
   - Echo:                                   
       message: Hello
@@ -26,9 +26,9 @@ test('Echo', async () => {
         name: thanh
         sex: male
   
-  - Echo~Schema: \${user}                    # Print object schema
+  - Echo/Schema: \${user}                    # Print object schema
   
-  - Echo~Schema:
+  - Echo/Schema:
       message: \${user}
       color: gray
       pretty: true

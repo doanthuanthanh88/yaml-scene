@@ -1,5 +1,5 @@
 import { TimeUtils } from "@app/utils/time"
-import { merge } from "lodash"
+import merge from "lodash.merge"
 import { ElementProxy } from "../ElementProxy"
 
 /**
@@ -27,7 +27,7 @@ import { ElementProxy } from "../ElementProxy"
     time: 1000
 
  */
-export class Sleep {
+export default class Sleep {
   proxy: ElementProxy<Sleep>
 
   title: string

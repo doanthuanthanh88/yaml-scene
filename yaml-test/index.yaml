@@ -5,7 +5,7 @@ externalLibs:
 vars:
   example: ABC
 steps:
-  # - Api~Summary: OK
+  # - Api/Summary: OK
   # - !fragment ./examples/custom-extension/echo_extensions.yaml
   # - !fragment ./examples/document/doc_guide.yaml
   # - !fragment ./examples/document/doc_guide.yaml

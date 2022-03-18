@@ -1,22 +1,22 @@
-import { Api } from "@app/elements/Api"
+import Api from "@app/elements/Api"
 import { FileDataSource } from "@app/utils/data-source/file/FileDataSource"
 import { TimeUtils } from "@app/utils/time"
-import { merge } from "lodash"
+import merge from "lodash.merge"
 import { ElementProxy } from "../../ElementProxy"
 import { Exporter } from "./Exporter"
 
 /**
- * Doc~ApiMD
+ * Doc/Api/MD
  * @description Document api to markdown format
  * @group Doc, Api
  * @example
-- Doc~ApiMD:
+- Doc/Api/MD:
     title: Post service
     description: Demo CRUD API to generate to markdown document
     signature: "[Doan Thuan Thanh](mailto:doanthuanthanh88@gmail.com)"
     outFile: ./api_document_details.md
  */
-export class ApiMD {
+export default class ApiMD {
   proxy: ElementProxy<ApiMD>
   apis: Api[]
 

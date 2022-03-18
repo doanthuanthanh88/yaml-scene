@@ -3,7 +3,7 @@ import { FileType } from '@app/utils/data-source/file/FileType';
 import { AES } from '@app/utils/encrypt/AES';
 import { Encrypt } from '@app/utils/encrypt/Encrypt';
 import chalk from 'chalk';
-import { merge } from 'lodash';
+import merge from "lodash.merge";
 import { extname } from 'path';
 import { ElementProxy } from '../ElementProxy';
 
@@ -31,7 +31,7 @@ import { ElementProxy } from '../ElementProxy';
 
 ### CSV File
 
-- WriteFile~CSV:
+- WriteFile/CSV:
     title: Write csv file 1 with password
     path: assets/data1.csv
     encrypt:
@@ -42,7 +42,7 @@ import { ElementProxy } from '../ElementProxy';
       - name: name 2
         age: 3
 
-- WriteFile~CSV:
+- WriteFile/CSV:
     title: Write csv file 2 without password
     path: assets/data2.csv
     content:
@@ -52,7 +52,7 @@ import { ElementProxy } from '../ElementProxy';
 
 ### JSON File
 
-- WriteFile~JSON:
+- WriteFile/JSON:
     title: Write json file 1 with password
     encrypt:
       password: thanh123
@@ -63,7 +63,7 @@ import { ElementProxy } from '../ElementProxy';
       - name: name 2
         age: 3
 
-- WriteFile~JSON:
+- WriteFile/JSON:
     title: Write json file 2 without password
     path: assets/data2.json
     content:
@@ -73,7 +73,7 @@ import { ElementProxy } from '../ElementProxy';
 
 ### XML File
 
-- WriteFile~XML:
+- WriteFile/XML:
     title: Write xml file 1 with password
     encrypt:
       password: thanh123
@@ -84,7 +84,7 @@ import { ElementProxy } from '../ElementProxy';
       - name: name 2
         age: 3
 
-- WriteFile~XML:
+- WriteFile/XML:
     title: Write xml file 2 without password
     path: assets/data2.xml
     content:
@@ -94,7 +94,7 @@ import { ElementProxy } from '../ElementProxy';
 
 ### YAML File
 
-- WriteFile~YAML:
+- WriteFile/YAML:
     title: Write yaml file 1 with password
     encrypt:
       password: thanh123
@@ -105,7 +105,7 @@ import { ElementProxy } from '../ElementProxy';
       - name: name 2
         age: 3
 
-- WriteFile~YAML:
+- WriteFile/YAML:
     title: Write yaml file 2 without password
     path: assets/data2.yaml
     content:
@@ -114,7 +114,7 @@ import { ElementProxy } from '../ElementProxy';
       - [name02, 2]
 
  */
-export class WriteFile {
+export default class WriteFile {
   proxy: ElementProxy<WriteFile>
 
   title: string

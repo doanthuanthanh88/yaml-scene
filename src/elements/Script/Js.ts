@@ -1,20 +1,20 @@
 import { ElementProxy } from "../ElementProxy";
 
 /**
- * Script~Js
+ * Script/Js
  * @description Embed javascript code into scene
  * @group External
  * @example
 - Vars:
     name: 10
 
-- Script~Js: |
+- Script/Js: |
     console.log('oldValue', name)
     _.proxy.setVar('newName', name + 10)
 
 - Echo: New value ${newName}
  */
-export class Js {
+export default class Js {
   proxy: ElementProxy<any>
   content: string
 

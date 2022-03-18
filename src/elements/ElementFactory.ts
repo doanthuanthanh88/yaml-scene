@@ -1,29 +1,21 @@
 import { Scenario } from "@app/singleton/Scenario"
-import { cloneDeep } from "lodash"
+import cloneDeep from "lodash.clonedeep"
 import { ElementProxy } from "./ElementProxy"
 import { IElement } from './IElement'
 
 export class ElementFactory {
-  // Doc~GuideMD
-  private static readonly CHAR_SPLIT_FOLDER_CLASS = '~'
 
-  static CreateElement<T extends IElement>(names: string, scenario: Scenario) {
-    let [folder, name] = names.split(ElementFactory.CHAR_SPLIT_FOLDER_CLASS)
-    if (!name) {
-      name = folder
-      folder = ''
-    }
+  static CreateElement<T extends IElement>(name: string, scenario: Scenario) {
     let Clazz: typeof Element
     try {
-      const Clazzes = require(folder ? `./${folder}/${name}` : `./${name}`)
-      Clazz = Clazzes[name]
-      if (!Clazz) throw new Error(`Could not found "${folder}${name}"`)
+      Clazz = require(`./${name}`).default
+      if (!Clazz) throw new Error(`Could not found "${name}"`)
     } catch (err1) {
       try {
+        // yarn-grpc/Server
         Clazz = scenario.extensions.getGlobalExtension(name)
         if (!Clazz) {
-          const Clazzes = scenario.extensions.load(`${folder}`)
-          Clazz = Clazzes[name]
+          Clazz = scenario.extensions.load(`${name}`)
         }
         if (!Clazz) throw err1
       } catch (err2) {

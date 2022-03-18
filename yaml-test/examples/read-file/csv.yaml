@@ -8,7 +8,7 @@
 
 - Echo: ${data}
 
-- ReadFile~CSV:
+- ReadFile/CSV:
     title: Read csv file 2 without password
     path: assets/data2.csv
     var: data

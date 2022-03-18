@@ -7,7 +7,7 @@ import { IElement } from "../IElement"
  * @example
  - Clear:
  */
-export class Clear implements IElement {
+export default class Clear implements IElement {
 
   exec() {
     console.clear()

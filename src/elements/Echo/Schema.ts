@@ -1,6 +1,6 @@
-import { Echo } from ".";
+import Echo from ".";
 
-export class Schema extends Echo {
+export default class Schema extends Echo {
   init(opts: any): void {
     super.init(opts)
     this.type = 'schema'

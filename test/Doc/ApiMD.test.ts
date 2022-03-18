@@ -1,4 +1,4 @@
-import { Server } from "@app/elements/Api/Server"
+import Server from "@app/elements/Api/Server"
 import { ElementFactory } from "@app/elements/ElementFactory"
 import { Simulator } from "@app/Simulator"
 import { TimeUtils } from "@app/utils/time"
@@ -10,7 +10,7 @@ describe('Test to generate api document', () => {
 
   beforeAll(async () => {
     const scenario = await Simulator.Run()
-    server = ElementFactory.CreateElement<Server>('Api~Server', scenario)
+    server = ElementFactory.CreateElement<Server>('Api/Server', scenario)
     server.init({
       host: 'localhost',
       port: 3000,
@@ -59,13 +59,13 @@ describe('Test to generate api document', () => {
       doc: true
       baseURL: http://localhost:3000
 
-- Api~Get:
+- Api/Get:
     <-: base
     title: Get all of posts
     url: /posts
     var: posts
 
-- Api~Post:
+- Api/Post:
     <-: base
     title: Create a new post
     url: /posts
@@ -75,7 +75,7 @@ describe('Test to generate api document', () => {
       author: typicode 2
     var: newOne
 
-- Api~Put:
+- Api/Put:
     <-: base
     title: Update a post
     url: /posts/:id
@@ -87,7 +87,7 @@ describe('Test to generate api document', () => {
       author: typicode 2 updated
     var: updatedOne
 
-- Api~Get:
+- Api/Get:
     <-: base
     title: Get a post details
     url: /posts/:id
@@ -95,7 +95,7 @@ describe('Test to generate api document', () => {
       id: 2
     var: details
 
-- Api~Get:
+- Api/Get:
     <-: base
     doc: false
     title: This is not documented
@@ -104,7 +104,7 @@ describe('Test to generate api document', () => {
       id: 2
     var: details
 
-- Api~Delete:
+- Api/Delete:
     <-: base
     title: Delete a post
     url: /posts/:id
@@ -113,7 +113,7 @@ describe('Test to generate api document', () => {
     var: 
       status: \${_.response.status}
 
-- Doc~ApiMD:
+- Doc/Api/MD:
     title: Post service
     description: Demo CRUD API to generate to markdown document
     signature: "[Doan Thuan Thanh](mailto:doanthuanthanh88@gmail.com)"

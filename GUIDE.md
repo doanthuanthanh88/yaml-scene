@@ -7,23 +7,23 @@
 |[!binary](#!binary)| Transform file to binary ...|  
 | API | --- |
 |[Api](#Api)| Send a request via http with custom method ...|  
-|[Api~Delete](#Api~Delete)| Send a DELETE request via http ...|  
-|[Api~Get](#Api~Get)| Send a GET request via http ...|  
-|[Api~Patch](#Api~Patch)| Send a Patch request via http ...|  
-|[Api~Post](#Api~Post)| Send a Post request via http ...|  
-|[Api~Put](#Api~Put)| Send a Put request via http ...|  
-|[Api~Head](#Api~Head)| Send a Head request via http ...|  
-|[Api~Options](#Api~Options)| Send a Options request via http ...|  
-|[Api~Server](#Api~Server)| Mock API server ...|  
-|[Api~Summary](#Api~Summary)| Summary after all of apis in scene executed done. ...|  
-|[Doc~ApiMD](#Doc~ApiMD)| Document api to markdown format ...|  
+|[Api/Delete](#Api/Delete)| Send a DELETE request via http ...|  
+|[Api/Get](#Api/Get)| Send a GET request via http ...|  
+|[Api/Patch](#Api/Patch)| Send a Patch request via http ...|  
+|[Api/Post](#Api/Post)| Send a Post request via http ...|  
+|[Api/Put](#Api/Put)| Send a Put request via http ...|  
+|[Api/Head](#Api/Head)| Send a Head request via http ...|  
+|[Api/Options](#Api/Options)| Send a Options request via http ...|  
+|[Api/Server](#Api/Server)| Mock API server ...|  
+|[Api/Summary](#Api/Summary)| Summary after all of apis in scene executed done. ...|  
+|[Doc/Api/MD](#Doc/Api/MD)| Document api to markdown format ...|  
 | DOC | --- |
-|[Doc~ApiMD](#Doc~ApiMD)| Document api to markdown format ...|  
-|[Doc~GuideMD](#Doc~GuideMD)| Auto scan file to detect the comment format which is generated to markdown document ...|  
+|[Doc/Api/MD](#Doc/Api/MD)| Document api to markdown format ...|  
+|[Doc/Guide/MD](#Doc/Guide/MD)| Auto scan file to detect the comment format which is generated to markdown document ...|  
 | EXTERNAL | --- |
 |[Exec](#Exec)| Execute external command ...|  
-|[Script~Js](#Script~Js)| Embed javascript code into scene ...|  
-|[Script~Sh](#Script~Sh)| Embed shell script into scene ...|  
+|[Script/Js](#Script/Js)| Embed javascript code into scene ...|  
+|[Script/Sh](#Script/Sh)| Embed shell script into scene ...|  
 | FILE | --- |
 |[ReadFile](#ReadFile)| Read a file then set content to a variable ...|  
 |[WriteFile](#WriteFile)| Write content to a file ...|  
@@ -98,7 +98,7 @@ Delay after a specific time before keep playing the nexts
     title: Delay all of steps in a group
     stepDelay: 1s
     steps:
-      - Script~Js: |
+      - Script/Js: |
           _.proxy.setVar('begin', Date.now())
       - Echo: ${Date.now() - begin}
       - Echo: ${Date.now() - begin}
@@ -193,7 +193,7 @@ Send a request via http with custom method
 - Api:
     title: Update a product                                     # Api name
     description: It's only serve content for admin              # Api description
-    doc: true                                                   # Push it to queue to export to doc in element `Doc~ApiMD`
+    doc: true                                                   # Push it to queue to export to doc in element `Doc/Api/MD`
     method: PUT                                                 # Request method (GET, POST, PUT, DELETE, PATCH, OPTIONS, HEAD)
     baseURL: http://localhost:3000                              
     url: /product/:id
@@ -215,14 +215,14 @@ Send a request via http with custom method
 ```
 
 
-## Api~Delete <a name="Api~Delete"></a>
+## Api/Delete <a name="Api/Delete"></a>
 Send a DELETE request via http  
 
 ```yaml
-- Api~Delete:
+- Api/Delete:
     title: Delete a product                                     # Api name
     description: It's only serve content for admin              # Api description
-    doc: true                                                   # Push it to queue to export to doc in element `Doc~ApiMD`
+    doc: true                                                   # Push it to queue to export to doc in element `Doc/Api/MD`
     baseURL: http://localhost:3000                              
     url: /product/:id
     params:                                                     # Request params. (In the example, url is "/product/1")
@@ -238,14 +238,14 @@ Send a DELETE request via http
 ```
 
 
-## Api~Get <a name="Api~Get"></a>
+## Api/Get <a name="Api/Get"></a>
 Send a GET request via http  
 
 ```yaml
-- Api~Get:
+- Api/Get:
     title: Get product details                                  # Api name
     description: It's only serve content for admin              # Api description
-    doc: true                                                   # Push it to queue to export to doc in element `Doc~ApiMD`
+    doc: true                                                   # Push it to queue to export to doc in element `Doc/Api/MD`
     baseURL: http://localhost:3000                              
     url: /product/:id
     params:                                                     # Request params. (In the example, url is "/product/1")
@@ -262,14 +262,14 @@ Send a GET request via http
 ```
 
 
-## Api~Patch <a name="Api~Patch"></a>
+## Api/Patch <a name="Api/Patch"></a>
 Send a Patch request via http  
 
 ```yaml
-- Api~Patch:
+- Api/Patch:
     title: Update a product                                     # Api name
     description: It's only serve content for admin              # Api description
-    doc: true                                                   # Push it to queue to export to doc in element `Doc~ApiMD`
+    doc: true                                                   # Push it to queue to export to doc in element `Doc/Api/MD`
     baseURL: http://localhost:3000                              
     url: /product/:id
     params:                                                     # Request params. (In the example, url is "/product/1")
@@ -289,14 +289,14 @@ Send a Patch request via http
 ```
 
 
-## Api~Post <a name="Api~Post"></a>
+## Api/Post <a name="Api/Post"></a>
 Send a Post request via http  
 
 ```yaml
-- Api~Post:
+- Api/Post:
     title: Create a new product                                 # Api name
     description: It's only serve content for admin              # Api description
-    doc: true                                                   # Push it to queue to export to doc in element `Doc~ApiMD`
+    doc: true                                                   # Push it to queue to export to doc in element `Doc/Api/MD`
     baseURL: http://localhost:3000                              
     url: /:companyID/product
     params:                                                     # Request params. (In the example, url is "/1/product")
@@ -316,14 +316,14 @@ Send a Post request via http
 ```
 
 
-## Api~Put <a name="Api~Put"></a>
+## Api/Put <a name="Api/Put"></a>
 Send a Put request via http  
 
 ```yaml
-- Api~Put:
+- Api/Put:
     title: Update a product                                     # Api name
     description: It's only serve content for admin              # Api description
-    doc: true                                                   # Push it to queue to export to doc in element `Doc~ApiMD`
+    doc: true                                                   # Push it to queue to export to doc in element `Doc/Api/MD`
     baseURL: http://localhost:3000                              
     url: /product/:id
     params:                                                     # Request params. (In the example, url is "/product/1")
@@ -343,14 +343,14 @@ Send a Put request via http
 ```
 
 
-## Api~Head <a name="Api~Head"></a>
+## Api/Head <a name="Api/Head"></a>
 Send a Head request via http  
 
 ```yaml
-- Api~Head:
+- Api/Head:
     title: Check product is availabled                          # Api name
     description: It's only serve content for admin              # Api description
-    doc: true                                                   # Push it to queue to export to doc in element `Doc~ApiMD`
+    doc: true                                                   # Push it to queue to export to doc in element `Doc/Api/MD`
     baseURL: http://localhost:3000                              
     url: /product/:id
     params:                                                     # Request params. (In the example, url is "/product/1")
@@ -366,11 +366,11 @@ Send a Head request via http
 ```
 
 
-## Api~Options <a name="Api~Options"></a>
+## Api/Options <a name="Api/Options"></a>
 Send a Options request via http  
 
 ```yaml
-- Api~Options:
+- Api/Options:
     title: Test CORs a product
     baseURL: http://localhost:3000
     url: /product/:id
@@ -382,7 +382,7 @@ Send a Options request via http
 ```
 
 
-## Api~Server <a name="Api~Server"></a>
+## Api/Server <a name="Api/Server"></a>
 Mock API server  
 - Server static file
 - Support upload file then save to server
@@ -390,7 +390,7 @@ Mock API server
 - Create APIs which auto handle CRUD data  
 
 ```yaml
-- Api~Server:
+- Api/Server:
     title: Mock http request to serve data
     https: true                                 # Server content via https
     https:                                      # Server content via https with custom cert and key
@@ -446,20 +446,20 @@ Mock API server
 ```
 
 
-## Api~Summary <a name="Api~Summary"></a>
+## Api/Summary <a name="Api/Summary"></a>
 Summary after all of apis in scene executed done.  
 
 ```yaml
-- Api~Summary:
+- Api/Summary:
     title: Testing result
 ```
 
 
-## Doc~ApiMD <a name="Doc~ApiMD"></a>
+## Doc/Api/MD <a name="Doc/Api/MD"></a>
 Document api to markdown format  
 
 ```yaml
-- Doc~ApiMD:
+- Doc/Api/MD:
     title: Post service
     description: Demo CRUD API to generate to markdown document
     signature: "[Doan Thuan Thanh](mailto:doanthuanthanh88@gmail.com)"
@@ -467,11 +467,11 @@ Document api to markdown format
 ```
 
 
-## Doc~GuideMD <a name="Doc~GuideMD"></a>
+## Doc/Guide/MD <a name="Doc/Guide/MD"></a>
 Auto scan file to detect the comment format which is generated to markdown document  
 
 ```yaml
-- Doc~GuideMD: 
+- Doc/Guide/MD: 
     includes: 
       - src
     excludes: []
@@ -493,14 +493,14 @@ Execute external command
 ```
 
 
-## Script~Js <a name="Script~Js"></a>
+## Script/Js <a name="Script/Js"></a>
 Embed javascript code into scene  
 
 ```yaml
 - Vars:
     name: 10
 
-- Script~Js: |
+- Script/Js: |
     console.log('oldValue', name)
     _.proxy.setVar('newName', name + 10)
 
@@ -508,7 +508,7 @@ Embed javascript code into scene
 ```
 
 
-## Script~Sh <a name="Script~Sh"></a>
+## Script/Sh <a name="Script/Sh"></a>
 Embed shell script into scene  
 
 ```yaml
@@ -516,12 +516,12 @@ Embed shell script into scene
     name: 'thanh'
 
 ### Short
-- Script~Sh: |
+- Script/Sh: |
     echo '${name}'
     yarn global dir
 
 ### Full
-- Script~Sh:
+- Script/Sh:
     args:
       - sh          # Specific path to sh or bash binary
       - ${_.file}   # This content will be writed to this path then execute it
@@ -556,56 +556,56 @@ Refer to [WriteFile](.) to encrypt content
 
 ### CSV File
 
-- ReadFile~CSV:
+- ReadFile/CSV:
     title: Read csv file 1 with password
     decrypt:
       password: thanh123
     path: assets/data1.csv
     var: data
 
-- ReadFile~CSV:
+- ReadFile/CSV:
     title: Read csv file 2 without password
     path: assets/data2.csv
     var: data
 
 ### JSON File
 
-- ReadFile~JSON:
+- ReadFile/JSON:
     title: Read json file 1 with password
     path: assets/data1.json
     decrypt:
       password: thanh123
     var: data
 
-- ReadFile~JSON:
+- ReadFile/JSON:
     title: Read json file 2 without password
     path: assets/data2.json
     var: data
 
 ### XML file
 
-- ReadFile~XML:
+- ReadFile/XML:
     title: Read xml file 1 with password
     path: assets/data1.xml
     decrypt:
       password: thanh123
     var: data
 
-- ReadFile~XML:
+- ReadFile/XML:
     title: Read xml file 2 without password
     path: assets/data2.xml
     var: data
 
 ### YAML file
 
-- ReadFile~YAML:
+- ReadFile/YAML:
     title: Read yaml file 1 with password
     path: assets/data1.yaml
     decrypt:
       password: thanh123
     var: data
 
-- ReadFile~YAML:
+- ReadFile/YAML:
     title: Read yaml file 2 without password
     path: assets/data2.yaml
     var: data
@@ -636,7 +636,7 @@ Refer to [ReadFile](.) to decrypt content
 
 ### CSV File
 
-- WriteFile~CSV:
+- WriteFile/CSV:
     title: Write csv file 1 with password
     path: assets/data1.csv
     encrypt:
@@ -647,7 +647,7 @@ Refer to [ReadFile](.) to decrypt content
       - name: name 2
         age: 3
 
-- WriteFile~CSV:
+- WriteFile/CSV:
     title: Write csv file 2 without password
     path: assets/data2.csv
     content:
@@ -657,7 +657,7 @@ Refer to [ReadFile](.) to decrypt content
 
 ### JSON File
 
-- WriteFile~JSON:
+- WriteFile/JSON:
     title: Write json file 1 with password
     encrypt:
       password: thanh123
@@ -668,7 +668,7 @@ Refer to [ReadFile](.) to decrypt content
       - name: name 2
         age: 3
 
-- WriteFile~JSON:
+- WriteFile/JSON:
     title: Write json file 2 without password
     path: assets/data2.json
     content:
@@ -678,7 +678,7 @@ Refer to [ReadFile](.) to decrypt content
 
 ### XML File
 
-- WriteFile~XML:
+- WriteFile/XML:
     title: Write xml file 1 with password
     encrypt:
       password: thanh123
@@ -689,7 +689,7 @@ Refer to [ReadFile](.) to decrypt content
       - name: name 2
         age: 3
 
-- WriteFile~XML:
+- WriteFile/XML:
     title: Write xml file 2 without password
     path: assets/data2.xml
     content:
@@ -699,7 +699,7 @@ Refer to [ReadFile](.) to decrypt content
 
 ### YAML File
 
-- WriteFile~YAML:
+- WriteFile/YAML:
     title: Write yaml file 1 with password
     encrypt:
       password: thanh123
@@ -710,7 +710,7 @@ Refer to [ReadFile](.) to decrypt content
       - name: name 2
         age: 3
 
-- WriteFile~YAML:
+- WriteFile/YAML:
     title: Write yaml file 2 without password
     path: assets/data2.yaml
     content:
@@ -819,17 +819,17 @@ Print data to screen
 ```yaml
 - Echo: Hello world                       # Print white text
 
-- Echo~Green: Green text                  # Print green text
+- Echo/Green: Green text                  # Print green text
 
-- Echo~Blue: Blue text                    # Print blue text
+- Echo/Blue: Blue text                    # Print blue text
 
-- Echo~Red: Red text                      # Print red text
+- Echo/Red: Red text                      # Print red text
 
-- Echo~Yellow: Yellow text                # Print yellow text
+- Echo/Yellow: Yellow text                # Print yellow text
 
-- Echo~Cyan: Cyan text                    # Print cyan text
+- Echo/Cyan: Cyan text                    # Print cyan text
 
-- Echo~Gray: Gray text                    # Print gray text
+- Echo/Gray: Gray text                    # Print gray text
 
 - Echo:                                   
     message: Hello
@@ -841,9 +841,9 @@ Print data to screen
       name: thanh
       sex: male
 
-- Echo~Schema: ${user}                    # Print object schema
+- Echo/Schema: ${user}                    # Print object schema
 
-- Echo~Schema:
+- Echo/Schema:
     message: ${user}
     color: gray
     pretty: true

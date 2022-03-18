@@ -1,25 +1,25 @@
 import { ElementProxy } from "@app/elements/ElementProxy";
 import { IElement } from "@app/elements/IElement";
 import { FileDataSource } from '@app/utils/data-source/file/FileDataSource';
-import { merge } from "lodash";
+import merge from "lodash.merge";
 import { CommentExporter } from './CommentExporter';
 import { CommentInfo } from './CommentInfo';
 import { CommentParser } from './CommentParser';
 import { Scanner } from '../Scanner';
 
 /**
- * Doc~GuideMD
+ * Doc/Guide/MD
  * @group Doc
  * @description Auto scan file to detect the comment format which is generated to markdown document
  * @example
-- Doc~GuideMD: 
+- Doc/Guide/MD: 
     includes: 
       - src
     excludes: []
     includePattern: ".+\\.ts$"
     outFile: /tmp/doc.md
  */
-export class GuideMD implements IElement {
+export default class GuideMD implements IElement {
   proxy: ElementProxy<any>
 
   includes?: string[]

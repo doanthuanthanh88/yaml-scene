@@ -1,4 +1,4 @@
-import { merge } from "lodash"
+import merge from "lodash.merge"
 import { AutoCompleteMultiSelectQuestion } from "./question/AutoCompleteMultiSelectQuestion"
 import { AutoCompleteQuestion } from "./question/AutoCompleteQuestion"
 import { ConfirmQuestion } from "./question/ConfirmQuestion"

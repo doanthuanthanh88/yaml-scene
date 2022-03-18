@@ -1,11 +1,11 @@
 import { TimeUtils } from "@app/utils/time"
 import chalk from "chalk"
-import { merge } from "lodash"
+import merge from "lodash.merge"
 import { ElementFactory } from "../ElementFactory"
 import { ElementProxy } from "../ElementProxy"
 import { QuestionBuilder } from "../UserInput/QuestionBuilder"
 import { QuestionType } from "../UserInput/QuestionType"
-import { Sleep } from "../Sleep"
+import Sleep from "../Sleep"
 
 /**
  * Pause
@@ -24,7 +24,7 @@ import { Sleep } from "../Sleep"
 - Pause:          # It will be paused until user enter
 
  */
-export class Pause {
+export default class Pause {
   proxy: ElementProxy<Pause>
 
   title: string

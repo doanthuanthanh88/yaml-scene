@@ -8,11 +8,12 @@ import https from 'https';
 import Koa from 'koa';
 import bodyParser from 'koa-body';
 import serve from 'koa-static';
-import { cloneDeep, merge } from 'lodash';
+import merge from "lodash.merge";
+import cloneDeep from "lodash.clonedeep";
 import { CRUDModel } from './CRUDModel';
 
 /**
- * Api~Server
+ * Api/Server
  * @description Mock API server  
 - Server static file
 - Support upload file then save to server
@@ -20,7 +21,7 @@ import { CRUDModel } from './CRUDModel';
 - Create APIs which auto handle CRUD data
  * @group Api
  * @example
-- Api~Server:
+- Api/Server:
     title: Mock http request to serve data
     https: true                                 # Server content via https
     https:                                      # Server content via https with custom cert and key
@@ -74,7 +75,7 @@ import { CRUDModel } from './CRUDModel';
             }                                   # $request: Request
           ]                                     # $ctx:     Context
  */
-export class Server implements IElement {
+export default class Server implements IElement {
   private static readonly KEY = `-----BEGIN RSA PRIVATE KEY-----
   MIIEowIBAAKCAQEAynRSsMcDagvV86OaKAmi3Y7GfUnuYm6IG0PpaNEPD+F/LNNO
   vHGbFouYbHNX6RvejmJVGg9iQGYUnLgY4qipOplaZRKF1kiWzvCJ6xyVaMhKHlEo

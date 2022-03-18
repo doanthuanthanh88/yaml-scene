@@ -1,6 +1,7 @@
 import { Scenario } from "@app/singleton/Scenario";
 import { TimeUtils } from "@app/utils/time";
-import { cloneDeep, merge } from "lodash";
+import merge from "lodash.merge";
+import cloneDeep from "lodash.clonedeep";
 import { IElement } from "./IElement";
 
 /**
@@ -67,7 +68,7 @@ import { IElement } from "./IElement";
     title: Delay all of steps in a group
     stepDelay: 1s
     steps:
-      - Script~Js: |
+      - Script/Js: |
           _.proxy.setVar('begin', Date.now())
       - Echo: ${Date.now() - begin}
       - Echo: ${Date.now() - begin}

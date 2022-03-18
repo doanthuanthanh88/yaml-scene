@@ -1,5 +1,5 @@
 import { IElement } from "@app/elements/IElement"
-import { cloneDeep } from "lodash"
+import cloneDeep from "lodash.clonedeep"
 
 export class TemplateManager extends Map<string, IElement> {
 

@@ -1,6 +1,6 @@
 import chalk from 'chalk';
 import { ChildProcessWithoutNullStreams, spawn } from 'child_process';
-import { merge } from 'lodash';
+import merge from "lodash.merge";
 import { ElementProxy } from '../ElementProxy';
 import { IElement } from '../IElement';
 
@@ -16,7 +16,7 @@ import { IElement } from '../IElement';
       - global
       - dir
  */
-export class Exec implements IElement {
+export default class Exec implements IElement {
   proxy: ElementProxy<Exec>
 
   title: string

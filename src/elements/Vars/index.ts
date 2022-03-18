@@ -12,7 +12,7 @@ import { ElementProxy } from "../ElementProxy"
 - Echo: ${userA}
 - Echo: ${userA.name}
  */
-export class Vars {
+export default class Vars {
   proxy: ElementProxy<any>
 
   vars = {}

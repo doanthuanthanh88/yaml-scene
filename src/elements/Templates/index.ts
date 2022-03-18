@@ -1,7 +1,7 @@
 import { IElement } from "../IElement";
 import { ElementFactory } from "../ElementFactory";
 import { ElementProxy } from "../ElementProxy";
-import { Group } from "../Group";
+import Group from "../Group";
 
 /**
  * Templates
@@ -19,7 +19,7 @@ import { Group } from "../Group";
     params:
       id: 1
  */
-export class Templates {
+export default class Templates {
   proxy: ElementProxy<Templates>
 
   group: ElementProxy<Group>

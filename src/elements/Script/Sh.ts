@@ -2,10 +2,10 @@ import { existsSync, writeFileSync } from "fs";
 import { unlink } from "fs/promises";
 import { tmpdir } from "os";
 import { join } from "path";
-import { Exec } from "../Exec";
+import Exec from "../Exec";
 
 /**
- * Script~Sh
+ * Script/Sh
  * @description Embed shell script into scene
  * @group External
  * @example
@@ -13,12 +13,12 @@ import { Exec } from "../Exec";
     name: 'thanh'
 
 ### Short
-- Script~Sh: |
+- Script/Sh: |
     echo '${name}'
     yarn global dir
 
 ### Full
-- Script~Sh:
+- Script/Sh:
     args:
       - sh          # Specific path to sh or bash binary
       - ${_.file}   # This content will be writed to this path then execute it
@@ -30,7 +30,7 @@ import { Exec } from "../Exec";
       echo $1
       echo $2
  */
-export class Sh extends Exec {
+export default class Sh extends Exec {
   content: string
   bin: string
   file: string

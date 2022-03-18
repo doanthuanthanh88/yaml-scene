@@ -8,12 +8,12 @@ import FormData from 'form-data'
 import { createWriteStream } from "fs"
 import { Agent } from 'http'
 import { Agent as Agents } from 'https'
-import { merge, reject } from "lodash"
+import merge from "lodash.merge"
 import { stringify } from 'querystring'
 import { ElementFactory } from "../ElementFactory"
 import { ElementProxy } from "../ElementProxy"
 import { IElement } from "../IElement"
-import { Validate } from "../Validate"
+import Validate from "../Validate"
 import { Method } from "./Method"
 
 // process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
@@ -34,7 +34,7 @@ import { Method } from "./Method"
 - Api:
     title: Update a product                                     # Api name
     description: It's only serve content for admin              # Api description
-    doc: true                                                   # Push it to queue to export to doc in element `Doc~ApiMD`
+    doc: true                                                   # Push it to queue to export to doc in element `Doc/Api/MD`
     method: PUT                                                 # Request method (GET, POST, PUT, DELETE, PATCH, OPTIONS, HEAD)
     baseURL: http://localhost:3000                              
     url: /product/:id
@@ -54,7 +54,7 @@ import { Method } from "./Method"
       - title: Response status is valid
         chai: ${expect(_.response.status).to.equal(200)}
  */
-export class Api implements IElement {
+export default class Api implements IElement {
   proxy: ElementProxy<Api>
 
   title: string
@@ -177,7 +177,7 @@ export class Api implements IElement {
               }
               merge(this.headers, data.getHeaders())
               const progressBar = new ProgressBar('Upload Progress || {bar} | {percentage}% || {value}/{total} bytes || Speed: {speed}')
-              progressBar.total = await new Promise<number>((resolve) => {
+              progressBar.total = await new Promise<number>((resolve, reject) => {
                 data.getLength((err, len) => {
                   if (err) return reject(err)
                   resolve(len)

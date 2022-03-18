@@ -1,5 +1,5 @@
 import chalk from "chalk";
-import { merge } from "lodash";
+import merge from "lodash.merge";
 import { ElementFactory } from "../ElementFactory";
 import { ElementProxy } from "../ElementProxy";
 import { IElement } from "../IElement";
@@ -26,7 +26,7 @@ import { IElement } from "../IElement";
           steps:
             - Echo: Hello 3
  */
-export class Group implements IElement {
+export default class Group implements IElement {
   proxy: ElementProxy<Group>
   title: string
   description: string
