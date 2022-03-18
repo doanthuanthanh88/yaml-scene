@@ -5,7 +5,8 @@ import { ElementProxy } from '../ElementProxy';
 import { IElement } from '../IElement';
 
 /**
- * Exec
+ * @guide
+ * @name Exec
  * @group External
  * @description Execute external command
  * @example
@@ -15,6 +16,7 @@ import { IElement } from '../IElement';
       - yarn
       - global
       - dir
+ * @end
  */
 export default class Exec implements IElement {
   proxy: ElementProxy<Exec>

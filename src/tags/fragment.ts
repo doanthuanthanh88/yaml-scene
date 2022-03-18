@@ -4,7 +4,8 @@ import { safeLoad, Type } from 'js-yaml'
 import { YAMLSchema } from '.'
 
 /**
- * !fragment
+ * @guide
+ * @name !fragment
  * @description Load scenes from another file into current file
  * @group !Tags
  * @example
@@ -15,6 +16,7 @@ import { YAMLSchema } from '.'
 
       - !fragment ./examples/scene_2.yaml
       - Echo: Loaded scene 2 successfully
+ * @end
  */
 export class FragmentScalar extends Type {
   constructor(scenario: Scenario) {

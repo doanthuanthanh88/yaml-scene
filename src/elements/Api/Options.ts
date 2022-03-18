@@ -2,7 +2,8 @@ import Api from ".";
 import { Method } from "./Method";
 
 /**
- * Api/Options
+ * @guide
+ * @name Api/Options
  * @description Send a Options request via http
  * @group Api
  * @order 5
@@ -16,6 +17,7 @@ import { Method } from "./Method";
     validate:
       - title: Response status is valid
         chai: ${expect(_.response.status).to.equal(204)}
+ * @end
  */
 export default class Options extends Api {
   init(props) {

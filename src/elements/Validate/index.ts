@@ -4,9 +4,10 @@ import merge from "lodash.merge";
 import { ElementProxy } from '../ElementProxy'
 
 /**
- * Validate
+ * @guide
+ * @name Validate
  * @description Validate data in running progress  
- * Currently only support chai `https://www.chaijs.com`
+Currently only support chai `https://www.chaijs.com`
  * @example
 - Validate:
     title: Validate number
@@ -14,6 +15,7 @@ import { ElementProxy } from '../ElementProxy'
 - Validate:
     title: Test response
     chai: ${expect(userInfo).to.have.property('display_name')}
+ * @end
  */
 export default class Validate {
   proxy: ElementProxy<Validate>

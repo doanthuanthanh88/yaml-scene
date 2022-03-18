@@ -26,7 +26,8 @@ import { Method } from "./Method"
 // })
 
 /**
- * Api
+ * @guide
+ * @name Api
  * @description Send a request via http with custom method
  * @group Api
  * @order 3
@@ -53,6 +54,7 @@ import { Method } from "./Method"
     validate:                                                   # Validate response after request done. (Reference to #Validate)
       - title: Response status is valid
         chai: ${expect(_.response.status).to.equal(200)}
+ * @end
  */
 export default class Api implements IElement {
   proxy: ElementProxy<Api>

@@ -3,7 +3,8 @@ import { createReadStream, ReadStream } from 'fs'
 import { Type } from 'js-yaml'
 
 /**
- * !binary
+ * @guide
+ * @name !binary
  * @description Transform file to binary
  * @group !Tags
  * @example
@@ -13,6 +14,7 @@ import { Type } from 'js-yaml'
       content-type: multipart/form-data
     body:
       file: !binary ~/data.json
+ * @end
  */
 export class BinaryScalar extends Type {
   constructor(scenario: Scenario) {

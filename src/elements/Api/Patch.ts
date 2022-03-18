@@ -2,7 +2,8 @@ import Api from ".";
 import { Method } from "./Method";
 
 /**
- * Api/Patch
+ * @guide
+ * @name Api/Patch
  * @description Send a Patch request via http
  * @group Api
  * @order 4
@@ -27,6 +28,7 @@ import { Method } from "./Method";
     validate:                                                   # Validate response after request done. (Reference to #Validate)
       - title: Response status is valid
         chai: ${expect(_.response.status).to.equal(200)}
+ * @end
  */
 export default class Patch extends Api {
   init(props) {

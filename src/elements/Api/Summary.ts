@@ -3,13 +3,15 @@ import merge from "lodash.merge"
 import { ElementProxy } from "../ElementProxy"
 
 /**
- * Api/Summary
+ * @guide
+ * @name Api/Summary
  * @description Summary after all of apis in scene executed done.
  * @group Api
  * @order 5
  * @example
 - Api/Summary:
     title: Testing result
+ * @end
  */
 export default class Summary {
   proxy: ElementProxy<Summary>

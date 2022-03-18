@@ -7,7 +7,8 @@ import { QuestionBuilder } from './QuestionBuilder';
 import { QuestionType } from './QuestionType';
 
 /**
- * UserInput
+ * @guide
+ * @name UserInput
  * @description Get user input from keyboard
  * @group Input
  * @example
@@ -88,6 +89,7 @@ import { QuestionType } from './QuestionType';
       type: confirm
       default: true
       var: submit
+ * @end
  */
 export default class UserInput implements IElement {
   proxy: ElementProxy<UserInput>

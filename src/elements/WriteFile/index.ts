@@ -8,10 +8,11 @@ import { extname } from 'path';
 import { ElementProxy } from '../ElementProxy';
 
 /**
- * WriteFile
+ * @guide
+ * @name WriteFile
  * @description Write content to a file  
- * It uses `aes-128-cbc` to encrypt content with a password.  
- * Refer to [ReadFile](.) to decrypt content
+It uses `aes-128-cbc` to encrypt content with a password.  
+Refer to [ReadFile](.) to decrypt content
  * @group File, Output
  * @example
 ### Text file
@@ -112,7 +113,7 @@ import { ElementProxy } from '../ElementProxy';
       - [name, age]
       - [name01, 1]
       - [name02, 2]
-
+ * @end
  */
 export default class WriteFile {
   proxy: ElementProxy<WriteFile>

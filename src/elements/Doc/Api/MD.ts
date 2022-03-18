@@ -6,7 +6,8 @@ import { ElementProxy } from "../../ElementProxy"
 import { Exporter } from "./Exporter"
 
 /**
- * Doc/Api/MD
+ * @guide
+ * @name Doc/Api/MD
  * @description Document api to markdown format
  * @group Doc, Api
  * @example
@@ -15,6 +16,7 @@ import { Exporter } from "./Exporter"
     description: Demo CRUD API to generate to markdown document
     signature: "[Doan Thuan Thanh](mailto:doanthuanthanh88@gmail.com)"
     outFile: ./api_document_details.md
+ * @end
  */
 export default class ApiMD {
   proxy: ElementProxy<ApiMD>

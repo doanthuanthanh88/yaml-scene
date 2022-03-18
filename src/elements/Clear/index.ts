@@ -1,11 +1,13 @@
 import { IElement } from "../IElement"
 
 /**
- * Clear
+ * @guide
+ * @name Clear
  * @description Clear screen
  * @group Output
  * @example
- - Clear:
+- Clear:
+ * @end
  */
 export default class Clear implements IElement {
 

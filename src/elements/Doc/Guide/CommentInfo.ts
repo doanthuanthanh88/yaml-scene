@@ -24,25 +24,20 @@ export class CommentInfo implements DataModel {
   }
 
   add(txt: string) {
-    const m = txt.match(/^(\@(\w+)\s?)?(.*)/);
-    if (m) {
-      if (m[2]) {
-        this._current = m[2];
-      }
-      if (!this[this._current]) {
-        this[this._current] = '';
-      } else {
-        if (typeof this[this._current] !== 'number') {
-          this[this._current] += '\n';
-        }
-      }
-      if (typeof this[this._current] === 'number') {
-        this[this._current] = +m[3];
-      } else {
-        this[this._current] += m[3];
-      }
+    const m = txt.match(/(@(name|description|exampleType|example|group|order|h1|h2))((\s+(.*))||($))$/);
+    let cnt = txt
+    if (m && m[2]) {
+      this._current = m[2];
+      cnt = m[5] || ''
     }
-
+    if (!this[this._current]) {
+      this[this._current] = '';
+    }
+    if (typeof this[this._current] === 'number') {
+      this[this._current] = +cnt;
+    } else {
+      this[this._current] += (this[this._current] ? '\n' : '') + cnt;
+    }
   }
 
   get examples() {

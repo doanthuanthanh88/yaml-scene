@@ -13,7 +13,8 @@ import cloneDeep from "lodash.clonedeep";
 import { CRUDModel } from './CRUDModel';
 
 /**
- * Api/Server
+ * @guide
+ * @name Api/Server
  * @description Mock API server  
 - Server static file
 - Support upload file then save to server
@@ -74,6 +75,7 @@ import { CRUDModel } from './CRUDModel';
               "des": "des 1",                   # $body:    Request body
             }                                   # $request: Request
           ]                                     # $ctx:     Context
+ * @end
  */
 export default class Server implements IElement {
   private static readonly KEY = `-----BEGIN RSA PRIVATE KEY-----

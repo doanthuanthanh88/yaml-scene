@@ -8,7 +8,8 @@ import { QuestionType } from "../UserInput/QuestionType"
 import Sleep from "../Sleep"
 
 /**
- * Pause
+ * @guide
+ * @name Pause
  * @description Program will be paused and wait user input
  * @example
 - Pause:
@@ -22,7 +23,7 @@ import Sleep from "../Sleep"
     time: 3s
 
 - Pause:          # It will be paused until user enter
-
+ * @end
  */
 export default class Pause {
   proxy: ElementProxy<Pause>

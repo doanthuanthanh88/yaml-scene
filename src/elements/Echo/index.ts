@@ -6,7 +6,8 @@ import { FormatFactory } from "./format/FormatFactory"
 import { IFormat } from "./format/IFormat"
 
 /**
- * Echo
+ * @guide
+ * @name Echo
  * @description Print data to screen
  * @group Output
  * @example
@@ -40,7 +41,7 @@ import { IFormat } from "./format/IFormat"
     message: ${user}
     color: gray
     pretty: true
-
+ * @end
  */
 export default class Echo implements IElement {
   proxy: ElementProxy<any>

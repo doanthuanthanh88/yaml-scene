@@ -1,7 +1,8 @@
 import { ElementProxy } from "../ElementProxy"
 
 /**
- * Vars
+ * @guide
+ * @name Vars
  * @description Declare variables in scene
  * @example
 - Vars:
@@ -11,6 +12,7 @@ import { ElementProxy } from "../ElementProxy"
 
 - Echo: ${userA}
 - Echo: ${userA.name}
+ * @end
  */
 export default class Vars {
   proxy: ElementProxy<any>

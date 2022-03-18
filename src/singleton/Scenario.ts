@@ -14,7 +14,8 @@ import { Extensions } from '../utils/extensions'
 import { TemplateManager } from './TemplateManager'
 
 /**
- * Standard Scenario file
+ * @guide
+ * @name Standard Scenario file
  * @h1
  * @order 1
  * @description A standard scenario file
@@ -41,16 +42,19 @@ steps:                                              # Includes all which you wan
   - extension_name1:
   - extensions_folders/custom1:
   - yas-sequence-diagram~SequenceDiagram:           # Load yas-sequence-diagram from npm/yarn global dirs then use class SequenceDiagram to handle
+ * @end
  */
 
 /**
- * Simple Scenario file
+ * @guide
+ * @name Simple Scenario file
  * @h1
  * @order 2
  * @description A simple scenario file
  * @example
 - !fragment ./scene1.yaml
 - !fragment ./scene2.yaml
+ * @end
  */
 
 export class Scenario {

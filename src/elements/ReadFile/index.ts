@@ -8,10 +8,11 @@ import { extname } from 'path';
 import { ElementProxy } from '../ElementProxy';
 
 /**
- * ReadFile
+ * @guide
+ * @name ReadFile
  * @description Read a file then set content to a variable  
- * It uses `aes-128-cbc` to decrypt content with a password.  
- * Refer to [WriteFile](.) to encrypt content
+It uses `aes-128-cbc` to decrypt content with a password.  
+Refer to [WriteFile](.) to encrypt content
  * @group File, Input
  * @example
 ### Text file
@@ -82,7 +83,7 @@ import { ElementProxy } from '../ElementProxy';
     title: Read yaml file 2 without password
     path: assets/data2.yaml
     var: data
-
+ * @end
  */
 export default class ReadFile {
   proxy: ElementProxy<ReadFile>

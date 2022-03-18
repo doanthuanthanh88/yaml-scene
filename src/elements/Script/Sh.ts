@@ -5,7 +5,8 @@ import { join } from "path";
 import Exec from "../Exec";
 
 /**
- * Script/Sh
+ * @guide
+ * @name Script/Sh
  * @description Embed shell script into scene
  * @group External
  * @example
@@ -29,6 +30,7 @@ import Exec from "../Exec";
       echo ${name}
       echo $1
       echo $2
+ * @end
  */
 export default class Sh extends Exec {
   content: string

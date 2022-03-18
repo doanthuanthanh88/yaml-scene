@@ -5,8 +5,12 @@ import { createInterface } from 'readline';
 
 export abstract class ContentParser<T extends DataModel> implements DataParser {
   protected infos = [];
+  public beginPattern: RegExp
+  public endPattern: RegExp
 
-  constructor(public file: string) {
+  constructor(public file: string, beginPattern: string, endPattern: string) {
+    this.beginPattern = new RegExp(beginPattern)
+    this.endPattern = new RegExp(endPattern)
   }
 
   parse() {

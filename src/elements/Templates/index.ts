@@ -4,9 +4,10 @@ import { ElementProxy } from "../ElementProxy";
 import Group from "../Group";
 
 /**
- * Templates
+ * @guide
+ * @name Templates
  * @description Declare elements which not `inited` or `run`  
- * It's only used for `extends` or `inherit` purposes
+It's only used for `extends` or `inherit` purposes
  * @example
 - Templates:
     - Get:
@@ -18,6 +19,7 @@ import Group from "../Group";
     url: /product/:id
     params:
       id: 1
+ * @end
  */
 export default class Templates {
   proxy: ElementProxy<Templates>

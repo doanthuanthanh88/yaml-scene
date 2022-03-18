@@ -5,7 +5,8 @@ import { ElementProxy } from "../ElementProxy";
 import { IElement } from "../IElement";
 
 /**
- * Group
+ * @guide
+ * @name Group
  * @description Group contains 1 or many elements
  * @example
 - Group:
@@ -25,6 +26,7 @@ import { IElement } from "../IElement";
           async: true
           steps:
             - Echo: Hello 3
+ * @end
  */
 export default class Group implements IElement {
   proxy: ElementProxy<Group>

@@ -15,7 +15,7 @@ export class Scanner implements IScanner {
     this.event = new EventEmitter()
   }
 
-  async scanDir(dir: string, excludes?: string[], includePattern?: RegExp) {
+  async scanDir(dir: string, excludes?: string[], includePattern?: RegExp, beginPattern?: string, endPattern?: string) {
     const names = await readdir(dir);
     const parsers = await Promise.all<DataParser[]>(names.map(async (name) => {
       const path = join(dir, name);
@@ -23,14 +23,14 @@ export class Scanner implements IScanner {
 
       if (st.isDirectory()) {
         if (!excludes?.find(ex => path.startsWith(ex))) {
-          const commentModels = await this.scanDir(path, excludes, includePattern);
+          const commentModels = await this.scanDir(path, excludes, includePattern, beginPattern, endPattern);
           return commentModels
         }
       }
 
       if (st.isFile() && includePattern?.test(name)) {
         this.event.emit('scanfile', path)
-        const commentModel = await new this.ParserClass(path)
+        const commentModel = await new this.ParserClass(path, beginPattern, endPattern)
         return [commentModel]
       }
 

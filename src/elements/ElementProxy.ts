@@ -4,16 +4,19 @@ import merge from "lodash.merge";
 import cloneDeep from "lodash.clonedeep";
 import { IElement } from "./IElement";
 
-/**
- * Default attributes
+/** 
+ * @guide
+ * @name Default attributes
  * @description Attributes in all of elements
  * @group Attribute
  * @order 0
  * @h1 #
+ * @end
  */
 
-/**
- * if
+/** 
+ * @guide
+ * @name if
  * @description Check condition before decided to run this element or not
  * @group Attribute
  * @h1 ##
@@ -32,10 +35,12 @@ import { IElement } from "./IElement";
 - Echo: 
     if: ${!sayHello}
     title: Goodbye
+ * @end
  */
 
 /**
- * async
+ * @guide
+ * @name async
  * @description Run element asynchronized which not blocked others
  * @group Attribute
  * @h1 ##
@@ -56,10 +61,12 @@ import { IElement } from "./IElement";
           async: true
           steps:
             - Echo: Hello 3
+ * @end
  */
 
 /**
- * delay
+ * @guide
+ * @name delay
  * @description Delay after a specific time before keep playing the nexts
  * @group Attribute
  * @h1 ##
@@ -81,6 +88,7 @@ import { IElement } from "./IElement";
           title: step 2 run after 2s
           time: 2s
       - Echo: <step 2>
+ * @end
  */
 export class ElementProxy<T extends IElement> {
   _: any

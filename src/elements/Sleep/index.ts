@@ -3,7 +3,8 @@ import merge from "lodash.merge"
 import { ElementProxy } from "../ElementProxy"
 
 /**
- * Sleep
+ * @guide
+ * @name Sleep
  * @description Program will be delayed at here after specific time then it keeps playing next steps
  * @example
 - Sleep: 10s
@@ -25,7 +26,7 @@ import { ElementProxy } from "../ElementProxy"
 - Sleep: 
     title: Sleep 1000 miliseconds
     time: 1000
-
+ * @end
  */
 export default class Sleep {
   proxy: ElementProxy<Sleep>

@@ -118,33 +118,28 @@ Delay after a specific time before keep playing the nexts
 A standard scenario file  
 
 ```yaml
-title: Scene name                 # Scene name
-description: Scene description    # Scene description
-password:                         # File will be encrypted to $FILE_NAME.encrypt to share to someone run it for privacy
-logLevel: debug                   # How to show log is debug)
-                                  # - slient: Dont show anything
-                                  # - error: Show error log
-                                  # - warn: Show warning log
-                                  # - info: Show infor, error log
-                                  # - debug: Show log details, infor, error log ( Default )
-                                  # - trace: Show all of log
-extensions:                       # Extension elements.
-  - ./cuz_extensions/custom1.js   # - Load elements from a file (Ex: elem1)
-  - ./cuz_extensions/custom2.js   # - Load elements from a file (Ex: elem2)
-  - ./cuz_extensions              # - Load elements from a folder (Ex: custom1~elem1, custom2~elem2)
-  - yas-grpc                      # - Load elements from npm/yarn global dirs
-vars:                             # Declare global variables, which can be replaced by env
+title: Scene name                                   # Scene name
+description: Scene description                      # Scene description
+password:                                           # File will be encrypted to $FILE_NAME.encrypt to share to someone run it for privacy
+logLevel: debug                                     # How to show log is debug)
+                                                    # - slient: Dont show anything
+                                                    # - error: Show error log
+                                                    # - warn: Show warning log
+                                                    # - info: Show infor, error log
+                                                    # - debug: Show log details, infor, error log ( Default )
+                                                    # - trace: Show all of log
+extensions:                                         # Extension elements.
+  extension_name1: ./cuz_extensions/custom1.js      # - Load a element in a file with exports.default (extension_name1:)
+  extensions_folders: ./cuz_extensions              # - Load elements in files in the folder with file name is element name (extensions_folders/custom1:)
+vars:                                               # Declare global variables, which can be replaced by env
   url: http://localhost:3000
   token: ...
-steps:                            # Includes all which you want to do
+steps:                                              # Includes all which you want to do
   - !fragment ./scene1.yaml
   - !fragment ./scene2.yaml
-  - elem1:                            
-  - elem2:
-  - custom1~elem1:
-  - custom2~elem2:
-  - call:                                 # Load doc from yas-grpc which declared in extensions
-  - yas-sequence-diagram~SequenceDiagram: # Load yas-sequence-diagram from npm/yarn global dirs then use class SequenceDiagram to handle
+  - extension_name1:
+  - extensions_folders/custom1:
+  - yas-sequence-diagram~SequenceDiagram:           # Load yas-sequence-diagram from npm/yarn global dirs then use class SequenceDiagram to handle
 ```
 
 
@@ -469,15 +464,85 @@ Document api to markdown format
 
 ## Doc/Guide/MD <a name="Doc/Guide/MD"></a>
 Auto scan file to detect the comment format which is generated to markdown document  
-
 ```yaml
 - Doc/Guide/MD: 
+    # pattern:
+    #   begin: \s+@guide\s*$         # Default pattern
+    #   end: \s+@end\s*$$            # Default pattern
     includes: 
       - src
     excludes: []
     includePattern: ".+\\.ts$"
     outFile: /tmp/doc.md
 ```
+
+** Code example **
+
+```js
+/**
+ * @guide 
+ * @name  Element1
+ * @description  Embed javascript code into scene
+***Details***
+
+ * @h1  ##
+Could not combine `@h1` and `@h2` in same guideline block
+More information above detail block
+
+ * @h2  ##
+Could not combine `@h1` and `@h2` in same guideline block
+More information below detail block
+
+ * @group  Tag1, Tag2
+ * @exampleType  custom
+ * @example 
+**Example**  
+```js
+console.log('Hello world')
+``\`
+ \* @end 
+ *\/
+class Element1 {
+
+}
+```
+- `@guide`: Begin scan a new guideline block
+- `@name`: Element name
+- `@description`: Element description. (Markdown format)
+- `@exampleType`: This is content type in hightlight code block in markdown. \`\`\`yaml ... \`\`\`
+  - Default is `yaml`
+  - If the value is `custom` then content in example will be used as markdown format. (Not hightlight code block)
+- `@example`: Some examples for this element. 
+  - Content type depends on `@exampleType`
+    - Default is `yaml`.
+    - If `@exampleType` is `custom` then this will used as markdown format
+    - Otherwise, it used hightlight code block \`\`\` ... \`\`\` in markdown
+- `@group`: Group this element. 
+  - Separate by `, `. 
+  - Example: `Tag 1, Tag 2`
+- `@order`: Priority position display this element in a same group
+  - Example: 1. 
+  - Default: 5
+- `@h1`: Describe header in markdown (#, ##...). This content is markdown format which show above document details block. Could not combine `@h1` and `@h2` in same guideline block
+- `@h2`: Describe header in markdown (#, ##...). This content is markdown format which show below document details block. Could not combine `@h1` and `@h2` in same guideline block
+- `@end`: Mark to scan done a guideline block
+
+**Header position**
+
+```js
+-----------------------MENU------------------------
+Menu name which not be set `@h1` or `@h2`.
+Menu will be grouped by `@group` and show as table
+------------------------H1-------------------------
+List `@h1` content
+----------------------DETAILS----------------------
+List content which not includes `@h1` and `@h2`
+------------------------H2-------------------------
+List `@h2` content
+---------------------------------------------------
+```
+
+> This guideline have generated by this
 
 
 ## Exec <a name="Exec"></a>
@@ -609,7 +674,6 @@ Refer to [WriteFile](.) to encrypt content
     title: Read yaml file 2 without password
     path: assets/data2.yaml
     var: data
-
 ```
 
 
@@ -717,7 +781,6 @@ Refer to [ReadFile](.) to decrypt content
       - [name, age]
       - [name01, 1]
       - [name02, 2]
-
 ```
 
 
@@ -809,7 +872,7 @@ Get user input from keyboard
 Clear screen  
 
 ```yaml
- - Clear:
+- Clear:
 ```
 
 
@@ -847,7 +910,6 @@ Print data to screen
     message: ${user}
     color: gray
     pretty: true
-
 ```
 
 
@@ -890,7 +952,6 @@ Program will be paused and wait user input
     time: 3s
 
 - Pause:          # It will be paused until user enter
-
 ```
 
 
@@ -917,7 +978,6 @@ Program will be delayed at here after specific time then it keeps playing next s
 - Sleep: 
     title: Sleep 1000 miliseconds
     time: 1000
-
 ```
 
 

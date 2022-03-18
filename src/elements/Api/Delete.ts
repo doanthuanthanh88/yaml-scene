@@ -2,7 +2,8 @@ import Api from ".";
 import { Method } from "./Method";
 
 /**
- * Api/Delete
+ * @guide
+ * @name Api/Delete
  * @description Send a DELETE request via http
  * @group Api
  * @order 4
@@ -23,6 +24,7 @@ import { Method } from "./Method";
     validate:                                                   # Validate response after request done. (Reference to #Validate)
       - title: Response status is valid
         chai: ${expect(_.response.status).to.equal(204)}
+ * @end
  */
 export default class Delete extends Api {
   init(props) {

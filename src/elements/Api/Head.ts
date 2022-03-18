@@ -2,7 +2,8 @@ import Api from ".";
 import { Method } from "./Method";
 
 /**
- * Api/Head
+ * @guide
+ * @name Api/Head
  * @description Send a Head request via http
  * @group Api
  * @order 5
@@ -23,6 +24,7 @@ import { Method } from "./Method";
     validate:                                                   # Validate response after request done. (Reference to #Validate)
       - title: Response status is valid
         chai: ${expect(_.response.status).to.equal(204)}
+ * @end
  */
 export default class Head extends Api {
   init(props) {
