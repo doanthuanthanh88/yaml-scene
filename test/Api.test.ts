@@ -11,7 +11,7 @@ describe('Api CRUD, serve', () => {
   beforeAll(() => {
     return new Promise(async (resolve) => {
       await Simulator.Run(`
-- Api~Serve:
+- Api~Server:
     title: Mock http request
     port: ${port}
     ref: server

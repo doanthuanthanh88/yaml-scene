@@ -14,7 +14,7 @@
 |[Api~Put](#Api~Put)| Send a Put request via http ...|  
 |[Api~Head](#Api~Head)| Send a Head request via http ...|  
 |[Api~Options](#Api~Options)| Send a Options request via http ...|  
-|[Api~Serve](#Api~Serve)| Mock API server ...|  
+|[Api~Server](#Api~Server)| Mock API server ...|  
 |[Api~Summary](#Api~Summary)| Summary after all of apis in scene executed done. ...|  
 |[Doc~ApiMD](#Doc~ApiMD)| Document api to markdown format ...|  
 | DOC | --- |
@@ -382,18 +382,18 @@ Send a Options request via http
 ```
 
 
-## Api~Serve <a name="Api~Serve"></a>
+## Api~Server <a name="Api~Server"></a>
 Mock API server  
-- Serve static file
+- Server static file
 - Support upload file then save to server
-- Serve RESTFul API data 
+- Server RESTFul API data 
 - Create APIs which auto handle CRUD data  
 
 ```yaml
-- Api~Serve:
+- Api~Server:
     title: Mock http request to serve data
-    https: true                                 # Serve content via https
-    https:                                      # Serve content via https with custom cert and key
+    https: true                                 # Server content via https
+    https:                                      # Server content via https with custom cert and key
       key: 
       cert: 
     host: 0.0.0.0                               # Server host
@@ -401,10 +401,10 @@ Mock API server
 
     routers:                                    # Defined routes
 
-      # Serve static files
+      # Server static files
       - serveIn: [./assets]                     # All of files in list will be served after request to
 
-      # Serve upload API
+      # Server upload API
       - path: /upload                           # Upload path. Default method is POST
         method: POST                            # Request method (POST, PUT, PATCH, DELETE, HEAD)
                                                 # - Default method is POST

@@ -12,18 +12,18 @@ import { cloneDeep, merge } from 'lodash';
 import { CRUDModel } from './CRUDModel';
 
 /**
- * Api~Serve
+ * Api~Server
  * @description Mock API server  
-- Serve static file
+- Server static file
 - Support upload file then save to server
-- Serve RESTFul API data 
+- Server RESTFul API data 
 - Create APIs which auto handle CRUD data
  * @group Api
  * @example
-- Api~Serve:
+- Api~Server:
     title: Mock http request to serve data
-    https: true                                 # Serve content via https
-    https:                                      # Serve content via https with custom cert and key
+    https: true                                 # Server content via https
+    https:                                      # Server content via https with custom cert and key
       key: 
       cert: 
     host: 0.0.0.0                               # Server host
@@ -31,10 +31,10 @@ import { CRUDModel } from './CRUDModel';
 
     routers:                                    # Defined routes
 
-      # Serve static files
+      # Server static files
       - serveIn: [./assets]                     # All of files in list will be served after request to
 
-      # Serve upload API
+      # Server upload API
       - path: /upload                           # Upload path. Default method is POST
         method: POST                            # Request method (POST, PUT, PATCH, DELETE, HEAD)
                                                 # - Default method is POST
@@ -74,7 +74,7 @@ import { CRUDModel } from './CRUDModel';
             }                                   # $request: Request
           ]                                     # $ctx:     Context
  */
-export class Serve implements IElement {
+export class Server implements IElement {
   private static readonly KEY = `-----BEGIN RSA PRIVATE KEY-----
   MIIEowIBAAKCAQEAynRSsMcDagvV86OaKAmi3Y7GfUnuYm6IG0PpaNEPD+F/LNNO
   vHGbFouYbHNX6RvejmJVGg9iQGYUnLgY4qipOplaZRKF1kiWzvCJ6xyVaMhKHlEo
@@ -126,7 +126,7 @@ export class Serve implements IElement {
   private resolve: any;
   private reject: any;
 
-  proxy: ElementProxy<Serve>;
+  proxy: ElementProxy<Server>;
 
   title: string;
   /** Server port */
@@ -146,10 +146,10 @@ export class Serve implements IElement {
     init?: any[]
     path: string
   }[] | {
-    /** Serve static files in these folders */
+    /** Server static files in these folders */
     serveIn: string | string[];
   }[] | {
-    /** Serve static files in these folders */
+    /** Server static files in these folders */
     path: string;
     method: string;
     uploadTo: string;
@@ -174,7 +174,7 @@ export class Serve implements IElement {
   #router?: Router;
   #server?: http.Server | https.Server;
 
-  init(props: Partial<Serve>) {
+  init(props: Partial<Server>) {
     merge(this, props);
     this.#app = new Koa();
     this.#app.use(cors());
@@ -324,11 +324,11 @@ export class Serve implements IElement {
 
   private get serverOption() {
     return !this.https ? {} : this.https === true ? {
-      key: Serve.KEY,
-      cert: Serve.CERT
+      key: Server.KEY,
+      cert: Server.CERT
     } : {
-      key: this.https?.key || Serve.KEY,
-      cert: this.https?.cert || Serve.CERT
+      key: this.https?.key || Server.KEY,
+      cert: this.https?.cert || Server.CERT
     };
   }
 

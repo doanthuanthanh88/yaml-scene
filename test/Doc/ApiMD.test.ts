@@ -1,4 +1,4 @@
-import { Serve } from "@app/elements/Api/serve"
+import { Server } from "@app/elements/Api/Server"
 import { ElementFactory } from "@app/elements/ElementFactory"
 import { Simulator } from "@app/Simulator"
 import { TimeUtils } from "@app/utils/time"
@@ -6,12 +6,12 @@ import { readFileSync } from "fs"
 import { join } from "path"
 
 describe('Test to generate api document', () => {
-  let serve: any
+  let server: any
 
   beforeAll(async () => {
     const scenario = await Simulator.Run()
-    serve = ElementFactory.CreateElement<Serve>('Api~Serve', scenario)
-    serve.init({
+    server = ElementFactory.CreateElement<Server>('Api~Server', scenario)
+    server.init({
       host: 'localhost',
       port: 3000,
       routers: [
@@ -42,13 +42,13 @@ describe('Test to generate api document', () => {
         }
       ]
     })
-    await serve.prepare()
-    serve.exec()
+    await server.prepare()
+    server.exec()
     await TimeUtils.Delay('3s')
   }, 60000)
 
   afterAll(async () => {
-    await serve.dispose()
+    await server.dispose()
   })
 
   test('Export to api document markdown', async () => {
