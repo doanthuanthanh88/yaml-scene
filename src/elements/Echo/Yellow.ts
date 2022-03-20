@@ -1,5 +1,8 @@
 import Echo from ".";
 
 export default class Yellow extends Echo {
-  color = 'yellow'
+  init(props: any): void {
+    super.init(props)
+    this.transforms.push({ Colorize: 'yellow' })
+  }
 }

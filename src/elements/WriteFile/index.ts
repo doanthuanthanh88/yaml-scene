@@ -208,23 +208,26 @@ export default class WriteFile {
   title: string
   content: string
   path: string
+  adapters: (string | object)[]
+
   #adapter: IFileAdapter
   #adapterClasses: {
     AdapterClass: any,
     args?: any
   }[]
 
-  init({ adapters = ['Text'], ...props }: any) {
+  init(props: any) {
     merge(this, props)
-    if (!Array.isArray(adapters)) {
-      adapters = [adapters]
-    }
-    this.#adapterClasses = adapters.reverse().map(adapter => {
-      if (typeof adapter === 'string') {
-        return {
-          AdapterClass: FileAdapterFactory.GetAdapter(adapter, this.proxy.scenario.extensions)
-        }
-      }
+    if (!this.adapters) this.adapters = []
+    if (!Array.isArray(this.adapters)) this.adapters = [this.adapters]
+    if (!this.adapters.length) this.adapters.push('Text')
+  }
+
+  prepare() {
+    this.title = this.proxy.getVar(this.title)
+    this.content = this.proxy.getVar(this.content)
+    if (!this.content) throw new Error('"content" is required')
+    this.#adapterClasses = this.adapters.reverse().map(adapter => {
       const adapterName = typeof adapter === 'string' ? adapter : Object.keys(adapter)[0]
       if (!adapterName) throw new Error('"adapters" is not valid')
       return {
@@ -232,12 +235,6 @@ export default class WriteFile {
         args: adapter[adapterName]
       }
     })
-  }
-
-  prepare() {
-    this.title = this.proxy.getVar(this.title)
-    this.content = this.proxy.getVar(this.content)
-    if (!this.content) throw new Error('"content" is required')
   }
 
   async exec() {

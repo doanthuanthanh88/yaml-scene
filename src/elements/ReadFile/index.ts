@@ -174,6 +174,8 @@ export default class ReadFile {
   title: string
   var: string
   path: string
+  adapters: (string | object)[]
+
   #adapter: IFileAdapter
   #adapterClasses: {
     AdapterClass: any,
@@ -183,17 +185,16 @@ export default class ReadFile {
     password: string
   }
 
-  init({ adapters = ['Text'], ...props }: any) {
+  init(props: any) {
     merge(this, props)
-    if (!Array.isArray(adapters)) {
-      adapters = [adapters]
-    }
-    this.#adapterClasses = adapters.map(adapter => {
-      if (typeof adapter === 'string') {
-        return {
-          AdapterClass: FileAdapterFactory.GetAdapter(adapter, this.proxy.scenario.extensions)
-        }
-      }
+    if (!this.adapters) this.adapters = []
+    if (!Array.isArray(this.adapters)) this.adapters = [this.adapters]
+    if (!this.adapters.length) this.adapters.push('Text')
+  }
+
+  prepare() {
+    this.path = this.proxy.resolvePath(this.path)
+    this.#adapterClasses = this.adapters.map(adapter => {
       const adapterName = typeof adapter === 'string' ? adapter : Object.keys(adapter)[0]
       if (!adapterName) throw new Error('"adapters" is not valid')
       return {
@@ -201,10 +202,6 @@ export default class ReadFile {
         args: adapter[adapterName]
       }
     })
-  }
-
-  prepare() {
-    this.path = this.proxy.resolvePath(this.path)
   }
 
   async exec() {

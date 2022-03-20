@@ -1,9 +1,9 @@
-import chalk from "chalk"
 import merge from "lodash.merge"
 import { ElementProxy } from "../ElementProxy"
 import { IElement } from "../IElement"
-import { FormatFactory } from "./format/FormatFactory"
-import { IFormat } from "./format/IFormat"
+import { Base } from "./transform/Base"
+import { IPrinterTransform } from "./transform/IPrinterTransform"
+import { PrinterTransformFactory } from "./transform/PrinterTransformFactory"
 
 /**
  * @guide
@@ -48,25 +48,52 @@ export default class Echo implements IElement {
 
   message: string | object
   color?: string
-  type?: 'schema'
   pretty?: boolean
+  schema?: boolean
+  transforms: (string | object)[]
 
-  get formater(): IFormat {
-    return this.type !== 'schema' ? FormatFactory.Get('DataFormat') : FormatFactory.Get('SchemaFormat')
-  }
+  #transform: IPrinterTransform
+  #transformClasses: {
+    TransformClass: any,
+    args?: any
+  }[]
 
-  init(opts: any) {
-    if (typeof opts === 'object') {
-      merge(this, opts)
+  init(props: any) {
+    if (typeof props === 'object') {
+      merge(this, props)
     } else {
-      this.message = opts
+      this.message = props
+    }
+
+    if (!this.transforms) this.transforms = []
+    if (!Array.isArray(this.transforms)) this.transforms = [this.transforms]
+    if (!this.transforms.length) {
+      if (this.schema) this.transforms.push({ Schema: {} })
+      if (this.pretty) this.transforms.push({ Json: { pretty: this.pretty } })
+      if (this.color) this.transforms.push({ Colorize: this.color })
+
+      if (!this.transforms.length) this.transforms.push('Json')
     }
   }
 
+  prepare() {
+    this.#transformClasses = this.transforms.map(transform => {
+      const transformName = typeof transform === 'string' ? transform : Object.keys(transform)[0]
+      if (!transformName) throw new Error('"transforms" is not valid')
+      return {
+        TransformClass: PrinterTransformFactory.GetTransform(transformName, this.proxy.scenario.extensions),
+        args: transform[transformName]
+      }
+    })
+  }
+
   exec() {
+    this.#transformClasses.forEach(({ TransformClass, args }) => {
+      this.#transform = new TransformClass(this.#transform || new Base(), args)
+    })
     const message = this.proxy.getVar(this.message)
-    const txt = this.formater.format(message, this.pretty)
-    this.proxy.logger.info(this.color ? chalk[this.color](txt) : txt)
+    const txt = this.#transform.print(message)
+    this.proxy.logger.info(txt)
   }
 
 }
