@@ -1,13 +1,13 @@
+import { IFileAdapter } from "./IFileAdapter";
 import stringify from 'csv-stringify/lib/sync'
-import parser from 'csv-parse/lib/sync'
-import { DataSource } from "../DataSource";
+import parse from 'csv-parse/lib/sync'
 
-export class CsvDataSource implements DataSource {
-  constructor(private file: DataSource) { }
+export class Csv implements IFileAdapter {
+  constructor(private file: IFileAdapter) { }
 
   async read() {
     const cnt = await this.file.read()
-    const obj = await parser(cnt.toString())
+    const obj = await parse(cnt.toString())
     return obj
   }
 

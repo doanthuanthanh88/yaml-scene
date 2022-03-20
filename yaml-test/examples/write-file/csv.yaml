@@ -1,18 +1,20 @@
 - WriteFile:
     title: Write csv file 1 with password
-    type: csv
     path: assets/data1.csv
-    encrypt:
-      password: thanh123
+    adapters:
+      - Csv
+      - Password: thanh123
     content:
       - name: name 1
         age: 1
       - name: name 2
         age: 3
 
-- WriteFile/CSV:
+- WriteFile:
     title: Write csv file 2 without password
     path: assets/data2.csv
+    adapters:
+      - Csv
     content:
       - [name, age]
       - [name01, 1]

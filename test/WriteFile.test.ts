@@ -4,11 +4,11 @@ import { tmpdir } from "os"
 import { join } from "path"
 
 describe.each([
-  { type: 'text', filename: 'data.txt', data: 'Hello world' },
-  { type: 'json', filename: 'data.json', data: { "say": "hello world" } },
-  { type: 'csv', filename: 'data.csv', data: [['label 1', 'label 2', 'label 3', 'label 4'], ['1', '2', '3', '4']] },
-  { type: 'yaml', filename: 'data.yaml', data: { "say": "hello world" } },
-  { type: 'xml', filename: 'data.xml', data: { "say": "hello world" } },
+  { type: 'Text', filename: 'data.txt', data: 'Hello world' },
+  { type: 'Json', filename: 'data.json', data: { "say": "hello world" } },
+  { type: 'Csv', filename: 'data.csv', data: [['label 1', 'label 2', 'label 3', 'label 4'], ['1', '2', '3', '4']] },
+  { type: 'Yaml', filename: 'data.yaml', data: { "say": "hello world" } },
+  { type: 'Xml', filename: 'data.xml', data: { "say": "hello world" } },
 ])('Test to "ReadFile" and "WriteFile"', ({ type, filename, data }) => {
   const path = join(tmpdir(), Math.random() + filename)
 
@@ -23,7 +23,8 @@ describe.each([
     data: ${JSON.stringify(data)}
 - WriteFile:
     path: ${path}
-    type: ${type}
+    adapters: 
+      - ${type}
     content: \${data}
 `)
     expect(existsSync(path)).toBe(true)
@@ -35,10 +36,10 @@ describe.each([
     data: ${JSON.stringify(data)}
 - WriteFile:
     path: ${path}.encrypted
-    type: ${type}
+    adapters: 
+      - ${type}
+      - Password: thanh123
     content: \${data}
-    encrypt:
-      password: thanh123
 `)
     expect(existsSync(path)).toBe(true)
   })

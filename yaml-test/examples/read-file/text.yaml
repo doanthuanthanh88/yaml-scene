@@ -1,9 +1,8 @@
 - ReadFile:
     title: Read text file 1 with password
     path: assets/data1.txt
-    type: text
-    decrypt:
-      password: thanh123
+    adapters:
+      - Password: thanh123
     var: data
 
 - Echo: ${data}

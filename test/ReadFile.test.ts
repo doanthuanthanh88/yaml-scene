@@ -4,12 +4,12 @@ import { tmpdir } from "os"
 import { join } from "path"
 
 describe.each([
-  { type: 'text', filename: 'data.txt', data: 'Hello world' },
-  { type: 'json', filename: 'data.json', data: { "say": "hello world" } },
-  { type: 'csv', filename: 'data.csv', data: [['label 1', 'label 2', 'label 3', 'label 4'], ['1', '2', '3', '4']] },
-  { type: 'yaml', filename: 'data.yaml', data: { "say": "hello world" } },
-  { type: 'xml', filename: 'data.xml', data: { "say": "hello world" } },
-])('Test to "ReadFile" and "WriteFile"', ({ type, filename, data }) => {
+  { adapter: 'Text', filename: 'data.txt', data: 'Hello world' },
+  { adapter: 'Json', filename: 'data.json', data: { "say": "hello world" } },
+  { adapter: 'Csv', filename: 'data.csv', data: [['label 1', 'label 2', 'label 3', 'label 4'], ['1', '2', '3', '4']] },
+  { adapter: 'Yaml', filename: 'data.yaml', data: { "say": "hello world" } },
+  { adapter: 'Xml', filename: 'data.xml', data: { "say": "hello world" } },
+])('Test to "ReadFile" and "WriteFile"', ({ adapter, filename, data }) => {
   const path = join(tmpdir(), Math.random() + filename)
 
   beforeAll(async () => {
@@ -18,14 +18,16 @@ describe.each([
     data: ${JSON.stringify(data)}
 - WriteFile:
     path: ${path}
-    type: ${type}
+    adapters: 
+      - ${adapter}
     content: \${data}
+    
 - WriteFile:
     path: ${path}.encrypted
-    type: ${type}
-    content: \${data}
-    encrypt:
-      password: thanh123
+    adapters: 
+      - ${adapter}
+      - Password: thanh123
+    content: \${data}      
 `)
   })
 
@@ -34,24 +36,25 @@ describe.each([
     unlinkSync(`${path}.encrypted`)
   })
 
-  test(`Read a ${type} file`, async () => {
+  test(`Read a ${adapter} file`, async () => {
     const scenario = await Simulator.Run(`
 - ReadFile:
     path: ${path}
-    type: ${type}
+    adapters: 
+      - ${adapter}
     var: content
 `)
     expect(scenario.variableManager.vars.content).toStrictEqual(data)
   })
 
-  test(`Read a ${type} file with password`, async () => {
+  test(`Read a ${adapter} file with password`, async () => {
     const scenario = await Simulator.Run(`
 - ReadFile:
     path: ${path}.encrypted
-    type: ${type}
+    adapters:
+      - Password: thanh123
+      - ${adapter}
     var: content
-    decrypt:
-      password: thanh123
 `)
     expect(scenario.variableManager.vars.content).toStrictEqual(data)
   })

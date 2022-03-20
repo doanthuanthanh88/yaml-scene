@@ -1,7 +1,7 @@
-import { DataSource } from "../DataSource";
+import { IFileAdapter } from "./IFileAdapter"
 
-export class JsonDataSource implements DataSource {
-  constructor(private file: DataSource) { }
+export class Json implements IFileAdapter {
+  constructor(private file: IFileAdapter) { }
 
   async read() {
     const cnt = await this.file.read()
@@ -13,5 +13,4 @@ export class JsonDataSource implements DataSource {
     const rs = await JSON.stringify(data)
     await this.file.write(rs)
   }
-
 }

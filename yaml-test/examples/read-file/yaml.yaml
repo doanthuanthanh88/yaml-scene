@@ -2,15 +2,18 @@
     title: Read yaml file 1 with password
     type: yaml
     path: assets/data1.yaml
-    decrypt:
-      password: thanh123
+    adapters:
+      - Password: thanh123
+      - Yaml
     var: data
 
 - Echo: ${data}
 
-- ReadFile/YAML:
+- ReadFile:
     title: Read yaml file 2 without password
     path: assets/data2.yaml
+    adapters:
+      - Yaml
     var: data
 
 - Echo: ${data}

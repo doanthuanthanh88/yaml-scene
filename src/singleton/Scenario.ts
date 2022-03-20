@@ -1,4 +1,8 @@
 import { VariableManager } from '@app/singleton/VariableManager'
+import { Password } from '@app/utils/adapter/file/Password'
+import { IFileAdapter } from '@app/utils/adapter/file/IFileAdapter'
+import { Text } from '@app/utils/adapter/file/Text'
+import { File } from '@app/utils/adapter/file/File'
 import { Base64 } from '@app/utils/encrypt/Base64'
 import { LoggerFactory } from '@app/utils/logger'
 import chalk from 'chalk'
@@ -36,6 +40,7 @@ extensions:                                         # Extension elements.
 vars:                                               # Declare global variables, which can be replaced by env
   url: http://localhost:3000
   token: ...
+stepDelay: 1s                                       # Each of steps will delay 1s before play the next
 steps:                                              # Includes all which you want to do
   - !fragment ./scene1.yaml
   - !fragment ./scene2.yaml
@@ -66,10 +71,9 @@ export class Scenario {
   loggerFactory: LoggerFactory
   extensions: Extensions
 
-  title?: string
-  description?: string
   password?: string
 
+  scenarioFile: string
   private rootDir: string
   private rootGroup: ElementProxy<Group>
   time: {
@@ -81,6 +85,13 @@ export class Scenario {
     end: number
   }
   hasEnvVar: boolean
+
+  get title() {
+    return this.rootGroup.element.title
+  }
+  get description() {
+    return this.rootGroup.element.description
+  }
 
   constructor() {
     this.variableManager = new VariableManager({
@@ -107,25 +118,23 @@ export class Scenario {
     let scenario: any
 
     if (typeof scenarioFile !== 'string') throw new Error('Scenario must be a path of file')
-    scenarioFile = resolve(scenarioFile)
-    this.rootDir = dirname(scenarioFile)
-    const fileContent = await this.getScenarioFileContent(scenarioFile, this.getPassword(password))
+    this.scenarioFile = resolve(scenarioFile)
+    this.rootDir = dirname(this.scenarioFile)
+    const fileContent = await this.getScenarioFileContent(this.scenarioFile, this.getPassword(password))
     scenario = safeLoad(fileContent, {
       schema: YAMLSchema.Create(this)
     }) as any
     if (Array.isArray(scenario)) {
-      scenario = { title: basename(scenarioFile), steps: scenario.flat() }
+      scenario = { title: basename(this.scenarioFile), steps: scenario.flat() }
     }
+    if (typeof scenario !== 'object') throw new Error('Scenario must be an object or array')
 
     const { password: pwd, extensions, vars, logLevel, ...scenarioProps } = scenario
     if (!scenarioProps) throw new Error('File scenario is not valid')
 
-    this.title = scenarioProps.title
-    this.description = scenarioProps.description
-
-    if (pwd && extname(scenarioFile)) {
+    if (pwd && extname(this.scenarioFile)) {
       this.password = this.getPassword(pwd)
-      await this.saveToEncryptFile(fileContent, this.password, join(dirname(scenarioFile), basename(scenarioFile).split('.')[0]))
+      await this.saveToEncryptFile(fileContent, this.password, this.scenarioFile.substring(0, this.scenarioFile.lastIndexOf('.')))
     }
 
     if (logLevel) {
@@ -142,11 +151,7 @@ export class Scenario {
     }
     // Load Scenario
     this.rootGroup = ElementFactory.CreateElement<Group>('Group', this)
-    if (Array.isArray(scenarioProps)) {
-      this.rootGroup.init({ steps: scenarioProps, title: this.title, description: this.description })
-    } else {
-      this.rootGroup.init(scenarioProps)
-    }
+    this.rootGroup.init(scenarioProps)
   }
 
   async prepare() {
@@ -187,30 +192,19 @@ export class Scenario {
   }
 
   private async getScenarioFileContent(scenarioFile: string, password: string) {
-    const rf = ElementFactory.CreateElement('ReadFile', this)
-    await rf.element.init({
-      path: scenarioFile,
-      type: 'text',
-      decrypt: {
-        password
-      }
-    })
-    const fileContent = await rf.element.exec()
-    await rf.dispose()
+    let reader: IFileAdapter = new Text(new File(scenarioFile))
+    if (password) {
+      reader = new Password(reader, password)
+    }
+    const fileContent = await reader.read()
     return fileContent
   }
 
   private async saveToEncryptFile(content: string, password: string, fileOut: string) {
-    const rf = ElementFactory.CreateElement('WriteFile', this)
-    await rf.element.init({
-      content,
-      path: fileOut,
-      type: 'text',
-      encrypt: {
-        password
-      }
-    })
-    await rf.exec()
-    await rf.dispose()
+    let writer: IFileAdapter = new Text(new File(fileOut))
+    if (password) {
+      writer = new Password(writer, password)
+    }
+    await writer.write(content)
   }
 }

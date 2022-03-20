@@ -1,9 +1,8 @@
 - WriteFile:
     title: Write text file with password
-    type: text
-    encrypt:
-      password: thanh123
     path: assets/data1.txt
+    adapters:
+      - Password: thanh123
     content: |
       Hello world
 

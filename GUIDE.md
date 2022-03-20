@@ -134,6 +134,7 @@ extensions:                                         # Extension elements.
 vars:                                               # Declare global variables, which can be replaced by env
   url: http://localhost:3000
   token: ...
+stepDelay: 1s                                       # Each of steps will delay 1s before play the next
 steps:                                              # Includes all which you want to do
   - !fragment ./scene1.yaml
   - !fragment ./scene2.yaml
@@ -467,8 +468,9 @@ Auto scan file to detect the comment format which is generated to markdown docum
 ```yaml
 - Doc/Guide/MD: 
     # pattern:
-    #   begin: \s+@guide\s*$         # Default pattern
-    #   end: \s+@end\s*$$            # Default pattern
+    #   begin: ^\s*\*\s@guide\\s*$         # Default pattern
+    #   end: \s*\*\s@end\\s*$              # Default pattern
+    #   noTag:                             # Default get all of line after the latest tag
     includes: 
       - src
     excludes: []
@@ -604,91 +606,171 @@ Embed shell script into scene
 Read a file then set content to a variable  
 It uses `aes-128-cbc` to decrypt content with a password.  
 Refer to [WriteFile](.) to encrypt content  
+### Text file
 
 ```yaml
-### Text file
 - ReadFile:
     title: Read text file 1 with password
     path: assets/data1.txt
-    decrypt:
-      password: thanh123
-    var: data
+    adapters:
+      - Password: MyPassword        # Decrypt content with password is "MyPassword"
+    var: data                       # Set file content result to "data" variable
 
 - ReadFile:
     title: Read text file 2 without password
     path: assets/data2.txt
-    var: data
+    var: data                       # Set file content result to "data" variable
+```
 
 ### CSV File
 
-- ReadFile/CSV:
+```yaml
+- ReadFile:
     title: Read csv file 1 with password
-    decrypt:
-      password: thanh123
     path: assets/data1.csv
-    var: data
+    adapters:
+      - Password: MyPassword        # The first is decrypt content after read file
+      - Csv                         # The second convert data type is Csv to object
+    var: data                       # Set file content result to "data" variable
 
-- ReadFile/CSV:
+- ReadFile:
     title: Read csv file 2 without password
     path: assets/data2.csv
-    var: data
+    adapters:
+      - Csv                         # Convert data type is Csv to object
+    var: data                       # Set file content result to "data" variable
+```
 
 ### JSON File
 
-- ReadFile/JSON:
+```yaml
+- ReadFile:
     title: Read json file 1 with password
     path: assets/data1.json
-    decrypt:
-      password: thanh123
-    var: data
+    adapters:
+      - Password: MyPassword        # The first is decrypt content after read file
+      - Json                        # The second convert data type is Json to object
+    var: data                       # Set file content result to "data" variable
 
-- ReadFile/JSON:
+- ReadFile:
     title: Read json file 2 without password
     path: assets/data2.json
-    var: data
+    adapters:
+      - Json                        # Convert data type is Json to object
+    var: data                       # Set file content result to "data" variable
+```
 
 ### XML file
 
-- ReadFile/XML:
+```yaml
+- ReadFile:
     title: Read xml file 1 with password
     path: assets/data1.xml
-    decrypt:
-      password: thanh123
-    var: data
+    adapters:
+      - Password: MyPassword        # The first is decrypt content after read file
+      - Xml                         # The second convert data type is Xml to object
+    var: data                       # Set file content result to "data" variable
 
-- ReadFile/XML:
+- ReadFile:
     title: Read xml file 2 without password
     path: assets/data2.xml
-    var: data
+    adapters:
+      - Xml                         # Convert data type is Xml to object
+    var: data                       # Set file content result to "data" variable
+```
 
 ### YAML file
 
-- ReadFile/YAML:
+```yaml
+- ReadFile:
     title: Read yaml file 1 with password
     path: assets/data1.yaml
-    decrypt:
-      password: thanh123
-    var: data
+    adapters:
+      - Password: MyPassword        # The first is decrypt content after read file
+      - Yaml                        # The second convert data type is Csv to object
+    var: data                       # Set file content result to "data" variable
 
-- ReadFile/YAML:
+- ReadFile:
     title: Read yaml file 2 without password
     path: assets/data2.yaml
-    var: data
+    adapters:
+      - Yaml                        # Convert data type is Yaml to object
+    var: data                       # Set file content result to "data" variable
 ```
 
+### Notes:
+You can write a new adapter by yourself then use in adapters.  
+
+**Write a custom adapter**
+
+1. Create your adapter in `CustomJson.ts`
+  ```typescript
+  import { IFileAdapter } from "yaml-scene/utils/adapter/file/IFileAdapter"
+
+  export class CustomJson implements IFileAdapter {
+    constructor(private file: IFileAdapter, public adapterConfig: { name: string, config: any }) { }
+
+    async read() {
+      const cnt = await this.file.read()
+
+      // Custom here
+      const obj = await JSON.parse(cnt.toString())
+      return obj
+    }
+
+    async write(data: any) {
+      // Custom here
+      const rs = await JSON.stringify(data)
+      
+      await this.file.write(rs)
+    }
+  }
+
+  ```
+2. Publish your adapter package to npm registry...
+
+**How to used a custom adapter**
+
+1. Install your adapter package
+  - Install global
+    ```sh
+    yarn add global `YOUR_ADAPTER_PACKAGE`
+    // OR
+    npm install -g `YOUR_ADAPTER_PACKAGE`
+    ```
+  - Use package in your local need create a scene file then declare your extension
+  ```sh
+    extensions:
+      YOUR_ADAPTER_PACKAGE: Path to local package
+    steps:
+      ...
+  ```
+  
+2. Create your scenario file then use it
+  ```yaml
+  - ReadFile:
+      title: Read a file with custom adapter
+      path: assets/data2.custom_adapter.json
+      adapters:
+        - Password: MyPassword                # Combine to other adapters
+        - YOUR_ADAPTER_PACKAGE/CustomJson:    # Use your adapter with adapter input config
+            name: a
+            config: b
+      var: data
+  ```
 
 ## WriteFile <a name="WriteFile"></a>
 Write content to a file  
 It uses `aes-128-cbc` to encrypt content with a password.  
 Refer to [ReadFile](.) to decrypt content  
+### Text file
 
 ```yaml
-### Text file
 - WriteFile:
     title: Write text file with password
-    encrypt:
-      password: thanh123
     path: assets/data1.txt
+    adapters:
+      - Password: MyPassword        # Encrypt content before save to file
     content: |
       Hello world
 
@@ -697,92 +779,176 @@ Refer to [ReadFile](.) to decrypt content
     path: assets/data2.txt
     content: |
       Hello world
+```
 
 ### CSV File
 
-- WriteFile/CSV:
+```yaml
+- WriteFile:
     title: Write csv file 1 with password
     path: assets/data1.csv
-    encrypt:
-      password: thanh123
+    adapters:
+      - Csv                         # The first convert data type is Csv to string
+      - Password: MyPassword        # The seconds encrypt content before save to file
     content:
       - name: name 1
         age: 1
       - name: name 2
         age: 3
 
-- WriteFile/CSV:
+- WriteFile:
     title: Write csv file 2 without password
     path: assets/data2.csv
-    content:
-      - [name, age]
-      - [name01, 1]
-      - [name02, 2]
-
-### JSON File
-
-- WriteFile/JSON:
-    title: Write json file 1 with password
-    encrypt:
-      password: thanh123
-    path: assets/data1.json
-    content:
-      - name: name 1
-        age: 1
-      - name: name 2
-        age: 3
-
-- WriteFile/JSON:
-    title: Write json file 2 without password
-    path: assets/data2.json
-    content:
-      - [name, age]
-      - [name01, 1]
-      - [name02, 2]
-
-### XML File
-
-- WriteFile/XML:
-    title: Write xml file 1 with password
-    encrypt:
-      password: thanh123
-    path: assets/data1.xml
-    content:
-      - name: name 1
-        age: 1
-      - name: name 2
-        age: 3
-
-- WriteFile/XML:
-    title: Write xml file 2 without password
-    path: assets/data2.xml
-    content:
-      name: name 1
-      age: 1
-      class: 01
-
-### YAML File
-
-- WriteFile/YAML:
-    title: Write yaml file 1 with password
-    encrypt:
-      password: thanh123
-    path: assets/data1.yaml
-    content:
-      - name: name 1
-        age: 1
-      - name: name 2
-        age: 3
-
-- WriteFile/YAML:
-    title: Write yaml file 2 without password
-    path: assets/data2.yaml
+    adapters:
+      - Csv                         # Convert data type is Csv to string before save to file
     content:
       - [name, age]
       - [name01, 1]
       - [name02, 2]
 ```
 
+### JSON File
+
+```yaml
+- WriteFile:
+    title: Write json file 1 with password
+    path: assets/data1.json
+    adapters:
+      - Json                        # The first convert data type is Json to string
+      - Password: MyPassword        # The seconds encrypt content before save to file
+    content:
+      - name: name 1
+        age: 1
+      - name: name 2
+        age: 3
+
+- WriteFile:
+    title: Write json file 2 without password
+    path: assets/data2.json
+    adapters:
+      - Json                         # Convert data type is Json to string before save to file
+    content:
+      - [name, age]
+      - [name01, 1]
+      - [name02, 2]
+```
+
+### XML File
+
+```yaml
+- WriteFile:
+    title: Write xml file 1 with password
+    path: assets/data1.xml
+    adapters:
+      - Xml                         # The first convert data type is Xml to string
+      - Password: MyPassword        # The seconds encrypt content before save to file
+    content:
+      - name: name 1
+        age: 1
+      - name: name 2
+        age: 3
+
+- WriteFile:
+    title: Write xml file 2 without password
+    path: assets/data2.xml
+    adapters:
+      - Xml                         # Convert data type is Xml to string before save to file
+    content:
+      name: name 1
+      age: 1
+      class: 01
+```
+
+### YAML File
+
+```yaml
+- WriteFile:
+    title: Write yaml file 1 with password
+    path: assets/data1.yaml
+    adapters:
+      - Yaml                        # The first convert data type is Yaml to string
+      - Password: MyPassword        # The seconds encrypt content before save to file
+    content:
+      - name: name 1
+        age: 1
+      - name: name 2
+        age: 3
+
+- WriteFile:
+    title: Write yaml file 2 without password
+    path: assets/data2.yaml
+    adapters:
+      - Yaml                         # Convert data type is Yaml to string before save to file
+    content:
+      - [name, age]
+      - [name01, 1]
+      - [name02, 2]
+```
+
+### Notes:
+You can write a new adapter by yourself then use in adapters.  
+
+**Write a custom adapter**
+
+1. Create your adapter in `CustomJson.ts`
+  ```typescript
+  import { IFileAdapter } from "yaml-scene/utils/adapter/file/IFileAdapter"
+
+  export class CustomJson implements IFileAdapter {
+    constructor(private file: IFileAdapter, public adapterConfig: { name: string, config: any }) { }
+
+    async read() {
+      const cnt = await this.file.read()
+
+      // Custom here
+      const obj = await JSON.parse(cnt.toString())
+      return obj
+    }
+
+    async write(data: any) {
+      // Custom here
+      const rs = await JSON.stringify(data)
+      
+      await this.file.write(rs)
+    }
+  }
+
+  ```
+2. Publish your adapter package to npm registry...
+
+**How to used a custom adapter**
+
+1. Install your adapter package
+  - Install global
+    ```sh
+    yarn add global `YOUR_ADAPTER_PACKAGE`
+    // OR
+    npm install -g `YOUR_ADAPTER_PACKAGE`
+    ```
+  - Use package in your local need create a scene file then declare your extension
+  ```sh
+    extensions:
+      YOUR_ADAPTER_PACKAGE: Path to local package
+    steps:
+      ...
+  ```
+  
+2. Create your scenario file then use it
+  ```yaml
+  - WriteFile:
+      title: Write custom json file
+      path: assets/data1.json
+      adapters:
+        - YOUR_ADAPTER_PACKAGE/CustomJson:    # Use your adapter with adapter input config
+            name: a
+            config: b
+        - Password: MyPassword                # Combine to other adapters            
+      content:
+        - name: name 1
+          age: 1
+        - name: name 2
+          age: 3
+  ```
 
 ## UserInput <a name="UserInput"></a>
 Get user input from keyboard  
@@ -1028,3 +1194,10 @@ Declare variables in scene
 
 
   
+# How to create a new extension
+You can create a new extension in local or publish to npm registry
+
+Please reference the below links for details:  
+- A [Extension template project](https://github.com/doanthuanthanh88/yaml-scene-extensions) which provides commands to unit test, build, document... to deploy to npm or something like that
+- [Extension files](./yaml-test/examples/custom-extension) which implemented extension interface  
+

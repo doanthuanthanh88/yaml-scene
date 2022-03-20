@@ -1,9 +1,9 @@
-import { DataSource } from '@app/utils/data-source/DataSource';
+import { IFileAdapter } from '@app/utils/adapter/file/IFileAdapter';
 import { Exporter } from '@app/utils/doc/Exporter';
 import { CommentInfo } from './CommentInfo';
 
 export class CommentExporter implements Exporter<CommentInfo> {
-  constructor(private datasource: DataSource) {
+  constructor(private writer: IFileAdapter) {
   }
 
   export(models: CommentInfo[]) {
@@ -75,6 +75,6 @@ ${info.examples}
       }
     })
 
-    this.datasource.write([...mdMenu, '  ', ...mdH1, '  ', ...mdExample, '  ', ...mdH2].join('\n'));
+    this.writer.write([...mdMenu, '  ', ...mdH1, '  ', ...mdExample, '  ', ...mdH2].join('\n'));
   }
 }

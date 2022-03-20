@@ -1,8 +1,8 @@
+import { IFileAdapter } from "./IFileAdapter";
 import { Builder, parseStringPromise } from 'xml2js';
-import { DataSource } from "../DataSource";
 
-export class XmlDataSource implements DataSource {
-  constructor(private file: DataSource) { }
+export class Xml implements IFileAdapter {
+  constructor(private file: IFileAdapter) { }
 
   async read() {
     const cnt = await this.file.read()

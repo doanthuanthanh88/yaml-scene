@@ -1,7 +1,7 @@
-import { DataSource } from "../DataSource";
+import { IFileAdapter } from "./IFileAdapter";
 
-export class TextDataSource implements DataSource {
-  constructor(private file: DataSource) { }
+export class Text implements IFileAdapter {
+  constructor(private file: IFileAdapter) { }
 
   async read() {
     const cnt = await this.file.read()

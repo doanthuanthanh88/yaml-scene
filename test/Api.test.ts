@@ -68,15 +68,17 @@ describe('Api CRUD, serve', () => {
           statusMessage: OK
           headers:
             server: nginx
-  `, undefined, undefined, {
-        onCreated(scenario) {
-          scenario.events.on('scenario.exec', async (scenario) => {
-            server = await TimeUtils.Until(scenario.variableManager.vars.server, '1s')
-            resolve(undefined)
-          })
-          scenario.events.on('scenario.dispose', () => {
-            isDone = true
-          })
+  `, {
+        listener: {
+          onCreated(scenario) {
+            scenario.events.on('scenario.exec', async (scenario) => {
+              server = await TimeUtils.Until(scenario.variableManager.vars.server, '1s')
+              resolve(undefined)
+            })
+            scenario.events.on('scenario.dispose', () => {
+              isDone = true
+            })
+          }
         }
       })
     })

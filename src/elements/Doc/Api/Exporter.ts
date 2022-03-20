@@ -1,5 +1,5 @@
 import Api from '@app/elements/Api';
-import { DataSource } from '@app/utils/data-source/DataSource';
+import { IFileAdapter } from '@app/utils/adapter/file/IFileAdapter';
 import { Exporter as IExporter } from '@app/utils/doc/Exporter';
 import omit from 'lodash.omit';
 import { escape } from 'querystring';
@@ -24,7 +24,7 @@ export class Exporter implements IExporter<Api> {
     'connection',
   ]
 
-  constructor(private datasource: DataSource, public md: MD) {
+  constructor(private writer: IFileAdapter, public md: MD) {
   }
 
   objectToMDType(obj) {
@@ -253,6 +253,6 @@ ${this.objectToMDType(api.response.data)}
 
     })
 
-    this.datasource.write([...mdMenu, '  ', ...mdDetails, '  '].join('\n'));
+    this.writer.write([...mdMenu, '  ', ...mdDetails, '  '].join('\n'));
   }
 }

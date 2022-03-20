@@ -1,4 +1,5 @@
 import { TimeUtils } from "@app/utils/time"
+import chalk from "chalk"
 import merge from "lodash.merge"
 import { ElementProxy } from "../ElementProxy"
 
@@ -48,6 +49,9 @@ export default class Sleep {
   }
 
   async exec() {
+    if (this.title) {
+      this.proxy.logger.info(chalk.yellow(this.title))
+    }
     await TimeUtils.Delay(this.time)
   }
 

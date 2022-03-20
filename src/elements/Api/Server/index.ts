@@ -184,7 +184,7 @@ export default class Server implements IElement {
     this.#router = new Router();
   }
 
-  async prepare() {
+  prepare() {
     this.routers = this.proxy.getVar(this.routers);
     let i: number
     for (i = 0; i < this.routers.length; i++) {

@@ -1,16 +1,18 @@
 - ReadFile:
     title: Read json file 1 with password
-    type: json
     path: assets/data1.json
-    decrypt:
-      password: thanh123
+    adapters:
+      - Password: thanh123
+      - Json
     var: data
 
 - Echo: ${data}
 
-- ReadFile/JSON:
+- ReadFile:
     title: Read json file 2 without password
     path: assets/data2.json
+    adapters:
+      - Json
     var: data
 
 - Echo: ${data}

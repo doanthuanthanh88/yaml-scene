@@ -4,6 +4,17 @@ import { spawn } from "child_process";
 import { existsSync, readFileSync } from "fs";
 import { join } from "path";
 
+/**
+ * @guide
+ * @h2 #
+ * @name How to create a new extension
+ * @description You can create a new extension in local or publish to npm registry
+
+Please reference the below links for details:  
+- A [Extension template project](https://github.com/doanthuanthanh88/yaml-scene-extensions) which provides commands to unit test, build, document... to deploy to npm or something like that
+- [Extension files](./yaml-test/examples/custom-extension) which implemented extension interface
+ * @end
+ */
 export class Extensions {
   private extensionElements = {}
   private globalExtensionPaths = new Set<string>()
@@ -16,44 +27,47 @@ export class Extensions {
     return this.extensionElements[name]
   }
 
-  load(p: string) {
+  load(p: string, modulePath: string) {
     // for (const p of modules) {
-    if (this.extensionElements[p]) {
-      return this.extensionElements[p]
-    }
-
     let obj: any;
-    let modulePath = "System";
     try {
-      modulePath = this.getPathLocalModule(p) || this.getPathGlobalModule(p);
-      if (!modulePath) {
-        throw new Error(
-          `Please install module "${p}" \n    \`npm install -g ${p}\` \n OR \n    \`yarn global add ${p}\``
-        )
+      obj = require(`${join(modulePath, p)}`);
+      return obj.default || obj[p]
+    } catch {
+      if (this.extensionElements[p]) {
+        return this.extensionElements[p]
       }
-      obj = require(modulePath).default;
-      this.extensionElements[p] = obj
-      // this.ExternalModules.add(obj);
       try {
-        const packageJson = JSON.parse(readFileSync(join(modulePath, 'package.json')).toString())
-        this.scenario.loggerFactory.getLogger().info(chalk.bold.gray(`${packageJson.name} (v${packageJson.version})`), chalk.gray.underline(packageJson.repository?.url || ''), chalk.italic.gray(`${packageJson.description || ''}`))
-      } catch { }
-      // console.group()
-      // for (let k in obj) {
-      //   if (this.extensionElements[k]) {
-      //     console.log(
-      //       chalk.yellow(
-      //         `Warn: Tag ${k} has declared. Could not redeclare in ${modulePath}`
-      //       )
-      //     );
-      //   }
-      //   this.extensionElements[k] = obj[k];
-      //   console.log(chalk.gray.bold('- ' + k), chalk.italic.gray(`(${modulePath})`));
-      // }
-      // console.groupEnd()
-    } catch (err) {
-      console.error(chalk.red(err.message));
-      throw err;
+        modulePath = this.getPathLocalModule(p) || this.getPathGlobalModule(p);
+        if (!modulePath) {
+          throw new Error(
+            `Please install module "${p}" \n    \`npm install -g ${p}\` \n OR \n    \`yarn global add ${p}\``
+          )
+        }
+        obj = require(modulePath).default;
+        this.extensionElements[p] = obj
+        // this.ExternalModules.add(obj);
+        try {
+          const packageJson = JSON.parse(readFileSync(join(modulePath, 'package.json')).toString())
+          this.scenario.loggerFactory.getLogger().info(chalk.bold.gray(`${packageJson.name} (v${packageJson.version})`), chalk.gray.underline(packageJson.repository?.url || ''), chalk.italic.gray(`${packageJson.description || ''}`))
+        } catch { }
+        // console.group()
+        // for (let k in obj) {
+        //   if (this.extensionElements[k]) {
+        //     console.log(
+        //       chalk.yellow(
+        //         `Warn: Tag ${k} has declared. Could not redeclare in ${modulePath}`
+        //       )
+        //     );
+        //   }
+        //   this.extensionElements[k] = obj[k];
+        //   console.log(chalk.gray.bold('- ' + k), chalk.italic.gray(`(${modulePath})`));
+        // }
+        // console.groupEnd()
+      } catch (err) {
+        console.error(chalk.red(err.message));
+        throw err;
+      }
     }
     return obj
     // }

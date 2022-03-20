@@ -130,16 +130,16 @@ export class ElementProxy<T extends IElement> {
     }
   }
 
-  async prepare() {
-    if (this.element.prepare) {
-      await this.element.prepare()
-    }
+  prepare() {
     this._logLevel = this.getVar(this.logLevel)
     this.delay = this.getVar(this.delay)
     this.async = this.getVar(this.async)
+    if (this.element.prepare) {
+      return this.element.prepare()
+    }
   }
 
-  async isValid() {
+  isValid() {
     let isOk = true
     if (this.if !== undefined) {
       if (typeof this.if === 'string') {
@@ -160,9 +160,9 @@ export class ElementProxy<T extends IElement> {
     }
   }
 
-  async dispose() {
+  dispose() {
     if (this.element.dispose) {
-      await this.element.dispose()
+      return this.element.dispose()
     }
   }
 

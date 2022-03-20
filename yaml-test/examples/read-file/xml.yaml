@@ -2,15 +2,18 @@
     title: Read xml file 1 with password
     type: xml
     path: assets/data1.xml
-    decrypt:
-      password: thanh123
+    adapters:
+      - Password: thanh123
+      - Xml
     var: data
 
 - Echo: ${data}
 
-- ReadFile/XML:
+- ReadFile:
     title: Read xml file 2 without password
     path: assets/data2.xml
+    adapters:
+      - Xml
     var: data
 
 - Echo: ${data}

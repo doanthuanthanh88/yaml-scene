@@ -5,13 +5,13 @@ export interface IElement {
   proxy?: ElementProxy<any>
 
   // Init attribute from yaml to object
-  init?(props: any)
+  init?(props: any): void
   // Prepare data, replace data value before executing
-  prepare?()
+  prepare?(): Promise<void> | void
   // Execute main flow
-  exec?()
+  exec?(): Promise<any> | any
   // After executed done need dispose object
-  dispose?()
+  dispose?(): Promise<void> | void
   // Clone new object in loop or template...
-  clone?()
+  clone?(): any
 }

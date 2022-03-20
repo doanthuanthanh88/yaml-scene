@@ -1,8 +1,8 @@
+import { IFileAdapter } from "./IFileAdapter";
 import { safeDump, safeLoad } from "js-yaml";
-import { DataSource } from "../DataSource";
 
-export class YamlDataSource implements DataSource {
-  constructor(private file: DataSource) { }
+export class Yaml implements IFileAdapter {
+  constructor(private file: IFileAdapter) { }
 
   async read() {
     const cnt = await this.file.read()

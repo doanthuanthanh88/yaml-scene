@@ -1,18 +1,20 @@
 - WriteFile:
     title: Write yaml file 1 with password
-    type: yaml
-    encrypt:
-      password: thanh123
     path: assets/data1.yaml
+    adapters:
+      - Yaml
+      - Password: thanh123
     content:
       - name: name 1
         age: 1
       - name: name 2
         age: 3
 
-- WriteFile/YAML:
+- WriteFile:
     title: Write yaml file 2 without password
     path: assets/data2.yaml
+    adapters:
+      - Yaml
     content:
       - [name, age]
       - [name01, 1]

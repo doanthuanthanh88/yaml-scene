@@ -1,5 +1,5 @@
 import Api from "@app/elements/Api"
-import { FileDataSource } from "@app/utils/data-source/file/FileDataSource"
+import { File } from "@app/utils/adapter/file/File"
 import { TimeUtils } from "@app/utils/time"
 import merge from "lodash.merge"
 import { ElementProxy } from "../../ElementProxy"
@@ -48,8 +48,10 @@ export default class ApiMD {
   }
 
   async exec() {
-    await TimeUtils.Delay('1s')
-    const exporter = new Exporter(new FileDataSource(this.outFile), this)
+    // Wait 2s to make sure the lastest api event "api.done" fired
+    await TimeUtils.Delay('2s')
+
+    const exporter = new Exporter(new File(this.outFile), this)
     exporter.export(this.apis.sort((a, b) => a.title > b.title ? 1 : -1))
     this.proxy.logger.info(`Document is generated at ${this.outFile}`)
   }

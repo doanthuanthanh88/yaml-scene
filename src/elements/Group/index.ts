@@ -37,8 +37,6 @@ export default class Group implements IElement {
   loopKey: string | number
   loopValue: any
   stepDelay?: number
-  delay?: number
-  async: boolean
 
   private steps: ElementProxy<IElement>[]
 
@@ -93,7 +91,7 @@ export default class Group implements IElement {
     const proms = []
     for (const step of this.steps) {
       if (step.async) {
-        if (await step.isValid()) {
+        if (step.isValid()) {
           proms.push((async (step) => {
             await step.prepare()
             if (this.stepDelay && !step.delay) {
@@ -108,7 +106,7 @@ export default class Group implements IElement {
         await Promise.all(proms)
         proms.splice(0, proms.length)
       }
-      if (await step.isValid()) {
+      if (step.isValid()) {
         await step.prepare()
         if (this.stepDelay && !step.delay) {
           step.delay = this.stepDelay
