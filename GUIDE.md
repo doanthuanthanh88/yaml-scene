@@ -488,27 +488,27 @@ Auto scan file to detect the comment format which is generated to markdown docum
 
 ```js
 /**
- * @guide 
- * @name  Element1
- * @description  Embed javascript code into scene
+ * @guide
+ * @name Element1
+ * @description Embed javascript code into scene
 ***Details***
 
- * @h1  ##
+ * @h1 ##
 Could not combine `@h1` and `@h2` in same guideline block
 More information above detail block
 
- * @h2  ##
+ * @h2 ##
 Could not combine `@h1` and `@h2` in same guideline block
 More information below detail block
 
- * @group  Tag1, Tag2
- * @exampleType  custom
- * @example 
+ * @group Tag1, Tag2
+ * @exampleType custom
+ * @example
 **Example**  
 ```js
 console.log('Hello world')
 ``\`
- \* @end 
+ \* @end
  *\/
 class Element1 {
 
