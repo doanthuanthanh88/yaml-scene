@@ -110,9 +110,9 @@ describe('Api CRUD, serve', () => {
   test('Create a new posts', async () => {
     const scenario = await Simulator.Run(`
 - Templates:
-  - Api:
-      ->: base
-      baseURL: http://localhost:${port}
+    base:
+      Api:
+        baseURL: http://localhost:${port}
 
 - Api/Post:
     <-: base

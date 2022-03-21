@@ -1,9 +1,9 @@
 import chalk from 'chalk';
 import merge from "lodash.merge";
-import { ElementProxy } from '../../ElementProxy';
-import { File } from '../adapter/File';
-import { FileAdapterFactory } from '../adapter/FileAdapterFactory';
-import { IFileAdapter } from '../adapter/IFileAdapter';
+import { ElementProxy } from '../ElementProxy';
+import { File } from './adapter/File';
+import { FileAdapterFactory } from './adapter/FileAdapterFactory';
+import { IFileAdapter } from './adapter/IFileAdapter';
 
 /**
  * @guide
