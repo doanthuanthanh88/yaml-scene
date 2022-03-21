@@ -31,12 +31,16 @@ describe('Api CRUD, serve', () => {
           ]
       - method: GET
         path: /posts/:id
-        response:
-          status: 200
-          statusMessage: OK
-          headers:
-            server: nginx
-          data: { "id": 1, "title": "title updated", "author": "typicode" }
+        handler: |
+          headers.server = 'nginx'
+          ctx.status = 200
+          ctx.statusMessage = 'OK'
+
+          return {
+            "id": 1, 
+            "title": "title updated", 
+            "author": "typicode" 
+          }
       - method: POST
         path: /posts
         response:

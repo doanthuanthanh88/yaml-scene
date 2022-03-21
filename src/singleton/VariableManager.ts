@@ -40,7 +40,8 @@ export class VariableManager {
       }
     } else if (typeof obj === 'string') {
       let vl;
-      const evalStr = `vl = (({${Object.keys(ctx).join(',')}}) => { 
+      const isAsync = obj?.includes('await ')
+      const evalStr = `vl = (${isAsync ? 'async' : ''}({${Object.keys(ctx).join(',')}}) => { 
         ${obj}
       })(ctx)`
       eval(evalStr)

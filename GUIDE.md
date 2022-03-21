@@ -445,6 +445,26 @@ Mock API server
               "des": "des 1",                   # $body:    Request body
             }                                   # $request: Request
           ]                                     # $ctx:     Context
+      # Create a API which you handle request and response
+      - method: GET                             # Request method (POST, PUT, PATCH, DELETE, HEAD)
+                                                # - Default method is GET
+        path: /posts/:id                        # Request path
+        handler: |                              # Handle code which handle request and response data
+          // _: this.proxy, 
+          // __: this, $params: 
+          // ctx.params, headers: ctx.headers, 
+          // query: ctx.request.query, 
+          // body: ctx.request.body, 
+          // request: ctx.request, 
+          // ctx: ctx
+
+          const merge = require('lodash.merge')
+          return merge({
+            name: $query.name
+          }, {
+            id: 1
+          })
+          
 ```
 
 
