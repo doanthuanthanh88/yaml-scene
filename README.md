@@ -1,5 +1,20 @@
 # YAML Scene
-Create scenes to do everything base on yaml file
+Platform to do everything with only yaml scenario files.
+
+## Some features
+1. Support to create testcases for [REST APIs](./GUIDE), [gRPC](https://github.com/doanthuanthanh88/yas-grpc)
+    - Auto generate to markdown document after done
+    - Create mock API server with only a yaml file
+    - Validate response after each steps
+    - Easy to expose and extends all of elements
+
+4. Split a huge testcase to many small testcases which make easy to test in a big project
+5. Easy to extends, customize for specific project
+6. Easy to load and reuse extensions via npm registry ([Generate sequence diagram](https://github.com/doanthuanthanh88/yas-sequence-diagram), [gRPC](https://github.com/doanthuanthanh88/yas-grpc)) or create a extension by yourself
+7. Auto [generate sequence diagram](https://github.com/doanthuanthanh88/yas-sequence-diagram) from any file base on comment
+9. Easy to do something with extensions
+10. Easy to customize extensions and share them to everybody
+11. Support to set password to scenario file before upload to public server to share to someone run it.
 
 ## Installation
 ```sh
