@@ -61,7 +61,9 @@ export default class Api implements IElement {
 
   title: string
   description: string
-  doc: boolean
+  doc: {
+    tags: string[]
+  }
   method: Method
   baseURL: string
   url: string
@@ -104,6 +106,9 @@ export default class Api implements IElement {
   }
 
   init(props: any) {
+    if (typeof props.doc === 'boolean') {
+      props.doc = props.doc ? {} : undefined
+    }
     merge(this, { method: Method.GET }, {
       ...props,
       validate: props.validate?.map(v => {
@@ -139,6 +144,7 @@ export default class Api implements IElement {
       this.saveTo = this.proxy.resolvePath(this.saveTo)
     }
     if (!this.headers['content-type']) this.headers['content-type'] = 'application/json'
+    this.doc = this.proxy.getVar(this.doc)
   }
 
   async exec() {

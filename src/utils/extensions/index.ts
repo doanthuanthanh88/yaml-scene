@@ -27,13 +27,13 @@ export class Extensions {
     return this.extensionElements[name]
   }
 
-  load(p: string, modulePath: string) {
+  load(p: string, modulePath = '') {
     // for (const p of modules) {
     let obj: any;
     try {
       obj = require(`${join(modulePath, p)}`);
       return obj.default || obj[p]
-    } catch {
+    } catch (err0) {
       if (this.extensionElements[p]) {
         return this.extensionElements[p]
       }
@@ -65,7 +65,8 @@ export class Extensions {
         // }
         // console.groupEnd()
       } catch (err) {
-        console.error(chalk.red(err.message));
+        this.scenario.loggerFactory.getLogger().error(chalk.red(err0.message));
+        this.scenario.loggerFactory.getLogger().error(chalk.red(err.message));
         throw err;
       }
     }

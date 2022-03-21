@@ -27,62 +27,6 @@ export class Exporter implements IExporter<Api> {
   constructor(private writer: IFileAdapter, public md: MD) {
   }
 
-  objectToMDType(obj) {
-    const md = []
-    md.push(`| Name | Type |`)
-    md.push(`| --- | --- |`)
-    this.objectToTypes({ '@ROOT': obj }).forEach(info => {
-      md.push(...this.toMDString(info))
-    })
-    return md.length > 2 ? md.join('\n') : ''
-  }
-
-  private toMDString(info: any) {
-    const md = []
-    md.push(`| ${info.space} \`${info.name}\` | ${Array.from(info.types).join(', ')} |`)
-    if (info.childs.length) {
-      info.childs.forEach(child => {
-        md.push(...this.toMDString(child))
-      })
-    }
-    return md
-  }
-
-  private objectToTypes(obj: any, space = '') {
-    if (Array.isArray(obj)) {
-      const arr = []
-      obj.forEach(o => {
-        arr.push(...this.objectToTypes(o, space))
-      })
-      return arr.reduce((sum, child) => {
-        const existed = sum.find(c => c.name === child.name)
-        if (existed) {
-          existed.types.add(...child.types)
-        } else {
-          sum.push(child)
-        }
-        return sum
-      }, [])
-    } else if (typeof obj === 'object') {
-      return Object.keys(obj).map(key => {
-        const info = {
-          space,
-          name: key,
-          types: new Set(),
-          childs: []
-        }
-        if (Array.isArray(obj[key])) {
-          info.types.add(`array&lt;${Array.from(new Set(obj[key].map(e => typeof e))).join(',')}&gt;`)
-        } else {
-          info.types.add(typeof obj[key])
-        }
-        info.childs = this.objectToTypes(obj[key], space + '&nbsp;&nbsp;&nbsp;&nbsp;')
-        return info
-      })
-    }
-    return []
-  }
-
   export(apis: Api[]) {
     const mdMenu = [`# ${this.md.title || this.md.proxy.scenario.title}`, `${this.md.description || this.md.proxy.scenario.description || ''}`];
     const mdDetails = [];
@@ -92,11 +36,24 @@ export class Exporter implements IExporter<Api> {
     }
     mdMenu.push(`> Updated at ${new Date().toLocaleString()}  `)
 
-    mdMenu.push('', `| | API title | URL |  `, `|---|---|---|  `)
+    mdMenu.push('', `| | Title (${apis.length}) | URL |  `, `|---|---|---|  `)
     apis.sort((a, b) => a.title > b.title ? 1 : -1)
 
-    apis.forEach((api, i) => {
-      mdMenu.push(`|**${i + 1}**|[${api.title}](#${escape(api.title)})| \`${api.method}\` ${api.url}|  `)
+    const tags = apis.reduce((tags, api) => {
+      (api.doc.tags || [' DEFAULT']).forEach(tagName => {
+        if (!tags[tagName]) tags[tagName] = []
+        tags[tagName].push(api)
+      })
+      return tags
+    }, {})
+
+    Object.keys(tags).sort().forEach(tagName => {
+      mdMenu.push(`| |${tagName.trim()} (${tags[tagName].length}) | |`)
+      tags[tagName].forEach((api, i) => {
+        mdMenu.push(`|**${i + 1}**|[${api.title}](#${escape(api.title)})| \`${api.method}\` ${api.url}|  `)
+      })
+    })
+    apis.forEach((api) => {
       const details = []
       details.push('', '---', '', `## [${api.title}](#) <a name="${escape(api.title)}"></a>
 ${api.description || ''}`, '')
@@ -254,5 +211,61 @@ ${this.objectToMDType(api.response.data)}
     })
 
     this.writer.write([...mdMenu, '  ', ...mdDetails, '  '].join('\n'));
+  }
+
+  private objectToMDType(obj) {
+    const md = []
+    md.push(`| Name | Type |`)
+    md.push(`| --- | --- |`)
+    this.objectToTypes({ '@ROOT': obj }).forEach(info => {
+      md.push(...this.toMDString(info))
+    })
+    return md.length > 2 ? md.join('\n') : ''
+  }
+
+  private toMDString(info: any) {
+    const md = []
+    md.push(`| ${info.space} \`${info.name}\` | ${Array.from(info.types).join(', ')} |`)
+    if (info.childs.length) {
+      info.childs.forEach(child => {
+        md.push(...this.toMDString(child))
+      })
+    }
+    return md
+  }
+
+  private objectToTypes(obj: any, space = '') {
+    if (Array.isArray(obj)) {
+      const arr = []
+      obj.forEach(o => {
+        arr.push(...this.objectToTypes(o, space))
+      })
+      return arr.reduce((sum, child) => {
+        const existed = sum.find(c => c.name === child.name)
+        if (existed) {
+          existed.types.add(...child.types)
+        } else {
+          sum.push(child)
+        }
+        return sum
+      }, [])
+    } else if (typeof obj === 'object') {
+      return Object.keys(obj).map(key => {
+        const info = {
+          space,
+          name: key,
+          types: new Set(),
+          childs: []
+        }
+        if (Array.isArray(obj[key])) {
+          info.types.add(`array&lt;${Array.from(new Set(obj[key].map(e => typeof e))).join(',')}&gt;`)
+        } else {
+          info.types.add(typeof obj[key])
+        }
+        info.childs = this.objectToTypes(obj[key], space + '&nbsp;&nbsp;&nbsp;&nbsp;')
+        return info
+      })
+    }
+    return []
   }
 }
