@@ -1,5 +1,5 @@
 import Api from "@app/elements/Api"
-import { File } from "@app/utils/adapter/file/File"
+import { File } from "@app/elements/File/adapter/File"
 import { TimeUtils } from "@app/utils/time"
 import merge from "lodash.merge"
 import { ElementProxy } from "../../ElementProxy"

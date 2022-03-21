@@ -1,4 +1,4 @@
-- ReadFile:
+- File/Reader:
     title: Read json file 1 with password
     path: assets/data1.json
     adapters:
@@ -8,7 +8,7 @@
 
 - Echo: ${data}
 
-- ReadFile:
+- File/Reader:
     title: Read json file 2 without password
     path: assets/data2.json
     adapters:

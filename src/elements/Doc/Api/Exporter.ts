@@ -1,5 +1,5 @@
 import Api from '@app/elements/Api';
-import { IFileAdapter } from '@app/utils/adapter/file/IFileAdapter';
+import { IFileAdapter } from '@app/elements/File/adapter/IFileAdapter';
 import { Exporter as IExporter } from '@app/utils/doc/Exporter';
 import omit from 'lodash.omit';
 import { escape } from 'querystring';

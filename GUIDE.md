@@ -25,15 +25,15 @@
 |[Script/Js](#Script/Js)| Embed javascript code into scene ...|  
 |[Script/Sh](#Script/Sh)| Embed shell script into scene ...|  
 | FILE | --- |
-|[ReadFile](#ReadFile)| Read a file then set content to a variable ...|  
-|[WriteFile](#WriteFile)| Write content to a file ...|  
+|[File/Reader](#File/Reader)| Read a file then set content to a variable ...|  
+|[File/Writer](#File/Writer)| Write content to a file ...|  
 | INPUT | --- |
-|[ReadFile](#ReadFile)| Read a file then set content to a variable ...|  
+|[File/Reader](#File/Reader)| Read a file then set content to a variable ...|  
 |[UserInput](#UserInput)| Get user input from keyboard ...|  
 | OUTPUT | --- |
 |[Clear](#Clear)| Clear screen ...|  
 |[Echo](#Echo)| Print data to screen ...|  
-|[WriteFile](#WriteFile)| Write content to a file ...|  
+|[File/Writer](#File/Writer)| Write content to a file ...|  
 | --- | --- |
 |[Group](#Group)| Group contains 1 or many elements ...|  
 |[Pause](#Pause)| Program will be paused and wait user input ...|  
@@ -602,21 +602,21 @@ Embed shell script into scene
 ```
 
 
-## ReadFile <a name="ReadFile"></a>
+## File/Reader <a name="File/Reader"></a>
 Read a file then set content to a variable  
 It uses `aes-128-cbc` to decrypt content with a password.  
-Refer to [WriteFile](.) to encrypt content  
+Refer to [File/Writer](.) to encrypt content  
 ### Text file
 
 ```yaml
-- ReadFile:
+- File/Reader:
     title: Read text file 1 with password
     path: assets/data1.txt
     adapters:
       - Password: MyPassword        # Decrypt content with password is "MyPassword"
     var: data                       # Set file content result to "data" variable
 
-- ReadFile:
+- File/Reader:
     title: Read text file 2 without password
     path: assets/data2.txt
     var: data                       # Set file content result to "data" variable
@@ -625,7 +625,7 @@ Refer to [WriteFile](.) to encrypt content
 ### CSV File
 
 ```yaml
-- ReadFile:
+- File/Reader:
     title: Read csv file 1 with password
     path: assets/data1.csv
     adapters:
@@ -633,7 +633,7 @@ Refer to [WriteFile](.) to encrypt content
       - Csv                         # The second convert data type is Csv to object
     var: data                       # Set file content result to "data" variable
 
-- ReadFile:
+- File/Reader:
     title: Read csv file 2 without password
     path: assets/data2.csv
     adapters:
@@ -644,7 +644,7 @@ Refer to [WriteFile](.) to encrypt content
 ### JSON File
 
 ```yaml
-- ReadFile:
+- File/Reader:
     title: Read json file 1 with password
     path: assets/data1.json
     adapters:
@@ -652,7 +652,7 @@ Refer to [WriteFile](.) to encrypt content
       - Json                        # The second convert data type is Json to object
     var: data                       # Set file content result to "data" variable
 
-- ReadFile:
+- File/Reader:
     title: Read json file 2 without password
     path: assets/data2.json
     adapters:
@@ -663,7 +663,7 @@ Refer to [WriteFile](.) to encrypt content
 ### XML file
 
 ```yaml
-- ReadFile:
+- File/Reader:
     title: Read xml file 1 with password
     path: assets/data1.xml
     adapters:
@@ -671,7 +671,7 @@ Refer to [WriteFile](.) to encrypt content
       - Xml                         # The second convert data type is Xml to object
     var: data                       # Set file content result to "data" variable
 
-- ReadFile:
+- File/Reader:
     title: Read xml file 2 without password
     path: assets/data2.xml
     adapters:
@@ -682,7 +682,7 @@ Refer to [WriteFile](.) to encrypt content
 ### YAML file
 
 ```yaml
-- ReadFile:
+- File/Reader:
     title: Read yaml file 1 with password
     path: assets/data1.yaml
     adapters:
@@ -690,7 +690,7 @@ Refer to [WriteFile](.) to encrypt content
       - Yaml                        # The second convert data type is Csv to object
     var: data                       # Set file content result to "data" variable
 
-- ReadFile:
+- File/Reader:
     title: Read yaml file 2 without password
     path: assets/data2.yaml
     adapters:
@@ -748,7 +748,7 @@ You can write a new adapter by yourself then use in adapters.
   
 2. Create your scenario file then use it
   ```yaml
-  - ReadFile:
+  - File/Reader:
       title: Read a file with custom adapter
       path: assets/data2.custom_adapter.json
       adapters:
@@ -759,14 +759,14 @@ You can write a new adapter by yourself then use in adapters.
       var: data
   ```
 
-## WriteFile <a name="WriteFile"></a>
+## File/Writer <a name="File/Writer"></a>
 Write content to a file  
 It uses `aes-128-cbc` to encrypt content with a password.  
-Refer to [ReadFile](.) to decrypt content  
+Refer to [File/Reader](.) to decrypt content  
 ### Text file
 
 ```yaml
-- WriteFile:
+- File/Writer:
     title: Write text file with password
     path: assets/data1.txt
     adapters:
@@ -774,7 +774,7 @@ Refer to [ReadFile](.) to decrypt content
     content: |
       Hello world
 
-- WriteFile:
+- File/Writer:
     title: Write text file without password
     path: assets/data2.txt
     content: |
@@ -784,7 +784,7 @@ Refer to [ReadFile](.) to decrypt content
 ### CSV File
 
 ```yaml
-- WriteFile:
+- File/Writer:
     title: Write csv file 1 with password
     path: assets/data1.csv
     adapters:
@@ -796,7 +796,7 @@ Refer to [ReadFile](.) to decrypt content
       - name: name 2
         age: 3
 
-- WriteFile:
+- File/Writer:
     title: Write csv file 2 without password
     path: assets/data2.csv
     adapters:
@@ -810,7 +810,7 @@ Refer to [ReadFile](.) to decrypt content
 ### JSON File
 
 ```yaml
-- WriteFile:
+- File/Writer:
     title: Write json file 1 with password
     path: assets/data1.json
     adapters:
@@ -822,7 +822,7 @@ Refer to [ReadFile](.) to decrypt content
       - name: name 2
         age: 3
 
-- WriteFile:
+- File/Writer:
     title: Write json file 2 without password
     path: assets/data2.json
     adapters:
@@ -836,7 +836,7 @@ Refer to [ReadFile](.) to decrypt content
 ### XML File
 
 ```yaml
-- WriteFile:
+- File/Writer:
     title: Write xml file 1 with password
     path: assets/data1.xml
     adapters:
@@ -848,7 +848,7 @@ Refer to [ReadFile](.) to decrypt content
       - name: name 2
         age: 3
 
-- WriteFile:
+- File/Writer:
     title: Write xml file 2 without password
     path: assets/data2.xml
     adapters:
@@ -862,7 +862,7 @@ Refer to [ReadFile](.) to decrypt content
 ### YAML File
 
 ```yaml
-- WriteFile:
+- File/Writer:
     title: Write yaml file 1 with password
     path: assets/data1.yaml
     adapters:
@@ -874,7 +874,7 @@ Refer to [ReadFile](.) to decrypt content
       - name: name 2
         age: 3
 
-- WriteFile:
+- File/Writer:
     title: Write yaml file 2 without password
     path: assets/data2.yaml
     adapters:
@@ -935,7 +935,7 @@ You can write a new adapter by yourself then use in adapters.
   
 2. Create your scenario file then use it
   ```yaml
-  - WriteFile:
+  - File/Writer:
       title: Write custom json file
       path: assets/data1.json
       adapters:

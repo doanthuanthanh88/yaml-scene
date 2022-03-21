@@ -1,4 +1,4 @@
-- WriteFile:
+- File/Writer:
     title: Write text file with password
     path: assets/data1.txt
     adapters:
@@ -6,7 +6,7 @@
     content: |
       Hello world
 
-- WriteFile:
+- File/Writer:
     title: Write text file without password
     path: assets/data2.txt
     content: |

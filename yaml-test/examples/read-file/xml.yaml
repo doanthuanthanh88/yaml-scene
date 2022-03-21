@@ -1,4 +1,4 @@
-- ReadFile:
+- File/Reader:
     title: Read xml file 1 with password
     type: xml
     path: assets/data1.xml
@@ -9,7 +9,7 @@
 
 - Echo: ${data}
 
-- ReadFile:
+- File/Reader:
     title: Read xml file 2 without password
     path: assets/data2.xml
     adapters:

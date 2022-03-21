@@ -9,7 +9,7 @@ describe.each([
   { type: 'Csv', filename: 'data.csv', data: [['label 1', 'label 2', 'label 3', 'label 4'], ['1', '2', '3', '4']] },
   { type: 'Yaml', filename: 'data.yaml', data: { "say": "hello world" } },
   { type: 'Xml', filename: 'data.xml', data: { "say": "hello world" } },
-])('Test to "ReadFile" and "WriteFile"', ({ type, filename, data }) => {
+])('Test to "File/Reader" and "File/Writer"', ({ type, filename, data }) => {
   const path = join(tmpdir(), Math.random() + filename)
 
   afterAll(() => {
@@ -21,7 +21,7 @@ describe.each([
     await Simulator.Run(`
 - Vars:
     data: ${JSON.stringify(data)}
-- WriteFile:
+- File/Writer:
     path: ${path}
     adapters: 
       - ${type}
@@ -34,7 +34,7 @@ describe.each([
     await Simulator.Run(`
 - Vars:
     data: ${JSON.stringify(data)}
-- WriteFile:
+- File/Writer:
     path: ${path}.encrypted
     adapters: 
       - ${type}

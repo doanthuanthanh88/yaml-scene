@@ -9,20 +9,20 @@ describe.each([
   { adapter: 'Csv', filename: 'data.csv', data: [['label 1', 'label 2', 'label 3', 'label 4'], ['1', '2', '3', '4']] },
   { adapter: 'Yaml', filename: 'data.yaml', data: { "say": "hello world" } },
   { adapter: 'Xml', filename: 'data.xml', data: { "say": "hello world" } },
-])('Test to "ReadFile" and "WriteFile"', ({ adapter, filename, data }) => {
+])('Test to "File/Reader" and "File/Writer"', ({ adapter, filename, data }) => {
   const path = join(tmpdir(), Math.random() + filename)
 
   beforeAll(async () => {
     await Simulator.Run(`
 - Vars:
     data: ${JSON.stringify(data)}
-- WriteFile:
+- File/Writer:
     path: ${path}
     adapters: 
       - ${adapter}
     content: \${data}
     
-- WriteFile:
+- File/Writer:
     path: ${path}.encrypted
     adapters: 
       - ${adapter}
@@ -38,7 +38,7 @@ describe.each([
 
   test(`Read a ${adapter} file`, async () => {
     const scenario = await Simulator.Run(`
-- ReadFile:
+- File/Reader:
     path: ${path}
     adapters: 
       - ${adapter}
@@ -49,7 +49,7 @@ describe.each([
 
   test(`Read a ${adapter} file with password`, async () => {
     const scenario = await Simulator.Run(`
-- ReadFile:
+- File/Reader:
     path: ${path}.encrypted
     adapters:
       - Password: thanh123

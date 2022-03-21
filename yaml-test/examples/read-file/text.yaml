@@ -1,4 +1,4 @@
-- ReadFile:
+- File/Reader:
     title: Read text file 1 with password
     path: assets/data1.txt
     adapters:
@@ -7,7 +7,7 @@
 
 - Echo: ${data}
 
-- ReadFile:
+- File/Reader:
     title: Read text file 2 without password
     path: assets/data2.txt
     var: data

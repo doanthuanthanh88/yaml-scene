@@ -1,4 +1,4 @@
-- ReadFile:
+- File/Reader:
     title: Read csv file 1 with password
     adapters:
       - Password: thanh123
@@ -8,7 +8,7 @@
 
 - Echo: ${data}
 
-- ReadFile:
+- File/Reader:
     title: Read csv file 2 without password
     path: assets/data2.csv
     adapters:

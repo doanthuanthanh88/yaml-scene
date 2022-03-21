@@ -1,4 +1,4 @@
-import { IFileAdapter } from '@app/utils/adapter/file/IFileAdapter';
+import { IFileAdapter } from '@app/elements/File/adapter/IFileAdapter';
 import { Exporter } from '@app/utils/doc/Exporter';
 import { CommentInfo } from './CommentInfo';
 

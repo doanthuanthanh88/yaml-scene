@@ -1,4 +1,4 @@
-- WriteFile:
+- File/Writer:
     title: Write csv file 1 with password
     path: assets/data1.csv
     adapters:
@@ -10,7 +10,7 @@
       - name: name 2
         age: 3
 
-- WriteFile:
+- File/Writer:
     title: Write csv file 2 without password
     path: assets/data2.csv
     adapters:

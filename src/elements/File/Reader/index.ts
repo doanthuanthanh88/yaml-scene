@@ -1,30 +1,30 @@
-import { File } from '@app/utils/adapter/file/File';
-import { FileAdapterFactory } from '@app/utils/adapter/file/FileAdapterFactory';
-import { IFileAdapter } from '@app/utils/adapter/file/IFileAdapter';
 import chalk from 'chalk';
 import merge from "lodash.merge";
-import { ElementProxy } from '../ElementProxy';
+import { ElementProxy } from '../../ElementProxy';
+import { File } from '../adapter/File';
+import { FileAdapterFactory } from '../adapter/FileAdapterFactory';
+import { IFileAdapter } from '../adapter/IFileAdapter';
 
 /**
  * @guide
- * @name ReadFile
+ * @name File/Reader
  * @description Read a file then set content to a variable  
 It uses `aes-128-cbc` to decrypt content with a password.  
-Refer to [WriteFile](.) to encrypt content
+Refer to [File/Writer](.) to encrypt content
  * @group File, Input
  * @exampleType custom
  * @example
 ### Text file
 
 ```yaml
-- ReadFile:
+- File/Reader:
     title: Read text file 1 with password
     path: assets/data1.txt
     adapters:
       - Password: MyPassword        # Decrypt content with password is "MyPassword"
     var: data                       # Set file content result to "data" variable
 
-- ReadFile:
+- File/Reader:
     title: Read text file 2 without password
     path: assets/data2.txt
     var: data                       # Set file content result to "data" variable
@@ -33,7 +33,7 @@ Refer to [WriteFile](.) to encrypt content
 ### CSV File
 
 ```yaml
-- ReadFile:
+- File/Reader:
     title: Read csv file 1 with password
     path: assets/data1.csv
     adapters:
@@ -41,7 +41,7 @@ Refer to [WriteFile](.) to encrypt content
       - Csv                         # The second convert data type is Csv to object
     var: data                       # Set file content result to "data" variable
 
-- ReadFile:
+- File/Reader:
     title: Read csv file 2 without password
     path: assets/data2.csv
     adapters:
@@ -52,7 +52,7 @@ Refer to [WriteFile](.) to encrypt content
 ### JSON File
 
 ```yaml
-- ReadFile:
+- File/Reader:
     title: Read json file 1 with password
     path: assets/data1.json
     adapters:
@@ -60,7 +60,7 @@ Refer to [WriteFile](.) to encrypt content
       - Json                        # The second convert data type is Json to object
     var: data                       # Set file content result to "data" variable
 
-- ReadFile:
+- File/Reader:
     title: Read json file 2 without password
     path: assets/data2.json
     adapters:
@@ -71,7 +71,7 @@ Refer to [WriteFile](.) to encrypt content
 ### XML file
 
 ```yaml
-- ReadFile:
+- File/Reader:
     title: Read xml file 1 with password
     path: assets/data1.xml
     adapters:
@@ -79,7 +79,7 @@ Refer to [WriteFile](.) to encrypt content
       - Xml                         # The second convert data type is Xml to object
     var: data                       # Set file content result to "data" variable
 
-- ReadFile:
+- File/Reader:
     title: Read xml file 2 without password
     path: assets/data2.xml
     adapters:
@@ -90,7 +90,7 @@ Refer to [WriteFile](.) to encrypt content
 ### YAML file
 
 ```yaml
-- ReadFile:
+- File/Reader:
     title: Read yaml file 1 with password
     path: assets/data1.yaml
     adapters:
@@ -98,7 +98,7 @@ Refer to [WriteFile](.) to encrypt content
       - Yaml                        # The second convert data type is Csv to object
     var: data                       # Set file content result to "data" variable
 
-- ReadFile:
+- File/Reader:
     title: Read yaml file 2 without password
     path: assets/data2.yaml
     adapters:
@@ -156,7 +156,7 @@ You can write a new adapter by yourself then use in adapters.
   
 2. Create your scenario file then use it
   ```yaml
-  - ReadFile:
+  - File/Reader:
       title: Read a file with custom adapter
       path: assets/data2.custom_adapter.json
       adapters:
@@ -168,8 +168,8 @@ You can write a new adapter by yourself then use in adapters.
   ```
  * @end
  */
-export default class ReadFile {
-  proxy: ElementProxy<ReadFile>
+export default class Reader {
+  proxy: ElementProxy<Reader>
 
   title: string
   var: string

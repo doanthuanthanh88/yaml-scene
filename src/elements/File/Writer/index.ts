@@ -1,23 +1,23 @@
-import { File } from '@app/utils/adapter/file/File';
-import { FileAdapterFactory } from '@app/utils/adapter/file/FileAdapterFactory';
-import { IFileAdapter } from '@app/utils/adapter/file/IFileAdapter';
 import chalk from 'chalk';
 import merge from "lodash.merge";
-import { ElementProxy } from '../ElementProxy';
+import { ElementProxy } from '../../ElementProxy';
+import { File } from '../adapter/File';
+import { FileAdapterFactory } from '../adapter/FileAdapterFactory';
+import { IFileAdapter } from '../adapter/IFileAdapter';
 
 /**
  * @guide
- * @name WriteFile
+ * @name File/Writer
  * @description Write content to a file  
 It uses `aes-128-cbc` to encrypt content with a password.  
-Refer to [ReadFile](.) to decrypt content
+Refer to [File/Reader](.) to decrypt content
  * @group File, Output
  * @exampleType custom
  * @example
 ### Text file
 
 ```yaml
-- WriteFile:
+- File/Writer:
     title: Write text file with password
     path: assets/data1.txt
     adapters:
@@ -25,7 +25,7 @@ Refer to [ReadFile](.) to decrypt content
     content: |
       Hello world
 
-- WriteFile:
+- File/Writer:
     title: Write text file without password
     path: assets/data2.txt
     content: |
@@ -35,7 +35,7 @@ Refer to [ReadFile](.) to decrypt content
 ### CSV File
 
 ```yaml
-- WriteFile:
+- File/Writer:
     title: Write csv file 1 with password
     path: assets/data1.csv
     adapters:
@@ -47,7 +47,7 @@ Refer to [ReadFile](.) to decrypt content
       - name: name 2
         age: 3
 
-- WriteFile:
+- File/Writer:
     title: Write csv file 2 without password
     path: assets/data2.csv
     adapters:
@@ -61,7 +61,7 @@ Refer to [ReadFile](.) to decrypt content
 ### JSON File
 
 ```yaml
-- WriteFile:
+- File/Writer:
     title: Write json file 1 with password
     path: assets/data1.json
     adapters:
@@ -73,7 +73,7 @@ Refer to [ReadFile](.) to decrypt content
       - name: name 2
         age: 3
 
-- WriteFile:
+- File/Writer:
     title: Write json file 2 without password
     path: assets/data2.json
     adapters:
@@ -87,7 +87,7 @@ Refer to [ReadFile](.) to decrypt content
 ### XML File
 
 ```yaml
-- WriteFile:
+- File/Writer:
     title: Write xml file 1 with password
     path: assets/data1.xml
     adapters:
@@ -99,7 +99,7 @@ Refer to [ReadFile](.) to decrypt content
       - name: name 2
         age: 3
 
-- WriteFile:
+- File/Writer:
     title: Write xml file 2 without password
     path: assets/data2.xml
     adapters:
@@ -113,7 +113,7 @@ Refer to [ReadFile](.) to decrypt content
 ### YAML File
 
 ```yaml
-- WriteFile:
+- File/Writer:
     title: Write yaml file 1 with password
     path: assets/data1.yaml
     adapters:
@@ -125,7 +125,7 @@ Refer to [ReadFile](.) to decrypt content
       - name: name 2
         age: 3
 
-- WriteFile:
+- File/Writer:
     title: Write yaml file 2 without password
     path: assets/data2.yaml
     adapters:
@@ -186,7 +186,7 @@ You can write a new adapter by yourself then use in adapters.
   
 2. Create your scenario file then use it
   ```yaml
-  - WriteFile:
+  - File/Writer:
       title: Write custom json file
       path: assets/data1.json
       adapters:
@@ -202,8 +202,8 @@ You can write a new adapter by yourself then use in adapters.
   ```
  * @end
  */
-export default class WriteFile {
-  proxy: ElementProxy<WriteFile>
+export default class Writer {
+  proxy: ElementProxy<Writer>
 
   title: string
   content: string
