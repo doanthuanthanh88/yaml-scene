@@ -1,6 +1,7 @@
 import { Scenario } from "@app/singleton/Scenario";
 import { TimeUtils } from "@app/utils/time";
 import merge from "lodash.merge";
+import omit from "lodash.omit";
 import cloneDeep from "lodash.clonedeep";
 import { IElement } from "./IElement";
 
@@ -205,7 +206,7 @@ export class ElementProxy<T extends IElement> {
 
   expose(key?: string) {
     if (key) {
-      this.scenario.templateManager.set(key, this.element)
+      this.scenario.templateManager.set(key, omit(this.element, '->'))
     }
   }
 

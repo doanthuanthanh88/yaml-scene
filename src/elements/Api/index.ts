@@ -115,8 +115,6 @@ export default class Api implements IElement {
         const _v = ElementFactory.CreateElement<Validate>('Validate', this.proxy.scenario)
         v.changeLogLevel(props.logLevel)
         _v.init(v)
-        _v._ = this.proxy._
-        _v.__ = this.proxy.__
         return _v
       })
     })
@@ -145,6 +143,10 @@ export default class Api implements IElement {
     }
     if (!this.headers['content-type']) this.headers['content-type'] = 'application/json'
     this.doc = this.proxy.getVar(this.doc)
+    this.validate?.forEach(v => {
+      v._ = this.proxy._
+      v.__ = this.proxy.__
+    })
   }
 
   async exec() {
