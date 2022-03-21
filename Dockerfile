@@ -3,8 +3,7 @@ WORKDIR /app
 
 COPY . .
 RUN yarn install
-RUN yarn build
-RUN yarn install:dist
+RUN yarn build:docker
 
 ####################
 FROM node:alpine

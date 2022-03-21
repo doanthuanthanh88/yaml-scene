@@ -1,5 +1,5 @@
-# yaml-scene
-Create scenes to do everything base on yaml file
+# YAML Scene
+Platform to do everything with only yaml scenario files.
 
 # Installation
 ```sh
