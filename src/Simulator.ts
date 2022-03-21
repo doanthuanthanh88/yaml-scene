@@ -6,12 +6,15 @@ import { Scenario } from "./singleton/Scenario";
 
 export class Simulator {
 
+  static IS_RUNNING = false
+
   static async Run(steps = `steps: []`, opts = {} as {
     env?: any,
     logLevel?: string,
     password?: string,
     listener?: { onCreated: (scenario: Scenario) => any }
   }) {
+    Simulator.IS_RUNNING = true
     const { env, logLevel = 'error', password, listener } = opts
 
     const scenario = new Scenario()

@@ -128,6 +128,12 @@ logLevel: debug                                     # How to show log is debug)
                                                     # - info: Show infor, error log
                                                     # - debug: Show log details, infor, error log ( Default )
                                                     # - trace: Show all of log
+install:                                            # Install extensions from npm registry
+  global: false                                     # Install extension to global (npm install -g)
+  localPath: ./                                     # Install extensions to local path (npm install --prefix $localPath/node_modules)
+  extensions:
+    - yas-grpc
+    - yas-sequence-diagram
 extensions:                                         # Extension elements.
   extension_name1: ./cuz_extensions/custom1.js      # - Load a element in a file with exports.default (extension_name1:)
   extensions_folders: ./cuz_extensions              # - Load elements in files in the folder with file name is element name (extensions_folders/custom1:)

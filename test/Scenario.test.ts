@@ -1,25 +1,30 @@
 import { Simulator } from "@app/Simulator"
-import { existsSync, readFileSync, unlinkSync } from "fs"
+import { Scenario } from "@app/singleton/Scenario"
+import { existsSync, readFileSync } from "fs"
 
 describe('Scenario run', () => {
-  let scenarioFile: string
+  let scenario: Scenario
 
-  afterAll(() => {
-    if (scenarioFile) {
-      unlinkSync(scenarioFile)
-    }
+  afterAll(async () => {
+    await scenario?.clean()
   })
 
   test('Encrypt scenario', async () => {
-    const scenario = await Simulator.Run(`
+    scenario = await Simulator.Run(`
 title: Test encrypt file
 password: thanh123
+logLevel: info
+install:
+  global: false
+  localPath: ./
+  extensions: 
+    - yas-grpc
 steps:
 - Echo: Hello world
     `)
-    scenarioFile = scenario.scenarioFile.replace('.yaml', '')
-    expect(existsSync(scenarioFile)).toEqual(true)
+    expect(existsSync(scenario.scenarioPasswordFile)).toEqual(true)
 
-    await Simulator.Run(readFileSync(scenarioFile).toString(), { password: 'thanh123' })
-  })
+    await Simulator.Run(readFileSync(scenario.scenarioPasswordFile).toString(), { password: 'thanh123' })
+
+  }, 60000 * 5)
 })

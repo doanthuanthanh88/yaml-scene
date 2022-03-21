@@ -49,16 +49,16 @@ export default class Exec implements IElement {
       shell: this.shell,
       detached: !!this.detached
     })
-    const msgs = []
-    this.prc.stdout.on('data', msg => {
-      const _msg = msg.toString()
-      if (!this.slient) this.proxy.logger.debug(chalk.gray(_msg))
-      msgs.push(_msg)
-    })
-    this.prc.stderr.on('data', err => {
-      if (!this.slient) this.proxy.logger.error(err.toString())
-    })
     return new Promise<string>((resolve) => {
+      const msgs = []
+      this.prc.stdout.on('data', msg => {
+        const _msg = msg.toString()
+        if (!this.slient) this.proxy.logger.debug(chalk.gray(_msg))
+        msgs.push(_msg)
+      })
+      this.prc.stderr.on('data', err => {
+        if (!this.slient) this.proxy.logger.error(err.toString())
+      })
       this.prc.on('close', code => {
         resolve(!code ? msgs.join('\n') : null)
       })

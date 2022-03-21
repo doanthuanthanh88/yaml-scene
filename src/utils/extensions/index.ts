@@ -1,7 +1,9 @@
+import { ElementFactory } from "@app/elements/ElementFactory";
+import { Simulator } from "@app/Simulator";
 import { Scenario } from "@app/singleton/Scenario";
 import chalk from "chalk";
 import { spawn } from "child_process";
-import { existsSync, readFileSync } from "fs";
+import { existsSync, readFileSync, rmSync } from "fs";
 import { join } from "path";
 
 /**
@@ -17,9 +19,9 @@ Please reference the below links for details:
  */
 export class Extensions {
   private extensionElements = {}
-  private globalExtensionPaths = new Set<string>()
+  private globalExtensionPaths = new Array<string>()
   private localExtensionPaths = {}
-
+  private installExtensionPath: string
 
   constructor(public scenario: Scenario) { }
 
@@ -28,7 +30,6 @@ export class Extensions {
   }
 
   load(p: string, modulePath = '') {
-    // for (const p of modules) {
     let obj: any;
     try {
       obj = require(`${join(modulePath, p)}`);
@@ -46,24 +47,10 @@ export class Extensions {
         }
         obj = require(modulePath).default;
         this.extensionElements[p] = obj
-        // this.ExternalModules.add(obj);
         try {
           const packageJson = JSON.parse(readFileSync(join(modulePath, 'package.json')).toString())
           this.scenario.loggerFactory.getLogger().info(chalk.bold.gray(`${packageJson.name} (v${packageJson.version})`), chalk.gray.underline(packageJson.repository?.url || ''), chalk.italic.gray(`${packageJson.description || ''}`))
         } catch { }
-        // console.group()
-        // for (let k in obj) {
-        //   if (this.extensionElements[k]) {
-        //     console.log(
-        //       chalk.yellow(
-        //         `Warn: Tag ${k} has declared. Could not redeclare in ${modulePath}`
-        //       )
-        //     );
-        //   }
-        //   this.extensionElements[k] = obj[k];
-        //   console.log(chalk.gray.bold('- ' + k), chalk.italic.gray(`(${modulePath})`));
-        // }
-        // console.groupEnd()
       } catch (err) {
         this.scenario.loggerFactory.getLogger().error(chalk.red(err0.message));
         this.scenario.loggerFactory.getLogger().error(chalk.red(err.message));
@@ -71,7 +58,6 @@ export class Extensions {
       }
     }
     return obj
-    // }
   }
 
   async registerGlobalExtension(extensions: { [name: string]: string }) {
@@ -101,6 +87,44 @@ export class Extensions {
   async setup(extensions = {} as { [name: string]: string }) {
     await this.loadNpmYarnGlobalPaths()
     await this.registerGlobalExtension(extensions)
+  }
+
+  async uninstall() {
+    if (this.installExtensionPath) {
+      rmSync(this.installExtensionPath, { recursive: true, force: true })
+    }
+  }
+
+  async install(installInfo: { extensions: string[], localPath?: string, global?: boolean }) {
+    if (!installInfo) return
+    const { extensions = [], localPath = this.scenario.rootDir, global } = installInfo
+    let cmds = [] as string[][]
+    if (global) {
+      cmds = [
+        ['yarn', 'global', 'add', ...extensions],
+        ['npm', 'install', '-g', ...extensions],
+      ]
+    } else {
+      cmds = [
+        ['yarn', 'add', '--prefix', localPath, ...extensions].filter(e => e),
+        ['npm', 'install', `${Simulator.IS_RUNNING ? '--no-save' : ''}`, '--prefix', this.installExtensionPath, ...extensions].filter(e => e),
+      ]
+      if (Simulator.IS_RUNNING) cmds.reverse()
+      this.installExtensionPath = this.scenario.resolvePath(join(localPath, 'node_modules'))
+      this.globalExtensionPaths.splice(0, 0, this.installExtensionPath)
+    }
+    for (const cmd of cmds) {
+      try {
+        const exe = ElementFactory.CreateElement('Exec', this.scenario)
+        exe.init({
+          args: cmd
+        })
+        await exe.prepare()
+        await exe.exec()
+        await exe.dispose()
+        break
+      } catch { }
+    }
   }
 
   private async loadNpmYarnGlobalPaths() {
@@ -133,7 +157,9 @@ export class Extensions {
     ]).then(([npmGlobalDirs, yarnGlobalDirs]) => {
       return npmGlobalDirs.concat(yarnGlobalDirs)
     })
-    globalDirs.forEach(gd => this.globalExtensionPaths.add(gd))
+    globalDirs.forEach(gd => {
+      if (!this.globalExtensionPaths.includes(gd)) this.globalExtensionPaths.push(gd)
+    })
   }
 
   private getPathLocalModule(name: string) {

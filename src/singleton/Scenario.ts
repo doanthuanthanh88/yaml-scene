@@ -6,6 +6,7 @@ import { VariableManager } from '@app/singleton/VariableManager'
 import { Base64 } from '@app/utils/encrypt/Base64'
 import { LoggerFactory } from '@app/utils/logger'
 import chalk from 'chalk'
+import { rmSync } from 'fs'
 import { safeLoad } from 'js-yaml'
 import { homedir } from 'os'
 import { basename, dirname, extname, join, resolve } from 'path'
@@ -34,6 +35,12 @@ logLevel: debug                                     # How to show log is debug)
                                                     # - info: Show infor, error log
                                                     # - debug: Show log details, infor, error log ( Default )
                                                     # - trace: Show all of log
+install:                                            # Install extensions from npm registry
+  global: false                                     # Install extension to global (npm install -g)
+  localPath: ./                                     # Install extensions to local path (npm install --prefix $localPath/node_modules)
+  extensions:
+    - yas-grpc
+    - yas-sequence-diagram
 extensions:                                         # Extension elements.
   extension_name1: ./cuz_extensions/custom1.js      # - Load a element in a file with exports.default (extension_name1:)
   extensions_folders: ./cuz_extensions              # - Load elements in files in the folder with file name is element name (extensions_folders/custom1:)
@@ -74,7 +81,7 @@ export class Scenario {
   password?: string
 
   scenarioFile: string
-  private rootDir: string
+  rootDir: string
   private rootGroup: ElementProxy<Group>
   time: {
     begin: number
@@ -85,6 +92,10 @@ export class Scenario {
     end: number
   }
   hasEnvVar: boolean
+
+  get scenarioPasswordFile() {
+    return this.password ? this.resolvePath(this.scenarioFile.substring(0, this.scenarioFile.lastIndexOf('.'))) : undefined
+  }
 
   get title() {
     return this.rootGroup.element.title
@@ -129,12 +140,12 @@ export class Scenario {
     }
     if (typeof scenario !== 'object') throw new Error('Scenario must be an object or array')
 
-    const { password: pwd, extensions, vars, logLevel, ...scenarioProps } = scenario
+    const { password: pwd, extensions, install, vars, logLevel, ...scenarioProps } = scenario
     if (!scenarioProps) throw new Error('File scenario is not valid')
 
     if (pwd && extname(this.scenarioFile)) {
       this.password = this.getPassword(pwd)
-      await this.saveToEncryptFile(fileContent, this.password, this.scenarioFile.substring(0, this.scenarioFile.lastIndexOf('.')))
+      await this.saveToEncryptFile(fileContent, this.password, this.scenarioPasswordFile)
     }
 
     if (logLevel) {
@@ -143,6 +154,7 @@ export class Scenario {
 
     // Load extensions
     await this.extensions.setup(extensions)
+    await this.extensions.install(install)
 
     // Load global variables which is overrided by env variables
     if (vars) {
@@ -166,10 +178,19 @@ export class Scenario {
     await this.rootGroup.exec()
   }
 
+  async clean() {
+    await Promise.all([
+      this.scenarioPasswordFile ? rmSync(this.scenarioPasswordFile, { force: true }) : Promise.resolve(),
+      this.extensions.uninstall()
+    ])
+  }
+
   async dispose() {
     this.time.dispose = Date.now()
     this.events.emit('scenario.dispose', this)
-    await this.rootGroup?.dispose()
+    await Promise.all([
+      this.rootGroup?.dispose()
+    ])
   }
 
   resolvePath(path: string) {
