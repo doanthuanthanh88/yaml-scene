@@ -38,19 +38,26 @@ export class Extensions {
     } catch (err0) {
       if (this.extensionElements[p]) return this.extensionElements[p]
       try {
-        modulePath = this.getPathLocalModule(p) || this.getPathGlobalModule(p);
-        if (!modulePath) {
-          throw new Error(
-            `Please install module "${p}" \n    \`npm install -g ${p}\` \n OR \n    \`yarn global add ${p}\``
-          )
-        }
-        obj = require(modulePath)
+        obj = require(p);
         obj = obj.default || obj[p]
         this.extensionElements[p] = obj
-      } catch (err) {
-        this.scenario.loggerFactory.getLogger().error(chalk.red(err0.message));
-        this.scenario.loggerFactory.getLogger().error(chalk.red(err.message));
-        throw err;
+        return obj
+      } catch {
+        try {
+          modulePath = this.getPathLocalModule(p) || this.getPathGlobalModule(p);
+          if (!modulePath) {
+            throw new Error(
+              `Please install module "${p}" \n    \`npm install -g ${p}\` \n OR \n    \`yarn global add ${p}\``
+            )
+          }
+          obj = require(modulePath)
+          obj = obj.default || obj[p]
+          this.extensionElements[p] = obj
+        } catch (err) {
+          this.scenario.loggerFactory.getLogger().error(chalk.red(err0.message));
+          this.scenario.loggerFactory.getLogger().error(chalk.red(err.message));
+          throw err;
+        }
       }
     }
     return obj
