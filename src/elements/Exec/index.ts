@@ -1,4 +1,3 @@
-import chalk from 'chalk';
 import { ChildProcessWithoutNullStreams, spawn } from 'child_process';
 import merge from "lodash.merge";
 import { ElementProxy } from '../ElementProxy';
@@ -16,6 +15,9 @@ import { IElement } from '../IElement';
       - yarn
       - global
       - dir
+    var:                                  # Get log content or exit code
+      logContent: ${_.messages}
+      exitCode: ${_.code}
  * @end
  */
 export default class Exec implements IElement {
@@ -25,12 +27,14 @@ export default class Exec implements IElement {
   args: string[]
   var: string | { [key: string]: any }
   code: number
-  log: string[]
-  success: string[]
-  prc: ChildProcessWithoutNullStreams
-  detached: boolean
-  shell: boolean | string
-  slient: boolean
+  messages: string
+  opts: any
+
+  #prc: ChildProcessWithoutNullStreams
+
+  constructor() {
+    this.opts = {}
+  }
 
   init(props: any) {
     merge(this, props)
@@ -38,6 +42,7 @@ export default class Exec implements IElement {
 
   prepare() {
     if (this.title) this.title = this.proxy.getVar(this.title)
+    if (this.opts) this.opts = this.proxy.getVar(this.opts)
     if (!this.args) this.args = []
     this.args = this.proxy.getVar(this.args)
   }
@@ -45,28 +50,33 @@ export default class Exec implements IElement {
   exec() {
     if (this.title) this.proxy.logger.info(this.title)
     const [cmd, ...args] = this.args
-    this.prc = spawn(cmd, args, {
-      shell: this.shell,
-      detached: !!this.detached
-    })
+    this.#prc = spawn(cmd, args, this.opts)
     return new Promise<string>((resolve) => {
-      const msgs = []
-      this.prc.stdout.on('data', msg => {
-        const _msg = msg.toString()
-        if (!this.slient) this.proxy.logger.debug(chalk.gray(_msg))
-        msgs.push(_msg)
+      const msgs = this.var ? [] : undefined
+      this.#prc.stdout?.on('data', msg => {
+        const _msg = msg?.toString()
+        this.proxy.logger.debug(_msg)
+        msgs?.push(_msg)
       })
-      this.prc.stderr.on('data', err => {
-        if (!this.slient) this.proxy.logger.error(err.toString())
+      this.#prc.stderr?.on('data', msg => {
+        const _msg = msg?.toString()
+        this.proxy.logger.debug(_msg)
+        msgs?.push(_msg)
       })
-      this.prc.on('close', code => {
-        resolve(!code ? msgs.join('\n') : null)
+      this.#prc.on('close', code => {
+        this.code = code
+        if (this.var) {
+          this.messages = msgs?.join('\n')
+          this.proxy.setVar(this.var, this)
+        }
+        this.#prc = null
+        resolve(!code ? this.messages : null)
       })
     })
   }
 
   dispose() {
-    this.prc?.kill()
+    this.#prc?.kill()
   }
 
 }

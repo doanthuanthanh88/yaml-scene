@@ -181,9 +181,6 @@ export default class Reader {
     AdapterClass: any,
     args?: any
   }[]
-  decrypt: {
-    password: string
-  }
 
   init(props: any) {
     merge(this, props)

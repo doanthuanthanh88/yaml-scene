@@ -38,13 +38,13 @@ export default class Group implements IElement {
   loopValue: any
   stepDelay?: number
 
-  private steps: ElementProxy<IElement>[]
+  #steps: ElementProxy<IElement>[]
 
   init(_props: any) {
     const { steps, ...props } = _props
     merge(this, props)
     const arrs = steps?.flat(Number.MAX_SAFE_INTEGER)
-    this.steps = (arrs || []).map(step => {
+    this.#steps = (arrs || []).map(step => {
       const [name, vl] = Object.entries(step)[0]
       const elem = ElementFactory.CreateElement<IElement>(name as any, this.proxy.scenario)
       elem.init(vl)
@@ -89,7 +89,7 @@ export default class Group implements IElement {
     if (this.title) this.proxy.logger.info('%s %s', chalk.blue(this.title), chalk.gray(`${this.description || ''}`))
     console.group()
     const proms = []
-    for (const step of this.steps) {
+    for (const step of this.#steps) {
       if (step.async) {
         if (step.isValid()) {
           proms.push((async (step) => {
@@ -122,12 +122,12 @@ export default class Group implements IElement {
   }
 
   async dispose() {
-    if (!this.steps) return
-    await Promise.all(this.steps.map(step => step?.dispose && step.dispose()))
+    if (!this.#steps) return
+    await Promise.all(this.#steps.map(step => step?.dispose && step.dispose()))
   }
 
   handleInheritExpose() {
-    for (const elemProxy of this.steps) {
+    for (const elemProxy of this.#steps) {
       let inheritKey: string[]
       let exposeKey: string
       const { '<-': _inheritKey, '->': _exposeKey } = elemProxy.element as any

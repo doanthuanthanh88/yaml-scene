@@ -32,7 +32,7 @@ export class Extensions {
   load(p: string, modulePath = '') {
     let obj: any;
     try {
-      obj = require(`${join(modulePath, p)}`);
+      obj = require(join(modulePath, p));
       obj = obj.default || obj[p]
       return obj
     } catch (err0) {
@@ -54,8 +54,9 @@ export class Extensions {
           obj = obj.default || obj[p]
           this.extensionElements[p] = obj
         } catch (err) {
-          this.scenario.loggerFactory.getLogger().error(chalk.red(err0.message));
-          this.scenario.loggerFactory.getLogger().error(chalk.red(err.message));
+          const logger = this.scenario.loggerFactory.getLogger()
+          logger.error(chalk.red(err0.message));
+          logger.error(chalk.red(err.message));
           throw err;
         }
       }
@@ -116,7 +117,7 @@ export class Extensions {
     let errors = []
     for (const cmd of cmds) {
       try {
-        await Exec.Run(cmd, logger)
+        await Exec.Run(cmd)
         logger.log(chalk.green(`✅ Added extensions successfully`))
         console.group()
         dependencies.forEach(e => console.log(chalk.green(`- ${e}`)))
@@ -212,19 +213,18 @@ export class Extensions {
   private execShell(cmd: string, args: string[]) {
     return new Promise<string>((resolve, reject) => {
       const sp = spawn(cmd, args)
-      let succ = ''
-      let fail = ''
+      let mes = ''
       sp.stdout.on('data', (m) => {
-        succ += m.toString()
+        mes += m.toString()
       })
       sp.stderr.on('data', (m) => {
-        fail += m.toString()
+        mes += m.toString()
       })
       sp.once('close', (code) => {
         if (!code) {
-          resolve(succ)
+          resolve(mes)
         } else {
-          reject(new Error(fail))
+          reject(new Error(mes))
         }
       })
     })

@@ -271,6 +271,9 @@ Execute external command
       - yarn
       - global
       - dir
+    var:                                  # Get log content or exit code
+      logContent: ${_.messages}
+      exitCode: ${_.code}
 ```
 
 
@@ -303,13 +306,22 @@ Embed shell script into scene
 
 ### Full
 - Script/Sh:
-    args:
-      - sh          # Specific path to sh or bash binary
-      - ${_.file}   # This content will be writed to this path then execute it
-      - arg1
-      - arg2
-    content: |
-      echo ${_.file}
+    title: My command               # Job title
+    bin: sh                         # Path to executor
+    mode: 777                       # chmod 
+    content: |                      # Content script
+      echo ${_.tempFile}
+      echo ${name}
+      echo $1
+      echo $2
+
+- Script/Sh:
+    title: My command
+    args:                           # Custom run script
+      - sh                          # Executor
+      - ${_.tempFile}               # Temp script file which includes content script and is removed after done
+    content: |                      # Content script
+      echo ${_.tempFile}
       echo ${name}
       echo $1
       echo $2

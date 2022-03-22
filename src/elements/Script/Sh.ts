@@ -20,31 +20,42 @@ import Exec from "../Exec";
 
 ### Full
 - Script/Sh:
-    args:
-      - sh          # Specific path to sh or bash binary
-      - ${_.file}   # This content will be writed to this path then execute it
-      - arg1
-      - arg2
-    content: |
-      echo ${_.file}
+    title: My command               # Job title
+    bin: sh                         # Path to executor
+    mode: 777                       # chmod 
+    content: |                      # Content script
+      echo ${_.tempFile}
+      echo ${name}
+      echo $1
+      echo $2
+
+- Script/Sh:
+    title: My command
+    args:                           # Custom run script
+      - sh                          # Executor
+      - ${_.tempFile}               # Temp script file which includes content script and is removed after done
+    content: |                      # Content script
+      echo ${_.tempFile}
       echo ${name}
       echo $1
       echo $2
  * @end
  */
 export default class Sh extends Exec {
-  content: string
   bin: string
-  file: string
+  content: string
   mode: number
+
+  tempFile: string
 
   constructor() {
     super()
     this.mode = 777
+    this.bin = 'sh'
   }
 
   init(props: any) {
-    this.file = join(tmpdir(), Date.now() + '_' + Math.random() + '.sh')
+    this.tempFile = join(tmpdir(), Date.now() + '_' + Math.random() + '.sh')
     this.args = []
     if (typeof props === 'string') {
       this.content = props
@@ -58,9 +69,9 @@ export default class Sh extends Exec {
     this.args = this.proxy.getVar(this.args)
     if (!this.content) throw new Error('Shell script is required')
     if (!this.args?.length) {
-      this.args = ['sh', `${this.file}`]
+      this.args = [this.bin, `${this.tempFile}`]
     }
-    writeFileSync(this.file, this.content, {
+    writeFileSync(this.tempFile, this.content, {
       mode: this.mode
     })
     return super.prepare()
@@ -68,7 +79,7 @@ export default class Sh extends Exec {
 
   async dispose() {
     await Promise.all([
-      existsSync(this.file) && unlink(this.file),
+      existsSync(this.tempFile) && unlink(this.tempFile),
       super.dispose()
     ])
   }

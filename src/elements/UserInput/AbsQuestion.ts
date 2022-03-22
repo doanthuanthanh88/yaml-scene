@@ -1,5 +1,6 @@
 import { stdin } from 'process';
 import prompts from 'prompts';
+import { Writable } from 'stream';
 import { ElementProxy } from '../ElementProxy';
 import { QuestionType } from "./QuestionType";
 
@@ -12,6 +13,7 @@ export abstract class AbsQuestion {
   default: any
   format: (vl: any) => any
   opts: any
+  stdout: Writable
 
   get config() {
     const { title: message, var: name, opts, default: initial, ...props } = this
@@ -54,5 +56,7 @@ export abstract class AbsQuestion {
       name: opts.name
     })
   }
+
+  dispose() { }
 
 }
