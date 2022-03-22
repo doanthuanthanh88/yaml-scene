@@ -96,45 +96,48 @@ export class Extensions {
     }
   }
 
-  static async InstallPackage(installInfo: { extensions: string[], localPath?: string, global?: boolean, isSave?: boolean }, logger = console as any) {
+  static async InstallPackage(installInfo: { dependencies: string[], localPath?: string, global?: boolean, isSave?: boolean }, logger = console as any) {
     let cmds = [] as string[][]
-    const { extensions = [], localPath = join(__dirname, '../../../'), global, isSave } = installInfo
+    const { dependencies = [], localPath = join(__dirname, '../../../'), global, isSave } = installInfo
     if (global) {
       cmds = [
-        ['yarn', 'global', 'add', ...extensions],
-        ['npm', 'install', '-g', ...extensions],
+        ['yarn', 'global', 'add', ...dependencies],
+        ['npm', 'install', '-g', ...dependencies],
       ]
     } else {
       cmds = [
-        ['yarn', 'add', '--prefix', localPath, ...extensions].filter(e => e),
-        ['npm', 'install', `${!isSave ? '--no-save' : ''}`, '--prefix', join(localPath, 'node_modules'), ...extensions].filter(e => e),
+        ['yarn', 'add', '--prefix', localPath, ...dependencies].filter(e => e),
+        ['npm', 'install', `${!isSave ? '--no-save' : ''}`, '--prefix', localPath, ...dependencies].filter(e => e),
       ]
       if (!isSave) cmds.reverse()
     }
-    let isDone: boolean
+    let errors = []
     for (const cmd of cmds) {
       try {
         await Exec.Run(cmd, logger)
         logger.log(chalk.green(`✅ Added extensions successfully`))
         console.group()
-        extensions.forEach(e => console.log(chalk.green(`- ${e}`)))
+        dependencies.forEach(e => console.log(chalk.green(`- ${e}`)))
         console.groupEnd()
-        isDone = true
+        errors = []
         break
-      } catch { }
+      } catch (err) {
+        errors.push(err)
+      }
     }
-    if (!isDone) {
-      throw new Error(`Could not install "${extensions}" to ${global ? 'global' : `"${localPath}"`}`)
+    if (errors.length) {
+      errors.forEach(err => logger.error(err))
+      throw new Error(`Could not install "${dependencies}" to ${global ? 'global' : `"${localPath}"`}`)
     }
   }
 
-  async install(installInfo: { extensions: string[], localPath?: string, global?: boolean, isSave?: boolean }) {
+  async install(installInfo: { dependencies: string[], localPath?: string, global?: boolean, isSave?: boolean }) {
     if (!installInfo) return
     if (!installInfo.localPath) installInfo.localPath = this.scenario.rootDir
     installInfo.localPath = this.scenario.resolvePath(installInfo.localPath)
     installInfo.isSave = !Simulator.IS_RUNNING
     if (!installInfo.global) {
-      this.installExtensionPath = join(installInfo.localPath, 'node_modules')
+      this.installExtensionPath = installInfo.localPath
       this.globalExtensionPaths.splice(0, 0, this.installExtensionPath)
     }
     await Extensions.InstallPackage(installInfo, this.scenario.loggerFactory.getLogger())

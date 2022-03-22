@@ -55,7 +55,7 @@ export class Helper {
           .action(async (_, { args }) => {
             const extensionNames = (args || []).map(e => e.trim()).filter(e => e)
             await Extensions.InstallPackage({
-              extensions: extensionNames
+              dependencies: extensionNames
             })
             isRunScenario = false
           })

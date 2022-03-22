@@ -38,9 +38,9 @@ logLevel: debug                                     # How to show log is debug)
 install:                                            # Install extensions from npm registry
   global: false                                     # Install extension to global (npm install -g)
   localPath: ./                                     # Install extensions to local path (npm install --prefix $localPath/node_modules)
-  extensions:
-    - yas-grpc
-    - yas-sequence-diagram
+  dependencies:
+    - lodash
+    - axios
 extensions:                                         # Extension elements.
   extension_name1: ./cuz_extensions/custom1.js      # - Load a element in a file with exports.default (extension_name1:)
   extensions_folders: ./cuz_extensions              # - Load elements in files in the folder with file name is element name (extensions_folders/custom1:)
@@ -53,6 +53,8 @@ steps:                                              # Includes all which you wan
   - !fragment ./scene2.yaml
   - extension_name1:
   - extensions_folders/custom1:
+  - Script/Js: |
+      require('lodash').merge({}, {})
   - yas-sequence-diagram~SequenceDiagram:           # Load yas-sequence-diagram from npm/yarn global dirs then use class SequenceDiagram to handle
  * @end
  */
