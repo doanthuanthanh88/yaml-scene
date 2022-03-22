@@ -41,6 +41,15 @@ export class Helper {
       // .showHelpAfterError(true)
       .addCommand(
         program
+          .createCommand('run')
+          .description('Execute a scenario file (Default)')
+          .action((_, cmd) => {
+            [this.yamlFile, this.password] = cmd.args
+          }),
+        { isDefault: true, hidden: true }
+      )
+      .addCommand(
+        program
           .createCommand('add')
           .description('Add a new extension')
           .action(async (_, { args }) => {
