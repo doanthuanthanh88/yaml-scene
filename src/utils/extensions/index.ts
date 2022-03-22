@@ -1,10 +1,10 @@
-import { ElementFactory } from "@app/elements/ElementFactory";
 import { Simulator } from "@app/Simulator";
 import { Scenario } from "@app/singleton/Scenario";
 import chalk from "chalk";
 import { spawn } from "child_process";
-import { existsSync, readFileSync, rmSync } from "fs";
+import { existsSync, rmSync } from "fs";
 import { join } from "path";
+import { Exec } from "./Exec";
 
 /**
  * @guide
@@ -31,13 +31,17 @@ export class Extensions {
 
   load(p: string, modulePath = '') {
     let obj: any;
+    if (this.extensionElements[p]) return this.extensionElements[p]
     try {
-      obj = require(`${join(modulePath, p)}`);
-      return obj.default || obj[p]
-    } catch (err0) {
-      if (this.extensionElements[p]) {
-        return this.extensionElements[p]
+      try {
+        obj = require(`${join(modulePath, p)}`);
+      } catch {
+        obj = require(p);
       }
+      obj = obj.default || obj[p]
+      this.extensionElements[p] = obj
+      return obj
+    } catch (err0) {
       try {
         modulePath = this.getPathLocalModule(p) || this.getPathGlobalModule(p);
         if (!modulePath) {
@@ -45,12 +49,9 @@ export class Extensions {
             `Please install module "${p}" \n    \`npm install -g ${p}\` \n OR \n    \`yarn global add ${p}\``
           )
         }
-        obj = require(modulePath).default;
+        obj = require(modulePath)
+        obj = obj.default || obj[p]
         this.extensionElements[p] = obj
-        try {
-          const packageJson = JSON.parse(readFileSync(join(modulePath, 'package.json')).toString())
-          this.scenario.loggerFactory.getLogger().info(chalk.bold.gray(`${packageJson.name} (v${packageJson.version})`), chalk.gray.underline(packageJson.repository?.url || ''), chalk.italic.gray(`${packageJson.description || ''}`))
-        } catch { }
       } catch (err) {
         this.scenario.loggerFactory.getLogger().error(chalk.red(err0.message));
         this.scenario.loggerFactory.getLogger().error(chalk.red(err.message));
@@ -95,10 +96,9 @@ export class Extensions {
     }
   }
 
-  async install(installInfo: { extensions: string[], localPath?: string, global?: boolean }) {
-    if (!installInfo) return
-    const { extensions = [], localPath = this.scenario.rootDir, global } = installInfo
+  static async InstallPackage(installInfo: { extensions: string[], localPath?: string, global?: boolean, isSave?: boolean }, logger = console as any) {
     let cmds = [] as string[][]
+    const { extensions = [], localPath = join(__dirname, '../../../'), global, isSave } = installInfo
     if (global) {
       cmds = [
         ['yarn', 'global', 'add', ...extensions],
@@ -107,24 +107,37 @@ export class Extensions {
     } else {
       cmds = [
         ['yarn', 'add', '--prefix', localPath, ...extensions].filter(e => e),
-        ['npm', 'install', `${Simulator.IS_RUNNING ? '--no-save' : ''}`, '--prefix', this.installExtensionPath, ...extensions].filter(e => e),
+        ['npm', 'install', `${!isSave ? '--no-save' : ''}`, '--prefix', join(localPath, 'node_modules'), ...extensions].filter(e => e),
       ]
-      if (Simulator.IS_RUNNING) cmds.reverse()
-      this.installExtensionPath = this.scenario.resolvePath(join(localPath, 'node_modules'))
-      this.globalExtensionPaths.splice(0, 0, this.installExtensionPath)
+      if (!isSave) cmds.reverse()
     }
+    let isDone: boolean
     for (const cmd of cmds) {
       try {
-        const exe = ElementFactory.CreateElement('Exec', this.scenario)
-        exe.init({
-          args: cmd
-        })
-        await exe.prepare()
-        await exe.exec()
-        await exe.dispose()
+        await Exec.Run(cmd, logger)
+        logger.log(chalk.green(`✅ Added extensions successfully`))
+        console.group()
+        extensions.forEach(e => console.log(chalk.green(`- ${e}`)))
+        console.groupEnd()
+        isDone = true
         break
       } catch { }
     }
+    if (!isDone) {
+      throw new Error(`Could not install "${extensions}" to ${global ? 'global' : `"${localPath}"`}`)
+    }
+  }
+
+  async install(installInfo: { extensions: string[], localPath?: string, global?: boolean, isSave?: boolean }) {
+    if (!installInfo) return
+    if (!installInfo.localPath) installInfo.localPath = this.scenario.rootDir
+    installInfo.localPath = this.scenario.resolvePath(installInfo.localPath)
+    installInfo.isSave = !Simulator.IS_RUNNING
+    if (!installInfo.global) {
+      this.installExtensionPath = join(installInfo.localPath, 'node_modules')
+      this.globalExtensionPaths.splice(0, 0, this.installExtensionPath)
+    }
+    await Extensions.InstallPackage(installInfo, this.scenario.loggerFactory.getLogger())
   }
 
   private async loadNpmYarnGlobalPaths() {

@@ -7,7 +7,8 @@ export class Main {
 
   static async Exec() {
 
-    await this.helper.exec()
+    const isContinue = await this.helper.exec()
+    if (!isContinue) return
 
     const scenario = new Scenario()
     scenario.loggerFactory.setLogger(undefined, 'info')

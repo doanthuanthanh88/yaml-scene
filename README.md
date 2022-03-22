@@ -25,14 +25,19 @@ It's a platform to do everything with only yaml scenario files
 3. [yas-sequence-diagram](https://github.com/doanthuanthanh88/yas-sequence-diagram): Generate to sequence diagram, flow diagram base on comment in code
 
 ## How to use a new extensions
-1. Install a new extension (example: yas-http) via `npm` or `yarn`
-```sh
-  # Install via yarn
-  yarn global add yas-http
+1. There are 2 options to install a new extension
+    1. Install a new extension (example: yas-http) via `npm` or `yarn`
+    ```sh
+      # Install via yarn
+      yarn global add yas-http
 
-  # OR Install via npm
-  npm install -g yas-http
-```
+      # OR Install via npm
+      npm install -g yas-http
+    ```
+    2. Install via `yas add` command
+    ```sh
+      yas add yas-http yas-grpc
+    ```
 
 2. Create a `scenario.yaml` 
 ```yaml

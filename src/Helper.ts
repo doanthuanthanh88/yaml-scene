@@ -2,6 +2,7 @@ import { program } from "commander";
 import { existsSync, readFileSync, statSync } from "fs";
 import merge from "lodash.merge";
 import { join } from "path";
+import { Extensions } from "./utils/extensions";
 
 export class Helper {
   yamlFile: string
@@ -17,6 +18,7 @@ export class Helper {
     ].find((src) => existsSync(src));
     const { version, description, name, bin, repository } = require(packageJson);
     const self = this
+    let isRunScenario = true
     const cmd = await program
       .name(name)
       .aliases(Object.keys(bin).filter(e => e !== name))
@@ -39,16 +41,19 @@ export class Helper {
       // .showHelpAfterError(true)
       .addCommand(
         program
-          .createCommand('run')
-          .description('Execute scenario file (Default)')
-          .action((_, cmd) => {
-            [this.yamlFile, this.password] = cmd.args
-          }),
-        { isDefault: true, hidden: true }
-      )
+          .createCommand('add')
+          .description('Add a new extension')
+          .action(async (_, { args }) => {
+            const extensionNames = (args || []).map(e => e.trim()).filter(e => e)
+            await Extensions.InstallPackage({
+              extensions: extensionNames
+            })
+            isRunScenario = false
+          })
+        , { isDefault: false })
       .addHelpText("after", `More: \n  ${repository.url} `)
       .parseAsync(process.argv)
-
+    if (!isRunScenario) return false
     self.env = cmd.opts().env;
     self.envFile = cmd.opts().envFile;
     if (self.env && typeof self.env === "string") {
@@ -68,6 +73,7 @@ export class Helper {
           }, {});
       }
     }
+    return true
   }
 
   loadEnv(baseConfig: any, ...files: object[] | string[]) {
