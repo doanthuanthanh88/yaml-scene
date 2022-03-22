@@ -60,10 +60,6 @@ export default class Sh extends Exec {
     if (!this.args?.length) {
       this.args = ['sh', `${this.file}`]
     }
-    const idx = this.args.findIndex(a => a === '${file}')
-    if (idx !== -1) {
-      this.args[idx] = this.file
-    }
     writeFileSync(this.file, this.content, {
       mode: this.mode
     })

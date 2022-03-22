@@ -31,17 +31,12 @@ export class Extensions {
 
   load(p: string, modulePath = '') {
     let obj: any;
-    if (this.extensionElements[p]) return this.extensionElements[p]
     try {
-      try {
-        obj = require(`${join(modulePath, p)}`);
-      } catch {
-        obj = require(p);
-      }
+      obj = require(`${join(modulePath, p)}`);
       obj = obj.default || obj[p]
-      this.extensionElements[p] = obj
       return obj
     } catch (err0) {
+      if (this.extensionElements[p]) return this.extensionElements[p]
       try {
         modulePath = this.getPathLocalModule(p) || this.getPathGlobalModule(p);
         if (!modulePath) {
