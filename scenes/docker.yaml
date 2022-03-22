@@ -2,26 +2,13 @@
     path: ../package.json
     adapters:
       - Json
-    var: 
+    var:
       version: ${_.version}
       build: ${_.scripts['docker:build']}
       pub: ${_.scripts['docker:pub']}
 
-- Echo: 
-    message: ${version}
+- Echo/Green:
+    message: ${build.replaceAll('$version', version)}
 
-- Script/Sh:
-    title: Docker is building...
-    content: |
-      ${build.replace('$version', version)}
-
-- UserInput:
-    - title: Publish docker image ?
-      type: confirm
-      var: ok
-
-- Script/Sh:
-    if: ${ok}
-    title: Docker is publishing...
-    content: |
-      ${build.replace('$version', version)}
+- Echo/Cyan:
+    message: ${pub.replaceAll('$version', version)}

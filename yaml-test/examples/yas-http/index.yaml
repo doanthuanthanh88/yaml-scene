@@ -1,20 +1,21 @@
 # yas add yas-http
+# docker run -it -e "EXTENSIONS=yas-http yas-grpc" -v ./index.yaml:/test/index.yaml doanthuanthanh88/yaml-scene
 
 steps:
   - yas-http/Server:
       title: Create mocking API Server
       host: localhost
       port: 3000
-      routers: 
+      routers:
         - path: /posts
           CRUD: true
           initData:
             - id: 1
               title: title
-              labels: 
+              labels:
                 - news
                 - user
-              creator: 
+              creator:
                 name: thanh
                 created_time: ${Date.now()}
               tags:

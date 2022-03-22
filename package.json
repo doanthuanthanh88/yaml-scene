@@ -33,8 +33,10 @@
     "prenewtag": "yarn test && yarn build",
     "newtag": "node -r ts-node/register -r ./bin/tsconfig-paths-bootstrap.js src/index.ts ./scenes/version.yaml",
     "postnewtag": "yarn clean",
-    "docker:build": "docker buildx build --platform linux/arm64,linux/amd64 -t doanthuanthanh88/yaml-scene:latest doanthuanthanh88/yaml-scene:$version .",
-    "docker:pub": "docker push doanthuanthanh88/yaml-scene:latest doanthuanthanh88/yaml-scene:$version"
+    "docker": "npx yaml-scene scenes/docker.yaml",
+    "docker:clean": "docker builder prune",
+    "docker:build": "docker buildx build --build-arg=version=$version --force-rm --no-cache --platform linux/arm64,linux/amd64 -t doanthuanthanh88/yaml-scene:latest -t doanthuanthanh88/yaml-scene:$version .",
+    "docker:pub": "docker buildx build --build-arg=version=$version --push --force-rm --no-cache --platform linux/arm64,linux/amd64 -t doanthuanthanh88/yaml-scene:latest -t doanthuanthanh88/yaml-scene:$version ."
   },
   "dependencies": {
     "chai": "^4.3.3",
