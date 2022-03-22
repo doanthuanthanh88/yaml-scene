@@ -8,7 +8,7 @@ import { Type } from 'js-yaml'
  * @description Transform file to binary
  * @group !Tags
  * @example
-- Post:
+- yas-http/Post:
     url: http://localhost/upload
     headers:
       content-type: multipart/form-data
