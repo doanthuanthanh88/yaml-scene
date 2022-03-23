@@ -96,7 +96,8 @@ export default class UserInput implements IElement {
 
   #questions = new Array<AbsQuestion>()
 
-  init(questionConfigs: any[]) {
+  init(_questionConfigs: any[] | any) {
+    const questionConfigs = Array.isArray(_questionConfigs) ? _questionConfigs : [_questionConfigs]
     this.#questions = questionConfigs.map(({ type, title, required, choices, var: varName, default: df, format, mask }) => {
       const builder = new QuestionBuilder()
       const ques = builder

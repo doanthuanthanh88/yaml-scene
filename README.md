@@ -10,6 +10,9 @@ It's a platform to do everything with only yaml scenario files
 7. Support to set password to scenario file before upload to public server to share to someone run it.
 8. Provide docker image to run it without installation
 
+## Guideline document
+> [GUIDELINE DOCUMENT](./GUIDE.md)
+
 ## Installation
 ```sh
   # Install via yarn
@@ -17,6 +20,45 @@ It's a platform to do everything with only yaml scenario files
 
   # OR Install via npm
   npm install -g yaml-scene
+```
+
+## CLI
+1. Run a scenario `my_scenario.yaml`
+```sh
+  yas my_scenario.yaml
+```
+
+2. Install new extensions
+```sh
+  yas add yas-http yas-grpc
+```
+
+3. Uninstall extensions
+```sh
+  yas remove yas-http yas-grpc
+```
+
+4. Run scenario via docker container
+```sh
+  yas docker \
+    --dir "yaml-test/examples" \
+    --extensions "yas-http yas-grpc" \
+    --env-file .env \
+    --env "name=thanh;age=11" \
+    echo.yaml
+```
+
+5. Show version
+```sh
+  yas -v
+```
+
+6. Show help content
+```sh
+  yas -h
+  yas add -h
+  yas remove -h
+  yas docker -h
 ```
 
 ## Some extensions
@@ -51,18 +93,22 @@ It's a platform to do everything with only yaml scenario files
 
 ## Running
 ```sh
-  yas $YAML_SCENE_FILE
+  yas $YAML_SCENE_FILE $PASSWORD
 ```
+
+- `$YAML_SCENE_FILE`: Path to scenario file
+- `$PASSWORD`: Password to run encrypted scenario file which contains property "password" in scenario file content. [More](./GUIDE.md)
+
+## Create a new extension
+Clone [Extension template project](https://github.com/doanthuanthanh88/yaml-scene-extensions) which includes examples, commands to unit test, build, document... to deploy to npm or something like that
+
+- [Simple extension file](./yaml-test/examples/custom-extension/custom.js)
 
 ## How to create a yaml scene file
 Please follow [guideline document](./GUIDE.md) to create a scene file for your self.
 
 ## Examples
 Please go to [here](./yaml-test/examples) to see examples
-
-## Write a extension by yourself
-- A [Extension template project](https://github.com/doanthuanthanh88/yaml-scene-extensions) which provides commands to unit test, build, document... to deploy to npm or something like that
-- [Extension file](./yaml-test/examples/custom-extension/custom.js) which is implemented a extension interface
 
 ## Sharing scenarios
 

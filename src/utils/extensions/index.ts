@@ -4,6 +4,7 @@ import chalk from "chalk";
 import { spawn } from "child_process";
 import { existsSync, rmSync } from "fs";
 import { join } from "path";
+import { ExtensionNotFound } from "../error/ExtensionNotFound";
 import { Exec } from "./Exec";
 
 /**
@@ -35,7 +36,7 @@ export class Extensions {
       obj = require(join(modulePath, p));
       obj = obj.default || obj[p]
       return obj
-    } catch (err0) {
+    } catch {
       if (this.extensionElements[p]) return this.extensionElements[p]
       try {
         obj = require(p);
@@ -43,22 +44,20 @@ export class Extensions {
         this.extensionElements[p] = obj
         return obj
       } catch {
-        try {
-          modulePath = this.getPathLocalModule(p) || this.getPathGlobalModule(p);
-          if (!modulePath) {
-            throw new Error(
-              `Please install module "${p}" \n    \`npm install -g ${p}\` \n OR \n    \`yarn global add ${p}\``
-            )
-          }
-          obj = require(modulePath)
-          obj = obj.default || obj[p]
-          this.extensionElements[p] = obj
-        } catch (err) {
-          const logger = this.scenario.loggerFactory.getLogger()
-          logger.error(chalk.red(err0.message));
-          logger.error(chalk.red(err.message));
-          throw err;
+        // try {
+        modulePath = this.getPathLocalModule(p) || this.getPathGlobalModule(p);
+        if (!modulePath) {
+          throw new ExtensionNotFound(p, `Please install module "${p}" by command "yas add ${p.split('/')[0]}"`)
         }
+        obj = require(modulePath)
+        obj = obj.default || obj[p]
+        this.extensionElements[p] = obj
+        // } catch (err) {
+        //   const logger = this.scenario.loggerFactory.getLogger()
+        //   logger.error(chalk.red(err0.message));
+        //   logger.error(chalk.red(err.message));
+        //   throw err;
+        // }
       }
     }
     return obj
@@ -99,29 +98,52 @@ export class Extensions {
     }
   }
 
+  static async UninstallPackage(installInfo: { dependencies: string[], localPath?: string }, logger = console as any) {
+    let cmds = []
+    const { dependencies = [], localPath = join(__dirname, '../../../') } = installInfo
+    cmds = [
+      { title: 'in yarn global', cmd: ['yarn', 'global', 'remove', ...dependencies] },
+      { title: 'in npm global', cmd: ['npm', 'uninstall', '-g', ...dependencies] },
+      { title: `yarn local at ${localPath}`, cmd: ['yarn', 'remove', '--prefix', localPath, ...dependencies].filter(e => e) },
+      { title: `npm local at ${localPath}`, cmd: ['npm', 'uninstall', '--prefix', localPath, ...dependencies].filter(e => e) },
+    ]
+    let errors = []
+    logger.log(chalk.red(`Unstalling ...`))
+    for (const { title, cmd } of cmds) {
+      try {
+        Exec.Run(cmd)
+        dependencies.forEach(e => console.log(chalk.red(`✔ ${e} ${chalk.gray(title)}`)))
+      } catch (err) {
+        errors.push(err)
+      }
+    }
+    if (errors.length === cmds.length) {
+      errors.forEach(err => logger.error(err))
+      throw new Error(`Could not install "${dependencies}" to ${global ? 'global' : `"${localPath}"`}`)
+    }
+  }
+
   static async InstallPackage(installInfo: { dependencies: string[], localPath?: string, global?: boolean, isSave?: boolean }, logger = console as any) {
-    let cmds = [] as string[][]
+    let cmds = []
     const { dependencies = [], localPath = join(__dirname, '../../../'), global, isSave } = installInfo
     if (global) {
       cmds = [
-        ['yarn', 'global', 'add', ...dependencies],
-        ['npm', 'install', '-g', ...dependencies],
+        { title: `in yarn global`, cmd: ['yarn', 'global', 'add', ...dependencies] },
+        { title: `in npm global`, cmd: ['npm', 'install', '-g', ...dependencies] },
       ]
     } else {
       cmds = [
-        ['yarn', 'add', '--prefix', localPath, ...dependencies].filter(e => e),
-        ['npm', 'install', `${!isSave ? '--no-save' : ''}`, '--prefix', localPath, ...dependencies].filter(e => e),
+        { title: `yarn local at ${localPath}`, cmd: ['yarn', 'add', '--prefix', localPath, ...dependencies].filter(e => e) },
+        { title: `npm local at ${localPath}`, cmd: ['npm', 'install', `${!isSave ? '--no-save' : ''}`, '--prefix', localPath, ...dependencies].filter(e => e) },
       ]
       if (!isSave) cmds.reverse()
     }
     let errors = []
-    for (const cmd of cmds) {
+    logger.log(chalk.green(`Installing ...`))
+    for (const { title, cmd } of cmds) {
       try {
-        await Exec.Run(cmd)
-        logger.log(chalk.green(`✅ Added extensions successfully`))
-        console.group()
-        dependencies.forEach(e => console.log(chalk.green(`- ${e}`)))
-        console.groupEnd()
+        Exec.Run(cmd)
+        dependencies.forEach(e => console.log(chalk.green(`✔ ${e} ${chalk.gray(title)}`)))
         errors = []
         break
       } catch (err) {

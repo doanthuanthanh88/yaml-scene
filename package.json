@@ -14,6 +14,7 @@
     "dev"
   ],
   "main": "src",
+  "preferGlobal": true,
   "bin": {
     "yas": "./bin/cli.js",
     "yaml-scene": "./bin/cli.js"
@@ -21,7 +22,7 @@
   "scripts": {
     "build:docker": "yarn build && yarn install:dist && cp README.docker.md dist/README.md",
     "install:dist": "yarn install --production --modules-folder ./dist/node_modules",
-    "dev": "npx nodemon --watch src --watch test --ext .ts --exec 'node -r ts-node/register -r ./bin/tsconfig-paths-bootstrap.js --inspect-brk src/index.ts --env-file 'yaml-test/.env' yaml-test/index.yaml'",
+    "dev": "npx nodemon --watch src --watch test --ext .ts --exec 'node -r ts-node/register -r ./bin/tsconfig-paths-bootstrap.js --inspect-brk src/index.ts'",
     "start": "node -r ts-node/register -r ./bin/tsconfig-paths-bootstrap.js src/index.ts",
     "test": "npx jest --detectOpenHandles",
     "test:debug": "npx --node-options=\"--inspect-brk\" jest --detectOpenHandles",

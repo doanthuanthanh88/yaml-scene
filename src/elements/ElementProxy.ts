@@ -157,7 +157,7 @@ export class ElementProxy<T extends IElement> {
       await TimeUtils.Delay(this.delay)
     }
     if (this.element.exec) {
-      await this.element.exec()
+      return this.element.exec()
     }
   }
 
