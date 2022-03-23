@@ -17,7 +17,7 @@ logLevel: info
 install:
   global: false
   localPath: ./
-  extensions: 
+  dependencies: 
     - yas-grpc
 steps:
 - Echo: Hello world
