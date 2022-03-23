@@ -10,17 +10,21 @@ It's a platform to do everything with only yaml scenario files
 7. Support to set password to scenario file before upload to public server to share to someone run it.
 8. Provide docker image to run it without installation
 
+## Some extensions
+1. [yas-http](https://github.com/doanthuanthanh88/yas-http): Manage http(s) request, mocking api server, create testcases, generate to document...
+2. [yas-grpc](https://github.com/doanthuanthanh88/yas-grpc): Manage gRPC request, mocking gRPC server, create testcases, generate to document...
+3. [yas-sequence-diagram](https://github.com/doanthuanthanh88/yas-sequence-diagram): Generate to sequence diagram, flow diagram base on comment in code
+
 ## Guideline document
 > [GUIDELINE DOCUMENT](./GUIDE.md)
 
 ## Installation
-```sh
-  # Install via yarn
-  yarn global add yaml-scene
+Install via `npm` or `yarn`
 
-  # OR Install via npm
-  npm install -g yaml-scene
+```sh
+  npm install -g yaml-scene   # yarn global add yaml-scene
 ```
+
 
 ## CLI
 1. Run a scenario `my_scenario.yaml`
@@ -60,11 +64,6 @@ It's a platform to do everything with only yaml scenario files
   yas remove -h
   yas docker -h
 ```
-
-## Some extensions
-1. [yas-http](https://github.com/doanthuanthanh88/yas-http): Manage http(s) request, mocking api server, create testcases, generate to document...
-2. [yas-grpc](https://github.com/doanthuanthanh88/yas-grpc): Manage gRPC request, mocking gRPC server, create testcases, generate to document...
-3. [yas-sequence-diagram](https://github.com/doanthuanthanh88/yas-sequence-diagram): Generate to sequence diagram, flow diagram base on comment in code
 
 ## How to use a new extensions
 1. There are 2 options to install a new extension
