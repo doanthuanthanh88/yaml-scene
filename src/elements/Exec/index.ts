@@ -33,7 +33,7 @@ export default class Exec implements IElement {
   #prc: ChildProcessWithoutNullStreams
 
   constructor() {
-    this.opts = {}
+    this.opts = { stdio: 'inherit' }
   }
 
   init(props: any) {

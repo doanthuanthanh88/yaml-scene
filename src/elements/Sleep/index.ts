@@ -1,4 +1,4 @@
-import { TimeUtils } from "@app/utils/time"
+import { TimeUtils } from "@app/utils/TimeUtils"
 import chalk from "chalk"
 import merge from "lodash.merge"
 import { ElementProxy } from "../ElementProxy"

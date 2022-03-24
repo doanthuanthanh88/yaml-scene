@@ -26,7 +26,7 @@
     "start": "node -r ts-node/register -r ./bin/tsconfig-paths-bootstrap.js src/index.ts",
     "test": "npx jest --detectOpenHandles",
     "test:debug": "npx --node-options=\"--inspect-brk\" jest --detectOpenHandles",
-    "doc": "node -r ts-node/register -r ./bin/tsconfig-paths-bootstrap.js src/index.ts 'yaml-test/examples/document/doc_guide.yaml'",
+    "doc": "node -r ts-node/register -r ./bin/tsconfig-paths-bootstrap.js src/index.ts scenes/guide.yaml",
     "prebuild": "yarn clean",
     "build": "tsc --project tsconfig.build.json",
     "postbuild": "node bin/tsconfig && node bin/update_package",

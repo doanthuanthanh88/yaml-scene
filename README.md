@@ -15,8 +15,8 @@ It's a platform to do everything with only yaml scenario files
 2. [yas-grpc](https://github.com/doanthuanthanh88/yas-grpc): Manage gRPC request, mocking gRPC server, create testcases, generate to document...
 3. [yas-sequence-diagram](https://github.com/doanthuanthanh88/yas-sequence-diagram): Generate to sequence diagram, flow diagram base on comment in code
 
-## Guideline document
-> [GUIDELINE DOCUMENT](./GUIDE.md)
+## Details document
+> [Wiki Pages](https://github.com/doanthuanthanh88/yaml-scene/wiki)
 
 ## Installation
 Install via `npm` or `yarn`
@@ -96,7 +96,7 @@ Install via `npm` or `yarn`
 ```
 
 - `$YAML_SCENE_FILE`: Path to scenario file
-- `$PASSWORD`: Password to run encrypted scenario file which contains property "password" in scenario file content. [More](./GUIDE.md)
+- `$PASSWORD`: Password to run encrypted scenario file which contains property "password" in scenario file content.
 
 ## Create a new extension
 Clone [Extension template project](https://github.com/doanthuanthanh88/yaml-scene-extensions) which includes examples, commands to unit test, build, document... to deploy to npm or something like that
@@ -104,7 +104,7 @@ Clone [Extension template project](https://github.com/doanthuanthanh88/yaml-scen
 - [Simple extension file](./yaml-test/examples/custom-extension/custom.js)
 
 ## How to create a yaml scene file
-Please follow [guideline document](./GUIDE.md) to create a scene file for your self.
+Please follow [wiki pages](https://github.com/doanthuanthanh88/yaml-scene/wiki) to create a scene file for your self.
 
 ## Examples
 Please go to [here](./yaml-test/examples) to see examples

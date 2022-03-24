@@ -1,5 +1,5 @@
 import { Scenario } from "@app/singleton/Scenario";
-import { TimeUtils } from "@app/utils/time";
+import { TimeUtils } from "@app/utils/TimeUtils";
 import merge from "lodash.merge";
 import omit from "lodash.omit";
 import cloneDeep from "lodash.clonedeep";

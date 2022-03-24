@@ -1,0 +1,12 @@
+- Doc/Guide/MD:
+    logLevel: debug
+    includes:
+      - ../src
+    excludes: []
+    includePattern: ".+\\.ts$"
+    outFile: ../GUIDE.md
+
+- Script/Sh: |
+    cp GUIDE.md yaml-scene.wiki/Home.md
+
+- Echo/Green: Guidline document generated successfully
