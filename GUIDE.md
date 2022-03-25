@@ -86,7 +86,7 @@ Delay after a specific time before keep playing the nexts
     stepDelay: 1s
     steps:
       - Script/Js: |
-          _.proxy.setVar('begin', Date.now())
+          $.proxy.setVar('begin', Date.now())   # `$` is referenced to `Js` element in `Script`
       - Echo: ${Date.now() - begin}
       - Echo: ${Date.now() - begin}
 
@@ -98,6 +98,44 @@ Delay after a specific time before keep playing the nexts
           title: step 2 run after 2s
           time: 2s
       - Echo: <step 2>
+```
+
+
+## loop
+Loop element in Array, Object or any conditional  
+
+```yaml
+# Loop in array
+- Vars:
+    i: 0
+    arr: [1, 2, 3, 4, 5]
+    obj:
+      name: name 1
+      age: 123
+
+- Echo: Init
+
+- Group:
+    title: Loop each of items in an array
+    loop: ${arr}
+    steps:
+      - Echo: key is ${$$.loopKey}
+      - Echo: value is ${$$.loopValue}
+
+- Group:
+    title: Loop each of props in an object
+    loop: ${obj}
+    steps:
+      - Echo: key is ${$$.loopKey}
+      - Echo: value is ${$$.loopValue}
+
+- Group:
+    title: Loop with specific condition ${i}
+    loop: ${i < 10}
+    steps:
+      - Echo: ${i++}
+      - Vars:
+          i: ${i+1}
 ```
 
 
@@ -272,8 +310,8 @@ Execute external command
       - global
       - dir
     var:                                  # Get log content or exit code
-      logContent: ${_.messages}
-      exitCode: ${_.code}
+      logContent: ${$.messages}           # `$` is referenced to `Exec` element
+      exitCode: ${$.code}                
 ```
 
 
@@ -286,7 +324,7 @@ Embed javascript code into scene
 
 - Script/Js: |
     console.log('oldValue', name)
-    _.proxy.setVar('newName', name + 10)
+    $.proxy.setVar('newName', name + 10)      # `$` is referenced to `Js` element in `Script`
 
 - Echo: New value ${newName}
 ```
@@ -310,7 +348,7 @@ Embed shell script into scene
     bin: sh                         # Path to executor
     mode: 777                       # chmod 
     content: |                      # Content script
-      echo ${_.tempFile}
+      echo ${$.tempFile}
       echo ${name}
       echo $1
       echo $2
@@ -319,9 +357,9 @@ Embed shell script into scene
     title: My command
     args:                           # Custom run script
       - sh                          # Executor
-      - ${_.tempFile}               # Temp script file which includes content script and is removed after done
+      - ${$.tempFile}               # Temp script file which includes content script and is removed after done
     content: |                      # Content script
-      echo ${_.tempFile}
+      echo ${$.tempFile}            # `$` is referenced to `Sh` element in `Script`
       echo ${name}
       echo $1
       echo $2
@@ -341,7 +379,7 @@ Refer to [File/Writer](.) to encrypt content
     adapters:
       - Password: MyPassword        # Decrypt content with password is "MyPassword"
     var: data                       # Set file content result to "data" variable
-
+    
 - File/Reader:
     title: Read text file 2 without password
     path: assets/data2.txt
@@ -372,11 +410,14 @@ Refer to [File/Writer](.) to encrypt content
 ```yaml
 - File/Reader:
     title: Read json file 1 with password
-    path: assets/data1.json
+    path: assets/data1.json         # File content is { field1: value1 }
     adapters:
       - Password: MyPassword        # The first is decrypt content after read file
       - Json                        # The second convert data type is Json to object
     var: data                       # Set file content result to "data" variable
+    var:
+      myVar: ${_.field1}            # Extract `field1` in file content to `myVar`.
+                                    # - `_` is file content data after is parsed
 
 - File/Reader:
     title: Read json file 2 without password

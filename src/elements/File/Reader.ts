@@ -23,7 +23,7 @@ Refer to [File/Writer](.) to encrypt content
     adapters:
       - Password: MyPassword        # Decrypt content with password is "MyPassword"
     var: data                       # Set file content result to "data" variable
-
+    
 - File/Reader:
     title: Read text file 2 without password
     path: assets/data2.txt
@@ -54,11 +54,14 @@ Refer to [File/Writer](.) to encrypt content
 ```yaml
 - File/Reader:
     title: Read json file 1 with password
-    path: assets/data1.json
+    path: assets/data1.json         # File content is { field1: value1 }
     adapters:
       - Password: MyPassword        # The first is decrypt content after read file
       - Json                        # The second convert data type is Json to object
     var: data                       # Set file content result to "data" variable
+    var:
+      myVar: ${_.field1}            # Extract `field1` in file content to `myVar`.
+                                    # - `_` is file content data after is parsed
 
 - File/Reader:
     title: Read json file 2 without password
@@ -176,8 +179,8 @@ export default class Reader {
   path: string
   adapters: (string | object)[]
 
-  #adapter: IFileAdapter
-  #adapterClasses: {
+  private _adapter: IFileAdapter
+  private _adapterClasses: {
     AdapterClass: any,
     args?: any
   }[]
@@ -191,7 +194,7 @@ export default class Reader {
 
   prepare() {
     this.path = this.proxy.resolvePath(this.path)
-    this.#adapterClasses = this.adapters.map(adapter => {
+    this._adapterClasses = this.adapters.map(adapter => {
       const adapterName = typeof adapter === 'string' ? adapter : Object.keys(adapter)[0]
       if (!adapterName) throw new Error('"adapters" is not valid')
       return {
@@ -205,13 +208,13 @@ export default class Reader {
     if (this.title) this.proxy.logger.info('%s', this.title)
     console.group()
 
-    this.#adapterClasses.forEach(({ AdapterClass, args }) => {
-      this.#adapter = new AdapterClass(this.#adapter || new File(this.path), args)
+    this._adapterClasses.forEach(({ AdapterClass, args }) => {
+      this._adapter = new AdapterClass(this._adapter || new File(this.path), args)
     })
 
-    const obj = await this.#adapter.read()
+    const obj = await this._adapter.read()
 
-    if (this.var) this.proxy.setVar(this.var, obj)
+    if (this.var) this.proxy.setVar(this.var, { _: obj }, '_')
     this.proxy.logger.debug('%s %s', chalk.magenta('- Read file at'), chalk.gray(this.path))
     console.groupEnd()
     return obj

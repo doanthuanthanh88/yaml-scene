@@ -3,7 +3,9 @@
 export class VariableManager {
   private static readonly _NavPattern = /^(\$\{){1}([^\}]+)\}$/
 
-  readonly vars = {} as { [key: string]: any }
+  readonly vars = {
+    $ref: {}
+  } as { [key: string]: any }
 
   constructor(initVar: any) {
     if (initVar) {
@@ -11,14 +13,28 @@ export class VariableManager {
     }
   }
 
+  declare(varObj: any) {
+    if (typeof varObj === 'string') {
+      if (this.vars[varObj] === undefined) this.vars[varObj] = undefined
+    } else if (varObj && typeof varObj === 'object') {
+      Object.keys(varObj).forEach(key => {
+        if (this.vars[key] === undefined) this.vars[key] = undefined
+      })
+    }
+  }
+
   set(varObj: any, obj: any, defaultKey?: string) {
     // if (!obj) return
     if (typeof varObj === 'string') {
-      const vl = this.get(defaultKey ? eval(`obj.${defaultKey}`) : obj)
-      this.vars[varObj] = vl
+      if (defaultKey) {
+        this.vars[varObj] = eval(`obj.${defaultKey}`)
+      } else {
+        this.vars[varObj] = obj
+      }
     } else if (varObj && typeof varObj === 'object') {
       Object.keys(varObj).forEach(key => {
-        const vl = this.get(varObj[key], { _: obj })
+        // const vl = this.get(varObj[key], { _: obj })
+        const vl = this.get(varObj[key], obj)
         this.vars[key] = vl
       })
     }

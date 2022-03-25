@@ -8,14 +8,13 @@ export class Main {
 
   static async Exec() {
 
-    const helper = new Helper(new Scenario())
-    let isRun = await helper.exec()
+    let scenario = new Scenario()
 
-    let scenario: Scenario
+    const helper = new Helper(scenario)
+    let isRun = await helper.exec()
 
     while (isRun) {
       isRun = false
-      scenario = new Scenario()
       scenario.loggerFactory.setLogger(undefined, 'info')
       try {
         await scenario.init(helper.yamlFile, helper.password)
@@ -63,6 +62,9 @@ export class Main {
         }
       } finally {
         await scenario.dispose()
+      }
+      if (isRun) {
+        scenario = new Scenario()
       }
     }
     return scenario

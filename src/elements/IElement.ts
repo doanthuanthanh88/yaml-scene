@@ -4,6 +4,16 @@ export interface IElement {
   // Proxy object which provides some utils functions (logger...)
   proxy?: ElementProxy<any>
 
+  $$?: IElement
+  $?: this
+  logLevel?: any
+  if?: any
+  delay?: any
+  async?: any
+  loop?: any
+  loopKey?: any
+  loopValue?: any
+
   // Init attribute from yaml to object
   init?(props: any): void
   // Prepare data, replace data value before executing

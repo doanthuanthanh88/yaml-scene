@@ -16,8 +16,8 @@ import { IElement } from '../IElement';
       - global
       - dir
     var:                                  # Get log content or exit code
-      logContent: ${_.messages}
-      exitCode: ${_.code}
+      logContent: ${$.messages}           # `$` is referenced to `Exec` element
+      exitCode: ${$.code}                
  * @end
  */
 export default class Exec implements IElement {
@@ -30,7 +30,7 @@ export default class Exec implements IElement {
   messages: string
   opts: any
 
-  #prc: ChildProcessWithoutNullStreams
+  private _prc: ChildProcessWithoutNullStreams
 
   constructor() {
     this.opts = { stdio: 'inherit' }
@@ -50,33 +50,33 @@ export default class Exec implements IElement {
   exec() {
     if (this.title) this.proxy.logger.info(this.title)
     const [cmd, ...args] = this.args
-    this.#prc = spawn(cmd, args, this.opts)
+    this._prc = spawn(cmd, args, this.opts)
     return new Promise<string>((resolve) => {
       const msgs = this.var ? [] : undefined
-      this.#prc.stdout?.on('data', msg => {
+      this._prc.stdout?.on('data', msg => {
         const _msg = msg?.toString()
         this.proxy.logger.debug(_msg)
         msgs?.push(_msg)
       })
-      this.#prc.stderr?.on('data', msg => {
+      this._prc.stderr?.on('data', msg => {
         const _msg = msg?.toString()
         this.proxy.logger.debug(_msg)
         msgs?.push(_msg)
       })
-      this.#prc.on('close', code => {
+      this._prc.on('close', code => {
         this.code = code
         if (this.var) {
           this.messages = msgs?.join('\n')
-          this.proxy.setVar(this.var, this)
+          this.proxy.setVar(this.var)
         }
-        this.#prc = null
+        this._prc = null
         resolve(!code ? this.messages : null)
       })
     })
   }
 
   dispose() {
-    this.#prc?.kill()
+    this._prc?.kill()
   }
 
 }

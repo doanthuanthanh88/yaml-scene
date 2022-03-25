@@ -3,15 +3,13 @@ import cloneDeep from "lodash.clonedeep"
 
 export class TemplateManager extends Map<string, IElement> {
 
-  set(name: string, elem: IElement) {
-    const newOne = elem.clone ? elem.clone() : cloneDeep(elem)
-    newOne.proxy = null
-    return super.set(name, newOne)
+  setElement(name: string, elem: IElement) {
+    return this.set(name, elem)
   }
 
-  get(name: string) {
-    const rs = super.get(name)
-    if (rs) return rs
+  getElement(name: string) {
+    const elem = super.get(name)
+    if (elem) return elem.clone ? elem.clone() : cloneDeep(elem)
     throw new Error(`Could not found template "${name}"`)
   }
 

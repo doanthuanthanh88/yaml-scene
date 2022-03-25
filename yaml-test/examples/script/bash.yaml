@@ -9,11 +9,11 @@
     logLevel: trace
     args:
       - sh
-      - ${_.file}
+      - ${$.file}
       - arg1
       - arg2
     content: |
-      echo ${_.file}
+      echo ${$.file}
       echo ${name}
       echo $1
       echo $2

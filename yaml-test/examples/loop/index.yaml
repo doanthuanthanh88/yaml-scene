@@ -11,15 +11,15 @@
     title: Loop each of items in an array
     loop: ${arr}
     steps:
-      - Echo: key is ${__.loopKey}
-      - Echo: value is ${__.loopValue}
+      - Echo: key is ${$$.loopKey}
+      - Echo: value is ${$$.loopValue}
 
 - Group:
     title: Loop each of props in an object
     loop: ${obj}
     steps:
-      - Echo: key is ${__.loopKey}
-      - Echo: value is ${__.loopValue}
+      - Echo: key is ${$$.loopKey}
+      - Echo: value is ${$$.loopValue}
 
 - Group:
     title: Loop with specific condition ${i}

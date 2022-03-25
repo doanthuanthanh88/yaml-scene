@@ -47,7 +47,6 @@ export default class Templates {
     this.group.init({
       steps: templates
     })
-    this.group.element.handleInheritExpose()
   }
 
   async dispose() {

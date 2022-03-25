@@ -21,11 +21,11 @@ export default class Vars {
 
   init(props: any) {
     this.vars = props
-    this.proxy.setVar(this.vars, {})
+    this.proxy.declareVar(this.vars)
   }
 
   exec() {
-    this.proxy.setVar(this.vars, this)
+    this.proxy.setVar(this.vars)
   }
 
   dispose() {

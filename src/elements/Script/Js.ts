@@ -11,7 +11,7 @@ import { ElementProxy } from "../ElementProxy";
 
 - Script/Js: |
     console.log('oldValue', name)
-    _.proxy.setVar('newName', name + 10)
+    $.proxy.setVar('newName', name + 10)      # `$` is referenced to `Js` element in `Script`
 
 - Echo: New value ${newName}
  * @end

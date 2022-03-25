@@ -13,5 +13,6 @@
             - Echo: Hello 2
       - Group:
           async: true
+          delay: 1s
           steps:
             - Echo: Hello 3

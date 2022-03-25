@@ -94,11 +94,11 @@ import { QuestionType } from './QuestionType';
 export default class UserInput implements IElement {
   proxy: ElementProxy<UserInput>
 
-  #questions = new Array<AbsQuestion>()
+  private _questions = new Array<AbsQuestion>()
 
   init(_questionConfigs: any[] | any) {
     const questionConfigs = Array.isArray(_questionConfigs) ? _questionConfigs : [_questionConfigs]
-    this.#questions = questionConfigs.map(({ type, title, required, choices, var: varName, default: df, format, mask }) => {
+    this._questions = questionConfigs.map(({ type, title, required, choices, var: varName, default: df, format, mask }) => {
       const builder = new QuestionBuilder()
       const ques = builder
         .type((type || QuestionType.TEXT) as QuestionType)
@@ -117,13 +117,13 @@ export default class UserInput implements IElement {
   }
 
   prepare() {
-    this.#questions.forEach(question => {
+    this._questions.forEach(question => {
       question.prepare(this.proxy)
     })
   }
 
   async exec() {
-    const response = await prompts(this.#questions.map(question => question.config))
+    const response = await prompts(this._questions.map(question => question.config))
     if (response) {
       this.proxy.setVar(response, this)
     }
@@ -131,7 +131,7 @@ export default class UserInput implements IElement {
   }
 
   async dispose() {
-    await Promise.all(this.#questions.map(question => question.dispose()))
+    await Promise.all(this._questions.map(question => question.dispose()))
   }
 
 }

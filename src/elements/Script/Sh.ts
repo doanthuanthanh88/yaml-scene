@@ -24,7 +24,7 @@ import Exec from "../Exec";
     bin: sh                         # Path to executor
     mode: 777                       # chmod 
     content: |                      # Content script
-      echo ${_.tempFile}
+      echo ${$.tempFile}
       echo ${name}
       echo $1
       echo $2
@@ -33,9 +33,9 @@ import Exec from "../Exec";
     title: My command
     args:                           # Custom run script
       - sh                          # Executor
-      - ${_.tempFile}               # Temp script file which includes content script and is removed after done
+      - ${$.tempFile}               # Temp script file which includes content script and is removed after done
     content: |                      # Content script
-      echo ${_.tempFile}
+      echo ${$.tempFile}            # `$` is referenced to `Sh` element in `Script`
       echo ${name}
       echo $1
       echo $2

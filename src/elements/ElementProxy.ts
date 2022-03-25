@@ -1,8 +1,9 @@
 import { Scenario } from "@app/singleton/Scenario";
 import { TimeUtils } from "@app/utils/TimeUtils";
+import cloneDeep from "lodash.clonedeep";
 import merge from "lodash.merge";
 import omit from "lodash.omit";
-import cloneDeep from "lodash.clonedeep";
+import Group from "./Group";
 import { IElement } from "./IElement";
 
 /** 
@@ -77,7 +78,7 @@ import { IElement } from "./IElement";
     stepDelay: 1s
     steps:
       - Script/Js: |
-          _.proxy.setVar('begin', Date.now())
+          $.proxy.setVar('begin', Date.now())   # `$` is referenced to `Js` element in `Script`
       - Echo: ${Date.now() - begin}
       - Echo: ${Date.now() - begin}
 
@@ -91,50 +92,84 @@ import { IElement } from "./IElement";
       - Echo: <step 2>
  * @end
  */
-export class ElementProxy<T extends IElement> {
-  _: any
-  __: any
-  private _logLevel: string
-  if?: any
-  delay?: any
-  async?: any
 
-  get logLevel() {
-    return this._logLevel || this._?.logLevel || this.__?.logLevel
-  }
+/**
+ * @guide
+ * @name loop
+ * @description Loop element in Array, Object or any conditional
+ * @group Attribute
+ * @h1 ##
+ * @example
+# Loop in array
+- Vars:
+    i: 0
+    arr: [1, 2, 3, 4, 5]
+    obj:
+      name: name 1
+      age: 123
+
+- Echo: Init
+
+- Group:
+    title: Loop each of items in an array
+    loop: ${arr}
+    steps:
+      - Echo: key is ${$$.loopKey}
+      - Echo: value is ${$$.loopValue}
+
+- Group:
+    title: Loop each of props in an object
+    loop: ${obj}
+    steps:
+      - Echo: key is ${$$.loopKey}
+      - Echo: value is ${$$.loopValue}
+
+- Group:
+    title: Loop with specific condition ${i}
+    loop: ${i < 10}
+    steps:
+      - Echo: ${i++}
+      - Vars:
+          i: ${i+1}
+ * @end
+ */
+export class ElementProxy<T extends IElement> {
 
   get logger() {
-    return this.scenario.loggerFactory.getLogger(this.logLevel)
+    return (this.element.logLevel ? this.scenario.loggerFactory.getLogger(this.element.logLevel) : this.element.$$?.proxy.logger) || this.scenario.loggerFactory.getLogger()
   }
 
   constructor(public element: T, public scenario: Scenario) {
-    const self = this
-    Object.defineProperty(element, 'proxy', {
-      get() {
-        return self
+    Object.defineProperties(element, {
+      $: {
+        get() {
+          return this
+        }
+      },
+      proxy: {
+        get: () => this
       }
     })
-    this._ = element
-    this.__ = element.proxy.__
   }
 
   init(props: any) {
-    if (props?.ref) {
-      this.scenario.variableManager.vars[props.ref] = this.element
-    }
-    if (props?.logLevel) this._logLevel = props.logLevel
-    if (props?.if) this.if = props.if
-    if (props?.async) this.async = props.async
-    if (props?.delay) this.delay = props.delay
-    if (this.element.init) {
-      return this.element.init(props)
+    const exposeKeys = props['->']
+    props = this.inherit(props)
+    try {
+      if (props?.ref) this.scenario.variableManager.vars.$ref[props.ref] = this.element
+      if (this.element.init) {
+        return this.element.init(props)
+      }
+    } finally {
+      this.expose(exposeKeys)
     }
   }
 
   prepare() {
-    this._logLevel = this.getVar(this.logLevel)
-    this.delay = this.getVar(this.delay)
-    this.async = this.getVar(this.async)
+    this.element.logLevel = this.getVar(this.element.logLevel)
+    this.element.async = this.getVar(this.element.async)
+    this.element.if = this.getVar(this.element.if)
+    this.element.delay = this.getVar(this.element.delay)
     if (this.element.prepare) {
       return this.element.prepare()
     }
@@ -142,22 +177,55 @@ export class ElementProxy<T extends IElement> {
 
   isValid() {
     let isOk = true
-    if (this.if !== undefined) {
-      if (typeof this.if === 'string') {
-        isOk = this.getVar(this.if)
+    if (this.element.if !== undefined) {
+      if (typeof this.element.if === 'string') {
+        isOk = this.getVar(this.element.if)
       } else {
-        isOk = this.if
+        isOk = this.element.if
       }
     }
     return isOk
   }
 
+  setGroup(group: IElement) {
+    this.element.$$ = group
+  }
+
   async exec() {
-    if (this.delay) {
-      await TimeUtils.Delay(this.delay)
-    }
-    if (this.element.exec) {
-      return this.element.exec()
+    if (this.element.loop === undefined) {
+      if (this.element.delay) {
+        await TimeUtils.Delay(this.element.delay)
+      }
+      if (this.element.exec) {
+        const rs = await this.element.exec()
+        return rs
+      }
+    } else {
+      let loop = this.getVar(this.element.loop)
+      if (typeof loop === 'object') {
+        for (const key in loop) {
+          const tmp = this.clone()
+          tmp.element.loop = undefined
+          tmp.element.loopKey = key
+          tmp.element.loopValue = loop[key]
+          // if (tmp.element instanceof Group) {
+          //   tmp.element.updateChildGroup(tmp)
+          // }
+          await tmp.prepare()
+          await tmp.exec()
+          await tmp.dispose()
+        }
+      } else {
+        while (loop) {
+          const tmp = this.clone()
+          tmp.element.loop = undefined
+          // tmp.parent = this.proxy.parent
+          await tmp.prepare()
+          await tmp.exec()
+          await tmp.dispose()
+          loop = this.getVar(this.element.loop)
+        }
+      }
     }
   }
 
@@ -168,10 +236,16 @@ export class ElementProxy<T extends IElement> {
   }
 
   clone() {
+    let proxy: ElementProxy<T>
     if (this.element.clone) {
-      return new ElementProxy<T>(this.element.clone(), this.scenario)
+      proxy = new ElementProxy<T>(this.element.clone(), this.scenario)
+    } else {
+      proxy = new ElementProxy<T>(cloneDeep(this.element), this.scenario)
     }
-    return new ElementProxy<T>(cloneDeep(this.element), this.scenario)
+    if (proxy.element instanceof Group) {
+      proxy.element.initSteps(this.scenario)
+    }
+    return proxy
   }
 
   resolvePath(path: string) {
@@ -179,34 +253,45 @@ export class ElementProxy<T extends IElement> {
   }
 
   changeLogLevel(level: string) {
-    this._logLevel = level
+    this.element.logLevel = level
   }
 
-  setVar(varObj: any, obj: any, defaultKey?: string) {
-    return this.scenario.variableManager.set(varObj, obj, defaultKey)
+  declareVar(varObj: any) {
+    return this.scenario.variableManager.declare(varObj)
+  }
+
+  setVar(varObj: any, obj = {} as any, defaultKey?: string) {
+    return this.scenario.variableManager.set(varObj, { ...obj, $: this.element, $$: this.element.$$ }, defaultKey)
   }
 
   eval(obj: any, baseContext = {} as any) {
-    return this.scenario.variableManager.eval(obj, { ...baseContext, _: this._, __: this.__ })
+    return this.scenario.variableManager.eval(obj, { ...baseContext, $: this.element, $$: this.element.$$ })
   }
 
   getVar(obj: any, baseContext = {}) {
-    return this.scenario.variableManager.get(obj, { ...baseContext, _: this._, __: this.__ })
+    return this.scenario.variableManager.get(obj, { ...baseContext, $: this.element, $$: this.element.$$ })
   }
 
-  inherit(keys: string[]) {
-    if (keys?.length) {
+  inherit(props: any) {
+    if (props['<-']) {
+      const keys = Array.isArray(props['<-']) ? props['<-'] : [props['<-']]
       keys.forEach(key => {
-        const temp = this.scenario.templateManager.get(key)
-        const prop = merge({}, temp, this.element)
-        merge(this.element, prop)
+        const temp = this.scenario.templateManager.getElement(key)
+        const prop = merge({}, temp, props)
+        merge(props, prop)
       })
+      props['<-'] = undefined
     }
+    return props
   }
 
-  expose(key?: string) {
-    if (key) {
-      this.scenario.templateManager.set(key, omit(this.element, '->'))
+  expose(exposeKeys: string[] | string) {
+    if (exposeKeys) {
+      const keys = Array.isArray(exposeKeys) ? exposeKeys : [exposeKeys]
+      keys.forEach(key => {
+        this.scenario.templateManager.setElement(key, omit(this.element, '->'))
+      })
+      this.element['->'] = undefined
     }
   }
 

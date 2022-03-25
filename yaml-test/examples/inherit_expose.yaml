@@ -1,0 +1,21 @@
+- Group:
+    steps:
+      - Group:
+          ->: base1
+          loop: ${[1,2,3,4]}
+          steps:
+            - Echo: 
+                message: ${$$.loopValue}
+- Group:
+    <-: base1
+    steps:
+      - Echo/Red: 
+          message: ${$$.loopValue}
+
+- Echo: 
+    ->: echo1
+    loop: ${[1,2,3,4]}
+    message: ${$$.loopValue}
+
+- Echo:
+    <-: echo1

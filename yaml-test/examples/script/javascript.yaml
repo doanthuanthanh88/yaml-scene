@@ -3,6 +3,6 @@
 
 - Script/Js: |
     console.log('oldValue', name)
-    _.proxy.setVar('newName', name + 10)
+    $.proxy.setVar('newName', name + 10)
 
 - Echo: New value ${newName}

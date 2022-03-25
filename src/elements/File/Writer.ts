@@ -210,8 +210,8 @@ export default class Writer {
   path: string
   adapters: (string | object)[]
 
-  #adapter: IFileAdapter
-  #adapterClasses: {
+  private _adapter: IFileAdapter
+  private _adapterClasses: {
     AdapterClass: any,
     args?: any
   }[]
@@ -227,7 +227,7 @@ export default class Writer {
     this.title = this.proxy.getVar(this.title)
     this.content = this.proxy.getVar(this.content)
     if (!this.content) throw new Error('"content" is required')
-    this.#adapterClasses = this.adapters.reverse().map(adapter => {
+    this._adapterClasses = this.adapters.reverse().map(adapter => {
       const adapterName = typeof adapter === 'string' ? adapter : Object.keys(adapter)[0]
       if (!adapterName) throw new Error('"adapters" is not valid')
       return {
@@ -240,10 +240,10 @@ export default class Writer {
   async exec() {
     if (this.title) this.proxy.logger.info('%s', this.title)
     console.group()
-    this.#adapterClasses.forEach(({ AdapterClass, args }) => {
-      this.#adapter = new AdapterClass(this.#adapter || new File(this.path), args)
+    this._adapterClasses.forEach(({ AdapterClass, args }) => {
+      this._adapter = new AdapterClass(this._adapter || new File(this.path), args)
     })
-    await this.#adapter.write(this.content)
+    await this._adapter.write(this.content)
     this.proxy.logger.debug('%s %s', chalk.magenta('- Write file to'), chalk.gray(this.path))
     console.groupEnd()
   }

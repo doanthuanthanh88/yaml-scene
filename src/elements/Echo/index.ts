@@ -52,8 +52,8 @@ export default class Echo implements IElement {
   schema?: boolean
   transforms: (string | object)[]
 
-  #transform: IPrinterTransform
-  #transformClasses: {
+  private _transform: IPrinterTransform
+  private _transformClasses: {
     TransformClass: any,
     args?: any
   }[]
@@ -77,7 +77,7 @@ export default class Echo implements IElement {
   }
 
   prepare() {
-    this.#transformClasses = this.transforms.map(transform => {
+    this._transformClasses = this.transforms.map(transform => {
       const transformName = typeof transform === 'string' ? transform : Object.keys(transform)[0]
       if (!transformName) throw new Error('"transforms" is not valid')
       return {
@@ -88,11 +88,11 @@ export default class Echo implements IElement {
   }
 
   exec() {
-    this.#transformClasses.forEach(({ TransformClass, args }) => {
-      this.#transform = new TransformClass(this.#transform || new Base(), args)
+    this._transformClasses.forEach(({ TransformClass, args }) => {
+      this._transform = new TransformClass(this._transform || new Base(), args)
     })
     const message = this.proxy.getVar(this.message)
-    const txt = this.#transform.print(message)
+    const txt = this._transform.print(message)
     this.proxy.logger.info(txt)
   }
 

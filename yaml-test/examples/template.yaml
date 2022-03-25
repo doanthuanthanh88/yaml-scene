@@ -1,0 +1,19 @@
+- Vars:
+    mes: Echo 01
+    mes2: Echo 02
+
+- Templates:
+  - Echo: 
+      ->: echo1
+      message: ${mes}
+- Echo: 
+    <-: echo1
+
+
+- Templates:
+    echo2: 
+      Echo:
+        message: ${mes2}
+        
+- Echo:
+    <-: echo2
