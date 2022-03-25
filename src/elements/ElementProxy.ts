@@ -140,16 +140,8 @@ export class ElementProxy<T extends IElement> {
   }
 
   constructor(public element: T, public scenario: Scenario) {
-    Object.defineProperties(element, {
-      $: {
-        get() {
-          return this
-        }
-      },
-      proxy: {
-        get: () => this
-      }
-    })
+    this.element.$ = this.element
+    this.element.proxy = this
   }
 
   init(props: any) {
@@ -237,11 +229,14 @@ export class ElementProxy<T extends IElement> {
 
   clone() {
     let proxy: ElementProxy<T>
+    const oldProxy = this.element.proxy
+    this.element.proxy = undefined
     if (this.element.clone) {
       proxy = new ElementProxy<T>(this.element.clone(), this.scenario)
     } else {
       proxy = new ElementProxy<T>(cloneDeep(this.element), this.scenario)
     }
+    this.element.proxy = oldProxy
     if (proxy.element instanceof Group) {
       proxy.element.initSteps(this.scenario)
     }
@@ -261,15 +256,15 @@ export class ElementProxy<T extends IElement> {
   }
 
   setVar(varObj: any, obj = {} as any, defaultKey?: string) {
-    return this.scenario.variableManager.set(varObj, { ...obj, $: this.element, $$: this.element.$$ }, defaultKey)
+    return this.scenario.variableManager.set(varObj, { $: this.element.$ || this.element, $$: this.element.$$, ...obj }, defaultKey)
   }
 
   eval(obj: any, baseContext = {} as any) {
-    return this.scenario.variableManager.eval(obj, { ...baseContext, $: this.element, $$: this.element.$$ })
+    return this.scenario.variableManager.eval(obj, { $: this.element.$ || this.element, $$: this.element.$$, ...baseContext })
   }
 
   getVar(obj: any, baseContext = {}) {
-    return this.scenario.variableManager.get(obj, { ...baseContext, $: this.element, $$: this.element.$$ })
+    return this.scenario.variableManager.get(obj, { $: this.element.$ || this.element, $$: this.element.$$, ...baseContext })
   }
 
   inherit(props: any) {

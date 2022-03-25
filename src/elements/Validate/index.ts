@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+import { expect, assert, should } from 'chai';
 import chalk from "chalk";
 import merge from "lodash.merge";
 import { ElementProxy } from '../ElementProxy';
@@ -11,11 +11,14 @@ import { IElement } from '../IElement';
 Currently only support chai `https://www.chaijs.com`
  * @example
 - Validate:
-    title: Validate number
-    chai: ${expect(10).to.equal(200)}
-- Validate:
-    title: Test response
+    title: Expect method
     chai: ${expect(userInfo).to.have.property('display_name')}
+- Validate:
+    title: Should method
+    chai: ${userInfo.display_name.should.equal('thanh');}
+- Validate:
+    title: Assert method
+    chai: ${assert.equal(userInfo.display_name, 'thanh');}
  * @end
  */
 export default class Validate implements IElement {
@@ -31,7 +34,11 @@ export default class Validate implements IElement {
   exec() {
     try {
       if (this.chai) {
-        this.proxy.getVar(this.chai, { expect })
+        const ctx = { expect, assert } as any
+        if (this.chai.includes('should.')) {
+          ctx.should = should()
+        }
+        this.proxy.getVar(this.chai, ctx)
       }
       this.proxy.logger.info(chalk.green('✔', this.title))
     } catch (err) {

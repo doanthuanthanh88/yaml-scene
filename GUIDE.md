@@ -949,11 +949,14 @@ Currently only support chai `https://www.chaijs.com`
 
 ```yaml
 - Validate:
-    title: Validate number
-    chai: ${expect(10).to.equal(200)}
-- Validate:
-    title: Test response
+    title: Expect method
     chai: ${expect(userInfo).to.have.property('display_name')}
+- Validate:
+    title: Should method
+    chai: ${userInfo.display_name.should.equal('thanh');}
+- Validate:
+    title: Assert method
+    chai: ${assert.equal(userInfo.display_name, 'thanh');}
 ```
 
 

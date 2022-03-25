@@ -1,10 +1,12 @@
 import { IElement } from "@app/elements/IElement"
 import cloneDeep from "lodash.clonedeep"
+import omit from "lodash.omit"
 
 export class TemplateManager extends Map<string, IElement> {
 
   setElement(name: string, elem: IElement) {
-    return this.set(name, elem)
+    const newOne = elem.clone ? elem.clone() : cloneDeep(elem)
+    return this.set(name, omit(newOne, 'proxy', '$', '$$'))
   }
 
   getElement(name: string) {
