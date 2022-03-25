@@ -1,4 +1,5 @@
 import { ElementProxy } from "../ElementProxy";
+import { IElement } from "../IElement";
 
 /**
  * @guide
@@ -16,7 +17,7 @@ import { ElementProxy } from "../ElementProxy";
 - Echo: New value ${newName}
  * @end
  */
-export default class Js {
+export default class Js implements IElement {
   proxy: ElementProxy<any>
   content: string
 

@@ -1,7 +1,7 @@
-import { IElement } from "../IElement";
 import { ElementFactory } from "../ElementFactory";
 import { ElementProxy } from "../ElementProxy";
 import Group from "../Group";
+import { IElement } from "../IElement";
 
 /**
  * @guide
@@ -32,7 +32,7 @@ It's only used for `extends` or `inherit` purposes
       id: 2
  * @end
  */
-export default class Templates {
+export default class Templates implements IElement {
   proxy: ElementProxy<Templates>
 
   group: ElementProxy<Group>

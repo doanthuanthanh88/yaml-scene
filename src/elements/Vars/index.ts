@@ -1,4 +1,5 @@
 import { ElementProxy } from "../ElementProxy"
+import { IElement } from "../IElement"
 
 /**
  * @guide
@@ -14,7 +15,7 @@ import { ElementProxy } from "../ElementProxy"
 - Echo: ${userA.name}
  * @end
  */
-export default class Vars {
+export default class Vars implements IElement {
   proxy: ElementProxy<any>
 
   vars = {}

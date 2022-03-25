@@ -1,6 +1,7 @@
 import chalk from 'chalk';
 import merge from "lodash.merge";
 import { ElementProxy } from '../ElementProxy';
+import { IElement } from '../IElement';
 import { File } from './adapter/File';
 import { FileAdapterFactory } from './adapter/FileAdapterFactory';
 import { IFileAdapter } from './adapter/IFileAdapter';
@@ -202,7 +203,7 @@ You can write a new adapter by yourself then use in adapters.
   ```
  * @end
  */
-export default class Writer {
+export default class Writer implements IElement {
   proxy: ElementProxy<Writer>
 
   title: string

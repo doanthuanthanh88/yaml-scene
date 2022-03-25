@@ -1,7 +1,8 @@
-import { expect } from 'chai'
-import chalk from "chalk"
+import { expect } from 'chai';
+import chalk from "chalk";
 import merge from "lodash.merge";
-import { ElementProxy } from '../ElementProxy'
+import { ElementProxy } from '../ElementProxy';
+import { IElement } from '../IElement';
 
 /**
  * @guide
@@ -17,7 +18,7 @@ Currently only support chai `https://www.chaijs.com`
     chai: ${expect(userInfo).to.have.property('display_name')}
  * @end
  */
-export default class Validate {
+export default class Validate implements IElement {
   proxy: ElementProxy<Validate>
 
   title: string

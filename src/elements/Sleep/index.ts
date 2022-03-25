@@ -2,6 +2,7 @@ import { TimeUtils } from "@app/utils/TimeUtils"
 import chalk from "chalk"
 import merge from "lodash.merge"
 import { ElementProxy } from "../ElementProxy"
+import { IElement } from "../IElement"
 
 /**
  * @guide
@@ -29,7 +30,7 @@ import { ElementProxy } from "../ElementProxy"
     time: 1000
  * @end
  */
-export default class Sleep {
+export default class Sleep implements IElement {
   proxy: ElementProxy<Sleep>
 
   title: string

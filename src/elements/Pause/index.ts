@@ -3,9 +3,10 @@ import chalk from "chalk"
 import merge from "lodash.merge"
 import { ElementFactory } from "../ElementFactory"
 import { ElementProxy } from "../ElementProxy"
+import { IElement } from "../IElement"
+import Sleep from "../Sleep"
 import { QuestionBuilder } from "../UserInput/QuestionBuilder"
 import { QuestionType } from "../UserInput/QuestionType"
-import Sleep from "../Sleep"
 
 /**
  * @guide
@@ -25,7 +26,7 @@ import Sleep from "../Sleep"
 - Pause:          # It will be paused until user enter
  * @end
  */
-export default class Pause {
+export default class Pause implements IElement {
   proxy: ElementProxy<Pause>
 
   title: string
