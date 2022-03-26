@@ -4,6 +4,7 @@ import { existsSync, readFileSync, statSync } from "fs";
 import merge from "lodash.merge";
 import { basename, join, resolve } from "path";
 import { ElementFactory } from "./elements/ElementFactory";
+import { JSONSchema } from "./JSONSchema";
 import { Scenario } from "./singleton/Scenario";
 import { Extensions } from "./utils/extensions";
 import { Exec } from "./utils/extensions/Exec";
@@ -69,12 +70,25 @@ export class Helper {
         })
       )
       .addCommand(program
+        .createCommand('schema')
+        .description('Merge schemas of extensions')
+        .argument("<urls...>", "Schema.json files")
+        .option("-o, --outputFile <string>", `Output schema`)
+        .action(async (urls: string[], opts: any) => {
+          const jsonSchema = new JSONSchema()
+          await jsonSchema.init(join(__dirname, '../schema.json'))
+          await jsonSchema.addSchema(urls)
+          const fout = await jsonSchema.save(opts.outputFile)
+          console.log(chalk.green(`Scheme is generated to ${chalk.bold(fout)}`))
+          isRunScenario = false
+        })
+      )
+      .addCommand(program
         .createCommand('add')
         .description('Add new extensions')
         .argument("<extensions...>", "Extensions package in npm registry")
         .action(async (extensionNames) => {
           await this.installExtensions(extensionNames)
-          isRunScenario = false
         })
       )
       .addCommand(program

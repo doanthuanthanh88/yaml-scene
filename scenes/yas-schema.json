@@ -29,7 +29,7 @@
                 "content"
               ],
               "properties": {
-                "$temp": "defaultTags",
+                "...": "defaultAttrs",
                 "content": {
                   "$ref": "#/definitions/getVarString",
                   "description": "Content script",
@@ -57,7 +57,7 @@
                 "content"
               ],
               "properties": {
-                "$temp": "defaultTags",
+                "...": "defaultAttrs",
                 "content": {
                   "$ref": "#/definitions/getVarString",
                   "description": "Content script",
@@ -79,7 +79,7 @@
           "title": "Sleep the current step",
           "oneOf": [
             {
-              "$temp": "defaultTags",
+              "...": "defaultAttrs",
               "type": "object",
               "description": "Sleep",
               "additionalProperties": false,
@@ -89,13 +89,13 @@
                   "description": "Description"
                 },
                 "time": {
-                  "$temp": "time",
+                  "$ref": "#/definitions/time",
                   "description": "Sleep time"
                 }
               }
             },
             {
-              "$temp": "time",
+              "$ref": "#/definitions/time",
               "description": "Sleep time"
             }
           ]
@@ -110,7 +110,7 @@
           "title": "Pause or sleep the current step",
           "oneOf": [
             {
-              "$temp": "defaultTags",
+              "...": "defaultAttrs",
               "type": "object",
               "description": "Pause",
               "additionalProperties": false,
@@ -120,13 +120,13 @@
                   "description": "Description"
                 },
                 "time": {
-                  "$temp": "time",
+                  "$ref": "#/definitions/time",
                   "description": "Sleep time"
                 }
               }
             },
             {
-              "$temp": "time",
+              "$ref": "#/definitions/time",
               "description": "Sleep time"
             },
             {
@@ -162,7 +162,7 @@
           ],
           "additionalProperties": false,
           "properties": {
-            "$temp": "defaultTags",
+            "...": "defaultAttrs",
             "title": {
               "$ref": "#/definitions/getVar"
             },
@@ -193,7 +193,7 @@
             "chai"
           ],
           "properties": {
-            "$temp": "defaultTags",
+            "...": "defaultAttrs",
             "title": {
               "$ref": "#/definitions/getVar",
               "description": "Validation name"
@@ -284,7 +284,7 @@
             "var"
           ],
           "properties": {
-            "$temp": "defaultTags",
+            "...": "defaultAttrs",
             "adapters": {
               "description": "Adapter to parse content after read file",
               "$ref": "#/definitions/fileAdapter"
@@ -310,7 +310,7 @@
             "content"
           ],
           "properties": {
-            "$temp": "defaultTags",
+            "...": "defaultAttrs",
             "adapters": {
               "description": "Adapter to parse content before write to file",
               "$ref": "#/definitions/fileAdapter"
@@ -363,7 +363,7 @@
           "type": "object",
           "description": "Group steps",
           "properties": {
-            "$temp": "defaultTags",
+            "...": "defaultAttrs",
             "title": {
               "$ref": "#/definitions/getVar",
               "description": "Group title"
@@ -384,7 +384,7 @@
         {
           "type": "object",
           "properties": {
-            "$temp": "defaultTags",
+            "...": "defaultAttrs",
             "title": {
               "$ref": "#/definitions/getVar",
               "description": "Description"
@@ -540,11 +540,21 @@
         }
       }
     },
+    "time": {
+      "$ref": "#/definitions/getVarNumberString",
+      "examples": [
+        "1000",
+        "1000ms",
+        "1s",
+        "1m",
+        "1h"
+      ]
+    },
     "allOfSteps": {
       "type": "array",
       "description": "Steps",
       "items": {
-        "oneOf": [
+        "anyOf": [
           {
             "type": "string"
           },
@@ -589,6 +599,10 @@
           }
         ]
       }
+    },
+    "functional": {
+      "type": "string",
+      "description": "JS code in a function"
     },
     "getVarBooleanString": {
       "description": "Eval string to object value",
@@ -688,7 +702,7 @@
       ],
       "additionalProperties": false,
       "properties": {
-        "$temp": "defaultTags",
+        "...": "defaultAttrs",
         "title": {
           "$ref": "#/definitions/getVar",
           "description": "Question title"
@@ -763,17 +777,7 @@
     }
   },
   "templates": {
-    "time": {
-      "$ref": "#/definitions/getVarNumberString",
-      "examples": [
-        "1000",
-        "1000ms",
-        "1s",
-        "1m",
-        "1h"
-      ]
-    },
-    "defaultTags": {
+    "defaultAttrs": {
       "async": {
         "description": "Run asynchronized",
         "$ref": "#/definitions/getVarBooleanString",
@@ -799,7 +803,7 @@
       },
       "delay": {
         "description": "Sleep in specific time before keep playing the next",
-        "$temp": "time"
+        "$ref": "#/definitions/time"
       },
       "if": {
         "description": "Check conditional to decide to run it or NOT",

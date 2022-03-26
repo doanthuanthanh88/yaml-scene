@@ -18,7 +18,7 @@ It's a platform to do everything with only yaml scenario files
 ## Guideline document
 > **[Wiki Pages](https://github.com/doanthuanthanh88/yaml-scene/wiki)**  
 
-> Integrate with **[VSCODE](./VSCode.md)**
+> Integrate with **[Visual Studio Code](https://github.com/doanthuanthanh88/yaml-scene/wiki/Visual-Studio-Code)**
 
 ## Installation
 Install via `npm` or `yarn`
@@ -44,7 +44,15 @@ Install via `npm` or `yarn`
   yas remove yas-http yas-grpc
 ```
 
-4. Run scenario via docker container
+4. Merge `json schema` of list extensions then save in a file which is used for validation or suggestion purpose.  
+Example [Integrate with Visual Studio Code](https://github.com/doanthuanthanh88/yaml-scene/wiki/Visual-Studio-Code)
+```sh
+  yas schema \
+    https://raw.githubusercontent.com/doanthuanthanh88/yas-http/main/schema.json \
+    https://raw.githubusercontent.com/doanthuanthanh88/yas-grpc/main/schema.json
+```
+
+5. Run scenario via docker container
 ```sh
   yas docker \
     --dir "yaml-test/examples" \
@@ -54,12 +62,12 @@ Install via `npm` or `yarn`
     echo.yas.yaml
 ```
 
-5. Show version
+6. Show version
 ```sh
   yas -v
 ```
 
-6. Show help content
+7. Show help content
 ```sh
   yas -h
   yas add -h

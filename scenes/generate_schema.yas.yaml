@@ -3,19 +3,22 @@
     adapters:
       - Json
     var: json
+
 - Script/Js: |
     const { templates, ...schema } = json
 
     function parse(obj) {
       if (Array.isArray(obj)) {
-        obj.forEach(o => parse(o))
+        obj.forEach(o => typeof o === 'object' && parse(o))
       } else if(typeof obj === 'object') {
         const keys = Object.keys(obj)
-        keys.forEach(key => {
-          if (key === '$temp') {
+        keys.forEach(k => {
+          let key = k
+          if (key === '...') {
             Object.assign(obj, templates[obj[key]])
             delete obj[key]
-          } else {
+          }
+          if (obj[key] && typeof obj[key] === 'object') {
             parse(obj[key])
           }
         })

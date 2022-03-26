@@ -3,11 +3,6 @@
     "files.autoSave": "off",
     "editor.insertSpaces": true,
     "editor.tabSize": 2,
-    "yaml.customTags": [
-        "!binary scalar",
-        "!fragment scalar",
-        "!function scalar",
-    ],
     "files.exclude": {
         // "**/.git": true,
         // "**/.svn": true,
@@ -22,6 +17,11 @@
     "editor.codeActionsOnSave": {
         "source.organizeImports": false,
     },
+    "yaml.customTags": [
+        "!binary scalar",
+        "!fragment scalar",
+        "!function scalar",
+    ],
     "yaml.schemas": {
         "schema.json": "*.yas.yaml"
     }
