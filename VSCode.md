@@ -6,8 +6,8 @@
 
 2. Add config to `.vscode/settings.json` then all of files which end withs '.yas.yaml' will be suggested.
 
-> Please generate `schema.json` by using command `yas schema`.  
-> Read more `CLI` in [Wiki pages](https://github.com/doanthuanthanh88/yaml-scene/wiki)
+> Please generate `~/yaml-scene.yas.json` by using command `yas schema`.  
+> Read more [CLI](https://github.com/doanthuanthanh88/yaml-scene#cli)
 
 ```json
 {
@@ -17,7 +17,7 @@
         "!function scalar",
     ],
     "yaml.schemas": {
-        "https://raw.githubusercontent.com/doanthuanthanh88/yaml-scene/main/schema.json": "*.yas.yaml"
+        "~/yaml-scene.yas.json": "*.yas.yaml"
     }
 }
 ```
