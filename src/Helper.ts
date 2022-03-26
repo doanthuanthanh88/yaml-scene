@@ -73,10 +73,11 @@ export class Helper {
         .createCommand('schema')
         .description('Merge schemas of extensions')
         .argument("<urls...>", "Schema.json files")
+        .option("-f, --mainFile <string>", `Yaml-schema json schema`)
         .option("-o, --outputFile <string>", `Output schema`)
         .action(async (urls: string[], opts: any) => {
-          const jsonSchema = new JSONSchema()
-          await jsonSchema.init(join(__dirname, '../schema.json'))
+          const jsonSchema = new JSONSchema(this.scenario)
+          await jsonSchema.init(opts['mainFile'] || join(__dirname, '../schema.json'))
           await jsonSchema.addSchema(urls)
           const fout = await jsonSchema.save(opts.outputFile)
           console.log(chalk.green(`Scheme is generated to ${chalk.bold(fout)}`))

@@ -4,13 +4,18 @@ import https from 'https'
 import { join } from "path"
 import { File } from "./elements/File/adapter/File"
 import { Json } from "./elements/File/adapter/Json"
+import merge from 'lodash.merge'
+import { readFileSync } from 'fs'
+import { Scenario } from './singleton/Scenario'
 
 export class JSONSchema {
   private templates: any
   private yamlScene: any
 
+  constructor(public scenario: Scenario) { }
+
   async init(yamlSceneSchema: string) {
-    const { templates = {}, ...yamlScene } = await new Json(new File(yamlSceneSchema)).read()
+    const { templates = {}, ...yamlScene } = await new Json(new File(this.scenario.resolvePath(yamlSceneSchema))).read()
     this.templates = templates
     this.yamlScene = yamlScene
   }
@@ -20,22 +25,28 @@ export class JSONSchema {
       try {
         console.log(chalk.yellow(`- Merging ${url}...`))
         console.group()
-        const schema = await new Promise<any>((resolve, reject) => {
-          const req = url.startsWith('https://') ? https : http
-          req.get(url, response => {
-            const data = []
-            response.on('data', (chunk) => {
-              data.push(chunk)
-            })
-            response.on('end', () => {
-              resolve(JSON.parse(data.join('')))
-            })
-            response.on('error', reject)
-          });
-        })
+        let schema: any
+        if (/^https?:\/\//.test(url)) {
+          schema = await new Promise<any>((resolve, reject) => {
+            const req = url.startsWith('https://') ? https : http
+            req.get(url, response => {
+              const data = []
+              response.on('data', (chunk) => {
+                data.push(chunk)
+              })
+              response.on('end', () => {
+                resolve(JSON.parse(data.join('')))
+              })
+              response.on('error', reject)
+            });
+          })
+        } else {
+          schema = JSON.parse(readFileSync(this.scenario.resolvePath(url)).toString())
+        }
         this.injectAttrs(schema)
         this.replaceID(schema, schema.$id)
         this.yamlScene.definitions.allOfSteps.items.anyOf.push(...(schema.oneOf || schema.anyOf || schema.allOf))
+        this.yamlScene = merge({}, schema, this.yamlScene)
         console.log(`✅ Done`)
       } catch (err) {
         console.error(`❌ ${err.message}`)
@@ -50,6 +61,7 @@ export class JSONSchema {
   }
 
   async save(fout = join(__dirname, '../schema.yas.json')) {
+    fout = this.scenario.resolvePath(fout)
     this.parse()
     const f = new Json(new File(fout))
     await f.write(this.yamlScene)

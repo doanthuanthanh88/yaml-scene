@@ -115,6 +115,7 @@ export class Scenario {
         return chalk
       }
     })
+    this.rootDir = process.cwd()
     this.extensions = new Extensions(this)
     this.loggerFactory = new LoggerFactory()
     this.templateManager = new TemplateManager()
