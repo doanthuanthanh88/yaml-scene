@@ -1,0 +1,33 @@
+- File/Reader:
+    path: ./yas-schema.json
+    adapters:
+      - Json
+    var: json
+- Script/Js: |
+    const { templates, ...schema } = json
+
+    function parse(obj) {
+      if (Array.isArray(obj)) {
+        obj.forEach(o => parse(o))
+      } else if(typeof obj === 'object') {
+        const keys = Object.keys(obj)
+        keys.forEach(key => {
+          if (key === '$temp') {
+            Object.assign(obj, templates[obj[key]])
+            delete obj[key]
+          } else {
+            parse(obj[key])
+          }
+        })
+      }
+    }
+
+    parse(schema)
+
+    $.proxy.setVar('result', {schema}, 'schema')
+
+- File/Writer:
+    path: ../schema.json
+    adapters:
+      - Json
+    content: ${result}

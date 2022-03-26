@@ -15,8 +15,10 @@ It's a platform to do everything with only yaml scenario files
 2. [yas-grpc](https://github.com/doanthuanthanh88/yas-grpc): Manage gRPC request, mocking gRPC server, create testcases, generate to document...
 3. [yas-sequence-diagram](https://github.com/doanthuanthanh88/yas-sequence-diagram): Generate to sequence diagram, flow diagram base on comment in code
 
-## Details document
-> [Wiki Pages](https://github.com/doanthuanthanh88/yaml-scene/wiki)
+## Guideline document
+> **[Wiki Pages](https://github.com/doanthuanthanh88/yaml-scene/wiki)**  
+
+> Integrate with **[VSCODE](./VSCode.md)**
 
 ## Installation
 Install via `npm` or `yarn`
