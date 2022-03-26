@@ -17,6 +17,7 @@ export class FunctionScalar extends Type {
   constructor(_scenario: Scenario) {
     super('!function', {
       kind: 'scalar',
+      instanceOf: Functional,
       construct: (bodyContent: string) => {
         return new Functional(bodyContent)
       }

@@ -23,9 +23,9 @@
 |[Echo](#Echo)| Print data to screen ...|  
 |[File/Writer](#File/Writer)| Write content to a file ...|  
 | --- | --- |
+|[Delay](#Delay)| Program will be delayed at here after specific time then it keeps playing next steps ...|  
 |[Group](#Group)| Group contains 1 or many elements ...|  
 |[Pause](#Pause)| Program will be paused and wait user input ...|  
-|[Sleep](#Sleep)| Program will be delayed at here after specific time then it keeps playing next steps ...|  
 |[Templates](#Templates)| Declare elements which not `inited` or `run` ...|  
 |[Validate](#Validate)| Validate data in running progress ...|  
 |[Vars](#Vars)| Declare variables in scene ...|  
@@ -45,9 +45,10 @@ Check condition before decided to run this element or not
     if: ${sayHello}
     title: Hello
 
-- Sleep:
+- Delay:
     if: ${sayHello}
-    title: Sleep before say goodbye after say hello
+    time: 1s
+    title: Delay 1s before say goodbye after say hello
 
 - Echo: 
     if: ${!sayHello}
@@ -858,6 +859,32 @@ Print data to screen
 ```
 
 
+## Delay <a name="Delay"></a>
+Program will be delayed at here after specific time then it keeps playing next steps  
+
+```yaml
+- Delay: 10s
+- Delay: 
+    title: Delay 10s
+    time: 10s
+
+- Delay: 10m
+- Delay: 
+    title: Delay 10 minutes
+    time: 10m
+
+- Delay: 10h
+- Delay: 
+    title: Delay 10 hours
+    time: 10h
+
+- Delay: 1000
+- Delay: 
+    title: Delay 1000 miliseconds
+    time: 1000
+```
+
+
 ## Group <a name="Group"></a>
 Group contains 1 or many elements  
 
@@ -890,39 +917,13 @@ Program will be paused and wait user input
     title: It keeps playing when user enter OR after 1 second, user not enter then it keeps playing
     timeout: 1s
 
-- Pause: 2s       # Sleep 2 seconds then it keeps playing
+- Pause: 2s       # Delay 2 seconds then it keeps playing
 
 - Pause:
-    title: Sleep 3 seconds then it keeps playing
+    title: Delay 3 seconds then it keeps playing
     time: 3s
 
 - Pause:          # It will be paused until user enter
-```
-
-
-## Sleep <a name="Sleep"></a>
-Program will be delayed at here after specific time then it keeps playing next steps  
-
-```yaml
-- Sleep: 10s
-- Sleep: 
-    title: Sleep 10s
-    time: 10s
-
-- Sleep: 10m
-- Sleep: 
-    title: Sleep 10 minutes
-    time: 10m
-
-- Sleep: 10h
-- Sleep: 
-    title: Sleep 10 hours
-    time: 10h
-
-- Sleep: 1000
-- Sleep: 
-    title: Sleep 1000 miliseconds
-    time: 1000
 ```
 
 

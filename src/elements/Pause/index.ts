@@ -4,7 +4,7 @@ import merge from "lodash.merge"
 import { ElementFactory } from "../ElementFactory"
 import { ElementProxy } from "../ElementProxy"
 import { IElement } from "../IElement"
-import Sleep from "../Sleep"
+import Delay from "../Delay"
 import { QuestionBuilder } from "../UserInput/QuestionBuilder"
 import { QuestionType } from "../UserInput/QuestionType"
 
@@ -17,10 +17,10 @@ import { QuestionType } from "../UserInput/QuestionType"
     title: It keeps playing when user enter OR after 1 second, user not enter then it keeps playing
     timeout: 1s
 
-- Pause: 2s       # Sleep 2 seconds then it keeps playing
+- Pause: 2s       # Delay 2 seconds then it keeps playing
 
 - Pause:
-    title: Sleep 3 seconds then it keeps playing
+    title: Delay 3 seconds then it keeps playing
     time: 3s
 
 - Pause:          # It will be paused until user enter
@@ -49,7 +49,7 @@ export default class Pause implements IElement {
 
   async exec() {
     if (this.time) {
-      const sleep = ElementFactory.CreateElement<Sleep>('Sleep', this.proxy.scenario)
+      const sleep = ElementFactory.CreateElement<Delay>('Delay', this.proxy.scenario)
       sleep.init({
         title: this.title,
         time: this.time

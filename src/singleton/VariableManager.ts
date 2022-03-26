@@ -3,9 +3,7 @@
 export class VariableManager {
   private static readonly _NavPattern = /^(\$\{){1}([^\}]+)\}$/
 
-  readonly vars = {
-    $ref: {}
-  } as { [key: string]: any }
+  readonly vars = {} as { [key: string]: any }
 
   constructor(initVar: any) {
     if (initVar) {

@@ -12,13 +12,13 @@ test('Pause', async () => {
 - Vars:
     end1: \${Date.now()}
 
-- Pause: 1s       # Sleep 1 seconds then it keeps playing
+- Pause: 1s       # Delay 1 seconds then it keeps playing
 
 - Vars:
     end2: \${Date.now()}
 
 - Pause:
-    title: Sleep 1 seconds then it keeps playing
+    title: Delay 1 seconds then it keeps playing
     time: 1s
 
 - Vars:

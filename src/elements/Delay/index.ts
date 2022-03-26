@@ -6,32 +6,32 @@ import { IElement } from "../IElement"
 
 /**
  * @guide
- * @name Sleep
+ * @name Delay
  * @description Program will be delayed at here after specific time then it keeps playing next steps
  * @example
-- Sleep: 10s
-- Sleep: 
-    title: Sleep 10s
+- Delay: 10s
+- Delay: 
+    title: Delay 10s
     time: 10s
 
-- Sleep: 10m
-- Sleep: 
-    title: Sleep 10 minutes
+- Delay: 10m
+- Delay: 
+    title: Delay 10 minutes
     time: 10m
 
-- Sleep: 10h
-- Sleep: 
-    title: Sleep 10 hours
+- Delay: 10h
+- Delay: 
+    title: Delay 10 hours
     time: 10h
 
-- Sleep: 1000
-- Sleep: 
-    title: Sleep 1000 miliseconds
+- Delay: 1000
+- Delay: 
+    title: Delay 1000 miliseconds
     time: 1000
  * @end
  */
-export default class Sleep implements IElement {
-  proxy: ElementProxy<Sleep>
+export default class Delay implements IElement {
+  proxy: ElementProxy<Delay>
 
   title: string
   time: number

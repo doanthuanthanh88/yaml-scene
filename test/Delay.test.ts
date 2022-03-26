@@ -1,15 +1,15 @@
 import { Simulator } from "@app/Simulator"
 
-test('Sleep', async () => {
+test('Delay', async () => {
   const scenario = await Simulator.Run(`
 - Vars:
     begin: \${Date.now()}
-- Sleep:
-    title: Sleep 1s
+- Delay:
+    title: Delay 1s
     time: 1s
 - Vars:
     end1: \${Date.now()}
-- Sleep: 2s
+- Delay: 2s
 - Vars:
     end2: \${Date.now()}
 `)

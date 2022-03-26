@@ -33,10 +33,6 @@ export default class Group implements IElement {
   proxy: ElementProxy<Group>
   title: string
   description: string
-  vars: any
-  loop: any
-  loopKey: string | number
-  loopValue: any
   stepDelay?: number
   steps: any[]
 
@@ -99,12 +95,6 @@ export default class Group implements IElement {
     }
     console.groupEnd()
   }
-
-  // updateChildGroup(group: IElement) {
-  //   this._steps.forEach(step => {
-  //     step.setGroup(group)
-  //   })
-  // }
 
   async dispose() {
     if (!this._steps) return

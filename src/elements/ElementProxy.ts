@@ -30,9 +30,10 @@ import { IElement } from "./IElement";
     if: ${sayHello}
     title: Hello
 
-- Sleep:
+- Delay:
     if: ${sayHello}
-    title: Sleep before say goodbye after say hello
+    time: 1s
+    title: Delay 1s before say goodbye after say hello
 
 - Echo: 
     if: ${!sayHello}
@@ -145,10 +146,9 @@ export class ElementProxy<T extends IElement> {
   }
 
   init(props: any) {
-    const exposeKeys = props['->']
+    const exposeKeys = props && props['->']
     props = this.inherit(props)
     try {
-      if (props?.ref) this.scenario.variableManager.vars.$ref[props.ref] = this.element
       if (this.element.init) {
         return this.element.init(props)
       }
@@ -271,14 +271,14 @@ export class ElementProxy<T extends IElement> {
   }
 
   inherit(props: any) {
-    if (props['<-']) {
+    if (props && props['<-']) {
       const keys = Array.isArray(props['<-']) ? props['<-'] : [props['<-']]
       keys.forEach(key => {
         const temp = this.scenario.templateManager.getElement(key)
         const prop = merge({}, temp, props)
         merge(props, prop)
       })
-      props['<-'] = undefined
+      delete props['<-']
     }
     return props
   }
@@ -289,7 +289,7 @@ export class ElementProxy<T extends IElement> {
       keys.forEach(key => {
         this.scenario.templateManager.setElement(key, omit(this.element, '->'))
       })
-      this.element['->'] = undefined
+      delete this.element['->']
     }
   }
 

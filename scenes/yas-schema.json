@@ -71,17 +71,17 @@
         }
       }
     },
-    "Sleep": {
+    "Delay": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "Sleep": {
-          "title": "Sleep the current step",
+        "Delay": {
+          "title": "Delay the current step",
           "oneOf": [
             {
               "...": "defaultAttrs",
               "type": "object",
-              "description": "Sleep",
+              "description": "Delay",
               "additionalProperties": false,
               "properties": {
                 "title": {
@@ -90,13 +90,13 @@
                 },
                 "time": {
                   "$ref": "#/definitions/time",
-                  "description": "Sleep time"
+                  "description": "Delay time"
                 }
               }
             },
             {
               "$ref": "#/definitions/time",
-              "description": "Sleep time"
+              "description": "Delay time"
             }
           ]
         }
@@ -121,13 +121,13 @@
                 },
                 "time": {
                   "$ref": "#/definitions/time",
-                  "description": "Sleep time"
+                  "description": "Delay time"
                 }
               }
             },
             {
               "$ref": "#/definitions/time",
-              "description": "Sleep time"
+              "description": "Delay time"
             },
             {
               "type": "null",
@@ -583,7 +583,7 @@
             "$ref": "#/definitions/Script"
           },
           {
-            "$ref": "#/definitions/Sleep"
+            "$ref": "#/definitions/Delay"
           },
           {
             "$ref": "#/definitions/Templates"
@@ -802,7 +802,7 @@
         "$ref": "#/definitions/logLevel"
       },
       "delay": {
-        "description": "Sleep in specific time before keep playing the next",
+        "description": "Delay in specific time before keep playing the next",
         "$ref": "#/definitions/time"
       },
       "if": {
