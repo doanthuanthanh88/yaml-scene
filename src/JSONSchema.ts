@@ -15,9 +15,31 @@ export class JSONSchema {
   constructor(public scenario: Scenario) { }
 
   async init(yamlSceneSchema: string) {
-    const { templates = {}, ...yamlScene } = await new Json(new File(this.scenario.resolvePath(yamlSceneSchema))).read()
+    const { templates = {}, ...yamlScene } = await this.getFileData(yamlSceneSchema)
     this.templates = templates
     this.yamlScene = yamlScene
+  }
+
+  async getFileData(urlOrPath: string) {
+    let schema: any
+    if (/^https?:\/\//.test(urlOrPath)) {
+      schema = await new Promise<any>((resolve, reject) => {
+        const req = urlOrPath.startsWith('https://') ? https : http
+        req.get(urlOrPath, response => {
+          const data = []
+          response.on('data', (chunk) => {
+            data.push(chunk)
+          })
+          response.on('end', () => {
+            resolve(JSON.parse(data.join('')))
+          })
+          response.on('error', reject)
+        });
+      })
+    } else {
+      schema = JSON.parse(readFileSync(this.scenario.resolvePath(urlOrPath)).toString())
+    }
+    return schema
   }
 
   async addSchema(schemaURLs: string[]) {
@@ -25,25 +47,8 @@ export class JSONSchema {
       try {
         console.log(chalk.yellow(`- Merging ${url}...`))
         console.group()
-        let schema: any
-        if (/^https?:\/\//.test(url)) {
-          schema = await new Promise<any>((resolve, reject) => {
-            const req = url.startsWith('https://') ? https : http
-            req.get(url, response => {
-              const data = []
-              response.on('data', (chunk) => {
-                data.push(chunk)
-              })
-              response.on('end', () => {
-                resolve(JSON.parse(data.join('')))
-              })
-              response.on('error', reject)
-            });
-          })
-        } else {
-          schema = JSON.parse(readFileSync(this.scenario.resolvePath(url)).toString())
-        }
-        this.injectAttrs(schema)
+        const { templates = {}, ...schema } = await this.getFileData(url)
+        this.injectAttrs(schema, merge(templates, this.templates))
         this.replaceID(schema, schema.$id)
         this.yamlScene.definitions.allOfSteps.items.anyOf.push(...(schema.oneOf || schema.anyOf || schema.allOf))
         this.yamlScene = merge({}, schema, this.yamlScene)
@@ -57,7 +62,7 @@ export class JSONSchema {
   }
 
   parse() {
-    this.injectAttrs(this.yamlScene)
+    this.injectAttrs(this.yamlScene, this.templates)
   }
 
   async save(fout = join(__dirname, '../schema.yas.json')) {
@@ -89,21 +94,21 @@ export class JSONSchema {
     }
   }
 
-  private injectAttrs(obj) {
+  private injectAttrs(obj, templates: any) {
     if (Array.isArray(obj)) {
-      obj.forEach(o => typeof o === 'object' && this.injectAttrs(o))
+      obj.forEach(o => typeof o === 'object' && this.injectAttrs(o, templates))
     } else if (typeof obj === 'object') {
       const keys = Object.keys(obj)
       keys.forEach(k => {
         let key = k
         if (/^\.{3,}$/.test(key)) {
-          if (this.templates[obj[key]] !== undefined) {
-            Object.assign(obj, this.templates[obj[key]])
+          if (templates[obj[key]] !== undefined) {
+            Object.assign(obj, templates[obj[key]])
             delete obj[key]
           }
         }
         if (obj[key] && typeof obj[key] === 'object') {
-          this.injectAttrs(obj[key])
+          this.injectAttrs(obj[key], templates)
         }
       })
     }
