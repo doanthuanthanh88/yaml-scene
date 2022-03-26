@@ -19,7 +19,6 @@ import { File } from "@app/elements/File/adapter/File";
     # pattern:
     #   begin: ^\s*\*\s@guide\\s*$         # Default pattern
     #   end: \s*\*\s@end\\s*$              # Default pattern
-    #   noTag:                             # Default get all of line after the latest tag
     includes: 
       - src
     excludes: []

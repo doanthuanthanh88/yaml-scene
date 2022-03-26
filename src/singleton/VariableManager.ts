@@ -56,7 +56,7 @@ export class VariableManager {
       }
     } else if (typeof obj === 'string') {
       let vl;
-      const isAsync = obj?.includes('await ')
+      const isAsync = obj.includes('await ')
       const evalStr = `vl = (${isAsync ? 'async' : ''}({${Object.keys(ctx).join(',')}}) => { 
         ${obj}
       })(ctx)`

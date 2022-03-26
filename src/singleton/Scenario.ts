@@ -49,8 +49,8 @@ vars:                                               # Declare global variables, 
   token: ...
 stepDelay: 1s                                       # Each of steps will delay 1s before play the next
 steps:                                              # Includes all which you want to do
-  - !fragment ./scene1.yaml
-  - !fragment ./scene2.yaml
+  - !fragment ./scene1.yas.yaml
+  - !fragment ./scene2.yas.yaml
   - extension_name1:
   - extensions_folders/custom1:
   - Script/Js: |
@@ -66,8 +66,8 @@ steps:                                              # Includes all which you wan
  * @order 2
  * @description A simple scenario file
  * @example
-- !fragment ./scene1.yaml
-- !fragment ./scene2.yaml
+- !fragment ./scene1.yas.yaml
+- !fragment ./scene2.yas.yaml
  * @end
  */
 
@@ -124,7 +124,7 @@ export class Scenario {
     } as any
   }
 
-  async init(scenarioFile = 'index.yaml' as string | object, password?: string) {
+  async init(scenarioFile = 'index.yas.yaml' as string | object, password?: string) {
     this.time.init = Date.now()
     this.events.emit('scenario.init', this)
 

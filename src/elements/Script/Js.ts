@@ -1,3 +1,4 @@
+import { Functional } from "@app/tags/model/Functional";
 import { ElementProxy } from "../ElementProxy";
 import { IElement } from "../IElement";
 
@@ -10,7 +11,7 @@ import { IElement } from "../IElement";
 - Vars:
     name: 10
 
-- Script/Js: |
+- Script/Js: !function |
     console.log('oldValue', name)
     $.proxy.setVar('newName', name + 10)      # `$` is referenced to `Js` element in `Script`
 
@@ -19,14 +20,14 @@ import { IElement } from "../IElement";
  */
 export default class Js implements IElement {
   proxy: ElementProxy<any>
-  content: string
+  func: Functional
 
-  init(content: string) {
-    this.content = content
+  init(func: string | Functional) {
+    this.func = Functional.GetFuntion(func)
   }
 
   async exec() {
-    const rs = await this.proxy.eval(this.content)
+    const rs = await this.proxy.eval(this.func.toString())
     return rs
   }
 

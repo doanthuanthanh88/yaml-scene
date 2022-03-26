@@ -5,17 +5,17 @@ externalLibs:
 vars:
   example: ABC
 steps:
-  # - !fragment ./examples/custom-extension/echo_extensions.yaml
-  # - !fragment ./examples/document/doc_guide.yaml
-  # - !fragment ./examples/document/doc_guide.yaml
-  # - !fragment ./examples/async_jobs.yaml
-  # - !fragment ./examples/extension-mongo/index.yaml
-  # - !fragment ./examples/loop/index.yaml
-  # - !fragment ./examples/delay-each-step/index.yaml
-  # - !fragment ./examples/script/javascript.yaml
-  # - !fragment ./examples/write-file/index.yaml
-  # - !fragment ./examples/read-file/index.yaml
-  # - !fragment ./examples/get_user_input.yaml
+  - Echo: Demo
+  # - !fragment ./examples/custom-extension/echo_extensions.yas.yaml
+  # - !fragment ./examples/document/doc_guide.yas.yaml
+  # - !fragment ./examples/document/doc_guide.yas.yaml
+  # - !fragment ./examples/async_jobs.yas.yaml
+  # - !fragment ./examples/loop/index.yas.yaml
+  # - !fragment ./examples/delay-each-step/index.yas.yaml
+  # - !fragment ./examples/script/javascript.yas.yaml
+  # - !fragment ./examples/write-file/index.yas.yaml
+  # - !fragment ./examples/read-file/index.yas.yaml
+  # - !fragment ./examples/get_user_input.yas.yaml
   # - Vars:
   #     url: https://fastlane.rubiconproject.com
   # - custom~echo1:

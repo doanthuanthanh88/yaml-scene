@@ -19,7 +19,7 @@ export class Simulator {
 
     const scenario = new Scenario()
     scenario.loggerFactory.setLogger(undefined, logLevel)
-    const tmpFile = join(tmpdir(), Date.now() + '_' + Math.random() + ".yaml")
+    const tmpFile = join(tmpdir(), Date.now() + '_' + Math.random() + ".yas.yaml")
     try {
       writeFileSync(tmpFile, steps)
 

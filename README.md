@@ -27,9 +27,9 @@ Install via `npm` or `yarn`
 
 
 ## CLI
-1. Run a scenario `my_scenario.yaml`
+1. Run a scenario `my_scenario.yas.yaml`
 ```sh
-  yas my_scenario.yaml
+  yas my_scenario.yas.yaml
 ```
 
 2. Install new extensions
@@ -49,7 +49,7 @@ Install via `npm` or `yarn`
     --extensions "yas-http yas-grpc" \
     --env-file .env \
     --env "name=thanh;age=11" \
-    echo.yaml
+    echo.yas.yaml
 ```
 
 5. Show version
@@ -80,7 +80,7 @@ Install via `npm` or `yarn`
       yas add yas-http yas-grpc
     ```
 
-2. Create a `scenario.yaml` 
+2. Create a `scenario.yas.yaml` 
 ```yaml
 - yas-http/Get:
     url: http://localhost:8000

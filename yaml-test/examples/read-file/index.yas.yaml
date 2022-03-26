@@ -1,0 +1,5 @@
+- !fragment examples/read-file/text.yas.yaml
+- !fragment examples/read-file/json.yas.yaml
+- !fragment examples/read-file/xml.yas.yaml
+- !fragment examples/read-file/yaml.yas.yaml
+- !fragment examples/read-file/csv.yas.yaml

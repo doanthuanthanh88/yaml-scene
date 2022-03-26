@@ -12,7 +12,7 @@ describe('Test scripts', () => {
 
   test('Run nodejs code', async () => {
     await Simulator.Run(`
-- Script/Js: |
+- Script/Js: !function |
     require('fs').writeFileSync('${tmpFile}', 'Hello world')
 `)
     expect(existsSync(tmpFile)).toBe(true)

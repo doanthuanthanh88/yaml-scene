@@ -1,3 +1,4 @@
+import { Functional } from '@app/tags/model/Functional';
 import chalk from 'chalk';
 import prompts from 'prompts';
 import { ElementProxy } from '../ElementProxy';
@@ -15,6 +16,8 @@ import { QuestionType } from './QuestionType';
 - UserInput:
     - title: Enter your name
       type: text # Default is text if not specific
+      format: !function |
+        vl => vl.toUpperCase()
       var: name
       required: true
 
@@ -106,7 +109,7 @@ export default class UserInput implements IElement {
         .title(chalk.cyan(title))
         .var(varName)
         .default(df)
-        .format(this.proxy.eval(format))
+        .format(this.proxy.eval(Functional.GetFuntion(format)?.toReturn()))
       if (type === QuestionType.SELECT || type === QuestionType.MULTISELECT || type === QuestionType.AUTOCOMPLETE || type === QuestionType.AUTOCOMPLETEMULTISELECT) {
         ques.choices(choices)
       } else if (type === QuestionType.DATE) {

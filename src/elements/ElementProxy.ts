@@ -256,6 +256,9 @@ export class ElementProxy<T extends IElement> {
   }
 
   setVar(varObj: any, obj = {} as any, defaultKey?: string) {
+    if (typeof varObj === 'string') {
+      return this.scenario.variableManager.set(varObj, obj, defaultKey)
+    }
     return this.scenario.variableManager.set(varObj, { $: this.element.$ || this.element, $$: this.element.$$, ...obj }, defaultKey)
   }
 

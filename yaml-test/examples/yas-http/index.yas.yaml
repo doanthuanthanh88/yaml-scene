@@ -1,5 +1,5 @@
 # yas add yas-http
-# docker run -it -e "EXTENSIONS=yas-http yas-grpc" -v ./index.yaml:/test/index.yaml doanthuanthanh88/yaml-scene
+# docker run -it -e "EXTENSIONS=yas-http yas-grpc" -v ./index.yas.yaml:/test/index.yas.yaml doanthuanthanh88/yaml-scene
 
 steps:
   - yas-http/Server:

@@ -11,10 +11,10 @@ import { YAMLSchema } from '.'
  * @example
 - Group: 
     steps:
-      - !fragment ./examples/scene_1.yaml
+      - !fragment ./examples/scene_1.yas.yaml
       - Echo: Loaded scene 1 successfully
 
-      - !fragment ./examples/scene_2.yaml
+      - !fragment ./examples/scene_2.yas.yaml
       - Echo: Loaded scene 2 successfully
  * @end
  */

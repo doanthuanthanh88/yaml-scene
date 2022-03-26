@@ -32,7 +32,7 @@ export class Helper {
       .aliases(Object.keys(bin).filter(e => e !== name))
       .description(description)
       .version(version, "-v, --version")
-      .argument("<file>", "Scenario path or file", undefined, "index.yaml")
+      .argument("<file>", "Scenario path or file", undefined, "index.yas.yaml")
       .argument("[password]", "Password to decrypt scenario file")
       .enablePositionalOptions(true)
       .passThroughOptions(true)
@@ -54,7 +54,7 @@ export class Helper {
       .addCommand(program
         .createCommand('docker')
         .description('Run via docker')
-        .argument("<file>", "Scenario path or file", undefined, "index.yaml")
+        .argument("<file>", "Scenario path or file")
         .argument("[password]", "Password to decrypt scenario file")
         .option("-n, --name <string>", `Container name. Reused an existed container`)
         .option("-d, --dir <string>", `Directory includes scenarios`)

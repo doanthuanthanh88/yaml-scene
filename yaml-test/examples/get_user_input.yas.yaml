@@ -2,6 +2,8 @@
     - title: Enter your name
       # type: text
       var: name
+      format: !function |
+        vl => vl.toUpperCase()
       required: true
     - title: Enter password
       type: password

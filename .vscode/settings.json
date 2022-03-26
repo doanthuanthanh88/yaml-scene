@@ -6,6 +6,7 @@
     "yaml.customTags": [
         "!binary scalar",
         "!fragment scalar",
+        "!function scalar",
     ],
     "files.exclude": {
         // "**/.git": true,
@@ -22,6 +23,6 @@
         "source.organizeImports": false,
     },
     "yaml.schemas": {
-        "schema.json": "*.yaml"
+        "schema.json": "*.yas.yaml"
     }
 }

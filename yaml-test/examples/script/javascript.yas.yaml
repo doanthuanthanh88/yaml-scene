@@ -1,7 +1,7 @@
 - Vars:
     name: 10
 
-- Script/Js: |
+- Script/Js: !function |
     console.log('oldValue', name)
     $.proxy.setVar('newName', name + 10)
 

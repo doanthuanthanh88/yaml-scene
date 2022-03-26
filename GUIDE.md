@@ -4,6 +4,7 @@
 |---|---|  
 | !TAGS | --- |
 |[!fragment](#!fragment)| Load scenes from another file into current file ...|  
+|[!function](#!function)| Write code as a function in js ...|  
 |[!binary](#!binary)| Transform file to binary ...|  
 | DOC | --- |
 |[Doc/Guide/MD](#Doc/Guide/MD)| Auto scan file to detect the comment format which is generated to markdown document ...|  
@@ -167,8 +168,8 @@ vars:                                               # Declare global variables, 
   token: ...
 stepDelay: 1s                                       # Each of steps will delay 1s before play the next
 steps:                                              # Includes all which you want to do
-  - !fragment ./scene1.yaml
-  - !fragment ./scene2.yaml
+  - !fragment ./scene1.yas.yaml
+  - !fragment ./scene2.yas.yaml
   - extension_name1:
   - extensions_folders/custom1:
   - Script/Js: |
@@ -181,8 +182,8 @@ steps:                                              # Includes all which you wan
 A simple scenario file  
 
 ```yaml
-- !fragment ./scene1.yaml
-- !fragment ./scene2.yaml
+- !fragment ./scene1.yas.yaml
+- !fragment ./scene2.yas.yaml
 ```
 
 
@@ -194,11 +195,21 @@ Load scenes from another file into current file
 ```yaml
 - Group: 
     steps:
-      - !fragment ./examples/scene_1.yaml
+      - !fragment ./examples/scene_1.yas.yaml
       - Echo: Loaded scene 1 successfully
 
-      - !fragment ./examples/scene_2.yaml
+      - !fragment ./examples/scene_2.yas.yaml
       - Echo: Loaded scene 2 successfully
+```
+
+
+## !function <a name="!function"></a>
+Write code as a function in js  
+
+```yaml
+- Script/Js: !function |
+    console.log('oldAge', age)
+    $.proxy.setVar('newAge', age + 10)
 ```
 
 
@@ -222,7 +233,6 @@ Auto scan file to detect the comment format which is generated to markdown docum
     # pattern:
     #   begin: ^\s*\*\s@guide\\s*$         # Default pattern
     #   end: \s*\*\s@end\\s*$              # Default pattern
-    #   noTag:                             # Default get all of line after the latest tag
     includes: 
       - src
     excludes: []
@@ -322,7 +332,7 @@ Embed javascript code into scene
 - Vars:
     name: 10
 
-- Script/Js: |
+- Script/Js: !function |
     console.log('oldValue', name)
     $.proxy.setVar('newName', name + 10)      # `$` is referenced to `Js` element in `Script`
 
@@ -724,6 +734,8 @@ Get user input from keyboard
 - UserInput:
     - title: Enter your name
       type: text # Default is text if not specific
+      format: !function |
+        vl => vl.toUpperCase()
       var: name
       required: true
 

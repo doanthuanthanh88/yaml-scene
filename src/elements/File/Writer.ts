@@ -227,6 +227,7 @@ export default class Writer implements IElement {
   prepare() {
     this.title = this.proxy.getVar(this.title)
     this.content = this.proxy.getVar(this.content)
+    this.path = this.proxy.resolvePath(this.path)
     if (!this.content) throw new Error('"content" is required')
     this._adapterClasses = this.adapters.reverse().map(adapter => {
       const adapterName = typeof adapter === 'string' ? adapter : Object.keys(adapter)[0]
