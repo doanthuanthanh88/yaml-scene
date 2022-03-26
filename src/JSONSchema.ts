@@ -84,7 +84,7 @@ export class JSONSchema {
       const keys = Object.keys(obj)
       keys.forEach(k => {
         let key = k
-        if (key === '...') {
+        if (/^\.{3,}$/.test(key)) {
           if (this.templates[obj[key]] !== undefined) {
             Object.assign(obj, this.templates[obj[key]])
             delete obj[key]
