@@ -5,8 +5,7 @@ WORKDIR /test
 ARG version
 ENV EXTENSIONS=
 
-RUN apk add --no-cache nodejs 
-RUN apk add --update yarn npm
+RUN apk add --no-cache nodejs yarn npm
 
 COPY ./entrypoint.sh /entrypoint.sh
 
