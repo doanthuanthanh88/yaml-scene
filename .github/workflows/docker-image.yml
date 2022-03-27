@@ -47,6 +47,7 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           build-args: |
-            version=${{ env.GITHUB_REF_NAME }}
+            version=${{ github.ref_name }}
+            thanh=abc123
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
