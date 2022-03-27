@@ -47,6 +47,6 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           build-args: |
-            version=${{ env.GITHUB_REF_NAME }}
+            version=${{ steps.meta.outputs.args.DOCKER_META_VERSION }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
