@@ -5,7 +5,10 @@
 
 name: Publish Docker image
 
-on: create
+on:
+  push:
+    tags:
+      - "*"
 
 env:
   # Use docker.io for Docker Hub if empty
@@ -44,6 +47,6 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           build-args: |
-            version=${{ steps.meta.outputs.version }}
+            version=${{ env.GITHUB_REF_NAME }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
