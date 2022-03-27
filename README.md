@@ -30,9 +30,16 @@ Install via `npm` or `yarn`
 
 ## CLI
 1. Run a scenario `my_scenario.yas.yaml`
-```sh
-  yas my_scenario.yas.yaml
-```
+- From local file
+  ```sh
+    yas my_scenario.yas.yaml
+  ```
+- From remote file
+  ```sh
+    yas http://localhost/my_scenario.yas.yaml
+  ```
+  > Note: Pass `headers` via querystring to pass authentication, authorization.  
+  > Ex: http://localhost/my_scenario.yas.yaml?headers={"Authorization":"..."}
 
 2. Install new extensions
 ```sh
@@ -121,25 +128,23 @@ Please go to [here](./yaml-test/examples) to see examples
 
 ## Sharing scenarios
 
-1. Auto download a mp3 file from youtube
-  - YouChoose a quality mp3 by yourself  
-  - Pick a section in the file  
-  
-  > **GUIDE**
+### Auto download a mp3 file from youtube
+- YouChoose a quality mp3 by yourself  
+- Pick a section in the file  
 
-  1. Download a encrypted scenario is [here](./yaml-test/examples/download_youtube) with password is `example`
-  2. Run on local
-  ```sh
-    yas ./yaml-test/examples/download_youtube example
-  ```
-  3. Run via docker
-  ```sh
-    docker run --it \
-    -v ./Downloads:/Downloads \
-    -v ./download_youtube:/test/download_youtube \
-    doanthuanthanh88/yaml-scene \
-    yas /test/download_youtube example
-  ```
+1. Run in local `yaml-scene`
+```sh
+  yas https://raw.githubusercontent.com/doanthuanthanh88/yaml-scene/main/yaml-test/examples/download_youtube example
+```
+
+3. Run via docker
+```sh
+  docker run --rm -it \
+  -v $PWD:/Downloads \
+  doanthuanthanh88/yaml-scene \
+  https://raw.githubusercontent.com/doanthuanthanh88/yaml-scene/main/yaml-test/examples/download_youtube \
+  example
+```
 
 ### More information
 - Project at [github](https://github.com/doanthuanthanh88/yaml-scene)

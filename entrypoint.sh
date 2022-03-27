@@ -15,4 +15,4 @@ else
   yarn global add $EXTENSIONS;
 fi
 
-yas $1 $2
+yas $@

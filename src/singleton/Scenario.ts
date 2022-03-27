@@ -1,15 +1,18 @@
+import { Buf } from '@app/elements/File/adapter/Buf'
 import { File } from '@app/elements/File/adapter/File'
 import { IFileAdapter } from '@app/elements/File/adapter/IFileAdapter'
 import { Password } from '@app/elements/File/adapter/Password'
 import { Text } from '@app/elements/File/adapter/Text'
 import { VariableManager } from '@app/singleton/VariableManager'
 import { Base64 } from '@app/utils/encrypt/Base64'
+import { MD5 } from '@app/utils/encrypt/MD5'
+import { FileUtils, UrlPathType } from '@app/utils/FileUtils'
 import { LoggerFactory } from '@app/utils/logger'
 import chalk from 'chalk'
 import { rmSync } from 'fs'
 import { safeLoad } from 'js-yaml'
 import { homedir } from 'os'
-import { basename, dirname, extname, join, resolve } from 'path'
+import { basename, dirname, join, resolve } from 'path'
 import { EventEmitter } from 'stream'
 import { ElementFactory } from '../elements/ElementFactory'
 import { ElementProxy } from '../elements/ElementProxy'
@@ -81,6 +84,7 @@ export class Scenario {
   extensions: Extensions
 
   password?: string
+  isRunningRemote?: boolean
 
   scenarioFile: string
   rootDir: string
@@ -96,7 +100,8 @@ export class Scenario {
   hasEnvVar: boolean
 
   get scenarioPasswordFile() {
-    return this.password ? this.resolvePath(this.scenarioFile.substring(0, this.scenarioFile.lastIndexOf('.'))) : undefined
+    const name = basename(this.scenarioFile)
+    return join(dirname(this.scenarioFile), name.substring(0, name.indexOf('.')))
   }
 
   get title() {
@@ -126,15 +131,23 @@ export class Scenario {
   }
 
   async init(scenarioFile = 'index.yas.yaml' as string | object, password?: string) {
+    if (typeof scenarioFile !== 'string') throw new Error('Scenario must be a path of file')
+
     this.time.init = Date.now()
     this.events.emit('scenario.init', this)
 
     let scenario: any
-
-    if (typeof scenarioFile !== 'string') throw new Error('Scenario must be a path of file')
-    this.scenarioFile = resolve(scenarioFile)
-    this.rootDir = dirname(this.scenarioFile)
-    const fileContent = await this.getScenarioFileContent(this.scenarioFile, this.getPassword(password))
+    let fileContent: any
+    this.isRunningRemote = FileUtils.GetPathType(scenarioFile) === UrlPathType.URL
+    if (this.isRunningRemote) {
+      this.scenarioFile = scenarioFile
+      const fileBufContent = await FileUtils.GetContentFromUrlOrPath(this.scenarioFile)
+      fileContent = await this.getScenarioFileContent(this.getPassword(password), new Buf(fileBufContent))
+    } else {
+      this.scenarioFile = resolve(scenarioFile)
+      this.rootDir = dirname(this.scenarioFile)
+      fileContent = await this.getScenarioFileContent(this.getPassword(password), new File(this.scenarioFile))
+    }
     scenario = safeLoad(fileContent, {
       schema: YAMLSchema.Create(this)
     }) as any
@@ -146,9 +159,9 @@ export class Scenario {
     const { password: pwd, extensions, install, vars, logLevel, ...scenarioProps } = scenario
     if (!scenarioProps) throw new Error('File scenario is not valid')
 
-    if (pwd && extname(this.scenarioFile)) {
+    if (pwd && !this.isRunningRemote) {
       this.password = this.getPassword(pwd)
-      await this.saveToEncryptFile(fileContent, this.password, this.scenarioPasswordFile)
+      await this.saveToEncryptFile(fileContent.replace(/^password:.+$/m, ''), this.password, this.scenarioPasswordFile)
     }
 
     if (logLevel) {
@@ -182,10 +195,8 @@ export class Scenario {
   }
 
   async clean() {
-    await Promise.all([
-      this.scenarioPasswordFile ? rmSync(this.scenarioPasswordFile, { force: true }) : Promise.resolve(),
-      this.extensions.uninstall()
-    ])
+    this.password && rmSync(this.scenarioPasswordFile, { force: true })
+    await this.extensions.uninstall()
   }
 
   async dispose() {
@@ -197,7 +208,7 @@ export class Scenario {
   }
 
   resolvePath(path: string) {
-    if (!path) return path
+    if (!path || /^https?:\/\//.test(path)) return path
     return path.startsWith('~/') ? path.replace(/^\~/, homedir()) : path.startsWith('/') ? resolve(path) : join(this.rootDir, path)
   }
 
@@ -212,11 +223,11 @@ export class Scenario {
   }
 
   private getPassword(password: string) {
-    return password && `${Scenario.SALTED_PASSWORD}${password}`
+    return password && MD5.GetInstance().encrypt(`${Scenario.SALTED_PASSWORD}${password}`)
   }
 
-  private async getScenarioFileContent(scenarioFile: string, password: string) {
-    let reader: IFileAdapter = new Text(new File(scenarioFile))
+  private async getScenarioFileContent(password: string, filedapter: IFileAdapter) {
+    let reader: IFileAdapter = new Text(filedapter)
     if (password) {
       reader = new Password(reader, password)
     }

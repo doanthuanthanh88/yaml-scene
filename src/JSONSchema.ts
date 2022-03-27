@@ -1,12 +1,10 @@
 import chalk from 'chalk'
-import http from 'http'
-import https from 'https'
+import merge from 'lodash.merge'
 import { join } from "path"
 import { File } from "./elements/File/adapter/File"
 import { Json } from "./elements/File/adapter/Json"
-import merge from 'lodash.merge'
-import { readFileSync } from 'fs'
 import { Scenario } from './singleton/Scenario'
+import { FileUtils } from './utils/FileUtils'
 
 export class JSONSchema {
   private templates: any
@@ -18,28 +16,6 @@ export class JSONSchema {
     const { templates = {}, ...yamlScene } = await this.getFileData(yamlSceneSchema)
     this.templates = templates
     this.yamlScene = yamlScene
-  }
-
-  async getFileData(urlOrPath: string) {
-    let schema: any
-    if (/^https?:\/\//.test(urlOrPath)) {
-      schema = await new Promise<any>((resolve, reject) => {
-        const req = urlOrPath.startsWith('https://') ? https : http
-        req.get(urlOrPath, response => {
-          const data = []
-          response.on('data', (chunk) => {
-            data.push(chunk)
-          })
-          response.on('end', () => {
-            resolve(JSON.parse(data.join('')))
-          })
-          response.on('error', reject)
-        });
-      })
-    } else {
-      schema = JSON.parse(readFileSync(this.scenario.resolvePath(urlOrPath)).toString())
-    }
-    return schema
   }
 
   async addSchema(schemaURLs: string[]) {
@@ -71,6 +47,11 @@ export class JSONSchema {
     const f = new Json(new File(fout))
     await f.write(this.yamlScene)
     return fout
+  }
+
+  private async getFileData(urlOrPath: string) {
+    const content = await FileUtils.GetContentFromUrlOrPath(this.scenario.resolvePath(urlOrPath))
+    return JSON.parse(content.toString())
   }
 
   private replaceID(obj, $id) {
