@@ -9,6 +9,8 @@ It's a platform to do everything with only yaml scenario files
 6. Easy to customize extensions and share them to everybody
 7. Support to set password to scenario file before upload to public server to share to someone run it.
 8. Provide docker image to run it without installation
+9. Support run a scenario file via http(s)
+10. Support json schema to suggest or validate scenario
 
 ## Some extensions
 1. [yas-http](https://github.com/doanthuanthanh88/yas-http): Manage http(s) request, mocking api server, create testcases, generate to document...
@@ -126,18 +128,17 @@ Please follow [wiki pages](https://github.com/doanthuanthanh88/yaml-scene/wiki) 
 ## Examples
 Please go to [here](./yaml-test/examples) to see examples
 
-## Sharing scenarios
-
-### Auto download a mp3 file from youtube
-- YouChoose a quality mp3 by yourself  
+### `Auto download a mp3 file from youtube`
+Features:
+- Allow choose a mp3 quality to convert
 - Pick a section in the file  
 
-1. Run in local `yaml-scene`
+Run in local `yaml-scene`
 ```sh
   yas https://raw.githubusercontent.com/doanthuanthanh88/yaml-scene/main/yaml-test/examples/download_youtube example
 ```
 
-3. Run via docker
+Run via docker
 ```sh
   docker run --rm -it \
   -v $PWD:/Downloads \
