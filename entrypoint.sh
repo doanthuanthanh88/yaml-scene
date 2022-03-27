@@ -12,7 +12,7 @@ else
     echo "- $item";
   done
 
-  yarn global add $EXTENSIONS;
+  yas add $EXTENSIONS;
 fi
 
 yas $1 $2
