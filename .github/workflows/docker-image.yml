@@ -5,8 +5,13 @@
 
 name: Publish Docker image
 
-on:
-  create
+on: create
+
+env:
+  # Use docker.io for Docker Hub if empty
+  REGISTRY: docker.io
+  # github.repository as <account>/<repo>
+  IMAGE_NAME: ${{ github.repository }}
 
 jobs:
   push_to_registry:
@@ -15,23 +20,28 @@ jobs:
     steps:
       - name: Check out the repo
         uses: actions/checkout@v2
-      
-      - name: Log in to Docker Hub
-        uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
+
+      - name: Setup Docker buildx
+        uses: docker/setup-buildx-action@79abd3f86f79a9d68a23c75a09a9a85889262adf
+
+      - name: Log into registry ${{ env.REGISTRY }}
+        uses: docker/login-action@28218f9b04b4f3f62068d7b6ce6ca5b26e35336c
         with:
+          registry: ${{ env.REGISTRY }}
           username: ${{secrets.docker_username}}
           password: ${{secrets.docker_password}}
-      
+
       - name: Extract metadata (tags, labels) for Docker
         id: meta
         uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
         with:
-          images: doanthuanthanh88/yaml-scene
-      
-      - name: Build and push Docker image
-        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v2
         with:
           context: .
+          platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
