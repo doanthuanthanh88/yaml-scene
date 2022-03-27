@@ -1,12 +1,14 @@
 ####################
-FROM node:alpine
+FROM alpine
 WORKDIR /test
 
 ARG version
+ENV EXTENSIONS=
+
+RUN apk add --no-cache nodejs 
+RUN apk add --update yarn npm
 
 COPY ./entrypoint.sh /entrypoint.sh
-
-ENV EXTENSIONS=
 
 RUN yarn global add yaml-scene@$version
 RUN chmod 777 /entrypoint.sh
