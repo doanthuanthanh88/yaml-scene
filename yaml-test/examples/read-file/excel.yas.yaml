@@ -1,0 +1,14 @@
+extensions:
+  yas-file-adapter: ./excel.js
+install:
+  localPath: .
+steps:
+  - File/Reader:
+      title: Read excel file
+      adapters:
+        # use adapter "yas-file-adapter" to get data in sheet 2
+        - yas-file-adapter: 2
+      path: ../../assets/data.xlsx
+      var: data
+
+  - Echo: ${data}

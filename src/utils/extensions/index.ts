@@ -160,7 +160,7 @@ export class Extensions {
     if (!installInfo) return
     if (!installInfo.localPath) installInfo.localPath = this.scenario.rootDir
     installInfo.localPath = this.scenario.resolvePath(installInfo.localPath)
-    installInfo.isSave = !Simulator.IS_RUNNING
+    if (installInfo.isSave === undefined) installInfo.isSave = !Simulator.IS_RUNNING
     if (!installInfo.global) {
       this.installExtensionPath = installInfo.localPath
       this.globalExtensionPaths.splice(0, 0, this.installExtensionPath)

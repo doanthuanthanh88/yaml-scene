@@ -680,6 +680,10 @@
           {
             "description": "Adapter name and configuration",
             "type": "object"
+          },
+          {
+            "description": "Adapter name",
+            "type": "string"
           }
         ]
       }
