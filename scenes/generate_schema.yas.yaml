@@ -32,5 +32,13 @@
 - File/Writer:
     path: ../schema.json
     adapters:
-      - Json
+      - Json:
+          pretty: true
+    content: ${result}
+
+- File/Writer:
+    path: ../schema.yas.json
+    adapters:
+      - Json:
+          pretty: true
     content: ${result}

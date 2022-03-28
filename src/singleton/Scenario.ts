@@ -130,6 +130,10 @@ export class Scenario {
     } as any
   }
 
+  async setup() {
+    await this.extensions.loadNpmYarnGlobalPaths()
+  }
+
   async init(scenarioFile = 'index.yas.yaml' as string | object, password?: string) {
     if (typeof scenarioFile !== 'string') throw new Error('Scenario must be a path of file')
 
@@ -156,7 +160,7 @@ export class Scenario {
     }
     if (typeof scenario !== 'object') throw new Error('Scenario must be an object or array')
 
-    const { password: pwd, extensions, install, vars, logLevel, ...scenarioProps } = scenario
+    const { password: pwd, extensions = {}, install, vars, logLevel, ...scenarioProps } = scenario
     if (!scenarioProps) throw new Error('File scenario is not valid')
 
     if (pwd && !this.isRunningRemote) {
@@ -169,7 +173,7 @@ export class Scenario {
     }
 
     // Load extensions
-    await this.extensions.setup(extensions)
+    await this.extensions.registerGlobalExtension(extensions)
     await this.extensions.install(install)
 
     // Load global variables which is overrided by env variables

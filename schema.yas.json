@@ -1,12 +1,7 @@
 {
-  "$schema": "http://json-schema.org/draft-07/schema",
   "oneOf": [
-    {
-      "$ref": "#/definitions/Scenario"
-    },
-    {
-      "$ref": "#/definitions/allOfSteps"
-    }
+    {},
+    {}
   ],
   "definitions": {
     "Script": {
@@ -17,7 +12,6 @@
           "description": "Run javascript in scenario",
           "oneOf": [
             {
-              "$ref": "#/definitions/getVarString",
               "description": "Content script",
               "examples": [
                 "Vars.name = 'hello'"
@@ -30,7 +24,6 @@
               ],
               "properties": {
                 "content": {
-                  "$ref": "#/definitions/getVarString",
                   "description": "Content script",
                   "examples": [
                     "Vars.name = 'hello'"
@@ -38,7 +31,6 @@
                 },
                 "async": {
                   "description": "Run asynchronized",
-                  "$ref": "#/definitions/getVarBooleanString",
                   "examples": [
                     "true",
                     "false",
@@ -47,7 +39,6 @@
                 },
                 "loop": {
                   "description": "Conditional to check before loop steps. ($.loopValue, $.loopKey)",
-                  "$ref": "#/definitions/getVarAny",
                   "examples": [
                     "${[1,2,3,4]}",
                     "${{key1: value1, key2: value2}}",
@@ -56,44 +47,13 @@
                   ]
                 },
                 "logLevel": {
-                  "description": "How to show log",
-                  "$ref": "#/definitions/logLevel"
+                  "description": "How to show log"
                 },
                 "delay": {
-                  "description": "Delay in specific time before keep playing the next",
-                  "$ref": "#/definitions/time"
+                  "description": "Delay in specific time before keep playing the next"
                 },
                 "if": {
-                  "description": "Check conditional to decide to run it or NOT",
-                  "$ref": "#/definitions/getVarBooleanString"
-                },
-                "->": {
-                  "description": "Expose for others extends",
-                  "oneOf": [
-                    {
-                      "type": "string"
-                    },
-                    {
-                      "type": "array",
-                      "items": {
-                        "type": "string"
-                      }
-                    }
-                  ]
-                },
-                "<-": {
-                  "description": "Extends others which is exposed by '->'",
-                  "oneOf": [
-                    {
-                      "type": "string"
-                    },
-                    {
-                      "type": "array",
-                      "items": {
-                        "type": "string"
-                      }
-                    }
-                  ]
+                  "description": "Check conditional to decide to run it or NOT"
                 }
               }
             }
@@ -103,7 +63,6 @@
           "description": "Run shell script in scenario",
           "oneOf": [
             {
-              "$ref": "#/definitions/getVarString",
               "description": "Content script",
               "examples": [
                 "Echo \"${user}\""
@@ -116,7 +75,6 @@
               ],
               "properties": {
                 "content": {
-                  "$ref": "#/definitions/getVarString",
                   "description": "Content script",
                   "examples": [
                     "Echo \"${user}\""
@@ -124,7 +82,6 @@
                 },
                 "async": {
                   "description": "Run asynchronized",
-                  "$ref": "#/definitions/getVarBooleanString",
                   "examples": [
                     "true",
                     "false",
@@ -133,7 +90,6 @@
                 },
                 "loop": {
                   "description": "Conditional to check before loop steps. ($.loopValue, $.loopKey)",
-                  "$ref": "#/definitions/getVarAny",
                   "examples": [
                     "${[1,2,3,4]}",
                     "${{key1: value1, key2: value2}}",
@@ -142,44 +98,13 @@
                   ]
                 },
                 "logLevel": {
-                  "description": "How to show log",
-                  "$ref": "#/definitions/logLevel"
+                  "description": "How to show log"
                 },
                 "delay": {
-                  "description": "Delay in specific time before keep playing the next",
-                  "$ref": "#/definitions/time"
+                  "description": "Delay in specific time before keep playing the next"
                 },
                 "if": {
-                  "description": "Check conditional to decide to run it or NOT",
-                  "$ref": "#/definitions/getVarBooleanString"
-                },
-                "->": {
-                  "description": "Expose for others extends",
-                  "oneOf": [
-                    {
-                      "type": "string"
-                    },
-                    {
-                      "type": "array",
-                      "items": {
-                        "type": "string"
-                      }
-                    }
-                  ]
-                },
-                "<-": {
-                  "description": "Extends others which is exposed by '->'",
-                  "oneOf": [
-                    {
-                      "type": "string"
-                    },
-                    {
-                      "type": "array",
-                      "items": {
-                        "type": "string"
-                      }
-                    }
-                  ]
+                  "description": "Check conditional to decide to run it or NOT"
                 }
               }
             }
@@ -200,17 +125,14 @@
               "additionalProperties": false,
               "properties": {
                 "title": {
-                  "$ref": "#/definitions/getVar",
                   "description": "Description"
                 },
                 "time": {
-                  "$ref": "#/definitions/time",
                   "description": "Delay time"
                 }
               },
               "async": {
                 "description": "Run asynchronized",
-                "$ref": "#/definitions/getVarBooleanString",
                 "examples": [
                   "true",
                   "false",
@@ -219,7 +141,6 @@
               },
               "loop": {
                 "description": "Conditional to check before loop steps. ($.loopValue, $.loopKey)",
-                "$ref": "#/definitions/getVarAny",
                 "examples": [
                   "${[1,2,3,4]}",
                   "${{key1: value1, key2: value2}}",
@@ -228,48 +149,16 @@
                 ]
               },
               "logLevel": {
-                "description": "How to show log",
-                "$ref": "#/definitions/logLevel"
+                "description": "How to show log"
               },
               "delay": {
-                "description": "Delay in specific time before keep playing the next",
-                "$ref": "#/definitions/time"
+                "description": "Delay in specific time before keep playing the next"
               },
               "if": {
-                "description": "Check conditional to decide to run it or NOT",
-                "$ref": "#/definitions/getVarBooleanString"
-              },
-              "->": {
-                "description": "Expose for others extends",
-                "oneOf": [
-                  {
-                    "type": "string"
-                  },
-                  {
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    }
-                  }
-                ]
-              },
-              "<-": {
-                "description": "Extends others which is exposed by '->'",
-                "oneOf": [
-                  {
-                    "type": "string"
-                  },
-                  {
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    }
-                  }
-                ]
+                "description": "Check conditional to decide to run it or NOT"
               }
             },
             {
-              "$ref": "#/definitions/time",
               "description": "Delay time"
             }
           ]
@@ -289,17 +178,14 @@
               "additionalProperties": false,
               "properties": {
                 "title": {
-                  "$ref": "#/definitions/getVar",
                   "description": "Description"
                 },
                 "time": {
-                  "$ref": "#/definitions/time",
                   "description": "Delay time"
                 }
               },
               "async": {
                 "description": "Run asynchronized",
-                "$ref": "#/definitions/getVarBooleanString",
                 "examples": [
                   "true",
                   "false",
@@ -308,7 +194,6 @@
               },
               "loop": {
                 "description": "Conditional to check before loop steps. ($.loopValue, $.loopKey)",
-                "$ref": "#/definitions/getVarAny",
                 "examples": [
                   "${[1,2,3,4]}",
                   "${{key1: value1, key2: value2}}",
@@ -317,48 +202,16 @@
                 ]
               },
               "logLevel": {
-                "description": "How to show log",
-                "$ref": "#/definitions/logLevel"
+                "description": "How to show log"
               },
               "delay": {
-                "description": "Delay in specific time before keep playing the next",
-                "$ref": "#/definitions/time"
+                "description": "Delay in specific time before keep playing the next"
               },
               "if": {
-                "description": "Check conditional to decide to run it or NOT",
-                "$ref": "#/definitions/getVarBooleanString"
-              },
-              "->": {
-                "description": "Expose for others extends",
-                "oneOf": [
-                  {
-                    "type": "string"
-                  },
-                  {
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    }
-                  }
-                ]
-              },
-              "<-": {
-                "description": "Extends others which is exposed by '->'",
-                "oneOf": [
-                  {
-                    "type": "string"
-                  },
-                  {
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    }
-                  }
-                ]
+                "description": "Check conditional to decide to run it or NOT"
               }
             },
             {
-              "$ref": "#/definitions/time",
               "description": "Delay time"
             },
             {
@@ -376,9 +229,7 @@
         "UserInput": {
           "description": "Get input from user keyboard",
           "type": "array",
-          "items": {
-            "$ref": "#/definitions/userinput"
-          }
+          "items": {}
         }
       }
     },
@@ -394,23 +245,17 @@
           ],
           "additionalProperties": false,
           "properties": {
-            "title": {
-              "$ref": "#/definitions/getVar"
-            },
+            "title": {},
             "var": {
-              "description": "Set result after execution",
-              "$ref": "#/definitions/setVar"
+              "description": "Set result after execution"
             },
             "args": {
               "type": "array",
               "description": "The first is command name, then are agrs",
-              "items": {
-                "$ref": "#/definitions/getVar"
-              }
+              "items": {}
             },
             "async": {
               "description": "Run asynchronized",
-              "$ref": "#/definitions/getVarBooleanString",
               "examples": [
                 "true",
                 "false",
@@ -419,7 +264,6 @@
             },
             "loop": {
               "description": "Conditional to check before loop steps. ($.loopValue, $.loopKey)",
-              "$ref": "#/definitions/getVarAny",
               "examples": [
                 "${[1,2,3,4]}",
                 "${{key1: value1, key2: value2}}",
@@ -428,44 +272,13 @@
               ]
             },
             "logLevel": {
-              "description": "How to show log",
-              "$ref": "#/definitions/logLevel"
+              "description": "How to show log"
             },
             "delay": {
-              "description": "Delay in specific time before keep playing the next",
-              "$ref": "#/definitions/time"
+              "description": "Delay in specific time before keep playing the next"
             },
             "if": {
-              "description": "Check conditional to decide to run it or NOT",
-              "$ref": "#/definitions/getVarBooleanString"
-            },
-            "->": {
-              "description": "Expose for others extends",
-              "oneOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  }
-                }
-              ]
-            },
-            "<-": {
-              "description": "Extends others which is exposed by '->'",
-              "oneOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  }
-                }
-              ]
+              "description": "Check conditional to decide to run it or NOT"
             }
           }
         }
@@ -479,12 +292,10 @@
           "description": "Use an existed validation or method from https://www.chaijs.com/",
           "properties": {
             "title": {
-              "$ref": "#/definitions/getVar",
               "description": "Validation name"
             },
             "chai": {
               "description": "ChaiJS validator",
-              "$ref": "#/definitions/getVar",
               "examples": [
                 "${expect(userInfo).to.have.property('display_name')}",
                 "${userInfo.display_name.should.equal('thanh')}",
@@ -543,8 +354,7 @@
           }
         },
         "logLevel": {
-          "description": "Set log level to global",
-          "$ref": "#/definitions/logLevel"
+          "description": "Set log level to global"
         },
         "extensions": {
           "type": "object",
@@ -557,9 +367,7 @@
             }
           ]
         },
-        "steps": {
-          "$ref": "#/definitions/allOfSteps"
-        }
+        "steps": {}
       }
     },
     "File": {
@@ -574,24 +382,20 @@
           ],
           "properties": {
             "adapters": {
-              "description": "Adapter to parse content after read file",
-              "$ref": "#/definitions/fileAdapter"
+              "description": "Adapter to parse content after read file"
             },
             "path": {
               "type": "string",
               "description": "Path of input file"
             },
             "title": {
-              "$ref": "#/definitions/getVar",
               "description": "Description"
             },
             "var": {
-              "description": "Assign file content which after parsed to global variable",
-              "$ref": "#/definitions/setVar"
+              "description": "Assign file content which after parsed to global variable"
             },
             "async": {
               "description": "Run asynchronized",
-              "$ref": "#/definitions/getVarBooleanString",
               "examples": [
                 "true",
                 "false",
@@ -600,7 +404,6 @@
             },
             "loop": {
               "description": "Conditional to check before loop steps. ($.loopValue, $.loopKey)",
-              "$ref": "#/definitions/getVarAny",
               "examples": [
                 "${[1,2,3,4]}",
                 "${{key1: value1, key2: value2}}",
@@ -609,44 +412,13 @@
               ]
             },
             "logLevel": {
-              "description": "How to show log",
-              "$ref": "#/definitions/logLevel"
+              "description": "How to show log"
             },
             "delay": {
-              "description": "Delay in specific time before keep playing the next",
-              "$ref": "#/definitions/time"
+              "description": "Delay in specific time before keep playing the next"
             },
             "if": {
-              "description": "Check conditional to decide to run it or NOT",
-              "$ref": "#/definitions/getVarBooleanString"
-            },
-            "->": {
-              "description": "Expose for others extends",
-              "oneOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  }
-                }
-              ]
-            },
-            "<-": {
-              "description": "Extends others which is exposed by '->'",
-              "oneOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  }
-                }
-              ]
+              "description": "Check conditional to decide to run it or NOT"
             }
           }
         },
@@ -658,24 +430,20 @@
           ],
           "properties": {
             "adapters": {
-              "description": "Adapter to parse content before write to file",
-              "$ref": "#/definitions/fileAdapter"
+              "description": "Adapter to parse content before write to file"
             },
             "path": {
               "type": "string",
               "description": "Path of output file"
             },
             "title": {
-              "$ref": "#/definitions/getVar",
               "description": "Description"
             },
             "content": {
-              "$ref": "#/definitions/getVarAny",
               "description": "File content which is parsed by adapters before write to file"
             },
             "async": {
               "description": "Run asynchronized",
-              "$ref": "#/definitions/getVarBooleanString",
               "examples": [
                 "true",
                 "false",
@@ -684,7 +452,6 @@
             },
             "loop": {
               "description": "Conditional to check before loop steps. ($.loopValue, $.loopKey)",
-              "$ref": "#/definitions/getVarAny",
               "examples": [
                 "${[1,2,3,4]}",
                 "${{key1: value1, key2: value2}}",
@@ -693,44 +460,13 @@
               ]
             },
             "logLevel": {
-              "description": "How to show log",
-              "$ref": "#/definitions/logLevel"
+              "description": "How to show log"
             },
             "delay": {
-              "description": "Delay in specific time before keep playing the next",
-              "$ref": "#/definitions/time"
+              "description": "Delay in specific time before keep playing the next"
             },
             "if": {
-              "description": "Check conditional to decide to run it or NOT",
-              "$ref": "#/definitions/getVarBooleanString"
-            },
-            "->": {
-              "description": "Expose for others extends",
-              "oneOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  }
-                }
-              ]
-            },
-            "<-": {
-              "description": "Extends others which is exposed by '->'",
-              "oneOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  }
-                }
-              ]
+              "description": "Check conditional to decide to run it or NOT"
             }
           }
         }
@@ -751,8 +487,7 @@
       "additionalProperties": false,
       "properties": {
         "Templates": {
-          "description": "Declare steps which not used to run, just declared",
-          "$ref": "#/definitions/allOfSteps"
+          "description": "Declare steps which not used to run, just declared"
         }
       }
     },
@@ -768,19 +503,14 @@
           "description": "Group steps",
           "properties": {
             "title": {
-              "$ref": "#/definitions/getVar",
               "description": "Group title"
             },
             "description": {
-              "$ref": "#/definitions/getVar",
               "description": "Group description"
             },
-            "steps": {
-              "$ref": "#/definitions/allOfSteps"
-            },
+            "steps": {},
             "async": {
               "description": "Run asynchronized",
-              "$ref": "#/definitions/getVarBooleanString",
               "examples": [
                 "true",
                 "false",
@@ -789,7 +519,6 @@
             },
             "loop": {
               "description": "Conditional to check before loop steps. ($.loopValue, $.loopKey)",
-              "$ref": "#/definitions/getVarAny",
               "examples": [
                 "${[1,2,3,4]}",
                 "${{key1: value1, key2: value2}}",
@@ -798,44 +527,13 @@
               ]
             },
             "logLevel": {
-              "description": "How to show log",
-              "$ref": "#/definitions/logLevel"
+              "description": "How to show log"
             },
             "delay": {
-              "description": "Delay in specific time before keep playing the next",
-              "$ref": "#/definitions/time"
+              "description": "Delay in specific time before keep playing the next"
             },
             "if": {
-              "description": "Check conditional to decide to run it or NOT",
-              "$ref": "#/definitions/getVarBooleanString"
-            },
-            "->": {
-              "description": "Expose for others extends",
-              "oneOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  }
-                }
-              ]
-            },
-            "<-": {
-              "description": "Extends others which is exposed by '->'",
-              "oneOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  }
-                }
-              ]
+              "description": "Check conditional to decide to run it or NOT"
             }
           }
         }
@@ -847,7 +545,6 @@
           "type": "object",
           "properties": {
             "title": {
-              "$ref": "#/definitions/getVar",
               "description": "Description"
             },
             "pretty": {
@@ -878,12 +575,10 @@
               "description": "Customize output by your code"
             },
             "message": {
-              "description": "Message which is printed to screen",
-              "$ref": "#/definitions/getVarAny"
+              "description": "Message which is printed to screen"
             },
             "async": {
               "description": "Run asynchronized",
-              "$ref": "#/definitions/getVarBooleanString",
               "examples": [
                 "true",
                 "false",
@@ -892,7 +587,6 @@
             },
             "loop": {
               "description": "Conditional to check before loop steps. ($.loopValue, $.loopKey)",
-              "$ref": "#/definitions/getVarAny",
               "examples": [
                 "${[1,2,3,4]}",
                 "${{key1: value1, key2: value2}}",
@@ -901,50 +595,17 @@
               ]
             },
             "logLevel": {
-              "description": "How to show log",
-              "$ref": "#/definitions/logLevel"
+              "description": "How to show log"
             },
             "delay": {
-              "description": "Delay in specific time before keep playing the next",
-              "$ref": "#/definitions/time"
+              "description": "Delay in specific time before keep playing the next"
             },
             "if": {
-              "description": "Check conditional to decide to run it or NOT",
-              "$ref": "#/definitions/getVarBooleanString"
-            },
-            "->": {
-              "description": "Expose for others extends",
-              "oneOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  }
-                }
-              ]
-            },
-            "<-": {
-              "description": "Extends others which is exposed by '->'",
-              "oneOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  }
-                }
-              ]
+              "description": "Check conditional to decide to run it or NOT"
             }
           }
         },
-        {
-          "$ref": "#/definitions/getVar"
-        }
+        {}
       ],
       "examples": [
         "${varName}"
@@ -956,36 +617,27 @@
       "additionalProperties": false,
       "properties": {
         "Echo/Schema": {
-          "description": "Print object schema to screen",
-          "$ref": "#/definitions/echo"
+          "description": "Print object schema to screen"
         },
         "Echo/Green": {
-          "description": "Print data to screen with text color is Green",
-          "$ref": "#/definitions/echo"
+          "description": "Print data to screen with text color is Green"
         },
         "Echo/Blue": {
-          "description": "Print data to screen with text color is Blue",
-          "$ref": "#/definitions/echo"
+          "description": "Print data to screen with text color is Blue"
         },
         "Echo/Red": {
-          "description": "Print data to screen with text color is Red",
-          "$ref": "#/definitions/echo"
+          "description": "Print data to screen with text color is Red"
         },
         "Echo/Cyan": {
-          "description": "Print data to screen with text color is Cyan",
-          "$ref": "#/definitions/echo"
+          "description": "Print data to screen with text color is Cyan"
         },
         "Echo/Yellow": {
-          "description": "Print data to screen with text color is Yellow",
-          "$ref": "#/definitions/echo"
+          "description": "Print data to screen with text color is Yellow"
         },
         "Echo/Gray": {
-          "description": "Print data to screen with text color is Gray",
-          "$ref": "#/definitions/echo"
+          "description": "Print data to screen with text color is Gray"
         },
-        "Echo": {
-          "$ref": "#/definitions/echo"
-        }
+        "Echo": {}
       }
     },
     "Clear": {
@@ -1060,7 +712,6 @@
       }
     },
     "time": {
-      "$ref": "#/definitions/getVarNumberString",
       "examples": [
         "1000",
         "1000ms",
@@ -1077,45 +728,19 @@
           {
             "type": "string"
           },
-          {
-            "$ref": "#/definitions/Clear"
-          },
-          {
-            "$ref": "#/definitions/DocGuideMD"
-          },
-          {
-            "$ref": "#/definitions/Echo"
-          },
-          {
-            "$ref": "#/definitions/Exec"
-          },
-          {
-            "$ref": "#/definitions/File"
-          },
-          {
-            "$ref": "#/definitions/Group"
-          },
-          {
-            "$ref": "#/definitions/Pause"
-          },
-          {
-            "$ref": "#/definitions/Script"
-          },
-          {
-            "$ref": "#/definitions/Delay"
-          },
-          {
-            "$ref": "#/definitions/Templates"
-          },
-          {
-            "$ref": "#/definitions/UserInput"
-          },
-          {
-            "$ref": "#/definitions/Validate"
-          },
-          {
-            "$ref": "#/definitions/Vars"
-          }
+          {},
+          {},
+          {},
+          {},
+          {},
+          {},
+          {},
+          {},
+          {},
+          {},
+          {},
+          {},
+          {}
         ]
       }
     },
@@ -1243,20 +868,16 @@
       "additionalProperties": false,
       "properties": {
         "title": {
-          "$ref": "#/definitions/getVar",
           "description": "Question title"
         },
         "var": {
-          "description": "Assign user input value to",
-          "$ref": "#/definitions/setVar"
+          "description": "Assign user input value to"
         },
         "required": {
-          "description": "User input must be required",
-          "$ref": "#/definitions/getVarBooleanString"
+          "description": "User input must be required"
         },
         "pattern": {
-          "description": "Pattern to validate",
-          "$ref": "#/definitions/getVarString"
+          "description": "Pattern to validate"
         },
         "format": {
           "type": "string",
@@ -1288,8 +909,7 @@
           ]
         },
         "default": {
-          "description": "Init value",
-          "$ref": "#/definitions/getVar"
+          "description": "Init value"
         },
         "choices": {
           "type": "array",
@@ -1300,21 +920,16 @@
               "value"
             ],
             "properties": {
-              "title": {
-                "$ref": "#/definitions/getVar"
-              },
+              "title": {},
               "description": {
                 "type": "string"
               },
-              "value": {
-                "$ref": "#/definitions/getVar"
-              }
+              "value": {}
             }
           }
         },
         "async": {
           "description": "Run asynchronized",
-          "$ref": "#/definitions/getVarBooleanString",
           "examples": [
             "true",
             "false",
@@ -1323,7 +938,6 @@
         },
         "loop": {
           "description": "Conditional to check before loop steps. ($.loopValue, $.loopKey)",
-          "$ref": "#/definitions/getVarAny",
           "examples": [
             "${[1,2,3,4]}",
             "${{key1: value1, key2: value2}}",
@@ -1332,44 +946,13 @@
           ]
         },
         "logLevel": {
-          "description": "How to show log",
-          "$ref": "#/definitions/logLevel"
+          "description": "How to show log"
         },
         "delay": {
-          "description": "Delay in specific time before keep playing the next",
-          "$ref": "#/definitions/time"
+          "description": "Delay in specific time before keep playing the next"
         },
         "if": {
-          "description": "Check conditional to decide to run it or NOT",
-          "$ref": "#/definitions/getVarBooleanString"
-        },
-        "->": {
-          "description": "Expose for others extends",
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          ]
-        },
-        "<-": {
-          "description": "Extends others which is exposed by '->'",
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          ]
+          "description": "Check conditional to decide to run it or NOT"
         }
       }
     }
@@ -1383,12 +966,10 @@
       ],
       "properties": {
         "title": {
-          "$ref": "#/definitions/getVar",
           "description": "Validation name"
         },
         "chai": {
           "description": "ChaiJS validator",
-          "$ref": "#/definitions/getVar",
           "examples": [
             "${expect(userInfo).to.have.property('display_name')}",
             "${userInfo.display_name.should.equal('thanh')}",
@@ -1400,7 +981,6 @@
     "defaultAttrs": {
       "async": {
         "description": "Run asynchronized",
-        "$ref": "#/definitions/getVarBooleanString",
         "examples": [
           "true",
           "false",
@@ -1409,7 +989,6 @@
       },
       "loop": {
         "description": "Conditional to check before loop steps. ($.loopValue, $.loopKey)",
-        "$ref": "#/definitions/getVarAny",
         "examples": [
           "${[1,2,3,4]}",
           "${{key1: value1, key2: value2}}",
@@ -1418,44 +997,13 @@
         ]
       },
       "logLevel": {
-        "description": "How to show log",
-        "$ref": "#/definitions/logLevel"
+        "description": "How to show log"
       },
       "delay": {
-        "description": "Delay in specific time before keep playing the next",
-        "$ref": "#/definitions/time"
+        "description": "Delay in specific time before keep playing the next"
       },
       "if": {
-        "description": "Check conditional to decide to run it or NOT",
-        "$ref": "#/definitions/getVarBooleanString"
-      },
-      "->": {
-        "description": "Expose for others extends",
-        "oneOf": [
-          {
-            "type": "string"
-          },
-          {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          }
-        ]
-      },
-      "<-": {
-        "description": "Extends others which is exposed by '->'",
-        "oneOf": [
-          {
-            "type": "string"
-          },
-          {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          }
-        ]
+        "description": "Check conditional to decide to run it or NOT"
       }
     }
   }

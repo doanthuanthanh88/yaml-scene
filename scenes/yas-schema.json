@@ -307,7 +307,7 @@
               "description": "Description"
             },
             "content": {
-              "$ref": "#/definitions/getVarString",
+              "$ref": "#/definitions/getVarAny",
               "description": "File content which is parsed by adapters before write to file"
             }
           }
@@ -340,7 +340,6 @@
       "properties": {
         "Group": {
           "required": [
-            "title",
             "steps"
           ],
           "type": "object",
@@ -383,15 +382,14 @@
             "color": {
               "type": "string",
               "description": "Set text color",
-              "enum": [
+              "examples": [
                 "red",
                 "blue",
                 "cyan",
                 "green",
                 "gray",
                 "yellow"
-              ],
-              "default": "white"
+              ]
             },
             "transforms": {
               "type": [
@@ -664,7 +662,7 @@
     "fileAdapter": {
       "type": "array",
       "items": {
-        "oneOf": [
+        "anyOf": [
           {
             "description": "Adapter name",
             "type": "string",
@@ -679,7 +677,17 @@
           },
           {
             "description": "Adapter name and configuration",
-            "type": "object"
+            "type": "object",
+            "examples": [
+              {
+                "json": {
+                  "pretty": true
+                }
+              },
+              {
+                "Password": "my password"
+              }
+            ]
           },
           {
             "description": "Adapter name",

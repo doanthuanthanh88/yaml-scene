@@ -18,6 +18,7 @@ export class Simulator {
     const { env, logLevel = 'error', password, listener } = opts
 
     const scenario = new Scenario()
+    await scenario.setup()
     scenario.loggerFactory.setLogger(undefined, logLevel)
     const tmpFile = join(tmpdir(), Date.now() + '_' + Math.random() + ".yas.yaml")
     try {

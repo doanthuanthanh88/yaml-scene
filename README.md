@@ -56,7 +56,7 @@ Install via `npm` or `yarn`
 4. Merge `json schema` of list extensions then save in a file which is used for validation or suggestion purpose.  
 Example [Integrate with Visual Studio Code](https://github.com/doanthuanthanh88/yaml-scene/wiki/Visual-Studio-Code)
 ```sh
-  yas schema -o ~/yaml-scene.yas.json -f https://raw.githubusercontent.com/doanthuanthanh88/yaml-scene/main/schema.json \
+  yas schema -f https://raw.githubusercontent.com/doanthuanthanh88/yaml-scene/main/schema.json \
     https://raw.githubusercontent.com/doanthuanthanh88/yas-http/main/schema.json \
     https://raw.githubusercontent.com/doanthuanthanh88/yas-grpc/main/schema.json
 ```

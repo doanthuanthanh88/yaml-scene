@@ -9,6 +9,7 @@ export class Main {
   static async Exec() {
 
     let scenario = new Scenario()
+    await scenario.setup()
 
     const helper = new Helper(scenario)
     let isRun = await helper.exec()
@@ -65,6 +66,7 @@ export class Main {
       }
       if (isRun) {
         scenario = new Scenario()
+        await scenario.setup()
       }
     }
     return scenario

@@ -74,13 +74,12 @@ export class Helper {
         .description('Merge schemas of extensions')
         .argument("<urls...>", "Schema.json files")
         .option("-f, --mainFile <string>", `Yaml-schema json schema`)
-        .option("-o, --outputFile <string>", `Output schema`)
         .action(async (urls: string[], opts: any) => {
           const jsonSchema = new JSONSchema(this.scenario)
-          await jsonSchema.init(opts['mainFile'] || join(__dirname, '../schema.json'))
-          await jsonSchema.addSchema(urls)
-          const fout = await jsonSchema.save(opts.outputFile)
-          console.log(chalk.green(`Scheme is generated to ${chalk.bold(fout)}`))
+          await jsonSchema.init(opts['mainFile'])
+          await jsonSchema.addSchema(...urls)
+          const fout = await jsonSchema.save()
+          console.log(chalk.green(`Yaml-scene scheme is generated. "${chalk.bold(fout)}"`))
           isRunScenario = false
         })
       )
@@ -90,6 +89,22 @@ export class Helper {
         .argument("<extensions...>", "Extensions package in npm registry")
         .action(async (extensionNames) => {
           await this.installExtensions(extensionNames)
+
+          const jsonSchema = new JSONSchema(this.scenario)
+          await jsonSchema.init()
+          await jsonSchema.merge(join(__dirname, '../schema.yas.json'))
+          let extensions = []
+          for (const extensionNameFullVer of extensionNames) {
+            const [extensionName] = extensionNameFullVer.split('@')
+            try {
+              const extension = this.scenario.extensions.load(`${extensionName}/schema.json`, undefined, null)
+              extensions.push(extension)
+            } catch { }
+          }
+          await jsonSchema.addSchema(...extensions)
+          const fout = await jsonSchema.save()
+          console.log(chalk.green(`Yaml-scene scheme is updated. "${chalk.bold(fout)}"`))
+          isRunScenario = false
         })
       )
       .addCommand(program
@@ -98,6 +113,18 @@ export class Helper {
         .argument("<extensions...>", "Extensions package in npm registry")
         .action(async (extensionNames) => {
           await this.uninstallExtensions(extensionNames)
+
+          const jsonSchema = new JSONSchema(this.scenario)
+          await jsonSchema.init()
+          await jsonSchema.merge(join(__dirname, '../schema.yas.json'))
+          for (const extensionNameFullVer of extensionNames) {
+            const [extensionName] = extensionNameFullVer.split('@')
+            try {
+              jsonSchema.removeSchema(extensionName)
+            } catch { }
+          }
+          const fout = await jsonSchema.save()
+          console.log(chalk.green(`Yaml-scene scheme is updated. "${chalk.bold(fout)}"`))
           isRunScenario = false
         })
       )

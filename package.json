@@ -51,6 +51,7 @@
     "lodash.clonedeep": "^4.5.0",
     "lodash.merge": "^4.6.2",
     "lodash.omit": "^4.5.0",
+    "lodash.uniqwith": "^4.5.0",
     "loglevel": "^1.8.0",
     "prompts": "^2.4.0",
     "to-json-schema": "^0.2.5",

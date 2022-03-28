@@ -604,7 +604,8 @@ Refer to [File/Reader](.) to decrypt content
     title: Write json file 2 without password
     path: assets/data2.json
     adapters:
-      - Json                         # Convert data type is Json to string before save to file
+      - Json:                         # Convert data type is Json to string before save to file
+          pretty: true                # Pretty format before write to file
     content:
       - [name, age]
       - [name01, 1]

@@ -30,17 +30,17 @@ export class Extensions {
     return this.extensionElements[name]
   }
 
-  load(p: string, modulePath = '') {
+  load(p: string, modulePath = '', defaultKey = 'default') {
     let obj: any;
     try {
       obj = require(join(modulePath, p));
-      obj = obj.default || obj[p]
+      if (defaultKey !== null) obj = obj[defaultKey] || obj[p]
       return obj
     } catch {
       if (this.extensionElements[p]) return this.extensionElements[p]
       try {
         obj = require(p);
-        obj = obj.default || obj[p]
+        if (defaultKey !== null) obj = obj[defaultKey] || obj[p]
         this.extensionElements[p] = obj
         return obj
       } catch {
@@ -50,7 +50,7 @@ export class Extensions {
           throw new ExtensionNotFound(p, `Please install module "${p}" by command "yas add ${p.split('/')[0]}"`)
         }
         obj = require(modulePath)
-        obj = obj.default || obj[p]
+        if (defaultKey !== null) obj = obj[defaultKey] || obj[p]
         this.extensionElements[p] = obj
         // } catch (err) {
         //   const logger = this.scenario.loggerFactory.getLogger()
@@ -85,11 +85,6 @@ export class Extensions {
         })
       }
     })
-  }
-
-  async setup(extensions = {} as { [name: string]: string }) {
-    await this.loadNpmYarnGlobalPaths()
-    await this.registerGlobalExtension(extensions)
   }
 
   async uninstall() {
@@ -168,7 +163,7 @@ export class Extensions {
     await Extensions.InstallPackage(installInfo, this.scenario.loggerFactory.getLogger())
   }
 
-  private async loadNpmYarnGlobalPaths() {
+  async loadNpmYarnGlobalPaths() {
     const globalDirs = await Promise.all([
       (async () => {
         try {

@@ -23,6 +23,6 @@
         "!function scalar",
     ],
     "yaml.schemas": {
-        "schema.json": "*.yas.yaml"
+        "schema.yas.json": "*.yas.yaml"
     }
 }
