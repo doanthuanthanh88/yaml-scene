@@ -1,6 +1,6 @@
 {
   "name": "yaml-scene",
-  "version": "1.0.15",
+  "version": "1.0.16-alpha.0",
   "description": "Platform to do everything with only yaml scenario files",
   "keywords": [
     "yaml",
