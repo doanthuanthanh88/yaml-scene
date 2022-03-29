@@ -1,3 +1,4 @@
+import { TraceError } from "@app/utils/error/TraceError";
 import { AbsQuestion } from "../AbsQuestion";
 import { QuestionType } from "../QuestionType";
 
@@ -7,7 +8,7 @@ export class SelectQuestion extends AbsQuestion {
 
   constructor(config: any) {
     if (!config.choices) {
-      throw new Error(`Need add choices in SelectQuestion type`)
+      throw new TraceError(`Need add choices in SelectQuestion type`, { config })
     }
     super(config)
     this.choices = config.choices

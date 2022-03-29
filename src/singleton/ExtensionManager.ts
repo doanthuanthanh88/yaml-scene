@@ -1,6 +1,7 @@
 import Exec from "@app/elements/Exec";
 import { Simulator } from "@app/Simulator";
 import { Scenario } from "@app/singleton/Scenario";
+import { TraceError } from "@app/utils/error/TraceError";
 import chalk from "chalk";
 import { execSync } from "child_process";
 import { existsSync, rmSync } from "fs";
@@ -117,8 +118,31 @@ export class ExtensionManager {
       }
     }
     if (errors.length === cmds.length) {
-      errors.forEach(err => LoggerManager.GetLogger().error(err))
-      throw new Error(`Could not install "${dependencies}" to ${global ? 'global' : `"${localPath}"`}`)
+      throw new TraceError(`Could not install "${dependencies}" to ${global ? 'global' : `"${localPath}"`}`, { errors })
+    }
+  }
+
+  static async UpgradePackage(installInfo: { dependencies: string[], localPath?: string }) {
+    let cmds = []
+    const { dependencies = [], localPath = join(__dirname, '../../') } = installInfo
+    cmds = [
+      { title: 'in yarn global', cmd: ['yarn', 'global', 'upgrade', ...dependencies] },
+      { title: 'in npm global', cmd: ['npm', 'upgrade', '-g', ...dependencies] },
+      { title: `yarn local at ${localPath}`, cmd: ['cd', localPath, '&&', 'yarn', 'upgrade', ...dependencies].filter(e => e) },
+      { title: `npm local at ${localPath}`, cmd: ['cd', localPath, '&&', 'npm', 'upgrade', ...dependencies].filter(e => e) },
+    ]
+    let errors = []
+    LoggerManager.GetLogger().info(chalk.red(`Upgrading ...`))
+    for (const { title, cmd } of cmds) {
+      try {
+        Exec.Run(cmd)
+        dependencies.forEach(e => LoggerManager.GetLogger().info(chalk.red(`✔ ${e} ${chalk.gray(title)}`)))
+      } catch (err) {
+        errors.push(err)
+      }
+    }
+    if (errors.length === cmds.length) {
+      throw new TraceError(`Could not upgrade "${dependencies}" to ${global ? 'global' : `"${localPath}"`}`, { errors })
     }
   }
 
@@ -150,8 +174,7 @@ export class ExtensionManager {
       }
     }
     if (errors.length) {
-      errors.forEach(err => LoggerManager.GetLogger().error(err))
-      throw new Error(`Could not install "${dependencies}" to ${global ? 'global' : `"${localPath}"`}`)
+      throw new TraceError(`Could not install "${dependencies}" to ${global ? 'global' : `"${localPath}"`}`, { errors })
     }
   }
 

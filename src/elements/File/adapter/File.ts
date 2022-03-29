@@ -1,11 +1,12 @@
-import { IFileAdapter } from "./IFileAdapter";
+import { TraceError } from "@app/utils/error/TraceError";
 import { readFileSync, writeFileSync } from 'fs';
+import { IFileAdapter } from "./IFileAdapter";
 
 export class File implements IFileAdapter {
 
   constructor(public path: string) {
     if (!path) {
-      throw new Error(`"Path" is required`)
+      throw new TraceError(`"Path" is required`)
     }
   }
 

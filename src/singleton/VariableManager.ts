@@ -1,3 +1,9 @@
+import { AES } from "@app/utils/encrypt/AES"
+import { Base64 } from "@app/utils/encrypt/Base64"
+import { MD5 } from "@app/utils/encrypt/MD5"
+import { TraceError } from "@app/utils/error/TraceError"
+import chalk from "chalk"
+
 export class VariableManager {
   private static readonly _NavPattern = /^(\$\{){1}([^\}]+)\}$/
   private static _Instance: VariableManager
@@ -9,23 +15,20 @@ export class VariableManager {
   readonly vars = {} as { [key: string]: any }
 
   constructor() {
-    Object.defineProperties(this.vars, {
-      $$base64: {
-        get() {
-          return require('../utils/encrypt/Base64').Base64.Instance
-        }
+    this.vars = {
+      get $$base64() {
+        return Base64.Instance
       },
-      $$md5: {
-        get() {
-          return require('../utils/encrypt/MD5').MD5.Instance
-        }
+      get $$md5() {
+        return MD5.Instance
       },
-      $$text: {
-        get() {
-          return require('chalk')
-        }
-      }
-    })
+      get $$aes() {
+        return AES.Instance
+      },
+      get $$text() {
+        return chalk
+      },
+    }
   }
 
   reset() {
@@ -62,25 +65,29 @@ export class VariableManager {
         const vl = this.get(varObj[key], obj)
         this.vars[key] = vl
       })
+    } else {
+      const error = new TraceError('VariableManager.set() only support "string" or "object" type', {
+        varObj,
+        obj,
+        defaultKey
+      })
+      throw error
     }
   }
 
   eval(obj: any, baseCtx?: any) {
     if (!obj) return obj
-    let ctx: any
-    if (baseCtx) {
-      ctx = { ...this.vars, ...baseCtx }
-    } else {
-      ctx = this.vars
-    }
     if (Array.isArray(obj)) {
+      const ctx = { ...this.vars, ...baseCtx }
       obj = obj.map(o => this.get(o, ctx))
     } else if (typeof obj === 'object') {
+      const ctx = { ...this.vars, ...baseCtx }
       for (const key in obj) {
         obj[key] = this.get(obj[key], ctx)
       }
     } else if (typeof obj === 'string') {
       let vl;
+      const ctx = { ...this.vars, ...baseCtx }
       const isAsync = obj.includes('await ')
       const evalStr = `vl = (${isAsync ? 'async' : ''}({${Object.keys(ctx).join(',')}}) => { 
         ${obj}
@@ -91,25 +98,22 @@ export class VariableManager {
     return obj
   }
 
-  get(obj: any, baseCtx?: any) {
+  get(obj: any, baseCtx?: any, isPassed?: boolean) {
     if (!obj) return obj
-    let ctx: any
-    if (baseCtx) {
-      ctx = { ...this.vars, ...baseCtx }
-    } else {
-      ctx = this.vars
-    }
     if (Array.isArray(obj)) {
-      obj = obj.map(o => this.get(o, ctx))
+      const ctx = isPassed ? baseCtx : { ...this.vars, ...baseCtx }
+      obj = obj.map(o => this.get(o, ctx, true))
     } else if (typeof obj === 'object') {
+      const ctx = isPassed ? baseCtx : { ...this.vars, ...baseCtx }
       for (const key in obj) {
-        obj[key] = this.get(obj[key], ctx)
+        obj[key] = this.get(obj[key], ctx, true)
       }
     } else if (typeof obj === 'string' && obj.includes('${')) {
       let vl;
+      const ctx = isPassed ? baseCtx : { ...this.vars, ...baseCtx }
       let evalStr = `let {${Object.keys(ctx).join(',')}} = ctx;\n`
-      let m
-      if (m = obj.match(VariableManager._NavPattern)) {
+      const m = obj.match(VariableManager._NavPattern)
+      if (m) {
         evalStr += `vl = ${m[2]}`
       } else {
         evalStr += `vl = \`${obj}\``

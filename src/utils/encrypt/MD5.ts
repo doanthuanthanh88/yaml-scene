@@ -1,4 +1,5 @@
 import { createHash } from 'crypto';
+import { TraceError } from '../error/TraceError';
 import { Encrypt } from "./Encrypt";
 
 export class MD5 implements Encrypt {
@@ -13,7 +14,7 @@ export class MD5 implements Encrypt {
   }
 
   decrypt(_data: any) {
-    throw new Error('Could not decode md5')
+    throw new TraceError('Could not decode md5')
   }
 
 }

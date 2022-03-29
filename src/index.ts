@@ -6,6 +6,7 @@ import { Scenario } from "./singleton/Scenario";
 import { ScenarioMonitor } from "./singleton/Scenario/ScenarioMonitor";
 import { VariableManager } from "./singleton/VariableManager";
 import { ExtensionNotFound } from "./utils/error/ExtensionNotFound";
+import { TraceError } from "./utils/error/TraceError";
 
 export class Main {
 
@@ -61,7 +62,11 @@ export class Main {
   try {
     await Main.Exec()
   } catch (err) {
-    console.error(chalk.red(err.message))
+    if (err instanceof TraceError && err.info) {
+      console.group('TraceErrorData:')
+      console.log(JSON.stringify(err.info, null, '  '))
+      console.groupEnd()
+    }
     throw err
   }
 })()

@@ -102,6 +102,32 @@ export class CLI {
         })
       )
       .addCommand(program
+        .createCommand('upgrade')
+        .description('Upgrade `yaml-scene` or extensions')
+        .argument("[extensions...]", "ExtensionManager package in npm registry")
+        .action(async (extensionNames) => {
+          if (!extensionNames.length) extensionNames.push('yaml-scene')
+          const isOK = await this.upgradeExtensions(extensionNames)
+          if (isOK) {
+            const jsonSchema = new JSONSchema()
+            await jsonSchema.init()
+            await jsonSchema.merge(join(__dirname, '../../schema.yas.json'))
+            let extensions = []
+            for (const extensionNameFullVer of extensionNames) {
+              const [extensionName] = extensionNameFullVer.split('@')
+              try {
+                const extension = ExtensionManager.Instance.load(`${extensionName}/schema.json`, undefined, null)
+                extensions.push(extension)
+              } catch { }
+            }
+            await jsonSchema.addSchema(...extensions)
+            const fout = await jsonSchema.save()
+            LoggerManager.GetLogger().info(chalk.green(`Yaml-scene scheme is updated. "${chalk.bold(fout)}"`))
+          }
+          isRunScenario = false
+        })
+      )
+      .addCommand(program
         .createCommand('remove')
         .description('Remove the extensions')
         .argument("<extensions...>", "ExtensionManager package in npm registry")
@@ -217,6 +243,15 @@ export class CLI {
     extensionNames = extensionNames.map(e => e.trim()).filter(e => e)
     if (!extensionNames) return false
     await ExtensionManager.UninstallPackage({
+      dependencies: extensionNames
+    })
+    return true
+  }
+
+  async upgradeExtensions(extensionNames: string[]) {
+    extensionNames = extensionNames.map(e => e.trim()).filter(e => e)
+    if (!extensionNames) return false
+    await ExtensionManager.UpgradePackage({
       dependencies: extensionNames
     })
     return true

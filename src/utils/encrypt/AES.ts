@@ -2,14 +2,21 @@ import { createCipheriv, createDecipheriv, createHash, randomBytes } from "crypt
 import { Encrypt } from "./Encrypt";
 
 export class AES implements Encrypt {
-  salt: Buffer
-  constructor(salt: string) {
-    this.salt = Buffer.from(salt)
+  private static _Instance: AES
+
+  static get Instance() {
+    return this._Instance || (this._Instance = new AES())
   }
 
-  encrypt(text: string) {
+  salt: Buffer
+  constructor(salt?: string) {
+    if (salt) this.salt = Buffer.from(salt)
+  }
+
+  encrypt(text: string, _salt?: string) {
+    const salt = _salt ? Buffer.from(_salt) : this.salt
     const hash = createHash("sha1")
-    hash.update(this.salt);
+    hash.update(salt);
     const key = hash.digest().slice(0, 16);
     const iv = randomBytes(16)
     const cipher = createCipheriv('aes-128-cbc', key, iv)
@@ -17,9 +24,10 @@ export class AES implements Encrypt {
     return iv.toString('hex') + ':' + encrypted.toString('hex')
   }
 
-  decrypt(text: string) {
+  decrypt(text: string, _salt?: string) {
+    const salt = _salt ? Buffer.from(_salt) : this.salt
     const hash = createHash("sha1")
-    hash.update(this.salt);
+    hash.update(salt);
     const key = hash.digest().slice(0, 16);
     const textParts = text.split(':')
     const iv = Buffer.from(textParts.shift(), 'hex')

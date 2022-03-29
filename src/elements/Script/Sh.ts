@@ -1,3 +1,4 @@
+import { TraceError } from "@app/utils/error/TraceError";
 import { existsSync, writeFileSync } from "fs";
 import { unlink } from "fs/promises";
 import { tmpdir } from "os";
@@ -67,7 +68,7 @@ export default class Sh extends Exec {
   prepare() {
     this.content = this.proxy.getVar(this.content)
     this.args = this.proxy.getVar(this.args)
-    if (!this.content) throw new Error('Shell script is required')
+    if (!this.content) throw new TraceError('Shell script is required')
     if (!this.args?.length) {
       this.args = [this.bin, `${this.tempFile}`]
     }

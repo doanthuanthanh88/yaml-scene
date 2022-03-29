@@ -1,3 +1,4 @@
+import { TraceError } from "@app/utils/error/TraceError"
 import merge from "lodash.merge"
 import { AutoCompleteMultiSelectQuestion } from "./question/AutoCompleteMultiSelectQuestion"
 import { AutoCompleteQuestion } from "./question/AutoCompleteQuestion"
@@ -48,7 +49,7 @@ export class QuestionBuilder {
 
   var(varName: string) {
     if (!varName) {
-      throw new Error('Need declare "var" to assign value to')
+      throw new TraceError('"var" is required')
     }
     this._config.var = varName
     return this
@@ -103,7 +104,7 @@ export class QuestionBuilder {
       case QuestionType.DATE:
         return new DateQuestion(this._config)
       default:
-        throw new Error(`Could not found Question Type "${this.type}"`)
+        throw new TraceError(`Could not found Question Type "${this.type}"`, { QuestionBuilder: this })
     }
   }
 

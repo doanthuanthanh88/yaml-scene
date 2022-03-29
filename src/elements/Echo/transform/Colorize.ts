@@ -1,10 +1,11 @@
+import { TraceError } from "@app/utils/error/TraceError";
 import chalk from "chalk";
 import { IPrinterTransform } from "./IPrinterTransform";
 
 export class Colorize implements IPrinterTransform {
   constructor(private adapter: IPrinterTransform, public color: string) {
     if (!chalk[this.color]) {
-      throw new Error(`Echo not support color "${this.color}"`)
+      throw new TraceError(`Echo not support color "${this.color}"`)
     }
   }
 

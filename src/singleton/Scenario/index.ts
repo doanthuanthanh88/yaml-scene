@@ -6,6 +6,7 @@ import { Text } from '@app/elements/File/adapter/Text'
 import { LoggerManager } from '@app/singleton/LoggerManager'
 import { VariableManager } from '@app/singleton/VariableManager'
 import { MD5 } from '@app/utils/encrypt/MD5'
+import { TraceError } from '@app/utils/error/TraceError'
 import { FileUtils, UrlPathType } from '@app/utils/FileUtils'
 import { rmSync } from 'fs'
 import { safeLoad } from 'js-yaml'
@@ -122,7 +123,7 @@ export class Scenario {
     const scenarioObject = await this.getScenarioFile(scenarioFile, password)
 
     const { extensions, install, vars, logLevel, ...scenarioProps } = scenarioObject
-    if (!scenarioProps) throw new Error('File scenario is not valid')
+    if (!scenarioProps) throw new TraceError('File scenario is not valid', { scenarioFile, scenarioObject })
 
     LoggerManager.SetDefaultLoggerLevel(logLevel)
 
@@ -171,7 +172,7 @@ export class Scenario {
   }
 
   private async getScenarioFile(scenarioFile: string | object, password: string) {
-    if (typeof scenarioFile !== 'string') throw new Error('Scenario must be a path of file')
+    if (typeof scenarioFile !== 'string') throw new TraceError('Scenario must be a path of file')
 
     this.events.emit('scenario.init', { time: Date.now() })
 
@@ -193,10 +194,10 @@ export class Scenario {
     if (Array.isArray(scenarioObject)) {
       scenarioObject = { title: basename(this.scenarioFile), steps: scenarioObject.flat() }
     }
-    if (typeof scenarioObject !== 'object') throw new Error('Scenario must be an object or array')
+    if (typeof scenarioObject !== 'object') throw new TraceError('Scenario must be an object or array', { scenarioObject })
 
     const { password: pwd, ...scenarioProps } = scenarioObject
-    if (!scenarioProps) throw new Error('File scenario is not valid')
+    if (!scenarioProps) throw new TraceError('File scenario is not valid', { scenarioObject })
 
     if (pwd && !this.isRunningRemote) {
       this.password = this.getPassword(pwd)

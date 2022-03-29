@@ -1,10 +1,11 @@
+import { TraceError } from "@app/utils/error/TraceError"
 import { TimeUtils } from "@app/utils/TimeUtils"
 import chalk from "chalk"
 import merge from "lodash.merge"
+import Delay from "../Delay"
 import { ElementFactory } from "../ElementFactory"
 import { ElementProxy } from "../ElementProxy"
 import { IElement } from "../IElement"
-import Delay from "../Delay"
 import { QuestionBuilder } from "../UserInput/QuestionBuilder"
 import { QuestionType } from "../UserInput/QuestionType"
 
@@ -70,7 +71,7 @@ export default class Pause implements IElement {
     try {
       const rs = await ques.exec()
       if (!rs) {
-        throw new Error('Stop')
+        throw new TraceError('Stop')
       }
     } finally {
       tm && clearTimeout(tm)

@@ -1,4 +1,5 @@
 import { IElement } from "@app/elements/IElement"
+import { TraceError } from "@app/utils/error/TraceError"
 import cloneDeep from "lodash.clonedeep"
 import omit from "lodash.omit"
 
@@ -21,7 +22,7 @@ export class TemplateManager extends Map<string, IElement> {
   getElement(name: string) {
     const elem = super.get(name)
     if (elem) return elem.clone ? elem.clone() : cloneDeep(elem)
-    throw new Error(`Could not found template "${name}"`)
+    throw new TraceError(`Could not found template "${name}"`)
   }
 
 }

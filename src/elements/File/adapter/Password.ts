@@ -1,12 +1,13 @@
-import { AES as AESEncrypt } from '@app/utils/encrypt/AES';
+import { AES } from '@app/utils/encrypt/AES';
+import { TraceError } from '@app/utils/error/TraceError';
 import { IFileAdapter } from "./IFileAdapter";
 
 export class Password implements IFileAdapter {
-  private aes: AESEncrypt
+  private aes: AES
 
   constructor(private file: IFileAdapter, password) {
-    if (!password) throw new Error('Password is required')
-    this.aes = new AESEncrypt(password)
+    if (!password) throw new TraceError('Password is required')
+    this.aes = new AES(password)
   }
 
   async read() {

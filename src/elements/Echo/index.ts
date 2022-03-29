@@ -1,3 +1,4 @@
+import { TraceError } from "@app/utils/error/TraceError"
 import merge from "lodash.merge"
 import { ElementProxy } from "../ElementProxy"
 import { IElement } from "../IElement"
@@ -79,7 +80,7 @@ export default class Echo implements IElement {
   prepare() {
     this._transformClasses = this.transforms.map(transform => {
       const transformName = typeof transform === 'string' ? transform : Object.keys(transform)[0]
-      if (!transformName) throw new Error('"transforms" is not valid')
+      if (!transformName) throw new TraceError('"transforms" is not valid', { transform })
       return {
         TransformClass: PrinterTransformFactory.GetTransform(transformName),
         args: transform[transformName]

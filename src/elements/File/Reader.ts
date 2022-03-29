@@ -1,3 +1,4 @@
+import { TraceError } from '@app/utils/error/TraceError';
 import chalk from 'chalk';
 import merge from "lodash.merge";
 import { ElementProxy } from '../ElementProxy';
@@ -197,7 +198,7 @@ export default class Reader implements IElement {
     this.path = this.proxy.resolvePath(this.path)
     this._adapterClasses = this.adapters.map(adapter => {
       const adapterName = typeof adapter === 'string' ? adapter : Object.keys(adapter)[0]
-      if (!adapterName) throw new Error('"adapters" is not valid')
+      if (!adapterName) throw new TraceError('"adapters" is not valid', { adapter })
       return {
         AdapterClass: FileAdapterFactory.GetAdapter(adapterName),
         args: adapter[adapterName]

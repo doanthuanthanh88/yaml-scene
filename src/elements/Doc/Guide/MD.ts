@@ -1,11 +1,12 @@
 import { ElementProxy } from "@app/elements/ElementProxy";
+import { File } from "@app/elements/File/adapter/File";
 import { IElement } from "@app/elements/IElement";
+import { TraceError } from "@app/utils/error/TraceError";
 import merge from "lodash.merge";
+import { Scanner } from '../Scanner';
 import { CommentExporter } from './CommentExporter';
 import { CommentInfo } from './CommentInfo';
 import { CommentParser } from './CommentParser';
-import { Scanner } from '../Scanner';
-import { File } from "@app/elements/File/adapter/File";
 
 /**
  * @guide
@@ -109,7 +110,7 @@ export default class GuideMD implements IElement {
   outFile: string
 
   init(props: any) {
-    if (!props.outFile) throw new Error(`"outFile" is required in ${this.constructor.name} `)
+    if (!props.outFile) throw new TraceError(`"outFile" is required in ${this.constructor.name}`)
     merge(this, props)
   }
 
