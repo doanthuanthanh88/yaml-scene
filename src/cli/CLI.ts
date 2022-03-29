@@ -1,34 +1,29 @@
+import { LoggerManager } from "@app/singleton/LoggerManager";
 import chalk from "chalk";
 import { program } from "commander";
-import { existsSync, readFileSync, statSync } from "fs";
+import { readFileSync, statSync } from "fs";
 import merge from "lodash.merge";
 import { basename, join, resolve } from "path";
-import { ElementFactory } from "./elements/ElementFactory";
+import { ElementFactory } from "../elements/ElementFactory";
+import Exec from "../elements/Exec";
+import { ExtensionManager } from "../singleton/ExtensionManager";
 import { JSONSchema } from "./JSONSchema";
-import { Scenario } from "./singleton/Scenario";
-import { Extensions } from "./utils/extensions";
-import { Exec } from "./utils/extensions/Exec";
 
-export class Helper {
+export class CLI {
   yamlFile: string
   password: string
   env: any
   envFile = '.env'
-  extensions = []
 
-  constructor(public scenario: Scenario) {
-
+  constructor() {
+    this.envFile = '.env'
   }
 
   async exec() {
-    const packageJson = [
-      join(__dirname, "../package.json"),
-      join(__dirname, "./package.json"),
-    ].find((src) => existsSync(src));
+    const packageJson = join(__dirname, "../../package.json")
     const { version, description, name, bin, repository } = require(packageJson);
-    const self = this
     let isRunScenario = true
-    const cmd = await program
+    await program
       .name(name)
       .aliases(Object.keys(bin).filter(e => e !== name))
       .description(description)
@@ -44,14 +39,12 @@ export class Helper {
                          + json: {"key1": "value1", "key2": "value2"}`
       )
       // .showHelpAfterError(true)
-      .addCommand(program
-        .createCommand('run')
-        .description('Execute a scenario file (Default)')
-        .action((_, cmd) => {
-          [this.yamlFile, this.password] = cmd.args
-        }),
-        { isDefault: true, hidden: true }
-      )
+      .action((file, pwd, opts) => {
+        this.yamlFile = file
+        this.password = pwd
+        this.envFile = opts.envFile;
+        this.env = this.parseEnv(opts.env)
+      })
       .addCommand(program
         .createCommand('docker')
         .description('Run via docker')
@@ -75,56 +68,58 @@ export class Helper {
         .argument("<urls...>", "Schema.json files")
         .option("-f, --mainFile <string>", `Yaml-schema json schema`)
         .action(async (urls: string[], opts: any) => {
-          const jsonSchema = new JSONSchema(this.scenario)
+          const jsonSchema = new JSONSchema()
           await jsonSchema.init(opts['mainFile'])
           await jsonSchema.addSchema(...urls)
           const fout = await jsonSchema.save()
-          console.log(chalk.green(`Yaml-scene scheme is generated. "${chalk.bold(fout)}"`))
+          LoggerManager.GetLogger().info(chalk.green(`Yaml-scene scheme is generated. "${chalk.bold(fout)}"`))
           isRunScenario = false
         })
       )
       .addCommand(program
         .createCommand('add')
         .description('Add new extensions')
-        .argument("<extensions...>", "Extensions package in npm registry")
+        .argument("<extensions...>", "ExtensionManager package in npm registry")
         .action(async (extensionNames) => {
-          await this.installExtensions(extensionNames)
-
-          const jsonSchema = new JSONSchema(this.scenario)
-          await jsonSchema.init()
-          await jsonSchema.merge(join(__dirname, '../schema.yas.json'))
-          let extensions = []
-          for (const extensionNameFullVer of extensionNames) {
-            const [extensionName] = extensionNameFullVer.split('@')
-            try {
-              const extension = this.scenario.extensions.load(`${extensionName}/schema.json`, undefined, null)
-              extensions.push(extension)
-            } catch { }
+          const isOK = await this.installExtensions(extensionNames)
+          if (isOK) {
+            const jsonSchema = new JSONSchema()
+            await jsonSchema.init()
+            await jsonSchema.merge(join(__dirname, '../../schema.yas.json'))
+            let extensions = []
+            for (const extensionNameFullVer of extensionNames) {
+              const [extensionName] = extensionNameFullVer.split('@')
+              try {
+                const extension = ExtensionManager.Instance.load(`${extensionName}/schema.json`, undefined, null)
+                extensions.push(extension)
+              } catch { }
+            }
+            await jsonSchema.addSchema(...extensions)
+            const fout = await jsonSchema.save()
+            LoggerManager.GetLogger().info(chalk.green(`Yaml-scene scheme is updated. "${chalk.bold(fout)}"`))
           }
-          await jsonSchema.addSchema(...extensions)
-          const fout = await jsonSchema.save()
-          console.log(chalk.green(`Yaml-scene scheme is updated. "${chalk.bold(fout)}"`))
           isRunScenario = false
         })
       )
       .addCommand(program
         .createCommand('remove')
         .description('Remove the extensions')
-        .argument("<extensions...>", "Extensions package in npm registry")
+        .argument("<extensions...>", "ExtensionManager package in npm registry")
         .action(async (extensionNames) => {
-          await this.uninstallExtensions(extensionNames)
-
-          const jsonSchema = new JSONSchema(this.scenario)
-          await jsonSchema.init()
-          await jsonSchema.merge(join(__dirname, '../schema.yas.json'))
-          for (const extensionNameFullVer of extensionNames) {
-            const [extensionName] = extensionNameFullVer.split('@')
-            try {
-              jsonSchema.removeSchema(extensionName)
-            } catch { }
+          const isOK = await this.uninstallExtensions(extensionNames)
+          if (isOK) {
+            const jsonSchema = new JSONSchema()
+            await jsonSchema.init()
+            await jsonSchema.merge(join(__dirname, '../../schema.yas.json'))
+            for (const extensionNameFullVer of extensionNames) {
+              const [extensionName] = extensionNameFullVer.split('@')
+              try {
+                jsonSchema.removeSchema(extensionName)
+              } catch { }
+            }
+            const fout = await jsonSchema.save()
+            LoggerManager.GetLogger().info(chalk.green(`Yaml-scene scheme is updated. "${chalk.bold(fout)}"`))
           }
-          const fout = await jsonSchema.save()
-          console.log(chalk.green(`Yaml-scene scheme is updated. "${chalk.bold(fout)}"`))
           isRunScenario = false
         })
       )
@@ -134,14 +129,10 @@ export class Helper {
 ✔ Docker Image  : https://hub.docker.com/repository/docker/doanthuanthanh88/yaml-scene
 `)
       .parseAsync(process.argv)
-    if (!isRunScenario) return false
-    self.env = cmd.opts().env;
-    self.envFile = cmd.opts().envFile;
-    self.env = this.parseEnv(self.env)
-    return true
+    return isRunScenario
   }
 
-  loadEnv(baseConfig: any, ...files: object[] | string[]) {
+  loadEnv(baseConfig: any, ...files: (object | string)[]) {
     const castToObject = function (obj, pro, prefix) {
       for (let k in obj) {
         if (typeof obj[k] === 'function' || k.startsWith('$$')) continue
@@ -224,22 +215,23 @@ export class Helper {
 
   async uninstallExtensions(extensionNames: string[]) {
     extensionNames = extensionNames.map(e => e.trim()).filter(e => e)
-    if (!extensionNames) return
-    await Extensions.UninstallPackage({
+    if (!extensionNames) return false
+    await ExtensionManager.UninstallPackage({
       dependencies: extensionNames
     })
+    return true
   }
 
   async installExtensions(extensionNames: string[]) {
     extensionNames = extensionNames.map(e => e.trim()).filter(e => e)
-    if (!extensionNames) return
-    const confirmType = ElementFactory.CreateElement('UserInput', this.scenario)
+    if (!extensionNames) return false
+    const confirmType = ElementFactory.CreateElement('UserInput')
     confirmType.init([{
-      title: `Pick the location it installed`,
+      title: `Install ${extensionNames.map(e => chalk.yellow(`"${e}"`)).join(', ')} to:`,
       type: 'select',
-      default: '',
+      default: 'global',
       choices: [
-        { title: 'Global - Installed to global npm or yarn (Default)', value: '' },
+        { title: `Global - Installed to global npm or yarn `, value: 'global' },
         { title: 'Local - Installed into "yaml-scene". When "yaml-scene" is reinstalled or upgraded, these extensions must be reinstalled', value: 'local' }
       ],
       var: 'installType'
@@ -248,7 +240,8 @@ export class Helper {
     const { installType } = await confirmType.exec()
     await confirmType.dispose()
 
-    await Extensions.InstallPackage(installType === 'local' ? {
+    if (!installType) return false
+    await ExtensionManager.InstallPackage(installType === 'local' ? {
       dependencies: extensionNames,
       global: false,
       isSave: false,
@@ -256,6 +249,7 @@ export class Helper {
       dependencies: extensionNames,
       global: true,
     })
+    return true
   }
 
   private async runDocker(file: string, password: string, options: any) {
@@ -289,8 +283,8 @@ export class Helper {
     prms.push(fileRun)
     if (password) prms.push(`"${password}"`)
     const cmd = ['docker', 'run', ...rm, '-it', '--name', `"${name}"`, '\\\n  ', ...prms]
-    console.log(chalk.magenta(cmd.join(' ')))
-    const confirm = ElementFactory.CreateElement('UserInput', this.scenario)
+    LoggerManager.GetLogger().info(chalk.magenta(cmd.join(' ')))
+    const confirm = ElementFactory.CreateElement('UserInput')
     confirm.init([{
       title: 'Run now ?',
       type: 'confirm',

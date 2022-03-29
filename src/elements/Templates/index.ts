@@ -43,7 +43,7 @@ export default class Templates implements IElement {
       items[templateName][elementName]['->'] = templateName
       return items[templateName]
     })
-    this.group = ElementFactory.CreateElement<Group>('Group', this.proxy.scenario)
+    this.group = ElementFactory.CreateElement<Group>('Group')
     this.group.init({
       steps: templates
     })

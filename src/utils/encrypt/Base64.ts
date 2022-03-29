@@ -1,13 +1,10 @@
 import { Encrypt } from "./Encrypt";
 
 export class Base64 implements Encrypt {
-  private static _INSTANCE: Base64
+  private static _Instance: Base64
 
-  static GetInstance() {
-    if (!this._INSTANCE) {
-      return this._INSTANCE = new Base64()
-    }
-    return this._INSTANCE
+  static get Instance() {
+    return this._Instance || (this._Instance = new Base64())
   }
 
   encrypt(data: any) {

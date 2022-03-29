@@ -17,12 +17,12 @@ import { Type } from 'js-yaml'
  * @end
  */
 export class BinaryScalar extends Type {
-  constructor(scenario: Scenario) {
+  constructor() {
     super('!binary', {
       kind: 'scalar',
       instanceOf: ReadStream,
       construct: (file) => {
-        return createReadStream(scenario.resolvePath(file))
+        return createReadStream(Scenario.Instance.resolvePath(file))
       }
     })
   }

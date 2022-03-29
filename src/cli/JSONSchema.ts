@@ -1,12 +1,13 @@
+import { LoggerManager } from '@app/singleton/LoggerManager'
 import chalk from 'chalk'
-import merge from 'lodash.merge'
-import { join } from "path"
-import { File } from "./elements/File/adapter/File"
-import { Json } from "./elements/File/adapter/Json"
-import { Scenario } from './singleton/Scenario'
-import { FileUtils } from './utils/FileUtils'
-import uniqWith from 'lodash.uniqwith'
 import { existsSync } from 'fs'
+import merge from 'lodash.merge'
+import uniqWith from 'lodash.uniqwith'
+import { join } from "path"
+import { File } from "../elements/File/adapter/File"
+import { Json } from "../elements/File/adapter/Json"
+import { Scenario } from '../singleton/Scenario'
+import { FileUtils } from '../utils/FileUtils'
 
 const REMOVE_KEY = Symbol()
 
@@ -14,9 +15,7 @@ export class JSONSchema {
   private templates: any
   private yamlScene: any
 
-  constructor(public scenario: Scenario) { }
-
-  async init(yamlSceneSchema = join(__dirname, '../schema.json')) {
+  async init(yamlSceneSchema = join(__dirname, '../../schema.json')) {
     const { templates = {}, ...yamlScene } = await this.getFileData(yamlSceneSchema)
     this.templates = templates
     this.yamlScene = yamlScene
@@ -36,9 +35,9 @@ export class JSONSchema {
         let json: any
         if (typeof url === 'object') {
           json = url
-          console.log(chalk.yellow(`- Merging ${json.$id}...`))
+          LoggerManager.GetLogger().debug(chalk.yellow(`- Merging ${json.$id}...`))
         } else {
-          console.log(chalk.yellow(`- Merging ${url}...`))
+          LoggerManager.GetLogger().debug(chalk.yellow(`- Merging ${url}...`))
           json = await this.getFileData(url)
         }
         console.group()
@@ -50,9 +49,9 @@ export class JSONSchema {
         this.yamlScene.definitions.allOfSteps.items.anyOf.push(...childs)
         this.yamlScene.definitions.allOfSteps.items.anyOf = uniqWith(this.yamlScene.definitions.allOfSteps.items.anyOf, (a, b) => { return a.$ref === b.$ref && a.$ref })
         this.yamlScene = merge({}, schema, this.yamlScene)
-        console.log(`✅ Done`)
+        LoggerManager.GetLogger().info(`✅ Done`)
       } catch (err) {
-        console.error(`❌ ${err.message}`)
+        LoggerManager.GetLogger().error(`❌ ${err.message}`)
       } finally {
         console.groupEnd()
       }
@@ -67,8 +66,8 @@ export class JSONSchema {
     this.injectAttrs(this.yamlScene, this.templates)
   }
 
-  async save(fout = join(__dirname, '../schema.yas.json')) {
-    fout = this.scenario.resolvePath(fout)
+  async save(fout = join(__dirname, '../../schema.yas.json')) {
+    fout = Scenario.Instance.resolvePath(fout)
     this.parse()
     const f = new Json(new File(fout), { pretty: true })
     await f.write(this.yamlScene)
@@ -76,7 +75,7 @@ export class JSONSchema {
   }
 
   private async getFileData(urlOrPath: string) {
-    const content = await FileUtils.GetContentFromUrlOrPath(this.scenario.resolvePath(urlOrPath))
+    const content = await FileUtils.GetContentFromUrlOrPath(Scenario.Instance.resolvePath(urlOrPath))
     return JSON.parse(content.toString())
   }
 

@@ -1,4 +1,5 @@
 import { Simulator } from "@app/Simulator"
+import { VariableManager } from "@app/singleton/VariableManager"
 import { unlinkSync } from "fs"
 import { tmpdir } from "os"
 import { join } from "path"
@@ -37,18 +38,18 @@ describe.each([
   })
 
   test(`Read a ${adapter} file`, async () => {
-    const scenario = await Simulator.Run(`
+    await Simulator.Run(`
 - File/Reader:
     path: ${path}
     adapters: 
       - ${adapter}
     var: content
 `)
-    expect(scenario.variableManager.vars.content).toStrictEqual(data)
+    expect(VariableManager.Instance.vars.content).toStrictEqual(data)
   })
 
   test(`Read a ${adapter} file with password`, async () => {
-    const scenario = await Simulator.Run(`
+    await Simulator.Run(`
 - File/Reader:
     path: ${path}.encrypted
     adapters:
@@ -56,7 +57,7 @@ describe.each([
       - ${adapter}
     var: content
 `)
-    expect(scenario.variableManager.vars.content).toStrictEqual(data)
+    expect(VariableManager.Instance.vars.content).toStrictEqual(data)
   })
 
 })

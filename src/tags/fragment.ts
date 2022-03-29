@@ -19,12 +19,12 @@ import { YAMLSchema } from '.'
  * @end
  */
 export class FragmentScalar extends Type {
-  constructor(scenario: Scenario) {
+  constructor() {
     super('!fragment', {
       kind: 'scalar',
       construct: (filePath) => {
-        return safeLoad(readFileSync(scenario.resolvePath(filePath)).toString(), {
-          schema: YAMLSchema.Create(scenario)
+        return safeLoad(readFileSync(Scenario.Instance.resolvePath(filePath)).toString(), {
+          schema: YAMLSchema.Schema
         })
       }
     })

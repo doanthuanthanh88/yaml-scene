@@ -1,20 +1,22 @@
 import { Simulator } from "@app/Simulator"
+import { VariableManager } from "@app/singleton/VariableManager"
 
 describe('Test assign value to global vars', () => {
   test('Simple value', async () => {
-    const scenario = await Simulator.Run(`
+    await Simulator.Run(`
 - Vars:
     name: thanh
 `)
-    expect(scenario.variableManager.vars.name).toBe('thanh')
+    expect(VariableManager.Instance.vars.name).toBe('thanh')
   })
 
   test('Complex value', async () => {
-    const scenario = await Simulator.Run(`
+    await Simulator.Run(`
 - Vars:
-    name: thanh
-    hello: Say hello to \${name}
+    name1: thanh
+    hello: Say hello to \${name1}
 `)
-    expect(scenario.variableManager.vars.hello).toBe('Say hello to thanh')
+    expect(VariableManager.Instance.vars.name).toBe(undefined)
+    expect(VariableManager.Instance.vars.hello).toBe('Say hello to thanh')
   })
 })

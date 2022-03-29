@@ -1,3 +1,4 @@
+import { VariableManager } from "@app/singleton/VariableManager"
 import { ElementProxy } from "../ElementProxy"
 import { IElement } from "../IElement"
 
@@ -22,7 +23,7 @@ export default class Vars implements IElement {
 
   init(props: any) {
     this.vars = props
-    this.proxy.declareVar(this.vars)
+    VariableManager.Instance.declare(this.vars)
   }
 
   exec() {

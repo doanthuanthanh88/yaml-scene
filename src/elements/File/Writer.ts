@@ -234,7 +234,7 @@ export default class Writer implements IElement {
       const adapterName = typeof adapter === 'string' ? adapter : Object.keys(adapter)[0]
       if (!adapterName) throw new Error('"adapters" is not valid')
       return {
-        AdapterClass: FileAdapterFactory.GetAdapter(adapterName, this.proxy.scenario.extensions),
+        AdapterClass: FileAdapterFactory.GetAdapter(adapterName),
         args: adapter[adapterName]
       }
     })

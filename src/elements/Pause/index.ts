@@ -49,7 +49,7 @@ export default class Pause implements IElement {
 
   async exec() {
     if (this.time) {
-      const sleep = ElementFactory.CreateElement<Delay>('Delay', this.proxy.scenario)
+      const sleep = ElementFactory.CreateElement<Delay>('Delay')
       sleep.init({
         title: this.title,
         time: this.time

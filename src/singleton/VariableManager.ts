@@ -1,11 +1,38 @@
-
-
 export class VariableManager {
   private static readonly _NavPattern = /^(\$\{){1}([^\}]+)\}$/
+  private static _Instance: VariableManager
+
+  static get Instance() {
+    return this._Instance || (this._Instance = new VariableManager())
+  }
 
   readonly vars = {} as { [key: string]: any }
 
-  constructor(initVar: any) {
+  constructor() {
+    Object.defineProperties(this.vars, {
+      $$base64: {
+        get() {
+          return require('../utils/encrypt/Base64').Base64.Instance
+        }
+      },
+      $$md5: {
+        get() {
+          return require('../utils/encrypt/MD5').MD5.Instance
+        }
+      },
+      $$text: {
+        get() {
+          return require('chalk')
+        }
+      }
+    })
+  }
+
+  reset() {
+    VariableManager._Instance = null
+  }
+
+  init(initVar?: any) {
     if (initVar) {
       Object.assign(this.vars, initVar)
     }

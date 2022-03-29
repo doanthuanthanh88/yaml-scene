@@ -1,4 +1,3 @@
-import { Scenario } from "@app/singleton/Scenario";
 import chalk from "chalk";
 import merge from "lodash.merge";
 import { ElementFactory } from "../ElementFactory";
@@ -42,13 +41,13 @@ export default class Group implements IElement {
     const { ...props } = _props
     merge(this, props)
     this.steps = this.steps?.flat(Number.MAX_SAFE_INTEGER) || []
-    this.initSteps(this.proxy.scenario)
+    this.initSteps()
   }
 
-  initSteps(scenario: Scenario) {
+  initSteps() {
     this._steps = this.steps.map(step => {
       const [name, vl] = Object.entries(step)[0]
-      const elem = ElementFactory.CreateElement<IElement>(name as any, scenario)
+      const elem = ElementFactory.CreateElement<IElement>(name as any)
       elem.init(vl)
       elem.setGroup(this)
       return elem

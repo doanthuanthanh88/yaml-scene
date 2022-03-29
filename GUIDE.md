@@ -165,8 +165,10 @@ extensions:                                         # Extension elements.
   extension_name1: ./cuz_extensions/custom1.js      # - Load a element in a file with exports.default (extension_name1:)
   extensions_folders: ./cuz_extensions              # - Load elements in files in the folder with file name is element name (extensions_folders/custom1:)
 vars:                                               # Declare global variables, which can be replaced by env
-  url: http://localhost:3000
-  token: ...
+  url: http://localhost:3000                        # env URL=
+  token: ...                                        # env TOKEN=
+  user:
+    id_test: 1                                      # env USER_ID_TEST=
 stepDelay: 1s                                       # Each of steps will delay 1s before play the next
 steps:                                              # Includes all which you want to do
   - !fragment ./scene1.yas.yaml

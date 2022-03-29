@@ -1,4 +1,7 @@
+import { LoggerManager } from "@app/singleton/LoggerManager";
 import { Scenario } from "@app/singleton/Scenario";
+import { TemplateManager } from "@app/singleton/TemplateManager";
+import { VariableManager } from "@app/singleton/VariableManager";
 import { TimeUtils } from "@app/utils/TimeUtils";
 import cloneDeep from "lodash.clonedeep";
 import merge from "lodash.merge";
@@ -137,10 +140,10 @@ import { IElement } from "./IElement";
 export class ElementProxy<T extends IElement> {
 
   get logger() {
-    return (this.element.logLevel ? this.scenario.loggerFactory.getLogger(this.element.logLevel) : this.element.$$?.proxy.logger) || this.scenario.loggerFactory.getLogger()
+    return (this.element.logLevel ? LoggerManager.GetLogger(this.element.logLevel) : this.element.$$?.proxy.logger) || LoggerManager.GetLogger()
   }
 
-  constructor(public element: T, public scenario: Scenario) {
+  constructor(public element: T) {
     this.element.$ = this.element
     this.element.proxy = this
   }
@@ -232,49 +235,45 @@ export class ElementProxy<T extends IElement> {
     const oldProxy = this.element.proxy
     this.element.proxy = undefined
     if (this.element.clone) {
-      proxy = new ElementProxy<T>(this.element.clone(), this.scenario)
+      proxy = new ElementProxy<T>(this.element.clone())
     } else {
-      proxy = new ElementProxy<T>(cloneDeep(this.element), this.scenario)
+      proxy = new ElementProxy<T>(cloneDeep(this.element))
     }
     this.element.proxy = oldProxy
     if (proxy.element instanceof Group) {
-      proxy.element.initSteps(this.scenario)
+      proxy.element.initSteps()
     }
     return proxy
   }
 
   resolvePath(path: string) {
-    return this.scenario.resolvePath(path)
+    return Scenario.Instance.resolvePath(path)
   }
 
   changeLogLevel(level: string) {
     this.element.logLevel = level
   }
 
-  declareVar(varObj: any) {
-    return this.scenario.variableManager.declare(varObj)
-  }
-
   setVar(varObj: any, obj = {} as any, defaultKey?: string) {
     if (typeof varObj === 'string') {
-      return this.scenario.variableManager.set(varObj, obj, defaultKey)
+      return VariableManager.Instance.set(varObj, obj, defaultKey)
     }
-    return this.scenario.variableManager.set(varObj, { $: this.element.$ || this.element, $$: this.element.$$, ...obj }, defaultKey)
+    return VariableManager.Instance.set(varObj, { $: this.element.$ || this.element, $$: this.element.$$, ...obj }, defaultKey)
   }
 
   eval(obj: any, baseContext = {} as any) {
-    return this.scenario.variableManager.eval(obj, { $: this.element.$ || this.element, $$: this.element.$$, ...baseContext })
+    return VariableManager.Instance.eval(obj, { $: this.element.$ || this.element, $$: this.element.$$, ...baseContext })
   }
 
   getVar(obj: any, baseContext = {}) {
-    return this.scenario.variableManager.get(obj, { $: this.element.$ || this.element, $$: this.element.$$, ...baseContext })
+    return VariableManager.Instance.get(obj, { $: this.element.$ || this.element, $$: this.element.$$, ...baseContext })
   }
 
   inherit(props: any) {
     if (props && props['<-']) {
       const keys = Array.isArray(props['<-']) ? props['<-'] : [props['<-']]
       keys.forEach(key => {
-        const temp = this.scenario.templateManager.getElement(key)
+        const temp = TemplateManager.Instance.getElement(key)
         const prop = merge({}, temp, props)
         merge(props, prop)
       })
@@ -287,7 +286,7 @@ export class ElementProxy<T extends IElement> {
     if (exposeKeys) {
       const keys = Array.isArray(exposeKeys) ? exposeKeys : [exposeKeys]
       keys.forEach(key => {
-        this.scenario.templateManager.setElement(key, omit(this.element, '->'))
+        TemplateManager.Instance.setElement(key, omit(this.element, '->'))
       })
       delete this.element['->']
     }

@@ -3,23 +3,21 @@ import { File } from '@app/elements/File/adapter/File'
 import { IFileAdapter } from '@app/elements/File/adapter/IFileAdapter'
 import { Password } from '@app/elements/File/adapter/Password'
 import { Text } from '@app/elements/File/adapter/Text'
+import { LoggerManager } from '@app/singleton/LoggerManager'
 import { VariableManager } from '@app/singleton/VariableManager'
-import { Base64 } from '@app/utils/encrypt/Base64'
 import { MD5 } from '@app/utils/encrypt/MD5'
 import { FileUtils, UrlPathType } from '@app/utils/FileUtils'
-import { LoggerFactory } from '@app/utils/logger'
-import chalk from 'chalk'
 import { rmSync } from 'fs'
 import { safeLoad } from 'js-yaml'
 import { homedir } from 'os'
-import { basename, dirname, join, resolve } from 'path'
+import { basename, dirname, isAbsolute, join, resolve } from 'path'
 import { EventEmitter } from 'stream'
-import { ElementFactory } from '../elements/ElementFactory'
-import { ElementProxy } from '../elements/ElementProxy'
-import Group from '../elements/Group'
-import { YAMLSchema } from '../tags'
-import { Extensions } from '../utils/extensions'
-import { TemplateManager } from './TemplateManager'
+import { ElementFactory } from '../../elements/ElementFactory'
+import { ElementProxy } from '../../elements/ElementProxy'
+import Group from '../../elements/Group'
+import { YAMLSchema } from '../../tags'
+import { ExtensionManager } from '../ExtensionManager'
+import { TemplateManager } from '../TemplateManager'
 
 /**
  * @guide
@@ -48,8 +46,10 @@ extensions:                                         # Extension elements.
   extension_name1: ./cuz_extensions/custom1.js      # - Load a element in a file with exports.default (extension_name1:)
   extensions_folders: ./cuz_extensions              # - Load elements in files in the folder with file name is element name (extensions_folders/custom1:)
 vars:                                               # Declare global variables, which can be replaced by env
-  url: http://localhost:3000
-  token: ...
+  url: http://localhost:3000                        # env URL=
+  token: ...                                        # env TOKEN=
+  user:
+    id_test: 1                                      # env USER_ID_TEST=
 stepDelay: 1s                                       # Each of steps will delay 1s before play the next
 steps:                                              # Includes all which you want to do
   - !fragment ./scene1.yas.yaml
@@ -76,28 +76,23 @@ steps:                                              # Includes all which you wan
 
 export class Scenario {
   private static readonly SALTED_PASSWORD = '|-YAML-SCENE-|'
+  private static _Instance: Scenario
+  static get Instance() {
+    if (this._Instance) return this._Instance
+    this._Instance = new Scenario()
+    return this._Instance
+  }
 
   events: EventEmitter
-  templateManager: TemplateManager
-  variableManager: VariableManager
-  loggerFactory: LoggerFactory
-  extensions: Extensions
 
   password?: string
   isRunningRemote?: boolean
+  isPassed: boolean
 
   scenarioFile: string
   rootDir: string
-  private rootGroup: ElementProxy<Group>
-  time: {
-    begin: number
-    init: number,
-    prepare: number,
-    exec: number,
-    dispose: number
-    end: number
-  }
   hasEnvVar: boolean
+  private rootGroup: ElementProxy<Group>
 
   get scenarioPasswordFile() {
     const name = basename(this.scenarioFile)
@@ -112,35 +107,74 @@ export class Scenario {
   }
 
   constructor() {
-    this.variableManager = new VariableManager({
-      get $$base64() {
-        return Base64.GetInstance()
-      },
-      get $$color() {
-        return chalk
-      }
-    })
     this.rootDir = process.cwd()
-    this.extensions = new Extensions(this)
-    this.loggerFactory = new LoggerFactory()
-    this.templateManager = new TemplateManager()
     this.events = new EventEmitter()
-    this.time = {
-      begin: Date.now()
-    } as any
   }
 
-  async setup() {
-    await this.extensions.loadNpmYarnGlobalPaths()
+  reset() {
+    Scenario._Instance = null
+    ExtensionManager.Instance?.reset()
+    TemplateManager.Instance?.reset()
+    VariableManager.Instance?.reset()
   }
 
   async init(scenarioFile = 'index.yas.yaml' as string | object, password?: string) {
+    const scenarioObject = await this.getScenarioFile(scenarioFile, password)
+
+    const { extensions, install, vars, logLevel, ...scenarioProps } = scenarioObject
+    if (!scenarioProps) throw new Error('File scenario is not valid')
+
+    LoggerManager.SetDefaultLoggerLevel(logLevel)
+
+    // Load extensions
+    if (extensions) await ExtensionManager.Instance.registerGlobalExtension(extensions)
+    if (install) await ExtensionManager.Instance.install(install)
+
+    // Load global variables which is overrided by env variables
+    if (vars) {
+      VariableManager.Instance.init(vars)
+      this.hasEnvVar = true
+    }
+    // Load Scenario
+    this.rootGroup = ElementFactory.CreateElement<Group>('Group')
+    this.rootGroup.init(scenarioProps)
+  }
+
+  async prepare() {
+    this.events.emit('scenario.prepare', { time: Date.now() })
+    await this.rootGroup.prepare()
+  }
+
+  async exec() {
+    this.events.emit('scenario.exec', { time: Date.now() })
+    await this.rootGroup.exec()
+    this.isPassed = true
+  }
+
+  async clean() {
+    this.password && rmSync(this.scenarioPasswordFile, { force: true })
+    await ExtensionManager.Instance.uninstall()
+  }
+
+  async dispose() {
+    this.events.emit('scenario.dispose', { time: Date.now(), isPassed: this.isPassed })
+    await Promise.all([
+      this.rootGroup?.dispose()
+    ])
+  }
+
+  resolvePath(path: string) {
+    if (!path || /^https?:\/\//.test(path)) return path
+    if (path.startsWith('~/')) return path.replace(/^\~/, homedir())
+    if (!isAbsolute(path)) return join(this.rootDir, path)
+    return resolve(path)
+  }
+
+  private async getScenarioFile(scenarioFile: string | object, password: string) {
     if (typeof scenarioFile !== 'string') throw new Error('Scenario must be a path of file')
 
-    this.time.init = Date.now()
-    this.events.emit('scenario.init', this)
+    this.events.emit('scenario.init', { time: Date.now() })
 
-    let scenario: any
     let fileContent: any
     this.isRunningRemote = FileUtils.GetPathType(scenarioFile) === UrlPathType.URL
     if (this.isRunningRemote) {
@@ -152,15 +186,16 @@ export class Scenario {
       this.rootDir = dirname(this.scenarioFile)
       fileContent = await this.getScenarioFileContent(this.getPassword(password), new File(this.scenarioFile))
     }
-    scenario = safeLoad(fileContent, {
-      schema: YAMLSchema.Create(this)
+    let scenarioObject = safeLoad(fileContent, {
+      schema: YAMLSchema.Schema
     }) as any
-    if (Array.isArray(scenario)) {
-      scenario = { title: basename(this.scenarioFile), steps: scenario.flat() }
-    }
-    if (typeof scenario !== 'object') throw new Error('Scenario must be an object or array')
 
-    const { password: pwd, extensions = {}, install, vars, logLevel, ...scenarioProps } = scenario
+    if (Array.isArray(scenarioObject)) {
+      scenarioObject = { title: basename(this.scenarioFile), steps: scenarioObject.flat() }
+    }
+    if (typeof scenarioObject !== 'object') throw new Error('Scenario must be an object or array')
+
+    const { password: pwd, ...scenarioProps } = scenarioObject
     if (!scenarioProps) throw new Error('File scenario is not valid')
 
     if (pwd && !this.isRunningRemote) {
@@ -168,66 +203,11 @@ export class Scenario {
       await this.saveToEncryptFile(fileContent.replace(/^password:.+$/m, ''), this.password, this.scenarioPasswordFile)
     }
 
-    if (logLevel) {
-      this.loggerFactory.setLogger(undefined, logLevel)
-    }
-
-    // Load extensions
-    await this.extensions.registerGlobalExtension(extensions)
-    await this.extensions.install(install)
-
-    // Load global variables which is overrided by env variables
-    if (vars) {
-      this.variableManager.set(vars, null)
-      this.hasEnvVar = true
-    }
-    // Load Scenario
-    this.rootGroup = ElementFactory.CreateElement<Group>('Group', this)
-    this.rootGroup.init(scenarioProps)
-  }
-
-  async prepare() {
-    this.time.prepare = Date.now()
-    this.events.emit('scenario.prepare', this)
-    await this.rootGroup.prepare()
-  }
-
-  async exec() {
-    this.time.exec = Date.now()
-    this.events.emit('scenario.exec', this)
-    await this.rootGroup.exec()
-  }
-
-  async clean() {
-    this.password && rmSync(this.scenarioPasswordFile, { force: true })
-    await this.extensions.uninstall()
-  }
-
-  async dispose() {
-    this.time.dispose = Date.now()
-    this.events.emit('scenario.dispose', this)
-    await Promise.all([
-      this.rootGroup?.dispose()
-    ])
-  }
-
-  resolvePath(path: string) {
-    if (!path || /^https?:\/\//.test(path)) return path
-    return path.startsWith('~/') ? path.replace(/^\~/, homedir()) : path.startsWith('/') ? resolve(path) : join(this.rootDir, path)
-  }
-
-  printLog() {
-    this.time.end = Date.now()
-    console.group('Time summary')
-    console.log('- Initting', this.time.prepare - this.time.init, 'ms')
-    console.log('- Preparing', this.time.exec - this.time.prepare, 'ms')
-    console.log('- Executing', this.time.dispose - this.time.exec, 'ms')
-    console.log('- Dispose', this.time.end - this.time.dispose, 'ms')
-    console.groupEnd()
+    return scenarioProps
   }
 
   private getPassword(password: string) {
-    return password && MD5.GetInstance().encrypt(`${Scenario.SALTED_PASSWORD}${password}`)
+    return password && MD5.Instance.encrypt(`${Scenario.SALTED_PASSWORD}${password}`)
   }
 
   private async getScenarioFileContent(password: string, filedapter: IFileAdapter) {

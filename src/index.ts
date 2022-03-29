@@ -1,75 +1,59 @@
 import chalk from "chalk";
+import { CLI } from "./cli/CLI";
 import { ElementFactory } from "./elements/ElementFactory";
-import { Helper } from "./Helper";
+import { LoggerManager } from "./singleton/LoggerManager";
 import { Scenario } from "./singleton/Scenario";
+import { ScenarioMonitor } from "./singleton/Scenario/ScenarioMonitor";
+import { VariableManager } from "./singleton/VariableManager";
 import { ExtensionNotFound } from "./utils/error/ExtensionNotFound";
 
 export class Main {
 
   static async Exec() {
 
-    let scenario = new Scenario()
-    await scenario.setup()
-
-    const helper = new Helper(scenario)
+    const helper = new CLI()
     let isRun = await helper.exec()
 
     while (isRun) {
       isRun = false
-      scenario.loggerFactory.setLogger(undefined, 'info')
       try {
-        await scenario.init(helper.yamlFile, helper.password)
-        await scenario.prepare()
-        if (scenario.hasEnvVar) {
-          helper.loadEnv(scenario.variableManager.vars, scenario.resolvePath(helper.envFile), process.env, helper.env)
+        ScenarioMonitor.Attach(Scenario.Instance)
+        await Scenario.Instance.init(helper.yamlFile, helper.password)
+        await Scenario.Instance.prepare()
+        if (Scenario.Instance.hasEnvVar) {
+          helper.loadEnv(VariableManager.Instance.vars, Scenario.Instance.resolvePath(helper.envFile), process.env, helper.env)
         }
-        await scenario.exec()
-        scenario.printLog()
+        await Scenario.Instance.exec()
       } catch (err: any) {
         if (!(err instanceof ExtensionNotFound)) throw err
         const [extensionName] = err.extensionName.split("/")
-        console.log(chalk.yellow('⚠️', `The scenario is using the element "${err.extensionName}"`))
-        const confirm = ElementFactory.CreateElement('UserInput', scenario)
-        confirm.init([{
-          title: `Do you want to install the extension "${extensionName}" ?`,
-          type: 'confirm',
-          default: true,
-          var: 'isInstallExtension'
-        }])
-        confirm.prepare()
-        const { isInstallExtension } = await confirm.exec()
-        await confirm.dispose()
+        LoggerManager.GetLogger().warn(chalk.yellow('⚠️', `The scenario is using a new element "${err.extensionName}"`))
+        const isContinue = await helper.installExtensions([extensionName])
+        if (isContinue) {
+          LoggerManager.GetLogger().info()
+          const confirmContinue = ElementFactory.CreateElement('UserInput')
+          confirmContinue.init([{
+            title: `Keep playing the scenario ?`,
+            type: 'confirm',
+            default: true,
+            var: 'continuePlay'
+          }])
+          confirmContinue.prepare()
+          const { continuePlay } = await confirmContinue.exec()
+          await confirmContinue.dispose()
 
-        if (!isInstallExtension) throw err
-        await helper.installExtensions([extensionName])
-
-        console.log()
-        const confirmContinue = ElementFactory.CreateElement('UserInput', scenario)
-        confirmContinue.init([{
-          title: `Keep playing the scenario ?`,
-          type: 'confirm',
-          default: true,
-          var: 'continuePlay'
-        }])
-        confirmContinue.prepare()
-        const { continuePlay } = await confirmContinue.exec()
-        await confirmContinue.dispose()
-
-        if (continuePlay) {
-          isRun = true
-          console.clear()
-        } else {
-          isRun = false
+          if (continuePlay) {
+            isRun = true
+            Scenario.Instance.reset()
+            console.clear()
+          } else {
+            isRun = false
+          }
         }
       } finally {
-        await scenario.dispose()
-      }
-      if (isRun) {
-        scenario = new Scenario()
-        await scenario.setup()
+        await Scenario.Instance.dispose()
       }
     }
-    return scenario
   }
 }
 

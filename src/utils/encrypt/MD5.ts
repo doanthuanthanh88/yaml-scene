@@ -2,13 +2,10 @@ import { createHash } from 'crypto';
 import { Encrypt } from "./Encrypt";
 
 export class MD5 implements Encrypt {
-  private static _INSTANCE: MD5
+  private static _Instance: MD5
 
-  static GetInstance() {
-    if (!this._INSTANCE) {
-      return this._INSTANCE = new MD5()
-    }
-    return this._INSTANCE
+  static get Instance() {
+    return this._Instance || (this._Instance = new MD5())
   }
 
   encrypt(data: any) {

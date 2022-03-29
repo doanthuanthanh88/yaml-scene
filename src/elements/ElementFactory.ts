@@ -1,13 +1,13 @@
-import { Scenario } from "@app/singleton/Scenario"
+import { ExtensionManager } from "@app/singleton/ExtensionManager"
 import cloneDeep from "lodash.clonedeep"
 import { ElementProxy } from "./ElementProxy"
 import { IElement } from './IElement'
 
 export class ElementFactory {
 
-  static CreateElement<T extends IElement>(name: string, scenario: Scenario) {
+  static CreateElement<T extends IElement>(name: string) {
     let Clazz: typeof Element
-    Clazz = scenario.extensions.load(`${name}`, __dirname)
+    Clazz = ExtensionManager.Instance.load(`${name}`, __dirname)
     if (!Clazz) throw new Error(`Could not found "${name}"`)
     let tag: any
     if (Clazz.prototype) {
@@ -16,6 +16,6 @@ export class ElementFactory {
       tag = Clazz
       tag = tag.clone ? tag.clone() : cloneDeep(tag)
     }
-    return new ElementProxy<T>(tag, scenario)
+    return new ElementProxy<T>(tag)
   }
 }

@@ -1,4 +1,3 @@
-import { Scenario } from '@app/singleton/Scenario'
 import { Type } from 'js-yaml'
 import { Functional } from './model/Functional'
 
@@ -14,7 +13,7 @@ import { Functional } from './model/Functional'
  * @end
  */
 export class FunctionScalar extends Type {
-  constructor(_scenario: Scenario) {
+  constructor() {
     super('!function', {
       kind: 'scalar',
       instanceOf: Functional,

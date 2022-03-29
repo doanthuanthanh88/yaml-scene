@@ -81,7 +81,7 @@ export default class Echo implements IElement {
       const transformName = typeof transform === 'string' ? transform : Object.keys(transform)[0]
       if (!transformName) throw new Error('"transforms" is not valid')
       return {
-        TransformClass: PrinterTransformFactory.GetTransform(transformName, this.proxy.scenario.extensions),
+        TransformClass: PrinterTransformFactory.GetTransform(transformName),
         args: transform[transformName]
       }
     })

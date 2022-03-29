@@ -3,14 +3,12 @@ import { Scenario } from "@app/singleton/Scenario"
 import { existsSync, readFileSync } from "fs"
 
 describe('Scenario run', () => {
-  let scenario: Scenario
-
   afterAll(async () => {
-    await scenario?.clean()
+    await Scenario.Instance.clean()
   })
 
-  test('Encrypt scenario', async () => {
-    scenario = await Simulator.Run(`
+  test('Generate a scenario is encrypted', async () => {
+    await Simulator.Run(`
 title: Test encrypt file
 password: thanh123
 logLevel: info
@@ -22,9 +20,10 @@ install:
 steps:
 - Echo: Hello world
     `)
-    expect(existsSync(scenario.scenarioPasswordFile)).toEqual(true)
+    expect(existsSync(Scenario.Instance.scenarioPasswordFile)).toEqual(true)
+  })
 
-    await Simulator.Run(readFileSync(scenario.scenarioPasswordFile).toString(), { password: 'thanh123' })
-
-  }, 60000 * 5)
+  test('Run a scenario is encrypted', async () => {
+    await Simulator.Run(readFileSync(Scenario.Instance.scenarioPasswordFile).toString(), { password: 'thanh123' })
+  })
 })

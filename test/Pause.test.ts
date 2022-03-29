@@ -1,7 +1,8 @@
 import { Simulator } from "@app/Simulator"
+import { VariableManager } from "@app/singleton/VariableManager"
 
 test('Pause', async () => {
-    const scenario = await Simulator.Run(`
+    await Simulator.Run(`
 - Vars:
     begin: \${Date.now()}
 
@@ -25,7 +26,7 @@ test('Pause', async () => {
     end3: \${Date.now()}
 
 `)
-    expect(Math.floor((scenario.variableManager.vars.end1 - scenario.variableManager.vars.begin) / 100) * 100).toEqual(1000)
-    expect(Math.floor((scenario.variableManager.vars.end2 - scenario.variableManager.vars.end1) / 100) * 100).toEqual(1000)
-    expect(Math.floor((scenario.variableManager.vars.end3 - scenario.variableManager.vars.end2) / 100) * 100).toEqual(1000)
+    expect(Math.floor((VariableManager.Instance.vars.end1 - VariableManager.Instance.vars.begin) / 100) * 100).toEqual(1000)
+    expect(Math.floor((VariableManager.Instance.vars.end2 - VariableManager.Instance.vars.end1) / 100) * 100).toEqual(1000)
+    expect(Math.floor((VariableManager.Instance.vars.end3 - VariableManager.Instance.vars.end2) / 100) * 100).toEqual(1000)
 }, 60000)
