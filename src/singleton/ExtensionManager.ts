@@ -132,11 +132,11 @@ export class ExtensionManager {
       { title: `npm local at ${localPath}`, cmd: ['cd', localPath, '&&', 'npm', 'upgrade', ...dependencies].filter(e => e) },
     ]
     let errors = []
-    LoggerManager.GetLogger().info(chalk.red(`Upgrading ...`))
+    LoggerManager.GetLogger().info(chalk.yellow(`Upgrading ...`))
     for (const { title, cmd } of cmds) {
       try {
         Exec.Run(cmd)
-        dependencies.forEach(e => LoggerManager.GetLogger().info(chalk.red(`✔ ${e} ${chalk.gray(title)}`)))
+        dependencies.forEach(e => LoggerManager.GetLogger().info(chalk.yellow(`✔ ${e} ${chalk.gray(title)}`)))
       } catch (err) {
         errors.push(err)
       }
@@ -197,11 +197,18 @@ export class ExtensionManager {
   }
 
   private loadNpmYarnGlobalPaths() {
-    (execSync("npm root -g").toString() + '\n' + execSync("yarn global dir").toString())
-      .split('\n')
-      .map((f) => f?.trim())
-      .filter((f) => f && existsSync(f) && !this.globalModuleManager.modules.includes(f))
-      .forEach(gd => this.globalModuleManager.modules.push(gd))
+    ["npm root -g", "yarn global dir"].forEach(cmd => {
+      try {
+        execSync(cmd).toString()
+          .split('\n')
+          .map((f) => f?.trim())
+          .filter((f) => f && existsSync(f) && !this.globalModuleManager.modules.includes(f))
+          .forEach(gd => this.globalModuleManager.modules.push(gd))
+      } catch { }
+    })
+    if (!this.globalModuleManager.modules.length) {
+      throw new TraceError('Could not found `npm` or `yarn`')
+    }
   }
 }
 

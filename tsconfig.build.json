@@ -4,20 +4,12 @@
     "declaration": true,
     "removeComments": true,
     "sourceMap": true,
-    "resolveJsonModule": true,
-    "allowJs": true,
-    "rootDirs": [
-      "src"
-    ],
     "paths": {
       "@app/*": [
         "./src/*"
       ]
     }
   },
-  "files": [
-    "bin/cli.js"
-  ],
   "include": [
     "src"
   ]

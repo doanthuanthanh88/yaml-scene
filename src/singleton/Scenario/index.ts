@@ -9,7 +9,7 @@ import { MD5 } from '@app/utils/encrypt/MD5'
 import { TraceError } from '@app/utils/error/TraceError'
 import { FileUtils, UrlPathType } from '@app/utils/FileUtils'
 import { rmSync } from 'fs'
-import { safeLoad } from 'js-yaml'
+import { load } from 'js-yaml'
 import { homedir } from 'os'
 import { basename, dirname, isAbsolute, join, resolve } from 'path'
 import { EventEmitter } from 'stream'
@@ -187,7 +187,7 @@ export class Scenario {
       this.rootDir = dirname(this.scenarioFile)
       fileContent = await this.getScenarioFileContent(this.getPassword(password), new File(this.scenarioFile))
     }
-    let scenarioObject = safeLoad(fileContent, {
+    let scenarioObject = load(fileContent, {
       schema: YAMLSchema.Schema
     }) as any
 

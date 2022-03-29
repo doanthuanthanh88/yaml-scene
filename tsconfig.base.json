@@ -10,6 +10,7 @@
       "node_modules/@types",
       "typings"
     ],
+    "rootDir": ".",
     "baseUrl": ".",
     "outDir": "dist"
   },

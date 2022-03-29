@@ -4,7 +4,7 @@ import { FunctionScalar } from "./function";
 import { BinaryScalar } from "./upload";
 
 export class YAMLSchema {
-  static readonly Schema = Schema.create([
+  static readonly Schema = new Schema([
     new BinaryScalar(),
     new FragmentScalar(),
     new FunctionScalar(),
