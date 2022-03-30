@@ -216,7 +216,7 @@ export default class Reader implements IElement {
 
     const obj = await this._adapter.read()
 
-    if (this.var) this.proxy.setVar(this.var, { _: obj }, '_')
+    if (this.var) await this.proxy.setVar(this.var, { _: obj }, '_')
     this.proxy.logger.debug('%s %s', chalk.magenta('- Read file at'), chalk.gray(this.path))
     console.groupEnd()
     return obj

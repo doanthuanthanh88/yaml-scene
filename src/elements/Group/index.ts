@@ -55,8 +55,8 @@ export default class Group implements IElement {
   }
 
   async prepare() {
-    this.title = this.proxy.getVar(this.title)
-    this.description = this.proxy.getVar(this.description)
+    this.title = await this.proxy.getVar(this.title)
+    this.description = await this.proxy.getVar(this.description)
   }
 
   async exec() {
@@ -65,7 +65,8 @@ export default class Group implements IElement {
     const proms = []
     for (const step of this._steps) {
       if (step.element.async) {
-        if (step.isValid()) {
+        const isValid = await step.isValid()
+        if (isValid) {
           proms.push((async (step) => {
             await step.prepare()
             if (this.stepDelay && !step.element.delay) {
@@ -80,7 +81,8 @@ export default class Group implements IElement {
         await Promise.all(proms)
         proms.splice(0, proms.length)
       }
-      if (step.isValid()) {
+      const isValid = await step.isValid()
+      if (isValid) {
         await step.prepare()
         if (this.stepDelay && !step.element.delay) {
           step.element.delay = this.stepDelay

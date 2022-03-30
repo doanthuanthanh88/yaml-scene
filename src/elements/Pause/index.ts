@@ -42,10 +42,10 @@ export default class Pause implements IElement {
     }
   }
 
-  prepare() {
-    this.title = this.proxy.getVar(this.title)
-    this.time = this.proxy.getVar(this.time)
-    this.timeout = this.proxy.getVar(this.timeout)
+  async prepare() {
+    this.title = await this.proxy.getVar(this.title)
+    this.time = await this.proxy.getVar(this.time)
+    this.timeout = await this.proxy.getVar(this.timeout)
   }
 
   async exec() {

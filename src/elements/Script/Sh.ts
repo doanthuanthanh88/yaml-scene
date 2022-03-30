@@ -65,9 +65,9 @@ export default class Sh extends Exec {
     }
   }
 
-  prepare() {
-    this.content = this.proxy.getVar(this.content)
-    this.args = this.proxy.getVar(this.args)
+  async prepare() {
+    this.content = await this.proxy.getVar(this.content)
+    this.args = await this.proxy.getVar(this.args)
     if (!this.content) throw new TraceError('Shell script is required')
     if (!this.args?.length) {
       this.args = [this.bin, `${this.tempFile}`]
@@ -75,7 +75,7 @@ export default class Sh extends Exec {
     writeFileSync(this.tempFile, this.content, {
       mode: this.mode
     })
-    return super.prepare()
+    await super.prepare()
   }
 
   async dispose() {

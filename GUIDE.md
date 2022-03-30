@@ -5,23 +5,24 @@
 | !TAGS | --- |
 |[!fragment](#!fragment)| Load scenes from another file into current file ...|  
 |[!function](#!function)| Write code as a function in js ...|  
-|[!binary](#!binary)| Transform file to binary ...|  
+|[!tag](#!tag)| Lazy load tag ...|  
+|[!tag tags/binary](#!tag%20tags%2Fbinary)| Transform file to binary ...|  
 | DOC | --- |
-|[Doc/Guide/MD](#Doc/Guide/MD)| Auto scan file to detect the comment format which is generated to markdown document ...|  
+|[Doc/Guide/MD](#Doc%2FGuide%2FMD)| Auto scan file to detect the comment format which is generated to markdown document ...|  
 | EXTERNAL | --- |
 |[Exec](#Exec)| Execute external command ...|  
-|[Script/Js](#Script/Js)| Embed javascript code into scene ...|  
-|[Script/Sh](#Script/Sh)| Embed shell script into scene ...|  
+|[Script/Js](#Script%2FJs)| Embed javascript code into scene ...|  
+|[Script/Sh](#Script%2FSh)| Embed shell script into scene ...|  
 | FILE | --- |
-|[File/Reader](#File/Reader)| Read a file then set content to a variable ...|  
-|[File/Writer](#File/Writer)| Write content to a file ...|  
+|[File/Reader](#File%2FReader)| Read a file then set content to a variable ...|  
+|[File/Writer](#File%2FWriter)| Write content to a file ...|  
 | INPUT | --- |
-|[File/Reader](#File/Reader)| Read a file then set content to a variable ...|  
+|[File/Reader](#File%2FReader)| Read a file then set content to a variable ...|  
 |[UserInput](#UserInput)| Get user input from keyboard ...|  
 | OUTPUT | --- |
 |[Clear](#Clear)| Clear screen ...|  
 |[Echo](#Echo)| Print data to screen ...|  
-|[File/Writer](#File/Writer)| Write content to a file ...|  
+|[File/Writer](#File%2FWriter)| Write content to a file ...|  
 | --- | --- |
 |[Delay](#Delay)| Program will be delayed at here after specific time then it keeps playing next steps ...|  
 |[Group](#Group)| Group contains 1 or many elements ...|  
@@ -32,28 +33,6 @@
   
 # Default attributes
 Attributes in all of elements  
-
-
-## if
-Check condition before decided to run this element or not  
-
-```yaml
-- Vars:
-    isEnd: true
-
-- Echo: 
-    if: ${sayHello}
-    title: Hello
-
-- Delay:
-    if: ${sayHello}
-    time: 1s
-    title: Delay 1s before say goodbye after say hello
-
-- Echo: 
-    if: ${!sayHello}
-    title: Goodbye
-```
 
 
 ## async
@@ -100,6 +79,28 @@ Delay after a specific time before keep playing the nexts
           title: step 2 run after 2s
           time: 2s
       - Echo: <step 2>
+```
+
+
+## if
+Check condition before decided to run this element or not  
+
+```yaml
+- Vars:
+    isEnd: true
+
+- Echo: 
+    if: ${sayHello}
+    title: Hello
+
+- Delay:
+    if: ${sayHello}
+    time: 1s
+    title: Delay 1s before say goodbye after say hello
+
+- Echo: 
+    if: ${!sayHello}
+    title: Goodbye
 ```
 
 
@@ -216,7 +217,21 @@ Write code as a function in js
 ```
 
 
-## !binary <a name="!binary"></a>
+## !tag <a name="!tag"></a>
+Lazy load tag  
+
+```yaml
+- yas-http/Post:
+    url: http://localhost/upload
+    headers:
+      content-type: multipart/form-data
+    body:
+      file: !tag 
+        tags/binary: ~/data.json
+```
+
+
+## !tag tags/binary <a name="!tag tags/binary"></a>
 Transform file to binary  
 
 ```yaml
@@ -225,7 +240,8 @@ Transform file to binary
     headers:
       content-type: multipart/form-data
     body:
-      file: !binary ~/data.json
+      file: !tag
+        tags/binary: ~/data.json
 ```
 
 

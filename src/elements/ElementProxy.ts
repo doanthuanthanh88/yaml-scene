@@ -160,21 +160,21 @@ export class ElementProxy<T extends IElement> {
     }
   }
 
-  prepare() {
-    this.element.logLevel = this.getVar(this.element.logLevel)
-    this.element.async = this.getVar(this.element.async)
-    this.element.if = this.getVar(this.element.if)
-    this.element.delay = this.getVar(this.element.delay)
+  async prepare() {
+    this.element.logLevel = await this.getVar(this.element.logLevel)
+    this.element.async = await this.getVar(this.element.async)
+    this.element.if = await this.getVar(this.element.if)
+    this.element.delay = await this.getVar(this.element.delay)
     if (this.element.prepare) {
       return this.element.prepare()
     }
   }
 
-  isValid() {
+  async isValid() {
     let isOk = true
     if (this.element.if !== undefined) {
       if (typeof this.element.if === 'string') {
-        isOk = this.getVar(this.element.if)
+        isOk = await this.getVar(this.element.if)
       } else {
         isOk = this.element.if
       }
@@ -196,7 +196,7 @@ export class ElementProxy<T extends IElement> {
         return rs
       }
     } else {
-      let loop = this.getVar(this.element.loop)
+      let loop = await this.getVar(this.element.loop)
       if (typeof loop === 'object') {
         for (const key in loop) {
           const tmp = this.clone()
@@ -218,7 +218,7 @@ export class ElementProxy<T extends IElement> {
           await tmp.prepare()
           await tmp.exec()
           await tmp.dispose()
-          loop = this.getVar(this.element.loop)
+          loop = await this.getVar(this.element.loop)
         }
       }
     }
@@ -254,19 +254,19 @@ export class ElementProxy<T extends IElement> {
     this.element.logLevel = level
   }
 
-  setVar(varObj: any, obj = {} as any, defaultKey?: string) {
+  async setVar(varObj: any, obj = {} as any, defaultKey?: string) {
     if (typeof varObj === 'string') {
-      return VariableManager.Instance.set(varObj, obj, defaultKey)
+      await VariableManager.Instance.set(varObj, obj, defaultKey)
     }
-    return VariableManager.Instance.set(varObj, { $: this.element.$ || this.element, $$: this.element.$$, ...obj }, defaultKey)
+    await VariableManager.Instance.set(varObj, { $: this.element.$ || this.element, $$: this.element.$$, ...obj }, defaultKey)
   }
 
   eval(obj: any, baseContext = {} as any) {
     return VariableManager.Instance.eval(obj, { $: this.element.$ || this.element, $$: this.element.$$, ...baseContext })
   }
 
-  getVar(obj: any, baseContext = {}) {
-    return VariableManager.Instance.get(obj, { $: this.element.$ || this.element, $$: this.element.$$, ...baseContext })
+  async getVar(obj: any, baseContext = {}) {
+    return await VariableManager.Instance.get(obj, { $: this.element.$ || this.element, $$: this.element.$$, ...baseContext })
   }
 
   inherit(props: any) {

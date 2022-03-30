@@ -14,20 +14,22 @@ export class MultiSelectQuestion extends AbsQuestion {
     this.choices = config.choices
   }
 
-  prepare(proxy) {
-    super.prepare(proxy)
+  async prepare(proxy) {
+    await super.prepare(proxy)
     let df = this.default
     if (df !== undefined) {
       if (!Array.isArray(df)) df = [df]
       this.default = []
     }
-    this.choices?.forEach((choice) => {
-      choice.title = proxy.getVar(choice.title)
-      choice.value = proxy.getVar(choice.value)
-      if (df?.includes(choice.value)) {
-        choice.selected = true
-      }
-    })
+    if (this.choices?.length) {
+      await Promise.all(this.choices.map(async (choice) => {
+        choice.title = await proxy.getVar(choice.title)
+        choice.value = await proxy.getVar(choice.value)
+        if (df?.includes(choice.value)) {
+          choice.selected = true
+        }
+      }))
+    }
   }
 
 }

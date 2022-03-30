@@ -109,7 +109,7 @@ export default class UserInput implements IElement {
         .title(chalk.cyan(title))
         .var(varName)
         .default(df)
-        .format(this.proxy.eval(Functional.GetFuntion(format)?.toReturn()))
+        .format(format)
       if (type === QuestionType.SELECT || type === QuestionType.MULTISELECT || type === QuestionType.AUTOCOMPLETE || type === QuestionType.AUTOCOMPLETEMULTISELECT) {
         ques.choices(choices)
       } else if (type === QuestionType.DATE) {
@@ -119,16 +119,23 @@ export default class UserInput implements IElement {
     })
   }
 
-  prepare() {
-    this._questions.forEach(question => {
-      question.prepare(this.proxy)
-    })
+  async prepare() {
+    if (this._questions?.length) {
+      await Promise.all([
+        this._questions.map(async question => {
+          if (question.format) {
+            question.format = await this.proxy.eval(Functional.GetFuntion(question.format)?.toReturn())
+          }
+          await question.prepare(this.proxy)
+        })
+      ])
+    }
   }
 
   async exec() {
     const response = await prompts(this._questions.map(question => question.config))
     if (response) {
-      this.proxy.setVar(response, this)
+      await this.proxy.setVar(response, this)
     }
     return response
   }

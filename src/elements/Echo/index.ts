@@ -88,11 +88,11 @@ export default class Echo implements IElement {
     })
   }
 
-  exec() {
+  async exec() {
     this._transformClasses.forEach(({ TransformClass, args }) => {
       this._transform = new TransformClass(this._transform || new Base(), args)
     })
-    const message = this.proxy.getVar(this.message)
+    const message = await this.proxy.getVar(this.message)
     const txt = this._transform.print(message)
     this.proxy.logger.info(txt)
   }

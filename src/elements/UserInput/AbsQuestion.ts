@@ -35,12 +35,12 @@ export abstract class AbsQuestion {
     this.opts = opts
   }
 
-  prepare(proxy: ElementProxy<any>) {
-    this.title = proxy.getVar(this.title)
-    this.required = proxy.getVar(this.required)
-    this.pattern = proxy.getVar(this.pattern)
-    this.var = proxy.getVar(this.var)
-    this.default = proxy.getVar(this.default)
+  async prepare(proxy: ElementProxy<any>) {
+    this.title = await proxy.getVar(this.title)
+    this.required = await proxy.getVar(this.required)
+    this.pattern = await proxy.getVar(this.pattern)
+    this.var = await proxy.getVar(this.var)
+    this.default = await proxy.getVar(this.default)
   }
 
   async exec() {

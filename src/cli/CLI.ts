@@ -103,6 +103,7 @@ export class CLI {
       )
       .addCommand(program
         .createCommand('upgrade')
+        .aliases(['up', 'update'])
         .description('Upgrade `yaml-scene` or extensions')
         .argument("[extensions...]", "ExtensionManager package in npm registry")
         .action(async (extensionNames) => {

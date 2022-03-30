@@ -18,9 +18,9 @@
         "source.organizeImports": false,
     },
     "yaml.customTags": [
-        "!binary scalar",
         "!fragment scalar",
         "!function scalar",
+        "!tag mapping"
     ],
     "yaml.schemas": {
         "schema.yas.json": "*.yas.yaml"
