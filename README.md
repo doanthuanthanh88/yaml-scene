@@ -17,6 +17,10 @@ It's a platform to do everything with only yaml scenario files
 2. [yas-grpc](https://github.com/doanthuanthanh88/yas-grpc): Manage gRPC request, mocking gRPC server, create testcases, generate to document...
 3. [yas-sequence-diagram](https://github.com/doanthuanthanh88/yas-sequence-diagram): Generate to sequence diagram, flow diagram base on comment in code
 
+## Demo
+1. [Download youtube mp3 file](https://github.com/doanthuanthanh88/yas-http/blob/main/practice/youtube_audio/README.md)
+2. [Quick upload file to get a share link](https://github.com/doanthuanthanh88/yas-http/blob/main/practice/upload/README.md)
+
 ## Guideline document
 > **[Wiki Pages](https://github.com/doanthuanthanh88/yaml-scene/wiki)**  
 
@@ -134,25 +138,6 @@ Please follow [wiki pages](https://github.com/doanthuanthanh88/yaml-scene/wiki) 
 
 ## Examples
 Please go to [here](./yaml-test/examples) to see examples
-
-### `Auto download a mp3 file from youtube`
-Features:
-- Allow choose a mp3 quality to convert
-- Pick a section in the file  
-
-Run in local `yaml-scene`
-```sh
-  yas https://raw.githubusercontent.com/doanthuanthanh88/yaml-scene/main/yaml-test/examples/download_youtube example
-```
-
-Run via docker
-```sh
-  docker run --rm -it \
-  -v $PWD:/Downloads \
-  doanthuanthanh88/yaml-scene \
-  https://raw.githubusercontent.com/doanthuanthanh88/yaml-scene/main/yaml-test/examples/download_youtube \
-  example
-```
 
 ### More information
 - Project at [github](https://github.com/doanthuanthanh88/yaml-scene)
