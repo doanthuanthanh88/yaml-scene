@@ -26,8 +26,9 @@ export default class Vars implements IElement {
     VariableManager.Instance.declare(this.vars)
   }
 
-  exec() {
-    this.proxy.setVar(this.vars)
+  async exec() {
+    debugger
+    await this.proxy.setVar(this.vars)
   }
 
   dispose() {

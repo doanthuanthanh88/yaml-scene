@@ -44,9 +44,9 @@ export default class Delay implements IElement {
     }
   }
 
-  prepare() {
-    this.title = this.proxy.getVar(this.title)
-    this.time = this.proxy.getVar(this.time)
+  async prepare() {
+    this.title = await this.proxy.getVar(this.title)
+    this.time = await this.proxy.getVar(this.time)
   }
 
   async exec() {

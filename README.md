@@ -48,12 +48,19 @@ Install via `npm` or `yarn`
   yas add yas-http yas-grpc
 ```
 
-3. Uninstall extensions
+3. Upgrade extensions
+```sh
+  yas upgrade yas-http yas-grpc
+  yas update yas-http yas-grpc
+  yas up yas-http yas-grpc
+```
+
+4. Uninstall extensions
 ```sh
   yas remove yas-http yas-grpc
 ```
 
-4. Merge `json schema` of list extensions then save in a file which is used for validation or suggestion purpose.  
+5. Merge `json schema` of list extensions then save in a file which is used for validation or suggestion purpose.  
 Example [Integrate with Visual Studio Code](https://github.com/doanthuanthanh88/yaml-scene/wiki/Visual-Studio-Code)
 ```sh
   yas schema -f https://raw.githubusercontent.com/doanthuanthanh88/yaml-scene/main/schema.json \
@@ -61,7 +68,7 @@ Example [Integrate with Visual Studio Code](https://github.com/doanthuanthanh88/
     https://raw.githubusercontent.com/doanthuanthanh88/yas-grpc/main/schema.json
 ```
 
-5. Run scenario via docker container
+6. Run scenario via docker container
 ```sh
   yas docker \
     --dir "yaml-test/examples" \
@@ -71,12 +78,12 @@ Example [Integrate with Visual Studio Code](https://github.com/doanthuanthanh88/
     echo.yas.yaml
 ```
 
-6. Show version
+7. Show version
 ```sh
   yas -v
 ```
 
-7. Show help content
+8. Show help content
 ```sh
   yas -h
   yas add -h

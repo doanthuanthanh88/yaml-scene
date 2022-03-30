@@ -1,5 +1,6 @@
 import { IFileAdapter } from '@app/elements/File/adapter/IFileAdapter';
 import { Exporter } from '@app/utils/doc/Exporter';
+import { escape } from 'querystring';
 import { CommentInfo } from './CommentInfo';
 
 export class CommentExporter implements Exporter<CommentInfo> {
@@ -38,12 +39,12 @@ export class CommentExporter implements Exporter<CommentInfo> {
 
     Array.from(groups.keys()).sort().forEach(group => {
       const sortedGroups = groups.get(group).sort((a, b) => {
-        if (a.order === b.order === undefined) {
+        if (a.order === b.order) {
           return a.name > b.name ? 1 : -1
         }
         if (a.order === undefined) a.order = Number.MAX_SAFE_INTEGER
         if (b.order === undefined) b.order = Number.MAX_SAFE_INTEGER
-        return +a.order - +b.order
+        return +a.order > +b.order ? 1 : -1
       })
       const h1 = sortedGroups.filter(h => h.h1 !== undefined && !unique.h1.has(h))
       mdH1.push(...h1.map(h1 => unique.h1.add(h1) && `${h1.h1 || '#'} ${h1.name}
@@ -64,7 +65,7 @@ ${h2.examples}
         } else {
           mdMenu.push(`| --- | --- |`);
         }
-        mdMenu.push(...infos.map(info => `|[${info.name}](#${info.name})| ${info.description1}|  `));
+        mdMenu.push(...infos.map(info => `|[${info.name}](#${escape(info.name)})| ${info.description1}|  `));
         mdExample.push(...infos
           .filter(h => !unique.info.has(h))
           .map(info => unique.info.add(info) && `## ${info.name} <a name="${info.name}"></a>

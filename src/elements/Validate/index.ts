@@ -31,14 +31,14 @@ export default class Validate implements IElement {
     merge(this, props)
   }
 
-  exec() {
+  async exec() {
     try {
       if (this.chai) {
         const ctx = { expect, assert } as any
         if (this.chai.includes('should.')) {
           ctx.should = should()
         }
-        this.proxy.getVar(this.chai, ctx)
+        await this.proxy.getVar(this.chai, ctx)
       }
       this.proxy.logger.info(chalk.green('✔', this.title))
     } catch (err) {

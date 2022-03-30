@@ -90,17 +90,15 @@ export class JSONSchema {
         }
       }
     } else if (typeof obj === 'object') {
-      const keys = Object.keys(obj)
-      keys.forEach(k => {
-        let key = k
+      Object.entries(obj).forEach(([key, vl]) => {
         if (new RegExp(`^${$id}[^a-zA-Z0-9]+`).test(key)) {
           delete obj[key]
         } else if (key === '$ref') {
-          if (new RegExp(`^#/definitions/${$id}[^a-zA-Z0-9]+`).test(obj[key]))
+          if (new RegExp(`^#/definitions/${$id}[^a-zA-Z0-9]+`).test(vl.toString()))
             obj[REMOVE_KEY] = true
         }
-        if (typeof obj[key] === 'object') {
-          this.removeID(obj[key], $id)
+        if (typeof vl === 'object') {
+          this.removeID(vl, $id)
         }
       })
     }
@@ -110,18 +108,17 @@ export class JSONSchema {
     if (Array.isArray(obj)) {
       obj.forEach(o => typeof o === 'object' && this.replaceID(o, $id))
     } else if (typeof obj === 'object') {
-      const keys = Object.keys(obj)
-      keys.forEach(k => {
+      Object.entries(obj).forEach(([k, vl]) => {
         let key = k
         if (key.includes('$id') && key !== '$id') {
           key = key.replace(/\$id/g, $id)
-          obj[key] = obj[k]
+          obj[key] = vl
           delete obj[k]
         } else if (key === '$ref') {
-          obj[key] = obj[key].replace(/\$id/g, $id)
+          obj[key] = vl.toString().replace(/\$id/g, $id)
         }
-        if (typeof obj[key] === 'object') {
-          this.replaceID(obj[key], $id)
+        if (typeof vl === 'object') {
+          this.replaceID(vl, $id)
         }
       })
     }
@@ -131,12 +128,11 @@ export class JSONSchema {
     if (Array.isArray(obj)) {
       obj.forEach(o => typeof o === 'object' && this.injectAttrs(o, templates))
     } else if (typeof obj === 'object') {
-      const keys = Object.keys(obj)
-      keys.forEach(k => {
-        let key = k
+      Object.entries(obj).forEach(([key, vl]) => {
         if (/^\.{3,}$/.test(key)) {
-          if (templates[obj[key]] !== undefined) {
-            Object.assign(obj, templates[obj[key]])
+          const template = templates[vl.toString()]
+          if (template !== undefined) {
+            Object.assign(obj, template)
             delete obj[key]
           }
         }

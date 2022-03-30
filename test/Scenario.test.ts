@@ -11,14 +11,16 @@ describe('Scenario run', () => {
     await Simulator.Run(`
 title: Test encrypt file
 password: thanh123
-logLevel: info
+logLevel: error
 install:
   global: false
   localPath: ./
   dependencies: 
     - yas-grpc
 steps:
-- Echo: Hello world
+- Echo: 
+    message: Hello world
+    logLevel: info
     `)
     expect(existsSync(Scenario.Instance.scenarioPasswordFile)).toEqual(true)
   })

@@ -1,3 +1,4 @@
+import { ElementProxy } from "@app/elements/ElementProxy"
 import { AES } from "@app/utils/encrypt/AES"
 import { Base64 } from "@app/utils/encrypt/Base64"
 import { MD5 } from "@app/utils/encrypt/MD5"
@@ -51,7 +52,7 @@ export class VariableManager {
     }
   }
 
-  set(varObj: any, obj: any, defaultKey?: string) {
+  async set(varObj: any, obj: any, defaultKey?: string) {
     // if (!obj) return
     if (typeof varObj === 'string') {
       if (defaultKey) {
@@ -60,11 +61,9 @@ export class VariableManager {
         this.vars[varObj] = obj
       }
     } else if (varObj && typeof varObj === 'object') {
-      Object.keys(varObj).forEach(key => {
-        // const vl = this.get(varObj[key], { _: obj })
-        const vl = this.get(varObj[key], obj)
-        this.vars[key] = vl
-      })
+      for (const [key, vl] of Object.entries(varObj)) {
+        this.vars[key] = await this.get(vl, obj)
+      }
     } else {
       const error = new TraceError('VariableManager.set() only support "string" or "object" type', {
         varObj,
@@ -75,15 +74,15 @@ export class VariableManager {
     }
   }
 
-  eval(obj: any, baseCtx?: any) {
+  async eval(obj: any, baseCtx?: any) {
     if (!obj) return obj
     if (Array.isArray(obj)) {
       const ctx = { ...this.vars, ...baseCtx }
-      obj = obj.map(o => this.get(o, ctx))
+      obj = await Promise.all(obj.map(o => this.get(o, ctx)))
     } else if (typeof obj === 'object') {
       const ctx = { ...this.vars, ...baseCtx }
-      for (const key in obj) {
-        obj[key] = this.get(obj[key], ctx)
+      for (const [key, vl] of Object.entries(obj)) {
+        obj[key] = await this.get(vl, ctx)
       }
     } else if (typeof obj === 'string') {
       let vl;
@@ -98,15 +97,19 @@ export class VariableManager {
     return obj
   }
 
-  get(obj: any, baseCtx?: any, isPassed?: boolean) {
+  async get(obj: any, baseCtx?: any, isPassed?: boolean) {
     if (!obj) return obj
     if (Array.isArray(obj)) {
       const ctx = isPassed ? baseCtx : { ...this.vars, ...baseCtx }
-      obj = obj.map(o => this.get(o, ctx, true))
+      obj = await Promise.all(obj.map(o => this.get(o, ctx, true)))
+    } else if (obj instanceof ElementProxy) {
+      await obj.prepare()
+      obj = await obj.exec()
+      return obj
     } else if (typeof obj === 'object') {
       const ctx = isPassed ? baseCtx : { ...this.vars, ...baseCtx }
-      for (const key in obj) {
-        obj[key] = this.get(obj[key], ctx, true)
+      for (const [key, vl] of Object.entries(obj)) {
+        obj[key] = await this.get(vl, ctx, true)
       }
     } else if (typeof obj === 'string' && obj.includes('${')) {
       let vl;

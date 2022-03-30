@@ -45,14 +45,14 @@ export default class Exec implements IElement {
     merge(this, props)
   }
 
-  prepare() {
-    if (this.title) this.title = this.proxy.getVar(this.title)
-    if (this.opts) this.opts = this.proxy.getVar(this.opts)
+  async prepare() {
+    if (this.title) this.title = await this.proxy.getVar(this.title)
+    if (this.opts) this.opts = await this.proxy.getVar(this.opts)
     if (!this.args) this.args = []
-    this.args = this.proxy.getVar(this.args)
+    this.args = await this.proxy.getVar(this.args)
   }
 
-  exec() {
+  async exec() {
     if (this.title) this.proxy.logger.info(this.title)
     const [cmd, ...args] = this.args
     this._prc = spawn(cmd, args, this.opts)
@@ -68,11 +68,11 @@ export default class Exec implements IElement {
         this.proxy.logger.debug(_msg)
         msgs?.push(_msg)
       })
-      this._prc.on('close', code => {
+      this._prc.on('close', async code => {
         this.code = code
         if (this.var) {
           this.messages = msgs?.join('\n')
-          this.proxy.setVar(this.var)
+          await this.proxy.setVar(this.var)
         }
         this._prc = null
         resolve(!code ? this.messages : null)

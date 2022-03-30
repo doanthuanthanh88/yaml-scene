@@ -12,8 +12,8 @@ export class DateQuestion extends AbsQuestion {
     this.mask = mask
   }
 
-  prepare(proxy: ElementProxy<any>) {
-    super.prepare(proxy)
-    this.mask = proxy.getVar(this.mask)
+  async prepare(proxy: ElementProxy<any>) {
+    await super.prepare(proxy)
+    this.mask = await proxy.getVar(this.mask)
   }
 }

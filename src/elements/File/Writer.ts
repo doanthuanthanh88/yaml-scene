@@ -226,9 +226,9 @@ export default class Writer implements IElement {
     if (!this.adapters.length) this.adapters.push('Text')
   }
 
-  prepare() {
-    this.title = this.proxy.getVar(this.title)
-    this.content = this.proxy.getVar(this.content)
+  async prepare() {
+    this.title = await this.proxy.getVar(this.title)
+    this.content = await this.proxy.getVar(this.content)
     this.path = this.proxy.resolvePath(this.path)
     if (!this.content) throw new TraceError('"content" is required')
     this._adapterClasses = this.adapters.reverse().map(adapter => {

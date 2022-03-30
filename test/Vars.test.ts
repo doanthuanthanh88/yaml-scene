@@ -26,11 +26,13 @@ describe('Test assign value to global vars', () => {
     await Simulator.Run(`
 - Vars:
     base64Encrypt: \${$$base64.encrypt("thanh")}
-    base64Decrypt: \${$$base64.decrypt(base64Encrypt)}
     md5: \${$$md5.encrypt("thanh")}
     encryptText: \${$$aes.encrypt("thanh", "mypass")}
-    decryptText: \${$$aes.decrypt(encryptText, "mypass")}
     text: \${$$text.red("thanh")}
+
+- Vars:
+    base64Decrypt: \${$$base64.decrypt(base64Encrypt)}
+    decryptText: \${$$aes.decrypt(encryptText, "mypass")}
 `)
     expect(VariableManager.Instance.vars.encryptText).toHaveLength(65)
     expect(VariableManager.Instance.vars.decryptText).toBe('thanh')

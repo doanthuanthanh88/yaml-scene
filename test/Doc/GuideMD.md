@@ -3,7 +3,7 @@
 | Element | Description |  
 |---|---|  
 | DOC | --- |
-|[Doc/Guide/MD](#Doc/Guide/MD)| Auto scan file to detect the comment format which is generated to markdown document ...|  
+|[Doc/Guide/MD](#Doc%2FGuide%2FMD)| Auto scan file to detect the comment format which is generated to markdown document ...|  
   
   
 # Details
