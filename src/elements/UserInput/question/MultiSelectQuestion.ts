@@ -21,6 +21,7 @@ export class MultiSelectQuestion extends AbsQuestion {
       if (!Array.isArray(df)) df = [df]
       this.default = []
     }
+    this.choices = await proxy.getVar(this.choices)
     if (this.choices?.length) {
       await Promise.all(this.choices.map(async (choice) => {
         choice.title = await proxy.getVar(choice.title)

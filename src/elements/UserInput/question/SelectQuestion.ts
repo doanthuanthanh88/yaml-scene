@@ -16,10 +16,9 @@ export class SelectQuestion extends AbsQuestion {
 
   async prepare(proxy) {
     await super.prepare(proxy)
+    this.choices = await proxy.getVar(this.choices)
     if (this.choices?.length) {
       await Promise.all(this.choices.map(async (choice, i) => {
-        choice.title = await proxy.getVar(choice.title)
-        choice.value = await proxy.getVar(choice.value)
         if (this.default !== undefined && this.default === choice.value) {
           this.default = +i
         }
