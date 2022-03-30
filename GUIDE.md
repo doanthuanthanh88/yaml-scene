@@ -788,6 +788,8 @@ Get user input from keyboard
       choices:
         - title: Male
           value: 1
+          description: Des
+          disabled: false
         - title: Female
           value: -1
 
@@ -797,6 +799,8 @@ Get user input from keyboard
       choices:
         - title: Male
           value: 1
+          description: Des
+          disabled: false
         - title: Female
           value: -1
 
@@ -809,6 +813,8 @@ Get user input from keyboard
       choices:
         - title: Play football
           value: id0
+          description: Des
+          disabled: false
         - title: Backet ball
           value: id1
 
@@ -818,6 +824,8 @@ Get user input from keyboard
       choices:
         - title: Play football
           value: id0
+          description: Des
+          disabled: false
         - title: Backet ball
           value: id1
 

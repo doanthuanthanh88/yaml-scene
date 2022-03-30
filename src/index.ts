@@ -34,12 +34,12 @@ export class Main {
           LoggerManager.GetLogger().info()
           const confirmContinue = ElementFactory.CreateElement('UserInput')
           confirmContinue.init([{
-            title: `Keep playing the scenario ?`,
+            title: `Replay the scenario ?`,
             type: 'confirm',
             default: true,
             var: 'continuePlay'
           }])
-          confirmContinue.prepare()
+          await confirmContinue.prepare()
           const { continuePlay } = await confirmContinue.exec()
           await confirmContinue.dispose()
 

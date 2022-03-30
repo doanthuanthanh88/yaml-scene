@@ -78,11 +78,9 @@ export default class Sh extends Exec {
     await super.prepare()
   }
 
-  async dispose() {
-    await Promise.all([
-      existsSync(this.tempFile) && unlink(this.tempFile),
-      super.dispose()
-    ])
+  dispose() {
+    existsSync(this.tempFile) && unlink(this.tempFile)
+    return super.dispose()
   }
 
 }

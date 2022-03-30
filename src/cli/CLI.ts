@@ -267,12 +267,12 @@ export class CLI {
       type: 'select',
       default: 'global',
       choices: [
-        { title: `Global - Installed to global npm or yarn `, value: 'global' },
-        { title: 'Local - Installed into "yaml-scene". When "yaml-scene" is reinstalled or upgraded, these extensions must be reinstalled', value: 'local' }
+        { title: `Global (Recommend)`, value: 'global', description: 'Installed to global npm or yarn' },
+        { title: 'Local', value: 'local', description: 'Installed into "yaml-scene". When "yaml-scene" is reinstalled or upgraded, these extensions must be reinstalled' }
       ],
       var: 'installType'
     }])
-    confirmType.prepare()
+    await confirmType.prepare()
     const { installType } = await confirmType.exec()
     await confirmType.dispose()
 
@@ -327,7 +327,7 @@ export class CLI {
       default: true,
       var: 'isRun'
     }])
-    confirm.prepare()
+    await confirm.prepare()
     const cmds = cmd.filter(e => e !== '\\\n  ').map(e => e.replace(/^"|"$/g, ""))
     const { isRun } = await confirm.exec()
     await confirm.dispose()

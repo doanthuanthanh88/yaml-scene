@@ -11,7 +11,6 @@
   "definitions": {
     "Script": {
       "type": "object",
-      "additionalProperties": false,
       "properties": {
         "Script/Js": {
           "description": "Run javascript in scenario",
@@ -189,7 +188,6 @@
     },
     "Delay": {
       "type": "object",
-      "additionalProperties": false,
       "properties": {
         "Delay": {
           "title": "Delay the current step",
@@ -197,10 +195,9 @@
             {
               "type": "object",
               "description": "Delay",
-              "additionalProperties": false,
               "properties": {
                 "title": {
-                  "$ref": "#/definitions/getVar",
+                  "$ref": "#/definitions/getVarString",
                   "description": "Description"
                 },
                 "time": {
@@ -278,7 +275,6 @@
     },
     "Pause": {
       "type": "object",
-      "additionalProperties": false,
       "properties": {
         "Pause": {
           "title": "Pause or sleep the current step",
@@ -286,10 +282,9 @@
             {
               "type": "object",
               "description": "Pause",
-              "additionalProperties": false,
               "properties": {
                 "title": {
-                  "$ref": "#/definitions/getVar",
+                  "$ref": "#/definitions/getVarString",
                   "description": "Description"
                 },
                 "time": {
@@ -371,7 +366,6 @@
     },
     "UserInput": {
       "type": "object",
-      "additionalProperties": false,
       "properties": {
         "UserInput": {
           "description": "Get input from user keyboard",
@@ -384,7 +378,6 @@
     },
     "Exec": {
       "type": "object",
-      "additionalProperties": false,
       "properties": {
         "Exec": {
           "type": "object",
@@ -392,10 +385,9 @@
           "required": [
             "args"
           ],
-          "additionalProperties": false,
           "properties": {
             "title": {
-              "$ref": "#/definitions/getVar"
+              "$ref": "#/definitions/getVarString"
             },
             "var": {
               "description": "Set result after execution",
@@ -473,13 +465,12 @@
     },
     "Validate": {
       "type": "object",
-      "additionalProperties": false,
       "properties": {
         "Validate": {
           "description": "Use an existed validation or method from https://www.chaijs.com/",
           "properties": {
             "title": {
-              "$ref": "#/definitions/getVar",
+              "$ref": "#/definitions/getVarString",
               "description": "Validation name"
             },
             "chai": {
@@ -564,7 +555,6 @@
     },
     "File": {
       "type": "object",
-      "additionalProperties": false,
       "properties": {
         "File/Reader": {
           "type": "object",
@@ -582,7 +572,7 @@
               "description": "Path of input file"
             },
             "title": {
-              "$ref": "#/definitions/getVar",
+              "$ref": "#/definitions/getVarString",
               "description": "Description"
             },
             "var": {
@@ -666,7 +656,7 @@
               "description": "Path of output file"
             },
             "title": {
-              "$ref": "#/definitions/getVar",
+              "$ref": "#/definitions/getVarString",
               "description": "Description"
             },
             "content": {
@@ -738,7 +728,6 @@
     },
     "Vars": {
       "type": "object",
-      "additionalProperties": false,
       "properties": {
         "Vars": {
           "type": "object",
@@ -748,7 +737,6 @@
     },
     "Templates": {
       "type": "object",
-      "additionalProperties": false,
       "properties": {
         "Templates": {
           "description": "Declare steps which not used to run, just declared",
@@ -758,7 +746,6 @@
     },
     "Group": {
       "type": "object",
-      "additionalProperties": false,
       "properties": {
         "Group": {
           "required": [
@@ -768,11 +755,11 @@
           "description": "Group steps",
           "properties": {
             "title": {
-              "$ref": "#/definitions/getVar",
+              "$ref": "#/definitions/getVarString",
               "description": "Group title"
             },
             "description": {
-              "$ref": "#/definitions/getVar",
+              "$ref": "#/definitions/getVarString",
               "description": "Group description"
             },
             "steps": {
@@ -847,7 +834,7 @@
           "type": "object",
           "properties": {
             "title": {
-              "$ref": "#/definitions/getVar",
+              "$ref": "#/definitions/getVarString",
               "description": "Description"
             },
             "pretty": {
@@ -953,7 +940,6 @@
     "Echo": {
       "type": "object",
       "description": "Print data to screen",
-      "additionalProperties": false,
       "properties": {
         "Echo/Schema": {
           "description": "Print object schema to screen",
@@ -990,7 +976,6 @@
     },
     "Clear": {
       "type": "object",
-      "additionalProperties": false,
       "properties": {
         "Clear": {
           "description": "Clear screen",
@@ -1000,7 +985,6 @@
     },
     "DocGuideMD": {
       "type": "object",
-      "additionalProperties": false,
       "properties": {
         "Doc/Guide/MD": {
           "required": [
@@ -1240,10 +1224,9 @@
         "title",
         "var"
       ],
-      "additionalProperties": false,
       "properties": {
         "title": {
-          "$ref": "#/definitions/getVar",
+          "$ref": "#/definitions/getVarString",
           "description": "Question title"
         },
         "var": {
@@ -1301,10 +1284,13 @@
             ],
             "properties": {
               "title": {
-                "$ref": "#/definitions/getVar"
+                "$ref": "#/definitions/getVarString"
               },
               "description": {
-                "type": "string"
+                "$ref": "#/definitions/getVarString"
+              },
+              "disabled": {
+                "$ref": "#/definitions/getVarBooleanString"
               },
               "value": {
                 "$ref": "#/definitions/getVar"
@@ -1383,7 +1369,7 @@
       ],
       "properties": {
         "title": {
-          "$ref": "#/definitions/getVar",
+          "$ref": "#/definitions/getVarString",
           "description": "Validation name"
         },
         "chai": {

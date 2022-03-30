@@ -19,7 +19,7 @@ type QuestionBuilderConfig = {
   var?: string
   format?: (vl: any) => any
   required?: boolean
-  choices?: { title: string, value: string }[]
+  choices?: { title: string, value: string, description?: string, disabled?: boolean }[]
   mask?: string
 }
 

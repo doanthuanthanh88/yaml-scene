@@ -111,7 +111,8 @@ export class ExtensionManager {
     LoggerManager.GetLogger().info(chalk.red(`Unstalling ...`))
     for (const { title, cmd } of cmds) {
       try {
-        Exec.Run(cmd)
+        const log = Exec.Run(cmd)
+        if (log.error) throw log.error
         dependencies.forEach(e => LoggerManager.GetLogger().info(chalk.red(`✔ ${e} ${chalk.gray(title)}`)))
       } catch (err) {
         errors.push(err)
@@ -135,7 +136,8 @@ export class ExtensionManager {
     LoggerManager.GetLogger().info(chalk.yellow(`Upgrading ...`))
     for (const { title, cmd } of cmds) {
       try {
-        Exec.Run(cmd)
+        const log = Exec.Run(cmd)
+        if (log.error) throw log.error
         dependencies.forEach(e => LoggerManager.GetLogger().info(chalk.yellow(`✔ ${e} ${chalk.gray(title)}`)))
       } catch (err) {
         errors.push(err)
@@ -165,7 +167,8 @@ export class ExtensionManager {
     LoggerManager.GetLogger().log(chalk.green(`Installing ...`))
     for (const { title, cmd } of cmds) {
       try {
-        Exec.Run(cmd)
+        const log = Exec.Run(cmd)
+        if (log.error) throw log.error
         dependencies.forEach(e => LoggerManager.GetLogger().info(chalk.green(`✔ ${e} ${chalk.gray(title)}`)))
         errors = []
         break
@@ -199,8 +202,7 @@ export class ExtensionManager {
   private loadNpmYarnGlobalPaths() {
     ["npm root -g", "yarn global dir"].forEach(cmd => {
       try {
-        execSync(cmd).toString()
-          .split('\n')
+        execSync(cmd, { stdio: ['ignore', 'pipe', 'ignore'] }).toString().split('\n')
           .map((f) => f?.trim())
           .filter((f) => f && existsSync(f) && !this.globalModuleManager.modules.includes(f))
           .forEach(gd => this.globalModuleManager.modules.push(gd))

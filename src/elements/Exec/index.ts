@@ -56,7 +56,7 @@ export default class Exec implements IElement {
     if (this.title) this.proxy.logger.info(this.title)
     const [cmd, ...args] = this.args
     this._prc = spawn(cmd, args, this.opts)
-    return new Promise<string>((resolve) => {
+    return new Promise<string>((resolve, reject) => {
       const msgs = this.var ? [] : undefined
       this._prc.stdout?.on('data', msg => {
         const _msg = msg?.toString()
@@ -67,6 +67,9 @@ export default class Exec implements IElement {
         const _msg = msg?.toString()
         this.proxy.logger.debug(_msg)
         msgs?.push(_msg)
+      })
+      this._prc.on('error', (err) => {
+        reject(err)
       })
       this._prc.on('close', async code => {
         this.code = code

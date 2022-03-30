@@ -257,16 +257,19 @@ export class ElementProxy<T extends IElement> {
   async setVar(varObj: any, obj = {} as any, defaultKey?: string) {
     if (typeof varObj === 'string') {
       await VariableManager.Instance.set(varObj, obj, defaultKey)
+    } else {
+      await VariableManager.Instance.set(varObj, { $: this.element.$ || this.element, $$: this.element.$$, ...obj }, defaultKey)
     }
-    await VariableManager.Instance.set(varObj, { $: this.element.$ || this.element, $$: this.element.$$, ...obj }, defaultKey)
   }
 
-  eval(obj: any, baseContext = {} as any) {
-    return VariableManager.Instance.eval(obj, { $: this.element.$ || this.element, $$: this.element.$$, ...baseContext })
+  async eval(obj: any, baseContext = {} as any) {
+    const vl = await VariableManager.Instance.eval(obj, { $: this.element.$ || this.element, $$: this.element.$$, ...baseContext })
+    return vl
   }
 
   async getVar(obj: any, baseContext = {}) {
-    return await VariableManager.Instance.get(obj, { $: this.element.$ || this.element, $$: this.element.$$, ...baseContext })
+    const vl = await VariableManager.Instance.get(obj, { $: this.element.$ || this.element, $$: this.element.$$, ...baseContext })
+    return vl
   }
 
   inherit(props: any) {

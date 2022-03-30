@@ -50,6 +50,8 @@ import { QuestionType } from './QuestionType';
       choices:
         - title: Male
           value: 1
+          description: Des
+          disabled: false
         - title: Female
           value: -1
 
@@ -59,6 +61,8 @@ import { QuestionType } from './QuestionType';
       choices:
         - title: Male
           value: 1
+          description: Des
+          disabled: false
         - title: Female
           value: -1
 
@@ -71,6 +75,8 @@ import { QuestionType } from './QuestionType';
       choices:
         - title: Play football
           value: id0
+          description: Des
+          disabled: false
         - title: Backet ball
           value: id1
 
@@ -80,6 +86,8 @@ import { QuestionType } from './QuestionType';
       choices:
         - title: Play football
           value: id0
+          description: Des
+          disabled: false
         - title: Backet ball
           value: id1
 
@@ -121,14 +129,12 @@ export default class UserInput implements IElement {
 
   async prepare() {
     if (this._questions?.length) {
-      await Promise.all([
-        this._questions.map(async question => {
-          if (question.format) {
-            question.format = await this.proxy.eval(Functional.GetFuntion(question.format)?.toReturn())
-          }
-          await question.prepare(this.proxy)
-        })
-      ])
+      await Promise.all(this._questions.map(async question => {
+        if (question.format) {
+          question.format = await this.proxy.eval(Functional.GetFuntion(question.format)?.toReturn())
+        }
+        await question.prepare(this.proxy)
+      }))
     }
   }
 

@@ -55,7 +55,7 @@ export default class Pause implements IElement {
         title: this.title,
         time: this.time
       })
-      sleep.prepare()
+      await sleep.prepare()
       await sleep.exec()
       return
     }
