@@ -1,5 +1,6 @@
 import { IFileAdapter } from '@app/elements/File/adapter/IFileAdapter';
 import { Exporter } from '@app/utils/doc/Exporter';
+import { join } from 'path';
 import { escape } from 'querystring';
 import { CommentInfo } from './CommentInfo';
 
@@ -65,12 +66,14 @@ ${h2.examples}
         } else {
           mdMenu.push(`| --- | --- |`);
         }
-        mdMenu.push(...infos.map(info => `|[${info.name}](#${escape(info.name)})| ${info.description1}|  `));
+        mdMenu.push(...infos.map(info => `|[${info.name}](#${escape(join(info.group || '', info.name))})| ${info.description1}|  `));
         mdExample.push(...infos
           .filter(h => !unique.info.has(h))
-          .map(info => unique.info.add(info) && `## ${info.name} <a name="${info.name}"></a>
+          .map(info => unique.info.add(info) && `## ${info.name} <a name="${escape(join(info.group || '', info.name))}"></a>  
+\`(${info.group})\`  
 ${info.description || ''}  
 ${info.examples}
+<br/>
 `
           ));
       }

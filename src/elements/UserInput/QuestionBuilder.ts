@@ -37,6 +37,12 @@ export class QuestionBuilder {
     return this
   }
 
+  config(config: any) {
+    merge(this._config, config)
+    return this
+
+  }
+
   title(title: string) {
     this._config.title = title
     return this

@@ -10,105 +10,30 @@ import { IFileAdapter } from './adapter/IFileAdapter';
 /**
  * @guide
  * @name File/Reader
- * @description Read a file then set content to a variable  
-It uses `aes-128-cbc` to decrypt content with a password.  
-Refer to [File/Writer](.) to encrypt content
+ * @description Read a file then set content to a variable
+
+File adapters:
+
+- [Read a text file](#File%2C%20%2BFile.Adapter%2FText)
+- [Read a csv file](#File%2C%20%2BFile.Adapter%2FCsv)
+- [Read a json file](#File%2C%20%2BFile.Adapter%2FJson)
+- [Read a xml file](#File%2C%20%2BFile.Adapter%2FXml)
+- [Read a yaml file](#File%2C%20%2BFile.Adapter%2FYaml)
+- [Read a excel file](#File%2C%20%2BFile.Adapter%2FExcel)
+- [Read a encrypted file](#File%2C%20%2BFile.Adapter%2FPassword)
  * @group File, Input
  * @exampleType custom
  * @example
-### Text file
-
 ```yaml
 - File/Reader:
-    title: Read text file 1 with password
-    path: assets/data1.txt
-    adapters:
-      - Password: MyPassword        # Decrypt content with password is "MyPassword"
-    var: data                       # Set file content result to "data" variable
-    
-- File/Reader:
-    title: Read text file 2 without password
-    path: assets/data2.txt
-    var: data                       # Set file content result to "data" variable
-```
-
-### CSV File
-
-```yaml
-- File/Reader:
-    title: Read csv file 1 with password
-    path: assets/data1.csv
-    adapters:
-      - Password: MyPassword        # The first is decrypt content after read file
-      - Csv                         # The second convert data type is Csv to object
-    var: data                       # Set file content result to "data" variable
-
-- File/Reader:
-    title: Read csv file 2 without password
-    path: assets/data2.csv
-    adapters:
-      - Csv                         # Convert data type is Csv to object
-    var: data                       # Set file content result to "data" variable
-```
-
-### JSON File
-
-```yaml
-- File/Reader:
-    title: Read json file 1 with password
+    title: Read a json file
     path: assets/data1.json         # File content is { field1: value1 }
     adapters:
-      - Password: MyPassword        # The first is decrypt content after read file
-      - Json                        # The second convert data type is Json to object
+      - Json
     var: data                       # Set file content result to "data" variable
     var:
       myVar: ${_.field1}            # Extract `field1` in file content to `myVar`.
                                     # - `_` is file content data after is parsed
-
-- File/Reader:
-    title: Read json file 2 without password
-    path: assets/data2.json
-    adapters:
-      - Json                        # Convert data type is Json to object
-    var: data                       # Set file content result to "data" variable
-```
-
-### XML file
-
-```yaml
-- File/Reader:
-    title: Read xml file 1 with password
-    path: assets/data1.xml
-    adapters:
-      - Password: MyPassword        # The first is decrypt content after read file
-      - Xml                         # The second convert data type is Xml to object
-    var: data                       # Set file content result to "data" variable
-
-- File/Reader:
-    title: Read xml file 2 without password
-    path: assets/data2.xml
-    adapters:
-      - Xml                         # Convert data type is Xml to object
-    var: data                       # Set file content result to "data" variable
-```
-
-### YAML file
-
-```yaml
-- File/Reader:
-    title: Read yaml file 1 with password
-    path: assets/data1.yaml
-    adapters:
-      - Password: MyPassword        # The first is decrypt content after read file
-      - Yaml                        # The second convert data type is Csv to object
-    var: data                       # Set file content result to "data" variable
-
-- File/Reader:
-    title: Read yaml file 2 without password
-    path: assets/data2.yaml
-    adapters:
-      - Yaml                        # Convert data type is Yaml to object
-    var: data                       # Set file content result to "data" variable
 ```
 
 ### Notes:

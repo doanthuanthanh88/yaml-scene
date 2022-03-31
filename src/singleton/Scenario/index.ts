@@ -157,9 +157,10 @@ export class Scenario {
     await ExtensionManager.Instance.uninstall()
   }
 
-  dispose() {
+  async dispose() {
     this.events.emit('scenario.dispose', { time: Date.now(), isPassed: this.isPassed })
-    return this.rootGroup?.dispose()
+    await this.rootGroup?.dispose()
+    this.events.emit('scenario.end', { time: Date.now(), isPassed: this.isPassed })
   }
 
   resolvePath(path: string) {

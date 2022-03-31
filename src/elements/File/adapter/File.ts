@@ -1,10 +1,14 @@
 import { TraceError } from "@app/utils/error/TraceError";
-import { readFileSync, writeFileSync } from 'fs';
+import { readFileSync, WriteFileOptions, writeFileSync } from 'fs';
 import { IFileAdapter } from "./IFileAdapter";
+
+export class FileBinary {
+  constructor(public data: any) { }
+}
 
 export class File implements IFileAdapter {
 
-  constructor(public path: string) {
+  constructor(public path: string, public encoding?: WriteFileOptions) {
     if (!path) {
       throw new TraceError(`"Path" is required`)
     }
@@ -14,8 +18,8 @@ export class File implements IFileAdapter {
     return readFileSync(this.path)
   }
 
-  write(data = '') {
-    writeFileSync(this.path, data)
+  write(data: any = '') {
+    writeFileSync(this.path, data, this.encoding)
   }
 
 }

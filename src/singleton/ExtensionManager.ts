@@ -29,7 +29,7 @@ export class ExtensionManager {
 
   private extensionElements = {}
   private globalModuleManager = new GlobalModuleManager()
-  private localModuleManager = new LocalModuleManager()
+  private localModuleManager: LocalModuleManager
   private installExtensionPath: string
 
   constructor() {
@@ -40,34 +40,29 @@ export class ExtensionManager {
     ExtensionManager._Instance = null
   }
 
-  load(p: string, modulePath = '', defaultKey = 'default') {
+  load(p: string, modulePath = '') {
     let obj: any;
     try {
-      obj = require(join(modulePath, p));
-      if (defaultKey !== null) obj = obj[defaultKey] || obj[p]
-      return obj
-    } catch {
-      if (this.extensionElements[p]) return this.extensionElements[p]
+      // Load directly from src/elements/
+      obj = require(join(modulePath, p))
+      obj = this.getObjectInExport(obj, p)
+    } catch (err1) {
       try {
-        obj = require(p);
-        if (defaultKey !== null) obj = obj[defaultKey] || obj[p]
-        this.extensionElements[p] = obj
-        return obj
-      } catch {
-        // try {
-        modulePath = this.localModuleManager.get(p) || this.globalModuleManager.get(p);
+        // Load from packages in node_modules
+        obj = require(p)
+        obj = this.getObjectInExport(obj, p)
+      } catch (err2) {
+        if (this.extensionElements[p]) return this.extensionElements[p]
+        // Load from local or global module
+        modulePath = this.localModuleManager?.get(p) || this.globalModuleManager.get(p)
         if (!modulePath) {
-          throw new ExtensionNotFound(p, `Please install module "${p}" by command "yas add ${p.split('/')[0]}"`)
+          LoggerManager.GetLogger().trace(err1)
+          LoggerManager.GetLogger().trace(err2)
+          throw new ExtensionNotFound(p, `The scenario is using a new element "${p}"`)
         }
         obj = require(modulePath)
-        if (defaultKey !== null) obj = obj[defaultKey] || obj[p]
+        obj = this.getObjectInExport(obj, p)
         this.extensionElements[p] = obj
-        // } catch (err) {
-        //   const logger = Scenario.Instance.loggerManager.getLogger()
-        //   logger.error(chalk.red(err0.message));
-        //   logger.error(chalk.red(err.message));
-        //   throw err;
-        // }
       }
     }
     return obj
@@ -76,24 +71,18 @@ export class ExtensionManager {
   async registerGlobalExtension(extensions: { [name: string]: string }) {
     Object.entries(extensions)
       .forEach(([name, pathExt]) => {
-        const path = Scenario.Instance.resolvePath(pathExt)
-        if (existsSync(path)) {
-          try {
-            // If is file
-            const localModule = require(path)?.default
-            this.extensionElements[name] = localModule
-          } catch (err) {
-            // If is directory
-            this.localModuleManager.add(name, path)
-          }
-        } else {
-          this.globalModuleManager.modules.forEach(path => {
-            const npmYarnModule = join(path, pathExt)
-            if (existsSync(npmYarnModule)) {
-              const globalModule = require(npmYarnModule)
-              this.extensionElements[npmYarnModule] = globalModule
-            }
-          })
+        const localPath = Scenario.Instance.resolvePath(pathExt)
+        if (!existsSync(localPath)) {
+          throw new TraceError(`Could not found extensions "${name}" in "${localPath}"`, { localPath, name, pathExt })
+        }
+        try {
+          // If is file
+          const localModule = require(localPath)
+          this.extensionElements[name] = this.getObjectInExport(localModule, name)
+        } catch (err) {
+          // If is directory
+          if (!this.localModuleManager) this.localModuleManager = new LocalModuleManager()
+          this.localModuleManager.add(name, localPath)
         }
       })
   }
@@ -200,17 +189,23 @@ export class ExtensionManager {
   }
 
   private loadNpmYarnGlobalPaths() {
-    ["npm root -g", "yarn global dir"].forEach(cmd => {
+    ["yarn global dir", "npm root -g"].forEach(cmd => {
       try {
         execSync(cmd, { stdio: ['ignore', 'pipe', 'ignore'] }).toString().split('\n')
           .map((f) => f?.trim())
           .filter((f) => f && existsSync(f) && !this.globalModuleManager.modules.includes(f))
           .forEach(gd => this.globalModuleManager.modules.push(gd))
-      } catch { }
+      } catch (err) {
+        LoggerManager.GetLogger().trace(err)
+      }
     })
     if (!this.globalModuleManager.modules.length) {
-      throw new TraceError('Could not found `npm` or `yarn`')
+      throw new TraceError('Could not found "npm" or "yarn"')
     }
+  }
+
+  private getObjectInExport(obj: any, p: string) {
+    return obj.default || obj[p.substring(p.lastIndexOf('/') + 1)]
   }
 }
 

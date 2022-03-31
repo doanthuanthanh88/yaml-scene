@@ -10,28 +10,46 @@ import { ExtensionManager } from "../singleton/ExtensionManager";
 import { JSONSchema } from "./JSONSchema";
 
 export class CLI {
+  private static _Instance: CLI
+
+  static get Instance() {
+    return this._Instance || (this._Instance = new CLI())
+  }
+
   yamlFile: string
   password: string
   env: any
   envFile = '.env'
 
+  version: string
+  description: string
+  name: string
+  bin: object
+  repositoryURL
+  force: boolean
+
   constructor() {
     this.envFile = '.env'
+    const { version, description, name, bin, repository } = require(join(__dirname, "../../package.json"))
+    this.version = version
+    this.description = description
+    this.name = name
+    this.bin = bin
+    this.repositoryURL = repository.url
   }
 
   async exec() {
-    const packageJson = join(__dirname, "../../package.json")
-    const { version, description, name, bin, repository } = require(packageJson);
     let isRunScenario = true
     await program
-      .name(name)
-      .aliases(Object.keys(bin).filter(e => e !== name))
-      .description(description)
-      .version(version, "-v, --version")
+      .name(this.name)
+      .aliases(Object.keys(this.bin).filter(e => e !== this.name))
+      .description(this.description)
+      .version(this.version, "-v, --version")
       .argument("<file>", "Scenario path or file", undefined, "index.yas.yaml")
       .argument("[password]", "Password to decrypt scenario file")
       .enablePositionalOptions(true)
       .passThroughOptions(true)
+      .option("-f, --force", `Auto install miss packages/extensions without confirm`)
       .option("--env-file <string>", `Environment variables file`)
       .option(
         "-e, --env <csv|json>", `Environment variables.    
@@ -44,6 +62,7 @@ export class CLI {
         this.password = pwd
         this.envFile = opts.envFile;
         this.env = this.parseEnv(opts.env)
+        this.force = opts.force;
       })
       .addCommand(program
         .createCommand('docker')
@@ -86,17 +105,19 @@ export class CLI {
             const jsonSchema = new JSONSchema()
             await jsonSchema.init()
             await jsonSchema.merge(join(__dirname, '../../schema.yas.json'))
-            let extensions = []
+            const extensions = []
             for (const extensionNameFullVer of extensionNames) {
               const [extensionName] = extensionNameFullVer.split('@')
               try {
-                const extension = ExtensionManager.Instance.load(`${extensionName}/schema.json`, undefined, null)
+                const extension = ExtensionManager.Instance.load(`${extensionName}/schema.json`)
                 extensions.push(extension)
               } catch { }
             }
-            await jsonSchema.addSchema(...extensions)
-            const fout = await jsonSchema.save()
-            LoggerManager.GetLogger().info(chalk.green(`Yaml-scene scheme is updated. "${chalk.bold(fout)}"`))
+            if (extensions.length) {
+              await jsonSchema.addSchema(...extensions)
+              const fout = await jsonSchema.save()
+              LoggerManager.GetLogger().info(chalk.green(`Yaml-scene scheme is updated. "${chalk.bold(fout)}"`))
+            }
           }
           isRunScenario = false
         })
@@ -113,17 +134,19 @@ export class CLI {
             const jsonSchema = new JSONSchema()
             await jsonSchema.init()
             await jsonSchema.merge(join(__dirname, '../../schema.yas.json'))
-            let extensions = []
+            const extensions = []
             for (const extensionNameFullVer of extensionNames) {
               const [extensionName] = extensionNameFullVer.split('@')
               try {
-                const extension = ExtensionManager.Instance.load(`${extensionName}/schema.json`, undefined, null)
+                const extension = ExtensionManager.Instance.load(`${extensionName}/schema.json`)
                 extensions.push(extension)
               } catch { }
             }
-            await jsonSchema.addSchema(...extensions)
-            const fout = await jsonSchema.save()
-            LoggerManager.GetLogger().info(chalk.green(`Yaml-scene scheme is updated. "${chalk.bold(fout)}"`))
+            if (extensions.length) {
+              await jsonSchema.addSchema(...extensions)
+              const fout = await jsonSchema.save()
+              LoggerManager.GetLogger().info(chalk.green(`Yaml-scene scheme is updated. "${chalk.bold(fout)}"`))
+            }
           }
           isRunScenario = false
         })
@@ -138,20 +161,24 @@ export class CLI {
             const jsonSchema = new JSONSchema()
             await jsonSchema.init()
             await jsonSchema.merge(join(__dirname, '../../schema.yas.json'))
+            let isRemoved: boolean
             for (const extensionNameFullVer of extensionNames) {
               const [extensionName] = extensionNameFullVer.split('@')
               try {
                 jsonSchema.removeSchema(extensionName)
+                isRemoved = true
               } catch { }
             }
-            const fout = await jsonSchema.save()
-            LoggerManager.GetLogger().info(chalk.green(`Yaml-scene scheme is updated. "${chalk.bold(fout)}"`))
+            if (isRemoved) {
+              const fout = await jsonSchema.save()
+              LoggerManager.GetLogger().info(chalk.green(`Yaml-scene scheme is updated. "${chalk.bold(fout)}"`))
+            }
           }
           isRunScenario = false
         })
       )
       .addHelpText("after", `More:
-✔ Github project: ${repository.url} 
+✔ Github project: ${this.repositoryURL} 
 ✔ Npm package   : https://www.npmjs.com/package/yaml-scene
 ✔ Docker Image  : https://hub.docker.com/repository/docker/doanthuanthanh88/yaml-scene
 `)
@@ -225,7 +252,7 @@ export class CLI {
               })
           }
         } catch (err) {
-          console.warn(`Could not found config file at ${file}`)
+          LoggerManager.GetLogger().warn(`Could not found config file at ${file}`)
         }
         merge(config, env)
       } else {
@@ -258,33 +285,41 @@ export class CLI {
     return true
   }
 
-  async installExtensions(extensionNames: string[]) {
+  async installExtensions(extensionNames: string[], installType = 'global' as 'local' | 'global', isForce = false as boolean) {
     extensionNames = extensionNames.map(e => e.trim()).filter(e => e)
     if (!extensionNames) return false
-    const confirmType = ElementFactory.CreateElement('UserInput')
-    confirmType.init([{
-      title: `Install ${extensionNames.map(e => chalk.yellow(`"${e}"`)).join(', ')} to:`,
-      type: 'select',
-      default: 'global',
-      choices: [
-        { title: `Global (Recommend)`, value: 'global', description: 'Installed to global npm or yarn' },
-        { title: 'Local', value: 'local', description: 'Installed into "yaml-scene". When "yaml-scene" is reinstalled or upgraded, these extensions must be reinstalled' }
-      ],
-      var: 'installType'
-    }])
-    await confirmType.prepare()
-    const { installType } = await confirmType.exec()
-    await confirmType.dispose()
 
-    if (!installType) return false
-    await ExtensionManager.InstallPackage(installType === 'local' ? {
-      dependencies: extensionNames,
-      global: false,
-      isSave: false,
-    } : {
-      dependencies: extensionNames,
-      global: true,
-    })
+    if (!isForce) {
+      const confirmType = ElementFactory.CreateElement('UserInput')
+      const choices = []
+      if (installType === 'global') {
+        choices.push({ title: `Global (Recommend)`, value: 'global', description: 'Install in global directory of "yarn" OR "npm"' })
+      }
+      choices.push({ title: `Local${installType === 'local' ? ' (Recommend)' : ''}`, value: 'local', description: 'Install in "yaml-scene" package' })
+
+      confirmType.init([{
+        title: `Install ${extensionNames.map(e => chalk.yellow(`"${e}"`)).join(', ')} to:`,
+        type: 'select',
+        default: installType,
+        choices,
+        var: 'installType'
+      }])
+      await confirmType.prepare()
+      const type = await confirmType.exec()
+      installType = type.installType
+      await confirmType.dispose()
+
+      if (!installType) return false
+    }
+    await ExtensionManager.InstallPackage(
+      installType === 'local' ? {
+        dependencies: extensionNames,
+        global: false,
+        isSave: false,
+      } : {
+        dependencies: extensionNames,
+        global: true,
+      })
     return true
   }
 

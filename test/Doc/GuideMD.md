@@ -3,21 +3,23 @@
 | Element | Description |  
 |---|---|  
 | DOC | --- |
-|[Doc/Guide/MD](#Doc%2FGuide%2FMD)| Auto scan file to detect the comment format which is generated to markdown document ...|  
+|[Doc/Guide/MD](#Doc%2FDoc%2FGuide%2FMD)| Auto scan file to detect the comment format which is generated to markdown document ...|  
   
   
 # Details
-## Doc/Guide/MD <a name="Doc/Guide/MD"></a>
+## Doc/Guide/MD <a name="Doc%2FDoc%2FGuide%2FMD"></a>  
+`(Doc)`  
 Auto scan file to detect the comment format which is generated to markdown document  
 
 ```yaml
-- Doc/Guide/MD: 
-    includes: 
+- Doc/Guide/MD:
+    includes:
       - src
     excludes: []
     includePattern: ".+\\.ts$"
     outFile: /tmp/doc.md
 ```
 
+<br/>
 
   

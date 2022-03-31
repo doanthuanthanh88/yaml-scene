@@ -1,5 +1,27 @@
 import { IFileAdapter } from "./IFileAdapter";
 
+/**
+ * @guide
+ * @name Text 
+ * @description Read and write text file. Used in File/Writer, File/Reader
+ * @group File, +File.Adapter
+ * @example
+- File/Reader:
+    title: Read a text file
+    path: assets/data1.txt
+    adapters:                       # Not set, it use `Text` to default adapter
+      - Text
+    var: data                       # Set file content result to "data" variable
+    
+- File/Writer:
+    title: Write to text file
+    path: assets/data2.txt
+    adapters:                       # Not set, it use `Text` to default adapter
+      - Text 
+    content: |
+      Hello world
+ * @end
+ */
 export class Text implements IFileAdapter {
   constructor(private file: IFileAdapter) { }
 

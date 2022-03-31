@@ -109,7 +109,7 @@ export default class UserInput implements IElement {
 
   init(_questionConfigs: any[] | any) {
     const questionConfigs = Array.isArray(_questionConfigs) ? _questionConfigs : [_questionConfigs]
-    this._questions = questionConfigs.map(({ type, title, required, choices, var: varName, default: df, format, mask }) => {
+    this._questions = questionConfigs.map(({ type, title, required, choices, var: varName, default: df, format, mask, ...otherConfigs }) => {
       const builder = new QuestionBuilder()
       const ques = builder
         .type((type || QuestionType.TEXT) as QuestionType)
@@ -118,6 +118,7 @@ export default class UserInput implements IElement {
         .var(varName)
         .default(df)
         .format(format)
+        .config(otherConfigs)
       if (type === QuestionType.SELECT || type === QuestionType.MULTISELECT || type === QuestionType.AUTOCOMPLETE || type === QuestionType.AUTOCOMPLETEMULTISELECT) {
         ques.choices(choices)
       } else if (type === QuestionType.DATE) {

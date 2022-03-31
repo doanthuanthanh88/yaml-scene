@@ -27,7 +27,6 @@ export default class Vars implements IElement {
   }
 
   async exec() {
-    debugger
     await this.proxy.setVar(this.vars)
   }
 

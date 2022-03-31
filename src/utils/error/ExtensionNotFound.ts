@@ -1,11 +1,8 @@
-import { TraceError } from "./TraceError"
 
-export class ExtensionNotFound extends TraceError {
-  errors: Error[]
+export class ExtensionNotFound extends Error {
 
-  constructor(public extensionName: string, message: string) {
+  constructor(public extensionName: string, message: string, public scope?: 'local' | 'global') {
     super(message)
     this.name = 'ExtensionNotFound'
-    this.errors = new Array()
   }
 }

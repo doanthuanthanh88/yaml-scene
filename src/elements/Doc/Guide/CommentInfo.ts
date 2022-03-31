@@ -36,7 +36,7 @@ export class CommentInfo implements DataModel {
     if (typeof this[this._current] === 'number') {
       this[this._current] = +cnt;
     } else {
-      this[this._current] += (this[this._current] ? '\n' : '') + cnt;
+      this[this._current] += (this[this._current] ? '\n' : '') + cnt?.replace(/\s+$/g, '');
     }
   }
 

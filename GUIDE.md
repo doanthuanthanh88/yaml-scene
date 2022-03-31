@@ -3,26 +3,41 @@
 | Element | Description |  
 |---|---|  
 | !TAGS | --- |
-|[!fragment](#!fragment)| Load scenes from another file into current file ...|  
-|[!function](#!function)| Write code as a function in js ...|  
-|[!tag](#!tag)| Lazy load tag ...|  
-|[!tag tags/binary](#!tag%20tags%2Fbinary)| Transform file to binary ...|  
+|[!fragment](#!Tags%2F!fragment)| Load scenes from another file into current file ...|  
+|[!function](#!Tags%2F!function)| Write code as a function in js ...|  
+|[!tag](#!Tags%2F!tag)| Lazy load tag ...|  
+|[!tag tags/binary](#!Tags%2F!tag%20tags%2Fbinary)| Transform file to binary ...|  
+| +FILE.ADAPTER | --- |
+|[Csv](#File%2C%20%2BFile.Adapter%2FCsv)| Read and write csv file. Used in File/Writer, File/Reader ...|  
+|[Excel](#File%2C%20%2BFile.Adapter%2FExcel)| Read and write excel file. Used in File/Writer, File/Reader ...|  
+|[Json](#File%2C%20%2BFile.Adapter%2FJson)| Read and write json file. Used in File/Writer, File/Reader ...|  
+|[Password](#File%2C%20%2BFile.Adapter%2FPassword)| Read and write a encrypted file (`aes-128-cbc`). Used in File/Writer, File/Reader ...|  
+|[Text](#File%2C%20%2BFile.Adapter%2FText)| Read and write text file. Used in File/Writer, File/Reader ...|  
+|[Xml](#File%2C%20%2BFile.Adapter%2FXml)| Read and write xml file. Used in File/Writer, File/Reader ...|  
+|[Yaml](#File%2C%20%2BFile.Adapter%2FYaml)| Read and write yaml file. Used in File/Writer, File/Reader ...|  
 | DOC | --- |
-|[Doc/Guide/MD](#Doc%2FGuide%2FMD)| Auto scan file to detect the comment format which is generated to markdown document ...|  
+|[Doc/Guide/MD](#Doc%2FDoc%2FGuide%2FMD)| Auto scan file to detect the comment format which is generated to markdown document ...|  
 | EXTERNAL | --- |
-|[Exec](#Exec)| Execute external command ...|  
-|[Script/Js](#Script%2FJs)| Embed javascript code into scene ...|  
-|[Script/Sh](#Script%2FSh)| Embed shell script into scene ...|  
+|[Exec](#External%2FExec)| Execute external command ...|  
+|[Script/Js](#External%2FScript%2FJs)| Embed javascript code into scene ...|  
+|[Script/Sh](#External%2FScript%2FSh)| Embed shell script into scene ...|  
 | FILE | --- |
-|[File/Reader](#File%2FReader)| Read a file then set content to a variable ...|  
-|[File/Writer](#File%2FWriter)| Write content to a file ...|  
+|[Csv](#File%2C%20%2BFile.Adapter%2FCsv)| Read and write csv file. Used in File/Writer, File/Reader ...|  
+|[Excel](#File%2C%20%2BFile.Adapter%2FExcel)| Read and write excel file. Used in File/Writer, File/Reader ...|  
+|[File/Reader](#File%2C%20Input%2FFile%2FReader)| Read a file then set content to a variable ...|  
+|[File/Writer](#File%2C%20Output%2FFile%2FWriter)| Write content to a file ...|  
+|[Json](#File%2C%20%2BFile.Adapter%2FJson)| Read and write json file. Used in File/Writer, File/Reader ...|  
+|[Password](#File%2C%20%2BFile.Adapter%2FPassword)| Read and write a encrypted file (`aes-128-cbc`). Used in File/Writer, File/Reader ...|  
+|[Text](#File%2C%20%2BFile.Adapter%2FText)| Read and write text file. Used in File/Writer, File/Reader ...|  
+|[Xml](#File%2C%20%2BFile.Adapter%2FXml)| Read and write xml file. Used in File/Writer, File/Reader ...|  
+|[Yaml](#File%2C%20%2BFile.Adapter%2FYaml)| Read and write yaml file. Used in File/Writer, File/Reader ...|  
 | INPUT | --- |
-|[File/Reader](#File%2FReader)| Read a file then set content to a variable ...|  
-|[UserInput](#UserInput)| Get user input from keyboard ...|  
+|[File/Reader](#File%2C%20Input%2FFile%2FReader)| Read a file then set content to a variable ...|  
+|[UserInput](#Input%2FUserInput)| Get user input from keyboard ...|  
 | OUTPUT | --- |
-|[Clear](#Clear)| Clear screen ...|  
-|[Echo](#Echo)| Print data to screen ...|  
-|[File/Writer](#File%2FWriter)| Write content to a file ...|  
+|[Clear](#Output%2FClear)| Clear screen ...|  
+|[Echo](#Output%2FEcho)| Print data to screen ...|  
+|[File/Writer](#File%2C%20Output%2FFile%2FWriter)| Write content to a file ...|  
 | --- | --- |
 |[Delay](#Delay)| Program will be delayed at here after specific time then it keeps playing next steps ...|  
 |[Group](#Group)| Group contains 1 or many elements ...|  
@@ -89,7 +104,7 @@ Check condition before decided to run this element or not
 - Vars:
     isEnd: true
 
-- Echo: 
+- Echo:
     if: ${sayHello}
     title: Hello
 
@@ -98,7 +113,7 @@ Check condition before decided to run this element or not
     time: 1s
     title: Delay 1s before say goodbye after say hello
 
-- Echo: 
+- Echo:
     if: ${!sayHello}
     title: Goodbye
 ```
@@ -193,11 +208,12 @@ A simple scenario file
 
   
 # Details
-## !fragment <a name="!fragment"></a>
+## !fragment <a name="!Tags%2F!fragment"></a>  
+`(!Tags)`  
 Load scenes from another file into current file  
 
 ```yaml
-- Group: 
+- Group:
     steps:
       - !fragment ./examples/scene_1.yas.yaml
       - Echo: Loaded scene 1 successfully
@@ -206,8 +222,10 @@ Load scenes from another file into current file
       - Echo: Loaded scene 2 successfully
 ```
 
+<br/>
 
-## !function <a name="!function"></a>
+## !function <a name="!Tags%2F!function"></a>  
+`(!Tags)`  
 Write code as a function in js  
 
 ```yaml
@@ -216,8 +234,10 @@ Write code as a function in js
     $.proxy.setVar('newAge', age + 10)
 ```
 
+<br/>
 
-## !tag <a name="!tag"></a>
+## !tag <a name="!Tags%2F!tag"></a>  
+`(!Tags)`  
 Lazy load tag  
 
 ```yaml
@@ -226,12 +246,14 @@ Lazy load tag
     headers:
       content-type: multipart/form-data
     body:
-      file: !tag 
+      file: !tag
         tags/binary: ~/data.json
 ```
 
+<br/>
 
-## !tag tags/binary <a name="!tag tags/binary"></a>
+## !tag tags/binary <a name="!Tags%2F!tag%20tags%2Fbinary"></a>  
+`(!Tags)`  
 Transform file to binary  
 
 ```yaml
@@ -244,15 +266,212 @@ Transform file to binary
         tags/binary: ~/data.json
 ```
 
+<br/>
 
-## Doc/Guide/MD <a name="Doc/Guide/MD"></a>
+## Csv <a name="File%2C%20%2BFile.Adapter%2FCsv"></a>  
+`(File, +File.Adapter)`  
+Read and write csv file. Used in File/Writer, File/Reader  
+
+```yaml
+- File/Reader:
+    title: Read a csv file
+    path: assets/data1.csv
+    adapters:
+      - Csv
+    var: data                       # Set file content result to "data" variable
+
+- File/Writer:
+    title: Write to csv file
+    path: assets/data2.csv
+    adapters:
+      - Csv
+    content:
+      - name: name 1
+        age: 1
+      - name: name 2
+        age: 3
+```
+
+<br/>
+
+## Excel <a name="File%2C%20%2BFile.Adapter%2FExcel"></a>  
+`(File, +File.Adapter)`  
+Read and write excel file. Used in File/Writer, File/Reader  
+
+```yaml
+- File/Reader:
+    title: Read text file 1 with password
+    path: assets/data1.xlsx
+    adapters:
+      - Excel: MyPassword           # Decrypt content with password is "MyPassword"
+          sheets:                   # Read data only these sheets
+            - name: Sheet 1         # Sheet name
+              range: 'A1:C9'        # Only take cell in the region
+              header:
+                rows: 1             # Skip, dont take data in these rows
+              columnToKey:          # Mapping column key (A,B,C) to name
+                A: foo name
+                B: qux label
+                C: poo title
+    var: data                       # Set file data result to "data" variable
+
+- File/Writer:
+    path: assets/data1.xlsx
+    adapters:
+      - Excel                       # Write data to excel format
+    content: [{
+      foo: 'bar',
+      qux: 'moo',
+      poo: null,
+      age: 1
+    },
+    {
+      foo: 'bar1',
+      qux: 'moo2',
+      poo: 444,
+      age: 2
+    }]
+```
+
+<br/>
+
+## Json <a name="File%2C%20%2BFile.Adapter%2FJson"></a>  
+`(File, +File.Adapter)`  
+Read and write json file. Used in File/Writer, File/Reader  
+
+```yaml
+- File/Reader:
+    title: Read a json file
+    path: assets/data1.json
+    adapters:
+      - Json
+    var: data                       # Set file content result to "data" variable
+
+- File/Writer:
+    title: Write to json file
+    path: assets/data2.json
+    adapters:
+      - Json
+    content:
+      - name: name 1
+        age: 1
+      - name: name 2
+        age: 3
+```
+
+<br/>
+
+## Password <a name="File%2C%20%2BFile.Adapter%2FPassword"></a>  
+`(File, +File.Adapter)`  
+Read and write a encrypted file (`aes-128-cbc`). Used in File/Writer, File/Reader  
+
+```yaml
+- File/Reader:
+    title: Read a json file
+    path: assets/data1
+    adapters:
+      - Password: My Password       # The first: Decrypt file data with password
+      - Json                        # The second: Parse data to json before return result
+    var: data                       # Set file content result to "data" variable
+
+- File/Writer:
+    title: Write to json file
+    path: assets/data2
+    adapters:
+      - Json                        # The first: Convert to json format
+      - Password: My Password       # The second: Encrypt file content with password before save to file
+    content:
+      - name: name 1
+        age: 1
+      - name: name 2
+        age: 3
+```
+
+<br/>
+
+## Text <a name="File%2C%20%2BFile.Adapter%2FText"></a>  
+`(File, +File.Adapter)`  
+Read and write text file. Used in File/Writer, File/Reader  
+
+```yaml
+- File/Reader:
+    title: Read a text file
+    path: assets/data1.txt
+    adapters:                       # Not set, it use `Text` to default adapter
+      - Text
+    var: data                       # Set file content result to "data" variable
+
+- File/Writer:
+    title: Write to text file
+    path: assets/data2.txt
+    adapters:                       # Not set, it use `Text` to default adapter
+      - Text
+    content: |
+      Hello world
+```
+
+<br/>
+
+## Xml <a name="File%2C%20%2BFile.Adapter%2FXml"></a>  
+`(File, +File.Adapter)`  
+Read and write xml file. Used in File/Writer, File/Reader  
+
+```yaml
+- File/Reader:
+    title: Read a xml file
+    path: assets/data1.xml
+    adapters:
+      - Xml
+    var: data                       # Set file content result to "data" variable
+
+- File/Writer:
+    title: Write to xml file
+    path: assets/data2.xml
+    adapters:
+      - Xml
+    content:
+      name: name 1
+      age: 1
+      class: 01
+```
+
+<br/>
+
+## Yaml <a name="File%2C%20%2BFile.Adapter%2FYaml"></a>  
+`(File, +File.Adapter)`  
+Read and write yaml file. Used in File/Writer, File/Reader  
+
+```yaml
+- File/Reader:
+    title: Read a yaml file
+    path: assets/data1.yaml
+    adapters:
+      - Yaml
+    var: data                       # Set file content result to "data" variable
+
+- File/Writer:
+    title: Write to yaml file
+    path: assets/data2.yaml
+    adapters:
+      - Yaml
+    content:
+      - name: name 1
+        age: 1
+      - name: name 2
+        age: 3
+```
+
+<br/>
+
+## Doc/Guide/MD <a name="Doc%2FDoc%2FGuide%2FMD"></a>  
+`(Doc)`  
 Auto scan file to detect the comment format which is generated to markdown document  
 ```yaml
-- Doc/Guide/MD: 
+- Doc/Guide/MD:
     # pattern:
     #   begin: ^\s*\*\s@guide\\s*$         # Default pattern
     #   end: \s*\*\s@end\\s*$              # Default pattern
-    includes: 
+    includes:
       - src
     excludes: []
     includePattern: ".+\\.ts$"
@@ -279,7 +498,7 @@ More information below detail block
  * @group Tag1, Tag2
  * @exampleType custom
  * @example
-**Example**  
+**Example**
 ```js
 console.log('Hello world')
 ``\`
@@ -295,16 +514,16 @@ class Element1 {
 - `@exampleType`: This is content type in hightlight code block in markdown. \`\`\`yaml ... \`\`\`
   - Default is `yaml`
   - If the value is `custom` then content in example will be used as markdown format. (Not hightlight code block)
-- `@example`: Some examples for this element. 
+- `@example`: Some examples for this element.
   - Content type depends on `@exampleType`
     - Default is `yaml`.
     - If `@exampleType` is `custom` then this will used as markdown format
     - Otherwise, it used hightlight code block \`\`\` ... \`\`\` in markdown
-- `@group`: Group this element. 
-  - Separate by `, `. 
+- `@group`: Group this element.
+  - Separate by `, `.
   - Example: `Tag 1, Tag 2`
 - `@order`: Priority position display this element in a same group
-  - Example: 1. 
+  - Example: 1.
   - Default: 5
 - `@h1`: Describe header in markdown (#, ##...). This content is markdown format which show above document details block. Could not combine `@h1` and `@h2` in same guideline block
 - `@h2`: Describe header in markdown (#, ##...). This content is markdown format which show below document details block. Could not combine `@h1` and `@h2` in same guideline block
@@ -325,10 +544,12 @@ List `@h2` content
 ---------------------------------------------------
 ```
 
-> This guideline have generated by this
+> This guideline is generated by this
 
+<br/>
 
-## Exec <a name="Exec"></a>
+## Exec <a name="External%2FExec"></a>  
+`(External)`  
 Execute external command  
 
 ```yaml
@@ -340,16 +561,24 @@ Execute external command
       - dir
     var:                                  # Get log content or exit code
       logContent: ${$.messages}           # `$` is referenced to `Exec` element
-      exitCode: ${$.code}                
+      exitCode: ${$.code}
 ```
 
+<br/>
 
-## Script/Js <a name="Script/Js"></a>
+## Script/Js <a name="External%2FScript%2FJs"></a>  
+`(External)`  
 Embed javascript code into scene  
 
 ```yaml
 - Vars:
     name: 10
+
+- Script/Js:
+    title: Test something
+    content: !function |
+      console.log('oldValue', name)
+      $.proxy.setVar('newName', name + 10)      # `$` is referenced to `Js` element in `Script`
 
 - Script/Js: !function |
     console.log('oldValue', name)
@@ -358,8 +587,10 @@ Embed javascript code into scene
 - Echo: New value ${newName}
 ```
 
+<br/>
 
-## Script/Sh <a name="Script/Sh"></a>
+## Script/Sh <a name="External%2FScript%2FSh"></a>  
+`(External)`  
 Embed shell script into scene  
 
 ```yaml
@@ -375,7 +606,7 @@ Embed shell script into scene
 - Script/Sh:
     title: My command               # Job title
     bin: sh                         # Path to executor
-    mode: 777                       # chmod 
+    mode: 777                       # chmod
     content: |                      # Content script
       echo ${$.tempFile}
       echo ${name}
@@ -394,108 +625,35 @@ Embed shell script into scene
       echo $2
 ```
 
+<br/>
 
-## File/Reader <a name="File/Reader"></a>
-Read a file then set content to a variable  
-It uses `aes-128-cbc` to decrypt content with a password.  
-Refer to [File/Writer](.) to encrypt content  
-### Text file
+## File/Reader <a name="File%2C%20Input%2FFile%2FReader"></a>  
+`(File, Input)`  
+Read a file then set content to a variable
 
+File adapters:
+
+- [Read a text file](#File%2C%20%2BFile.Adapter%2FText)
+- [Read a csv file](#File%2C%20%2BFile.Adapter%2FCsv)
+- [Read a json file](#File%2C%20%2BFile.Adapter%2FJson)
+- [Read a xml file](#File%2C%20%2BFile.Adapter%2FXml)
+- [Read a yaml file](#File%2C%20%2BFile.Adapter%2FYaml)
+- [Read a excel file](#File%2C%20%2BFile.Adapter%2FExcel)
+- [Read a encrypted file](#File%2C%20%2BFile.Adapter%2FPassword)  
 ```yaml
 - File/Reader:
-    title: Read text file 1 with password
-    path: assets/data1.txt
-    adapters:
-      - Password: MyPassword        # Decrypt content with password is "MyPassword"
-    var: data                       # Set file content result to "data" variable
-    
-- File/Reader:
-    title: Read text file 2 without password
-    path: assets/data2.txt
-    var: data                       # Set file content result to "data" variable
-```
-
-### CSV File
-
-```yaml
-- File/Reader:
-    title: Read csv file 1 with password
-    path: assets/data1.csv
-    adapters:
-      - Password: MyPassword        # The first is decrypt content after read file
-      - Csv                         # The second convert data type is Csv to object
-    var: data                       # Set file content result to "data" variable
-
-- File/Reader:
-    title: Read csv file 2 without password
-    path: assets/data2.csv
-    adapters:
-      - Csv                         # Convert data type is Csv to object
-    var: data                       # Set file content result to "data" variable
-```
-
-### JSON File
-
-```yaml
-- File/Reader:
-    title: Read json file 1 with password
+    title: Read a json file
     path: assets/data1.json         # File content is { field1: value1 }
     adapters:
-      - Password: MyPassword        # The first is decrypt content after read file
-      - Json                        # The second convert data type is Json to object
+      - Json
     var: data                       # Set file content result to "data" variable
     var:
       myVar: ${_.field1}            # Extract `field1` in file content to `myVar`.
                                     # - `_` is file content data after is parsed
-
-- File/Reader:
-    title: Read json file 2 without password
-    path: assets/data2.json
-    adapters:
-      - Json                        # Convert data type is Json to object
-    var: data                       # Set file content result to "data" variable
-```
-
-### XML file
-
-```yaml
-- File/Reader:
-    title: Read xml file 1 with password
-    path: assets/data1.xml
-    adapters:
-      - Password: MyPassword        # The first is decrypt content after read file
-      - Xml                         # The second convert data type is Xml to object
-    var: data                       # Set file content result to "data" variable
-
-- File/Reader:
-    title: Read xml file 2 without password
-    path: assets/data2.xml
-    adapters:
-      - Xml                         # Convert data type is Xml to object
-    var: data                       # Set file content result to "data" variable
-```
-
-### YAML file
-
-```yaml
-- File/Reader:
-    title: Read yaml file 1 with password
-    path: assets/data1.yaml
-    adapters:
-      - Password: MyPassword        # The first is decrypt content after read file
-      - Yaml                        # The second convert data type is Csv to object
-    var: data                       # Set file content result to "data" variable
-
-- File/Reader:
-    title: Read yaml file 2 without password
-    path: assets/data2.yaml
-    adapters:
-      - Yaml                        # Convert data type is Yaml to object
-    var: data                       # Set file content result to "data" variable
 ```
 
 ### Notes:
-You can write a new adapter by yourself then use in adapters.  
+You can write a new adapter by yourself then use in adapters.
 
 **Write a custom adapter**
 
@@ -517,7 +675,7 @@ You can write a new adapter by yourself then use in adapters.
     async write(data: any) {
       // Custom here
       const rs = await JSON.stringify(data)
-      
+
       await this.file.write(rs)
     }
   }
@@ -541,7 +699,7 @@ You can write a new adapter by yourself then use in adapters.
     steps:
       ...
   ```
-  
+
 2. Create your scenario file then use it
   ```yaml
   - File/Reader:
@@ -554,136 +712,35 @@ You can write a new adapter by yourself then use in adapters.
             config: b
       var: data
   ```
+<br/>
 
-## File/Writer <a name="File/Writer"></a>
-Write content to a file  
-It uses `aes-128-cbc` to encrypt content with a password.  
-Refer to [File/Reader](.) to decrypt content  
-### Text file
+## File/Writer <a name="File%2C%20Output%2FFile%2FWriter"></a>  
+`(File, Output)`  
+Write content to a file
+File adapters:
 
+- [Read a text file](#File%2C%20%2BFile.Adapter%2FText)
+- [Read a csv file](#File%2C%20%2BFile.Adapter%2FCsv)
+- [Read a json file](#File%2C%20%2BFile.Adapter%2FJson)
+- [Read a xml file](#File%2C%20%2BFile.Adapter%2FXml)
+- [Read a yaml file](#File%2C%20%2BFile.Adapter%2FYaml)
+- [Read a excel file](#File%2C%20%2BFile.Adapter%2FExcel)
+- [Read a encrypted file](#File%2C%20%2BFile.Adapter%2FPassword)  
 ```yaml
 - File/Writer:
-    title: Write text file with password
-    path: assets/data1.txt
-    adapters:
-      - Password: MyPassword        # Encrypt content before save to file
-    content: |
-      Hello world
-
-- File/Writer:
-    title: Write text file without password
-    path: assets/data2.txt
-    content: |
-      Hello world
-```
-
-### CSV File
-
-```yaml
-- File/Writer:
-    title: Write csv file 1 with password
-    path: assets/data1.csv
-    adapters:
-      - Csv                         # The first convert data type is Csv to string
-      - Password: MyPassword        # The seconds encrypt content before save to file
-    content:
-      - name: name 1
-        age: 1
-      - name: name 2
-        age: 3
-
-- File/Writer:
-    title: Write csv file 2 without password
-    path: assets/data2.csv
-    adapters:
-      - Csv                         # Convert data type is Csv to string before save to file
-    content:
-      - [name, age]
-      - [name01, 1]
-      - [name02, 2]
-```
-
-### JSON File
-
-```yaml
-- File/Writer:
-    title: Write json file 1 with password
+    title: Write to a json file
     path: assets/data1.json
     adapters:
-      - Json                        # The first convert data type is Json to string
-      - Password: MyPassword        # The seconds encrypt content before save to file
+      - Json
     content:
       - name: name 1
         age: 1
       - name: name 2
         age: 3
-
-- File/Writer:
-    title: Write json file 2 without password
-    path: assets/data2.json
-    adapters:
-      - Json:                         # Convert data type is Json to string before save to file
-          pretty: true                # Pretty format before write to file
-    content:
-      - [name, age]
-      - [name01, 1]
-      - [name02, 2]
-```
-
-### XML File
-
-```yaml
-- File/Writer:
-    title: Write xml file 1 with password
-    path: assets/data1.xml
-    adapters:
-      - Xml                         # The first convert data type is Xml to string
-      - Password: MyPassword        # The seconds encrypt content before save to file
-    content:
-      - name: name 1
-        age: 1
-      - name: name 2
-        age: 3
-
-- File/Writer:
-    title: Write xml file 2 without password
-    path: assets/data2.xml
-    adapters:
-      - Xml                         # Convert data type is Xml to string before save to file
-    content:
-      name: name 1
-      age: 1
-      class: 01
-```
-
-### YAML File
-
-```yaml
-- File/Writer:
-    title: Write yaml file 1 with password
-    path: assets/data1.yaml
-    adapters:
-      - Yaml                        # The first convert data type is Yaml to string
-      - Password: MyPassword        # The seconds encrypt content before save to file
-    content:
-      - name: name 1
-        age: 1
-      - name: name 2
-        age: 3
-
-- File/Writer:
-    title: Write yaml file 2 without password
-    path: assets/data2.yaml
-    adapters:
-      - Yaml                         # Convert data type is Yaml to string before save to file
-    content:
-      - [name, age]
-      - [name01, 1]
-      - [name02, 2]
 ```
 
 ### Notes:
-You can write a new adapter by yourself then use in adapters.  
+You can write a new adapter by yourself then use in adapters.
 
 **Write a custom adapter**
 
@@ -705,7 +762,7 @@ You can write a new adapter by yourself then use in adapters.
     async write(data: any) {
       // Custom here
       const rs = await JSON.stringify(data)
-      
+
       await this.file.write(rs)
     }
   }
@@ -729,7 +786,7 @@ You can write a new adapter by yourself then use in adapters.
     steps:
       ...
   ```
-  
+
 2. Create your scenario file then use it
   ```yaml
   - File/Writer:
@@ -739,15 +796,17 @@ You can write a new adapter by yourself then use in adapters.
         - YOUR_ADAPTER_PACKAGE/CustomJson:    # Use your adapter with adapter input config
             name: a
             config: b
-        - Password: MyPassword                # Combine to other adapters            
+        - Password: MyPassword                # Combine to other adapters
       content:
         - name: name 1
           age: 1
         - name: name 2
           age: 3
   ```
+<br/>
 
-## UserInput <a name="UserInput"></a>
+## UserInput <a name="Input%2FUserInput"></a>  
+`(Input)`  
 Get user input from keyboard  
 
 ```yaml
@@ -840,16 +899,20 @@ Get user input from keyboard
       var: submit
 ```
 
+<br/>
 
-## Clear <a name="Clear"></a>
+## Clear <a name="Output%2FClear"></a>  
+`(Output)`  
 Clear screen  
 
 ```yaml
 - Clear:
 ```
 
+<br/>
 
-## Echo <a name="Echo"></a>
+## Echo <a name="Output%2FEcho"></a>  
+`(Output)`  
 Print data to screen  
 
 ```yaml
@@ -867,7 +930,7 @@ Print data to screen
 
 - Echo/Gray: Gray text                    # Print gray text
 
-- Echo:                                   
+- Echo:
     message: Hello
     color: green
     pretty: true
@@ -885,34 +948,38 @@ Print data to screen
     pretty: true
 ```
 
+<br/>
 
-## Delay <a name="Delay"></a>
+## Delay <a name="Delay"></a>  
+`(undefined)`  
 Program will be delayed at here after specific time then it keeps playing next steps  
 
 ```yaml
 - Delay: 10s
-- Delay: 
+- Delay:
     title: Delay 10s
     time: 10s
 
 - Delay: 10m
-- Delay: 
+- Delay:
     title: Delay 10 minutes
     time: 10m
 
 - Delay: 10h
-- Delay: 
+- Delay:
     title: Delay 10 hours
     time: 10h
 
 - Delay: 1000
-- Delay: 
+- Delay:
     title: Delay 1000 miliseconds
     time: 1000
 ```
 
+<br/>
 
-## Group <a name="Group"></a>
+## Group <a name="Group"></a>  
+`(undefined)`  
 Group contains 1 or many elements  
 
 ```yaml
@@ -935,8 +1002,10 @@ Group contains 1 or many elements
             - Echo: Hello 3
 ```
 
+<br/>
 
-## Pause <a name="Pause"></a>
+## Pause <a name="Pause"></a>  
+`(undefined)`  
 Program will be paused and wait user input  
 
 ```yaml
@@ -953,9 +1022,11 @@ Program will be paused and wait user input
 - Pause:          # It will be paused until user enter
 ```
 
+<br/>
 
-## Templates <a name="Templates"></a>
-Declare elements which not `inited` or `run`  
+## Templates <a name="Templates"></a>  
+`(undefined)`  
+Declare elements which not `inited` or `run`
 It's only used for `extends` or `inherit` purposes  
 
 ```yaml
@@ -982,9 +1053,11 @@ It's only used for `extends` or `inherit` purposes
       id: 2
 ```
 
+<br/>
 
-## Validate <a name="Validate"></a>
-Validate data in running progress  
+## Validate <a name="Validate"></a>  
+`(undefined)`  
+Validate data in running progress
 Currently only support chai `https://www.chaijs.com`  
 
 ```yaml
@@ -999,8 +1072,10 @@ Currently only support chai `https://www.chaijs.com`
     chai: ${assert.equal(userInfo.display_name, 'thanh');}
 ```
 
+<br/>
 
-## Vars <a name="Vars"></a>
+## Vars <a name="Vars"></a>  
+`(undefined)`  
 Declare variables in scene  
 
 ```yaml
@@ -1013,12 +1088,13 @@ Declare variables in scene
 - Echo: ${userA.name}
 ```
 
+<br/>
 
   
 # How to create a new extension
 You can create a new extension in local or publish to npm registry
 
-Please reference the below links for details:  
+Please reference the below links for details:
 - A [Extension template project](https://github.com/doanthuanthanh88/yaml-scene-extensions) which provides commands to unit test, build, document... to deploy to npm or something like that
 - [Extension files](./yaml-test/examples/custom-extension) which implemented extension interface  
 

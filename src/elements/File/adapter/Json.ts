@@ -1,5 +1,30 @@
 import { IFileAdapter } from "./IFileAdapter"
 
+/**
+ * @guide
+ * @name Json 
+ * @description Read and write json file. Used in File/Writer, File/Reader
+ * @group File, +File.Adapter
+ * @example
+- File/Reader:
+    title: Read a json file
+    path: assets/data1.json
+    adapters:                       
+      - Json
+    var: data                       # Set file content result to "data" variable
+    
+- File/Writer:
+    title: Write to json file
+    path: assets/data2.json
+    adapters:                       
+      - Json 
+    content: 
+      - name: name 1
+        age: 1
+      - name: name 2
+        age: 3
+ * @end
+ */
 export class Json implements IFileAdapter {
   constructor(private file: IFileAdapter, public config = { pretty: false }) { }
 

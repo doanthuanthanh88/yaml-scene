@@ -1,3 +1,5 @@
+import { TimeUtils } from "@app/utils/TimeUtils";
+import chalk from "chalk";
 import { Scenario } from ".";
 import { LoggerManager } from "../LoggerManager";
 
@@ -19,15 +21,21 @@ export class ScenarioMonitor {
       .once('scenario.exec', ({ time }) => {
         executeTime.exec = time
       })
-      .once('scenario.dispose', ({ time, isPassed }) => {
+      .once('scenario.dispose', ({ time }) => {
         executeTime.dispose = time
+      })
+      .once('scenario.end', ({ time, isPassed }) => {
         if (isPassed) {
-          console.group('Time summary')
-          LoggerManager.GetLogger().info('- Initting', executeTime.prepare - executeTime.init, 'ms')
-          LoggerManager.GetLogger().info('- Preparing', executeTime.exec - executeTime.prepare, 'ms')
-          LoggerManager.GetLogger().info('- Executing', executeTime.dispose - executeTime.exec, 'ms')
-          LoggerManager.GetLogger().info('- Dispose', Date.now() - executeTime.dispose, 'ms')
-          console.groupEnd()
+          const msg = []
+          msg.push('\n')
+          msg.push(chalk.bgBlue.white(` Total ${TimeUtils.Pretty(time - executeTime.init)} `))
+          msg.push(chalk.bgCyan.white(` `))
+          msg.push(chalk.bgWhite.gray(` Init ${TimeUtils.Pretty(executeTime.prepare - executeTime.init)} `))
+          msg.push(chalk.bgYellow.gray(` Prepare ${TimeUtils.Pretty(executeTime.exec - executeTime.prepare)} `))
+          msg.push(chalk.bgGreen.white(` Execute ${TimeUtils.Pretty(executeTime.dispose - executeTime.exec)} `))
+          msg.push(chalk.bgGray.white(` Dispose ${TimeUtils.Pretty(time - executeTime.dispose)} `))
+          msg.push('\n')
+          LoggerManager.GetLogger().info(msg.join(''))
         }
       })
   }

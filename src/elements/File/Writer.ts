@@ -10,133 +10,30 @@ import { IFileAdapter } from './adapter/IFileAdapter';
 /**
  * @guide
  * @name File/Writer
- * @description Write content to a file  
-It uses `aes-128-cbc` to encrypt content with a password.  
-Refer to [File/Reader](.) to decrypt content
+ * @description Write content to a file
+File adapters:
+
+- [Read a text file](#File%2C%20%2BFile.Adapter%2FText)
+- [Read a csv file](#File%2C%20%2BFile.Adapter%2FCsv)
+- [Read a json file](#File%2C%20%2BFile.Adapter%2FJson)
+- [Read a xml file](#File%2C%20%2BFile.Adapter%2FXml)
+- [Read a yaml file](#File%2C%20%2BFile.Adapter%2FYaml)
+- [Read a excel file](#File%2C%20%2BFile.Adapter%2FExcel)
+- [Read a encrypted file](#File%2C%20%2BFile.Adapter%2FPassword)
  * @group File, Output
  * @exampleType custom
  * @example
-### Text file
-
 ```yaml
 - File/Writer:
-    title: Write text file with password
-    path: assets/data1.txt
-    adapters:
-      - Password: MyPassword        # Encrypt content before save to file
-    content: |
-      Hello world
-
-- File/Writer:
-    title: Write text file without password
-    path: assets/data2.txt
-    content: |
-      Hello world
-```
-
-### CSV File
-
-```yaml
-- File/Writer:
-    title: Write csv file 1 with password
-    path: assets/data1.csv
-    adapters:
-      - Csv                         # The first convert data type is Csv to string
-      - Password: MyPassword        # The seconds encrypt content before save to file
-    content:
-      - name: name 1
-        age: 1
-      - name: name 2
-        age: 3
-
-- File/Writer:
-    title: Write csv file 2 without password
-    path: assets/data2.csv
-    adapters:
-      - Csv                         # Convert data type is Csv to string before save to file
-    content:
-      - [name, age]
-      - [name01, 1]
-      - [name02, 2]
-```
-
-### JSON File
-
-```yaml
-- File/Writer:
-    title: Write json file 1 with password
+    title: Write to a json file
     path: assets/data1.json
     adapters:
-      - Json                        # The first convert data type is Json to string
-      - Password: MyPassword        # The seconds encrypt content before save to file
+      - Json
     content:
       - name: name 1
         age: 1
       - name: name 2
         age: 3
-
-- File/Writer:
-    title: Write json file 2 without password
-    path: assets/data2.json
-    adapters:
-      - Json:                         # Convert data type is Json to string before save to file
-          pretty: true                # Pretty format before write to file
-    content:
-      - [name, age]
-      - [name01, 1]
-      - [name02, 2]
-```
-
-### XML File
-
-```yaml
-- File/Writer:
-    title: Write xml file 1 with password
-    path: assets/data1.xml
-    adapters:
-      - Xml                         # The first convert data type is Xml to string
-      - Password: MyPassword        # The seconds encrypt content before save to file
-    content:
-      - name: name 1
-        age: 1
-      - name: name 2
-        age: 3
-
-- File/Writer:
-    title: Write xml file 2 without password
-    path: assets/data2.xml
-    adapters:
-      - Xml                         # Convert data type is Xml to string before save to file
-    content:
-      name: name 1
-      age: 1
-      class: 01
-```
-
-### YAML File
-
-```yaml
-- File/Writer:
-    title: Write yaml file 1 with password
-    path: assets/data1.yaml
-    adapters:
-      - Yaml                        # The first convert data type is Yaml to string
-      - Password: MyPassword        # The seconds encrypt content before save to file
-    content:
-      - name: name 1
-        age: 1
-      - name: name 2
-        age: 3
-
-- File/Writer:
-    title: Write yaml file 2 without password
-    path: assets/data2.yaml
-    adapters:
-      - Yaml                         # Convert data type is Yaml to string before save to file
-    content:
-      - [name, age]
-      - [name01, 1]
-      - [name02, 2]
 ```
 
 ### Notes:
