@@ -69,12 +69,15 @@ ${h2.examples}
         mdMenu.push(...infos.map(info => `|[${info.name}](#${escape(join(info.group || '', info.name))})| ${info.description1}|  `));
         mdExample.push(...infos
           .filter(h => !unique.info.has(h))
-          .map(info => unique.info.add(info) && `## ${info.name} <a name="${escape(join(info.group || '', info.name))}"></a>  
-\`(${info.group})\`  
-${info.description || ''}  
-${info.examples}
-<br/>
-`
+          .map(info => {
+            unique.info.add(info)
+            const mes = [`## ${info.name} <a name="${escape(join(info.group || '', info.name))}"></a>  `]
+            if (info.group) mes.push(`\`(${info.group})\`  `)
+            mes.push(`${info.description || ''}  `)
+            mes.push(`${info.examples}`)
+            mes.push(`<br/>\n`)
+            return mes.join('\n')
+          }
           ));
       }
     })

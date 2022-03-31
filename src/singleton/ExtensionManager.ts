@@ -47,12 +47,12 @@ export class ExtensionManager {
       obj = require(join(modulePath, p))
       obj = this.getObjectInExport(obj, p)
     } catch (err1) {
+      if (this.extensionElements[p]) return this.extensionElements[p]
       try {
         // Load from packages in node_modules
         obj = require(p)
         obj = this.getObjectInExport(obj, p)
       } catch (err2) {
-        if (this.extensionElements[p]) return this.extensionElements[p]
         // Load from local or global module
         modulePath = this.localModuleManager?.get(p) || this.globalModuleManager.get(p)
         if (!modulePath) {

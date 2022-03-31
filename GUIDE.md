@@ -951,7 +951,6 @@ Print data to screen
 <br/>
 
 ## Delay <a name="Delay"></a>  
-`(undefined)`  
 Program will be delayed at here after specific time then it keeps playing next steps  
 
 ```yaml
@@ -979,7 +978,6 @@ Program will be delayed at here after specific time then it keeps playing next s
 <br/>
 
 ## Group <a name="Group"></a>  
-`(undefined)`  
 Group contains 1 or many elements  
 
 ```yaml
@@ -1005,7 +1003,6 @@ Group contains 1 or many elements
 <br/>
 
 ## Pause <a name="Pause"></a>  
-`(undefined)`  
 Program will be paused and wait user input  
 
 ```yaml
@@ -1025,7 +1022,6 @@ Program will be paused and wait user input
 <br/>
 
 ## Templates <a name="Templates"></a>  
-`(undefined)`  
 Declare elements which not `inited` or `run`
 It's only used for `extends` or `inherit` purposes  
 
@@ -1056,7 +1052,6 @@ It's only used for `extends` or `inherit` purposes
 <br/>
 
 ## Validate <a name="Validate"></a>  
-`(undefined)`  
 Validate data in running progress
 Currently only support chai `https://www.chaijs.com`  
 
@@ -1075,7 +1070,6 @@ Currently only support chai `https://www.chaijs.com`
 <br/>
 
 ## Vars <a name="Vars"></a>  
-`(undefined)`  
 Declare variables in scene  
 
 ```yaml
