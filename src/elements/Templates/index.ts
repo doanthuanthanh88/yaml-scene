@@ -42,8 +42,6 @@ export default class Templates extends Group {
     })
   }
 
-  override initSteps() { }
-
   override async prepare() { }
 
   override async exec() { }

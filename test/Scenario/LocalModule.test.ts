@@ -29,4 +29,4 @@ steps:
 `)
   expect(existsSync(join(localPath, 'README.md'))).toEqual(true)
   expect(existsSync(join(localPath, 'node_modules', 'yas-sequence-diagram'))).toEqual(true)
-})
+}, 120000)
