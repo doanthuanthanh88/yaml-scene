@@ -5,7 +5,6 @@ import { ElementProxy } from '../ElementProxy';
 import { IElement } from '../IElement';
 import { File } from './adapter/File';
 import { FileAdapterFactory } from './adapter/FileAdapterFactory';
-import { IFileAdapter } from './adapter/IFileAdapter';
 
 /**
  * @guide
@@ -103,47 +102,48 @@ You can write a new adapter by yourself then use in adapters.
  * @end
  */
 export default class Writer implements IElement {
-  proxy: ElementProxy<Writer>
+  proxy: ElementProxy<this>
+  $$: IElement
+  $: this
 
-  title: string
+  title?: string
   content: string
   path: string
-  adapters: (string | object)[]
 
-  private _adapter: IFileAdapter
-  private _adapterClasses: {
-    AdapterClass: any,
-    args?: any
-  }[]
+  adapters: (string | any)[]
+
+  private get _adapter() {
+    let _adapter = new File(this.path)
+    this.adapters.reverse().forEach(adapter => {
+      const adapterName = typeof adapter === 'string' ? adapter : Object.keys(adapter)[0]
+      if (!adapterName) throw new TraceError('"adapters" is not valid', { adapter })
+
+      const AdapterClass = FileAdapterFactory.GetAdapter(adapterName)
+      const args = typeof adapter === 'object' ? adapter[adapterName] : undefined
+      _adapter = new AdapterClass(_adapter, args)
+    })
+    return _adapter
+  }
+
+  constructor() {
+    this.adapters = []
+  }
 
   init(props: any) {
     merge(this, props)
-    if (!this.adapters) this.adapters = []
     if (!Array.isArray(this.adapters)) this.adapters = [this.adapters]
     if (!this.adapters.length) this.adapters.push('Text')
   }
 
   async prepare() {
-    this.title = await this.proxy.getVar(this.title)
-    this.content = await this.proxy.getVar(this.content)
-    this.path = this.proxy.resolvePath(this.path)
+    await this.proxy.applyVars(this, 'title', 'content', 'path', 'adapters')
     if (!this.content) throw new TraceError('"content" is required')
-    this._adapterClasses = this.adapters.reverse().map(adapter => {
-      const adapterName = typeof adapter === 'string' ? adapter : Object.keys(adapter)[0]
-      if (!adapterName) throw new TraceError('"adapters" is not valid', { adapter })
-      return {
-        AdapterClass: FileAdapterFactory.GetAdapter(adapterName),
-        args: adapter[adapterName]
-      }
-    })
+    this.path = this.proxy.resolvePath(this.path)
   }
 
   async exec() {
     if (this.title) this.proxy.logger.info('%s', this.title)
     console.group()
-    this._adapterClasses.forEach(({ AdapterClass, args }) => {
-      this._adapter = new AdapterClass(this._adapter || new File(this.path), args)
-    })
     await this._adapter.write(this.content)
     this.proxy.logger.debug('%s %s', chalk.magenta('- Write file to'), chalk.gray(this.path))
     console.groupEnd()

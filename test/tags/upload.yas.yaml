@@ -1,0 +1,11 @@
+- yas-http/Server:
+    # async: true
+    timeout: 2s
+    host: 0.0.0.0 # Server host
+    port: 8000 # Server port
+    routers: # Defined routes
+      - path: /upload # Upload path. Default method is POST
+        method:
+          POST # Request method (POST, PUT, PATCH, DELETE, HEAD)
+          # - Default method is POST
+        uploadTo: ${uploadDir} # Directory includes uploading files

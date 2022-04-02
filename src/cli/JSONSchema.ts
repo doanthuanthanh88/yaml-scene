@@ -1,6 +1,6 @@
+import { Resource } from '@app/elements/File/adapter/Resource'
 import { LoggerManager } from '@app/singleton/LoggerManager'
 import chalk from 'chalk'
-import { existsSync } from 'fs'
 import merge from 'lodash.merge'
 import uniqWith from 'lodash.uniqwith'
 import { join } from "path"
@@ -9,34 +9,39 @@ import { Json } from "../elements/File/adapter/Json"
 import { Scenario } from '../singleton/Scenario'
 import { FileUtils } from '../utils/FileUtils'
 
-const REMOVE_KEY = Symbol()
-
 export class JSONSchema {
   private templates: any
   private yamlScene: any
+  private _removedKeyName: string
+
+  get removedKeyName() {
+    return this._removedKeyName || (this._removedKeyName = Math.random().toString())
+  }
 
   async init(yamlSceneSchema = join(__dirname, '../../schema.json')) {
+    yamlSceneSchema = Scenario.Instance.resolvePath(yamlSceneSchema)
     const { templates = {}, ...yamlScene } = await this.getFileData(yamlSceneSchema)
     this.templates = templates
     this.yamlScene = yamlScene
-
   }
 
   async merge(oldSchema: string) {
-    if (oldSchema && existsSync(oldSchema)) {
+    oldSchema = Scenario.Instance.resolvePath(oldSchema)
+    if (FileUtils.Existed(oldSchema)) {
       const json = await this.getFileData(oldSchema)
       merge(this.yamlScene, json)
     }
   }
 
   async addSchema(...schemaURLs: (string | object)[]) {
-    for (const url of schemaURLs) {
+    for (let url of schemaURLs) {
       try {
         let json: any
         if (typeof url === 'object') {
           json = url
           LoggerManager.GetLogger().debug(chalk.yellow(`- Merging ${json.$id}...`))
         } else {
+          url = Scenario.Instance.resolvePath(url)
           LoggerManager.GetLogger().debug(chalk.yellow(`- Merging ${url}...`))
           json = await this.getFileData(url)
         }
@@ -47,11 +52,11 @@ export class JSONSchema {
         const childs = (oneOf || anyOf || allOf || [])
         this.replaceID(childs, $id)
         this.yamlScene.definitions.allOfSteps.items.anyOf.push(...childs)
-        this.yamlScene.definitions.allOfSteps.items.anyOf = uniqWith(this.yamlScene.definitions.allOfSteps.items.anyOf, (a, b) => { return a.$ref === b.$ref && a.$ref })
+        this.yamlScene.definitions.allOfSteps.items.anyOf = uniqWith(this.yamlScene.definitions.allOfSteps.items.anyOf, (a: any, b: any) => { return a.$ref === b.$ref && a.$ref })
         this.yamlScene = merge({}, schema, this.yamlScene)
         LoggerManager.GetLogger().info(`✅ Done`)
-      } catch (err) {
-        LoggerManager.GetLogger().error(`❌ ${err.message}`)
+      } catch (err: any) {
+        LoggerManager.GetLogger().warn(chalk.yellow('⚠️', err?.message))
       } finally {
         console.groupEnd()
       }
@@ -75,16 +80,17 @@ export class JSONSchema {
   }
 
   private async getFileData(urlOrPath: string) {
-    const content = await FileUtils.GetContentFromUrlOrPath(Scenario.Instance.resolvePath(urlOrPath))
+    const resource = new Resource(urlOrPath)
+    const content = await resource.read()
     return JSON.parse(content.toString())
   }
 
-  private removeID(obj, $id) {
+  private removeID(obj: { [key: string]: any } | { [key: string]: any }[], $id: string) {
     if (Array.isArray(obj)) {
       for (let i = obj.length - 1; i >= 0; i--) {
         if (typeof obj[i] === 'object') {
           this.removeID(obj[i], $id)
-          if (obj[i][REMOVE_KEY]) {
+          if (obj[i][this.removedKeyName]) {
             obj.splice(i, 1)
           }
         }
@@ -95,7 +101,7 @@ export class JSONSchema {
           delete obj[key]
         } else if (key === '$ref') {
           if (new RegExp(`^#/definitions/${$id}[^a-zA-Z0-9]+`).test(vl.toString()))
-            obj[REMOVE_KEY] = true
+            obj[this.removedKeyName] = true
         }
         if (typeof vl === 'object') {
           this.removeID(vl, $id)
@@ -104,7 +110,7 @@ export class JSONSchema {
     }
   }
 
-  private replaceID(obj, $id) {
+  private replaceID(obj: { [key: string]: any } | { [key: string]: any }[], $id: string) {
     if (Array.isArray(obj)) {
       obj.forEach(o => typeof o === 'object' && this.replaceID(o, $id))
     } else if (typeof obj === 'object') {
@@ -124,7 +130,7 @@ export class JSONSchema {
     }
   }
 
-  private injectAttrs(obj, templates: any) {
+  private injectAttrs(obj: { [key: string]: any } | { [key: string]: any }[], templates: any) {
     if (Array.isArray(obj)) {
       obj.forEach(o => typeof o === 'object' && this.injectAttrs(o, templates))
     } else if (typeof obj === 'object') {

@@ -1,7 +1,4 @@
-import { ElementFactory } from "../ElementFactory";
-import { ElementProxy } from "../ElementProxy";
 import Group from "../Group";
-import { IElement } from "../IElement";
 
 /**
  * @guide
@@ -32,25 +29,27 @@ It's only used for `extends` or `inherit` purposes
       id: 2
  * @end
  */
-export default class Templates implements IElement {
-  proxy: ElementProxy<Templates>
+export default class Templates extends Group {
 
-  group: ElementProxy<Group>
-
-  init(items = [] as { [name: string]: IElement } | IElement[]) {
+  override init(items = [] as { [name: string]: any } | any[]) {
     const templates = Array.isArray(items) ? items : Object.keys(items).map(templateName => {
       const elementName = Object.keys(items[templateName])[0]
       items[templateName][elementName]['->'] = templateName
       return items[templateName]
     })
-    this.group = ElementFactory.CreateElement<Group>('Group')
-    this.group.init({
+    super.init({
       steps: templates
     })
   }
 
-  async dispose() {
-    await this.group.dispose()
+  override initSteps() { }
+
+  override async prepare() { }
+
+  override async exec() { }
+
+  clone() {
+    return this
   }
 
 }

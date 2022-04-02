@@ -33,7 +33,7 @@ steps:
 
   - Echo/Schema:
       message: ${user}
-      color: gray
+      color: gray.bgRed
       pretty: true
 
   - Echo:                                                           

@@ -1,6 +1,6 @@
+import { VariableManager } from '@app/singleton/VariableManager';
 import { Functional } from '@app/tags/model/Functional';
 import chalk from 'chalk';
-import prompts from 'prompts';
 import { ElementProxy } from '../ElementProxy';
 import { IElement } from '../IElement';
 import { AbsQuestion } from './AbsQuestion';
@@ -103,7 +103,9 @@ import { QuestionType } from './QuestionType';
  * @end
  */
 export default class UserInput implements IElement {
-  proxy: ElementProxy<UserInput>
+  proxy: ElementProxy<this>
+  $$: IElement
+  $: this
 
   private _questions = new Array<AbsQuestion>()
 
@@ -129,20 +131,22 @@ export default class UserInput implements IElement {
   }
 
   async prepare() {
-    if (this._questions?.length) {
-      await Promise.all(this._questions.map(async question => {
-        if (question.format) {
-          question.format = await this.proxy.eval(Functional.GetFuntion(question.format)?.toReturn())
-        }
-        await question.prepare(this.proxy)
-      }))
-    }
+    await Promise.all(this._questions?.map(async question => {
+      if (question.format) {
+        question.format = await this.proxy.eval<(vl: any) => any>(Functional.GetFuntion(question.format)?.toReturn())
+      }
+      await question.prepare(this.proxy)
+    }))
   }
 
   async exec() {
-    const response = await prompts(this._questions.map(question => question.config))
-    if (response) {
-      await this.proxy.setVar(response, this)
+    const response = {}
+    for (const question of this._questions) {
+      const res = await question.exec()
+      Object.assign(response, res)
+    }
+    if (this.proxy.isAttacted) {
+      Object.assign(VariableManager.Instance.vars, response)
     }
     return response
   }

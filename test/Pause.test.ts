@@ -26,7 +26,7 @@ test('Pause', async () => {
     end3: \${Date.now()}
 
 `)
-    expect(Math.floor((VariableManager.Instance.vars.end1 - VariableManager.Instance.vars.begin) / 100) * 100).toEqual(1000)
-    expect(Math.floor((VariableManager.Instance.vars.end2 - VariableManager.Instance.vars.end1) / 100) * 100).toEqual(1000)
-    expect(Math.floor((VariableManager.Instance.vars.end3 - VariableManager.Instance.vars.end2) / 100) * 100).toEqual(1000)
-}, 60000)
+    expect(Math.floor((VariableManager.Instance.vars.end1 - VariableManager.Instance.vars.begin) / 1000) * 1000).toEqual(1000)
+    expect(Math.floor((VariableManager.Instance.vars.end2 - VariableManager.Instance.vars.end1) / 1000) * 1000).toEqual(1000)
+    expect(Math.floor((VariableManager.Instance.vars.end3 - VariableManager.Instance.vars.end2) / 1000) * 1000).toEqual(1000)
+})

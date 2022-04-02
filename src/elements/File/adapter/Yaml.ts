@@ -1,5 +1,5 @@
-import { IFileAdapter } from "./IFileAdapter";
 import { dump, load } from "js-yaml";
+import { IFileAdapter } from "./IFileAdapter";
 
 /**
  * @guide
@@ -37,7 +37,7 @@ export class Yaml implements IFileAdapter {
 
   async write(data: any) {
     const rs = await dump(data)
-    await this.file.write(rs)
+    return this.file.write(rs)
   }
 
 }

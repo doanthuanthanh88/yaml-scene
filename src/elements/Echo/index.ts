@@ -28,7 +28,7 @@ import { PrinterTransformFactory } from "./transform/PrinterTransformFactory"
 
 - Echo:                                   
     message: Hello
-    color: green
+    color: green.bgRed
     pretty: true
 
 - Vars:
@@ -45,7 +45,9 @@ import { PrinterTransformFactory } from "./transform/PrinterTransformFactory"
  * @end
  */
 export default class Echo implements IElement {
-  proxy: ElementProxy<any>
+  proxy: ElementProxy<this>
+  $$: IElement
+  $: this
 
   message: string | object
   color?: string
@@ -54,10 +56,6 @@ export default class Echo implements IElement {
   transforms: (string | object)[]
 
   private _transform: IPrinterTransform
-  private _transformClasses: {
-    TransformClass: any,
-    args?: any
-  }[]
 
   init(props: any) {
     if (typeof props === 'object') {
@@ -77,21 +75,19 @@ export default class Echo implements IElement {
     }
   }
 
-  prepare() {
-    this._transformClasses = this.transforms.map(transform => {
-      const transformName = typeof transform === 'string' ? transform : Object.keys(transform)[0]
-      if (!transformName) throw new TraceError('"transforms" is not valid', { transform })
-      return {
-        TransformClass: PrinterTransformFactory.GetTransform(transformName),
-        args: transform[transformName]
-      }
-    })
+  async prepare() {
+    await this.proxy.applyVars(this, 'color', 'pretty', 'schema', 'transforms')
+    this.transforms
+      .forEach(transform => {
+        const transformName = typeof transform === 'string' ? transform : Object.keys(transform)[0]
+        if (!transformName) throw new TraceError('"transforms" is not valid', { transform })
+        const TransformClass = PrinterTransformFactory.GetTransform(transformName)
+        const args = transform[transformName]
+        this._transform = new TransformClass(this._transform || new Base(), args)
+      })
   }
 
   async exec() {
-    this._transformClasses.forEach(({ TransformClass, args }) => {
-      this._transform = new TransformClass(this._transform || new Base(), args)
-    })
     const message = await this.proxy.getVar(this.message)
     const txt = this._transform.print(message)
     this.proxy.logger.info(txt)

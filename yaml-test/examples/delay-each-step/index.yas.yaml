@@ -3,7 +3,7 @@
     stepDelay: 1s
     steps:
       - Script/Js: |
-          $.proxy.setVar('begin', Date.now())
+          await $.proxy.setVar('begin', Date.now())
       - Echo: ${Date.now() - begin}
       - Echo: ${Date.now() - begin}
 

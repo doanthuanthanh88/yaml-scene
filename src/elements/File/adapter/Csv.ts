@@ -31,14 +31,14 @@ export class Csv implements IFileAdapter {
   async read() {
     const cnt = await this.file.read()
     const { default: parse } = await import('csv-parse/lib/sync')
-    const obj = await parse(cnt.toString())
+    const obj = parse(cnt.toString())
     return obj
   }
 
   async write(data: any) {
     const { default: stringify } = await import('csv-stringify/lib/sync')
-    const rs = await stringify(data)
-    await this.file.write(rs)
+    const rs = stringify(data)
+    return this.file.write(rs)
   }
 
 }

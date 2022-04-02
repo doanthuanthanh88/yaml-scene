@@ -1,11 +1,19 @@
+import { TraceError } from "./error/TraceError"
+
+export type TimeUnit = string | number
+
 export class TimeUtils {
-  static GetMsTime(time: string | number): number {
+  static GetMsTime(time?: TimeUnit) {
     if (typeof time === 'string') {
       return parseInt(eval(time.replace('ms', '').replace('h', '*60m').replace('m', '*60s').replace('s', '*1000')))
+    } else if (typeof time === 'number') {
+      return time
+    } else if (time === undefined) {
+      return time
     }
-    return time
+    throw new TraceError(`Time "${time}" is not valid`, { time })
   }
-  static Delay(time: number | string) {
+  static Delay(time: TimeUnit) {
     return new Promise((resolve) => {
       setTimeout(() => resolve(true), TimeUtils.GetMsTime(time))
     })

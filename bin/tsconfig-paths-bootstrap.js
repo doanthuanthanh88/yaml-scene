@@ -15,7 +15,10 @@ for (let k in compilerOptions.paths) {
 }
 const mapKeys = Object.keys(map)
 
-module.constructor.prototype.require = function (basePath) {
+const _require = module.constructor.prototype.require
+module.constructor.prototype.require = function (..._args) {
+  const [basePath, ...args] = _args
+  let filepath
   let sourcePath
   if ((sourcePath = mapKeys.find(e => basePath.startsWith(e)))) {
     let targetPath = map[sourcePath]
@@ -25,5 +28,5 @@ module.constructor.prototype.require = function (basePath) {
   } else {
     filepath = basePath
   }
-  return this.constructor._load(filepath, this);
+  return _require.apply(this, [filepath, ...args])
 }

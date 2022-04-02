@@ -27,7 +27,7 @@
 
     parse(schema)
 
-    $.proxy.setVar('result', {json}, 'json')
+    $.proxy.vars.result = json
 
 - File/Writer:
     path: ../schema.json

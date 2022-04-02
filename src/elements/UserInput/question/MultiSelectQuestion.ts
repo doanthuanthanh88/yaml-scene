@@ -1,4 +1,6 @@
+import { ElementProxy } from "@app/elements/ElementProxy";
 import { TraceError } from "@app/utils/error/TraceError";
+import UserInput from "..";
 import { AbsQuestion } from "../AbsQuestion";
 import { QuestionType } from "../QuestionType";
 
@@ -14,19 +16,15 @@ export class MultiSelectQuestion extends AbsQuestion {
     this.choices = config.choices
   }
 
-  async prepare(proxy) {
+  async prepare(proxy: ElementProxy<UserInput>) {
     await super.prepare(proxy)
-    let df = this.default
-    if (df !== undefined) {
-      if (!Array.isArray(df)) df = [df]
-      this.default = []
+    await proxy.applyVars(this, 'choices')
+    if (this.default !== undefined && !Array.isArray(this.default)) {
+      this.default = [this.default]
     }
-    this.choices = await proxy.getVar(this.choices)
     if (this.choices?.length) {
       await Promise.all(this.choices.map(async (choice) => {
-        choice.title = await proxy.getVar(choice.title)
-        choice.value = await proxy.getVar(choice.value)
-        if (df?.includes(choice.value)) {
+        if (this.default?.includes(choice.value)) {
           choice.selected = true
         }
       }))

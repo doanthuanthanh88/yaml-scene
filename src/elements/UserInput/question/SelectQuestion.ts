@@ -1,4 +1,6 @@
+import { ElementProxy } from "@app/elements/ElementProxy";
 import { TraceError } from "@app/utils/error/TraceError";
+import UserInput from "..";
 import { AbsQuestion } from "../AbsQuestion";
 import { QuestionType } from "../QuestionType";
 
@@ -14,9 +16,9 @@ export class SelectQuestion extends AbsQuestion {
     this.choices = config.choices
   }
 
-  async prepare(proxy) {
+  async prepare(proxy: ElementProxy<UserInput>) {
     await super.prepare(proxy)
-    this.choices = await proxy.getVar(this.choices)
+    await proxy.applyVars(this, 'choices')
     if (this.choices?.length) {
       await Promise.all(this.choices.map(async (choice, i) => {
         if (this.default !== undefined && this.default === choice.value) {

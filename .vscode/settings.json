@@ -15,10 +15,9 @@
     },
     "editor.formatOnSave": true,
     "editor.codeActionsOnSave": {
-        "source.organizeImports": false,
+        "source.organizeImports": true,
     },
     "yaml.customTags": [
-        "!fragment scalar",
         "!function scalar",
         "!tag mapping"
     ],

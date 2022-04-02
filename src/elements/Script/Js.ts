@@ -17,19 +17,22 @@ import { IElement } from "../IElement";
     title: Test something
     content: !function |
       console.log('oldValue', name)
-      $.proxy.setVar('newName', name + 10)      # `$` is referenced to `Js` element in `Script`
+      await $.proxy.setVar('newName', name + 10)      # `$` is referenced to `Js` element in `Script`
 
 - Script/Js: !function |
     console.log('oldValue', name)
-    $.proxy.setVar('newName', name + 10)      # `$` is referenced to `Js` element in `Script`
+    $.proxy.vars.newName = name + 10                  # `$` is referenced to `Js` element in `Script`
 
 - Echo: New value ${newName}
  * @end
  */
 export default class Js implements IElement {
-  proxy: ElementProxy<any>
+  proxy: ElementProxy<this>
+  $$: IElement
+  $: this
+
   func: Functional
-  title: string
+  title?: string
 
   init(props: any) {
     if (typeof props === 'string' || props instanceof Functional) {
@@ -45,7 +48,7 @@ export default class Js implements IElement {
 
   async exec() {
     if (this.title) this.proxy.logger.info(this.title)
-    const rs = await this.proxy.eval(this.func.toString())
+    const rs = await this.proxy.eval<any>(this.func?.toString())
     return rs
   }
 

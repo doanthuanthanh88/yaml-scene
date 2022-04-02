@@ -45,7 +45,7 @@ export class CLI {
       .aliases(Object.keys(this.bin).filter(e => e !== this.name))
       .description(this.description)
       .version(this.version, "-v, --version")
-      .argument("<file>", "Scenario path or file", undefined, "index.yas.yaml")
+      .argument("[file]", "Scenario path or file", "index.yas.yaml")
       .argument("[password]", "Password to decrypt scenario file")
       .enablePositionalOptions(true)
       .passThroughOptions(true)
@@ -124,7 +124,7 @@ export class CLI {
       )
       .addCommand(program
         .createCommand('upgrade')
-        .aliases(['up', 'update'])
+        .aliases(['up'])
         .description('Upgrade `yaml-scene` or extensions')
         .argument("[extensions...]", "ExtensionManager package in npm registry")
         .action(async (extensionNames) => {
@@ -153,6 +153,7 @@ export class CLI {
       )
       .addCommand(program
         .createCommand('remove')
+        .aliases(['rm'])
         .description('Remove the extensions')
         .argument("<extensions...>", "ExtensionManager package in npm registry")
         .action(async (extensionNames) => {
@@ -161,7 +162,7 @@ export class CLI {
             const jsonSchema = new JSONSchema()
             await jsonSchema.init()
             await jsonSchema.merge(join(__dirname, '../../schema.yas.json'))
-            let isRemoved: boolean
+            let isRemoved: boolean = false
             for (const extensionNameFullVer of extensionNames) {
               const [extensionName] = extensionNameFullVer.split('@')
               try {
@@ -186,8 +187,8 @@ export class CLI {
     return isRunScenario
   }
 
-  loadEnv(baseConfig: any, ...files: (object | string)[]) {
-    const castToObject = function (obj, pro, prefix) {
+  loadEnv(baseConfig: any, ...files: (any | string)[]) {
+    const castToObject = function (obj: { [key: string]: any }, pro: { [key: string]: any }, prefix: string) {
       for (let k in obj) {
         if (typeof obj[k] === 'function' || k.startsWith('$$')) continue
         if (typeof obj[k] === 'object') {
@@ -238,7 +239,7 @@ export class CLI {
     files.forEach(file => {
       if (!file) return
       if (typeof file === 'string') {
-        let env = {}
+        let env = {} as { [key: string]: string }
         try {
           if (file && statSync(file)) {
             readFileSync(file)
@@ -252,14 +253,14 @@ export class CLI {
               })
           }
         } catch (err) {
-          LoggerManager.GetLogger().warn(`Could not found config file at ${file}`)
+          LoggerManager.GetLogger().warn(chalk.yellow('⚠️', `Could not found config file at ${file}`))
         }
         merge(config, env)
       } else {
         merge(config, Object.keys(file).reduce((sum, e) => {
           sum[e.toLowerCase()] = file[e]
           return sum
-        }, {}))
+        }, {} as { [key: string]: any }))
       }
     })
     castToObject(baseConfig, config, '')
@@ -327,7 +328,7 @@ export class CLI {
     let { dir, extensions, env, envFile, name } = options
     const prms = []
     let fileRun = ''
-    let rm = []
+    let rm = [] as string[]
     if (!name) {
       name = `yas-${basename(file)}`
       rm = ['--rm']
@@ -371,25 +372,23 @@ export class CLI {
     }
   }
 
-  private parseEnv(env: any) {
-    if (env && typeof env === "string") {
-      try {
-        env = JSON.parse(env);
-      } catch {
-        env = env
-          .trim()
-          .split(";")
-          .reduce((sum, e) => {
-            e = e.trim();
-            if (e) {
-              const idx = e.indexOf("=");
-              if (idx !== -1) sum[e.substring(0, idx)] = e.substring(idx + 1);
-            }
-            return sum;
-          }, {});
-      }
+  private parseEnv(env: string | any) {
+    if (!env || typeof env !== "string") return env
+    try {
+      return JSON.parse(env);
+    } catch {
+      return env
+        .trim()
+        .split(";")
+        .reduce((sum, e) => {
+          e = e.trim();
+          if (e) {
+            const idx = e.indexOf("=");
+            if (idx !== -1) sum[e.substring(0, idx)] = e.substring(idx + 1);
+          }
+          return sum;
+        }, {} as { [key: string]: string });
     }
-    return env
   }
 
 }

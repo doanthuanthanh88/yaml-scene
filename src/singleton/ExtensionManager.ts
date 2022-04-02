@@ -1,10 +1,12 @@
 import Exec from "@app/elements/Exec";
+import { IElement } from "@app/elements/IElement";
 import { Simulator } from "@app/Simulator";
 import { Scenario } from "@app/singleton/Scenario";
 import { TraceError } from "@app/utils/error/TraceError";
+import { FileUtils } from "@app/utils/FileUtils";
 import chalk from "chalk";
 import { execSync } from "child_process";
-import { existsSync, rmSync } from "fs";
+import { existsSync } from "fs";
 import { join } from "path";
 import { ExtensionNotFound } from "../utils/error/ExtensionNotFound";
 import { LoggerManager } from "./LoggerManager";
@@ -21,16 +23,16 @@ Please reference the below links for details:
  * @end
  */
 export class ExtensionManager {
-  private static _Instance: ExtensionManager
+  private static _Instance: ExtensionManager | null
 
   static get Instance() {
     return this._Instance || (this._Instance = new ExtensionManager())
   }
 
-  private extensionElements = {}
+  private extensionElements: { [key: string]: IElement } = {}
   private globalModuleManager = new GlobalModuleManager()
-  private localModuleManager: LocalModuleManager
-  private installExtensionPath: string
+  private localModuleManager?: LocalModuleManager
+  private installExtensionPath?: string
 
   constructor() {
     this.loadNpmYarnGlobalPaths()
@@ -49,20 +51,23 @@ export class ExtensionManager {
     } catch (err1) {
       if (this.extensionElements[p]) return this.extensionElements[p]
       try {
-        // Load from packages in node_modules
-        obj = require(p)
-        obj = this.getObjectInExport(obj, p)
-      } catch (err2) {
         // Load from local or global module
         modulePath = this.localModuleManager?.get(p) || this.globalModuleManager.get(p)
         if (!modulePath) {
-          LoggerManager.GetLogger().trace(err1)
-          LoggerManager.GetLogger().trace(err2)
           throw new ExtensionNotFound(p, `The scenario is using a new element "${p}"`)
         }
         obj = require(modulePath)
         obj = this.getObjectInExport(obj, p)
         this.extensionElements[p] = obj
+      } catch (err2) {
+        // Load from packages in node_modules
+        try {
+          obj = require(p)
+          obj = this.getObjectInExport(obj, p)
+        } catch (err3) {
+          LoggerManager.GetLogger().trace(err1, err2, err3)
+          throw err2
+        }
       }
     }
     return obj
@@ -153,7 +158,7 @@ export class ExtensionManager {
       if (!isSave) cmds.reverse()
     }
     let errors = []
-    LoggerManager.GetLogger().log(chalk.green(`Installing ...`))
+    LoggerManager.GetLogger().info(chalk.green(`Installing ${dependencies.map(e => `"${e}"`).join(", ")}...`))
     for (const { title, cmd } of cmds) {
       try {
         const log = Exec.Run(cmd)
@@ -172,7 +177,7 @@ export class ExtensionManager {
 
   async uninstall() {
     if (this.installExtensionPath) {
-      rmSync(this.installExtensionPath, { recursive: true, force: true })
+      FileUtils.RemoveFilesDirs(this.installExtensionPath)
     }
   }
 
@@ -184,6 +189,7 @@ export class ExtensionManager {
     if (!installInfo.global) {
       this.installExtensionPath = installInfo.localPath
       this.globalModuleManager.add(this.installExtensionPath)
+      FileUtils.MakeDirExisted(this.installExtensionPath, 'dir')
     }
     await ExtensionManager.InstallPackage(installInfo)
   }
@@ -192,7 +198,13 @@ export class ExtensionManager {
     ["yarn global dir", "npm root -g"].forEach(cmd => {
       try {
         execSync(cmd, { stdio: ['ignore', 'pipe', 'ignore'] }).toString().split('\n')
-          .map((f) => f?.trim())
+          .map((f = '') => {
+            f = f.trim()
+            if (f && !f.endsWith('/node_modules')) {
+              f = join(f, 'node_modules')
+            }
+            return f
+          })
           .filter((f) => f && existsSync(f) && !this.globalModuleManager.modules.includes(f))
           .forEach(gd => this.globalModuleManager.modules.push(gd))
       } catch (err) {
@@ -247,11 +259,12 @@ class GlobalModuleManager {
   }
 
   get(name: string) {
-    try {
-      return require.resolve(name, {
-        paths: this.modules.concat(Scenario.Instance.resolvePath('.'))
-      })
-    } catch { }
+    for (const module of this.modules) {
+      try {
+        return require.resolve(join(module, name))
+      } catch { }
+    }
+    return ''
   }
 
 }

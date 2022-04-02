@@ -1,4 +1,5 @@
-import { TimeUtils } from "@app/utils/TimeUtils"
+import { TraceError } from "@app/utils/error/TraceError"
+import { TimeUnit, TimeUtils } from "@app/utils/TimeUtils"
 import chalk from "chalk"
 import merge from "lodash.merge"
 import { ElementProxy } from "../ElementProxy"
@@ -31,10 +32,12 @@ import { IElement } from "../IElement"
  * @end
  */
 export default class Delay implements IElement {
-  proxy: ElementProxy<Delay>
+  proxy: ElementProxy<this>
+  $$: IElement
+  $: this
 
-  title: string
-  time: number
+  title?: string
+  time: TimeUnit
 
   init(props: any) {
     if (props && typeof props === 'object') {
@@ -45,8 +48,9 @@ export default class Delay implements IElement {
   }
 
   async prepare() {
-    this.title = await this.proxy.getVar(this.title)
-    this.time = await this.proxy.getVar(this.time)
+    await this.proxy.applyVars(this, 'title', 'time')
+    this.time = TimeUtils.GetMsTime(this.time)
+    if (!this.time) throw new TraceError('Time is required')
   }
 
   async exec() {

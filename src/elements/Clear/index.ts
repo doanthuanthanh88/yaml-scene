@@ -1,4 +1,5 @@
-import { IElement } from "../IElement"
+import { ElementProxy } from "../ElementProxy";
+import { IElement } from "../IElement";
 
 /**
  * @guide
@@ -10,6 +11,9 @@ import { IElement } from "../IElement"
  * @end
  */
 export default class Clear implements IElement {
+  proxy: ElementProxy<this>
+  $$: IElement
+  $: this
 
   exec() {
     console.clear()

@@ -1,9 +1,11 @@
 import { existsSync, unlinkSync, writeFileSync } from "fs";
 import { tmpdir } from "os";
 import { join } from "path";
+import { CLI } from "./cli/CLI";
 import { LoggerManager } from "./singleton/LoggerManager";
 import { Scenario } from "./singleton/Scenario";
 import { VariableManager } from "./singleton/VariableManager";
+import { ExtensionNotFound } from "./utils/error/ExtensionNotFound";
 
 export class Simulator {
 
@@ -21,18 +23,37 @@ export class Simulator {
     const tmpFile = join(tmpdir(), Date.now() + '_' + Math.random() + ".yas.yaml")
     try {
       writeFileSync(tmpFile, steps)
+      let isRun: boolean
+      do {
+        isRun = false
+        try {
+          Scenario.Instance?.reset()
+          await Scenario.Instance.init(tmpFile, password)
+          await Scenario.Instance.prepare()
+          VariableManager.Instance.init(env)
+          await Scenario.Instance.exec()
+        } catch (err: any) {
+          if (err?.code === 'MODULE_NOT_FOUND') {
+            const [, name] = err.message.toString().match(/['"]([^"']+)'/)
+            const [packageName] = name.split('/')
+            err = new ExtensionNotFound(name, `The scenario is use package "${packageName}"`, 'local')
+          }
+          if (err instanceof ExtensionNotFound) {
+            const [extensionName] = err.extensionName.split("/")
+            const isContinue = await CLI.Instance.installExtensions([extensionName], err.scope, true)
+            if (isContinue) {
+              isRun = true
 
-      Scenario.Instance?.reset()
-      await Scenario.Instance.init(tmpFile, password)
-      await Scenario.Instance.prepare()
-      VariableManager.Instance.init(env)
-      await Scenario.Instance.exec()
-    } catch (err) {
-      LoggerManager.GetLogger().error(err)
-      throw err
+              continue
+            }
+          }
+          throw err
+        } finally {
+          await Scenario.Instance?.dispose()
+        }
+      } while (isRun)
     } finally {
       if (existsSync(tmpFile)) unlinkSync(tmpFile)
-      await Scenario.Instance?.dispose()
     }
   }
 

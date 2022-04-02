@@ -1,4 +1,4 @@
-import { expect, assert, should } from 'chai';
+import { assert, expect, should } from 'chai';
 import chalk from "chalk";
 import merge from "lodash.merge";
 import { ElementProxy } from '../ElementProxy';
@@ -19,30 +19,44 @@ Currently only support chai `https://www.chaijs.com`
 - Validate:
     title: Assert method
     chai: ${assert.equal(userInfo.display_name, 'thanh');}
+- Validate:
+    title: Assert method          # Not define "chai" then it auto passes
  * @end
  */
 export default class Validate implements IElement {
-  proxy: ElementProxy<Validate>
+  proxy: ElementProxy<this>
+  $$: IElement
+  $: this
 
-  title: string
-  chai: string
+  title?: string
+  chai?: string
 
   init(props: any) {
     merge(this, props)
   }
 
+  async prepare() {
+    await this.proxy.applyVars(this, 'title')
+  }
+
   async exec() {
     try {
       if (this.chai) {
-        const ctx = { expect, assert } as any
+        const ctx = {} as any
+        if (this.chai.includes('expect(')) {
+          ctx.expect = expect
+        }
+        if (this.chai.includes('assert(')) {
+          ctx.assert = assert
+        }
         if (this.chai.includes('should.')) {
           ctx.should = should()
         }
         await this.proxy.getVar(this.chai, ctx)
       }
       this.proxy.logger.info(chalk.green('✔', this.title))
-    } catch (err) {
-      this.proxy.logger.error(chalk.red('✘', this.title, err.message))
+    } catch (err: any) {
+      this.proxy.logger.error(chalk.red('✘', this.title, err?.message))
       throw err
     }
   }

@@ -8,9 +8,10 @@ export class AES implements Encrypt {
     return this._Instance || (this._Instance = new AES())
   }
 
-  salt: Buffer
-  constructor(salt?: string) {
-    if (salt) this.salt = Buffer.from(salt)
+  private salt: Buffer
+
+  constructor(salt = '') {
+    this.salt = Buffer.from(salt)
   }
 
   encrypt(text: string, _salt?: string) {

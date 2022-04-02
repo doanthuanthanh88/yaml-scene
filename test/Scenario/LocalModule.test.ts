@@ -1,6 +1,6 @@
 import { Simulator } from "@app/Simulator"
 import { Scenario } from "@app/singleton/Scenario"
-import { existsSync, mkdirSync } from "fs"
+import { existsSync } from "fs"
 import { tmpdir } from "os"
 import { join } from "path"
 
@@ -11,7 +11,6 @@ afterAll(async () => {
 })
 
 test('Test install and use packages in local modules', async () => {
-  mkdirSync(localPath, { recursive: true })
   await Simulator.Run(`
 install:
   global: false
@@ -30,4 +29,4 @@ steps:
 `)
   expect(existsSync(join(localPath, 'README.md'))).toEqual(true)
   expect(existsSync(join(localPath, 'node_modules', 'yas-sequence-diagram'))).toEqual(true)
-}, 60000)
+})

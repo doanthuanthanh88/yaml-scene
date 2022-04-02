@@ -3,10 +3,9 @@
 | Element | Description |  
 |---|---|  
 | !TAGS | --- |
-|[!fragment](#!Tags%2F!fragment)| Load scenes from another file into current file ...|  
 |[!function](#!Tags%2F!function)| Write code as a function in js ...|  
 |[!tag](#!Tags%2F!tag)| Lazy load tag ...|  
-|[!tag tags/binary](#!Tags%2F!tag%20tags%2Fbinary)| Transform file to binary ...|  
+|[!tag tags/binary](#!Tags%2F!tag%20tags%2Fbinary)| Transform file/URL to binary ...|  
 | +FILE.ADAPTER | --- |
 |[Csv](#File%2C%20%2BFile.Adapter%2FCsv)| Read and write csv file. Used in File/Writer, File/Reader ...|  
 |[Excel](#File%2C%20%2BFile.Adapter%2FExcel)| Read and write excel file. Used in File/Writer, File/Reader ...|  
@@ -40,6 +39,7 @@
 |[File/Writer](#File%2C%20Output%2FFile%2FWriter)| Write content to a file ...|  
 | --- | --- |
 |[Delay](#Delay)| Program will be delayed at here after specific time then it keeps playing next steps ...|  
+|[Fragment](#Fragment)| Import a scenario file (URL or file local) in the scenario. ...|  
 |[Group](#Group)| Group contains 1 or many elements ...|  
 |[Pause](#Pause)| Program will be paused and wait user input ...|  
 |[Templates](#Templates)| Declare elements which not `inited` or `run` ...|  
@@ -82,7 +82,7 @@ Delay after a specific time before keep playing the nexts
     stepDelay: 1s
     steps:
       - Script/Js: |
-          $.proxy.setVar('begin', Date.now())   # `$` is referenced to `Js` element in `Script`
+          $.proxy.vars.begin = Date.now()   # `$` is referenced to `Js` element in `Script`
       - Echo: ${Date.now() - begin}
       - Echo: ${Date.now() - begin}
 
@@ -186,9 +186,9 @@ vars:                                               # Declare global variables, 
   user:
     id_test: 1                                      # env USER_ID_TEST=
 stepDelay: 1s                                       # Each of steps will delay 1s before play the next
-steps:                                              # Includes all which you want to do
-  - !fragment ./scene1.yas.yaml
-  - !fragment ./scene2.yas.yaml
+steps:                                              # Includes all which you want to do (URL or file local)
+  - Fragment ./scene1.yas.yaml
+  - Fragment ./scene2.yas.yaml
   - extension_name1:
   - extensions_folders/custom1:
   - Script/Js: |
@@ -201,29 +201,13 @@ steps:                                              # Includes all which you wan
 A simple scenario file  
 
 ```yaml
-- !fragment ./scene1.yas.yaml
-- !fragment ./scene2.yas.yaml
+- Fragment ./scene1.yas.yaml                        # Includes all which you want to do (URL or file local)
+- Fragment ./scene2.yas.yaml
 ```
 
 
   
 # Details
-## !fragment <a name="!Tags%2F!fragment"></a>  
-`(!Tags)`  
-Load scenes from another file into current file  
-
-```yaml
-- Group:
-    steps:
-      - !fragment ./examples/scene_1.yas.yaml
-      - Echo: Loaded scene 1 successfully
-
-      - !fragment ./examples/scene_2.yas.yaml
-      - Echo: Loaded scene 2 successfully
-```
-
-<br/>
-
 ## !function <a name="!Tags%2F!function"></a>  
 `(!Tags)`  
 Write code as a function in js  
@@ -231,7 +215,7 @@ Write code as a function in js
 ```yaml
 - Script/Js: !function |
     console.log('oldAge', age)
-    $.proxy.setVar('newAge', age + 10)
+    await $.proxy.setVar('newAge', age + 10)
 ```
 
 <br/>
@@ -254,7 +238,9 @@ Lazy load tag
 
 ## !tag tags/binary <a name="!Tags%2F!tag%20tags%2Fbinary"></a>  
 `(!Tags)`  
-Transform file to binary  
+Transform file/URL to binary
+- File in local path
+- File from url  
 
 ```yaml
 - yas-http/Post:
@@ -262,8 +248,10 @@ Transform file to binary
     headers:
       content-type: multipart/form-data
     body:
-      file: !tag
+      file1: !tag
         tags/binary: ~/data.json
+      file2: !tag
+        tags/binary: https://raw....
 ```
 
 <br/>
@@ -578,11 +566,11 @@ Embed javascript code into scene
     title: Test something
     content: !function |
       console.log('oldValue', name)
-      $.proxy.setVar('newName', name + 10)      # `$` is referenced to `Js` element in `Script`
+      await $.proxy.setVar('newName', name + 10)      # `$` is referenced to `Js` element in `Script`
 
 - Script/Js: !function |
     console.log('oldValue', name)
-    $.proxy.setVar('newName', name + 10)      # `$` is referenced to `Js` element in `Script`
+    $.proxy.vars.newName = name + 10                  # `$` is referenced to `Js` element in `Script`
 
 - Echo: New value ${newName}
 ```
@@ -608,7 +596,7 @@ Embed shell script into scene
     bin: sh                         # Path to executor
     mode: 777                       # chmod
     content: |                      # Content script
-      echo ${$.tempFile}
+      echo ${$._tempFile}
       echo ${name}
       echo $1
       echo $2
@@ -617,9 +605,9 @@ Embed shell script into scene
     title: My command
     args:                           # Custom run script
       - sh                          # Executor
-      - ${$.tempFile}               # Temp script file which includes content script and is removed after done
+      - ${$._tempFile}               # Temp script file which includes content script and is removed after done
     content: |                      # Content script
-      echo ${$.tempFile}            # `$` is referenced to `Sh` element in `Script`
+      echo ${$._tempFile}            # `$` is referenced to `Sh` element in `Script`
       echo ${name}
       echo $1
       echo $2
@@ -932,7 +920,7 @@ Print data to screen
 
 - Echo:
     message: Hello
-    color: green
+    color: green.bgRed
     pretty: true
 
 - Vars:
@@ -973,6 +961,20 @@ Program will be delayed at here after specific time then it keeps playing next s
 - Delay:
     title: Delay 1000 miliseconds
     time: 1000
+```
+
+<br/>
+
+## Fragment <a name="Fragment"></a>  
+Import a scenario file (URL or file local) in the scenario.  
+
+```yaml
+- Fragment: http://raw.github.../scenario1.yas.yaml
+
+- Fragment:
+    title: Load from another file
+    file: ./scenario1.yas.yaml
+    password: $PASS_TO_DECRYPT
 ```
 
 <br/>
@@ -1065,6 +1067,8 @@ Currently only support chai `https://www.chaijs.com`
 - Validate:
     title: Assert method
     chai: ${assert.equal(userInfo.display_name, 'thanh');}
+- Validate:
+    title: Assert method          # Not define "chai" then it auto passes
 ```
 
 <br/>

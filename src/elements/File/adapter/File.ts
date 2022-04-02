@@ -1,25 +1,25 @@
 import { TraceError } from "@app/utils/error/TraceError";
-import { readFileSync, WriteFileOptions, writeFileSync } from 'fs';
+import { FileUtils } from "@app/utils/FileUtils";
+import { createReadStream, WriteFileOptions } from 'fs';
+import { readFile, writeFile } from "fs/promises";
 import { IFileAdapter } from "./IFileAdapter";
-
-export class FileBinary {
-  constructor(public data: any) { }
-}
 
 export class File implements IFileAdapter {
 
-  constructor(public path: string, public encoding?: WriteFileOptions) {
+  constructor(public path: string, public encoding?: WriteFileOptions, public readType = 'buffer' as 'stream' | 'buffer') {
     if (!path) {
       throw new TraceError(`"Path" is required`)
     }
   }
 
-  read(): any {
-    return readFileSync(this.path)
+  async read() {
+    if (!FileUtils.Existed(this.path)) throw new TraceError(`"${this.path}" is not valid`)
+    return this.readType === 'buffer' ? readFile(this.path) : createReadStream(this.path)
   }
 
-  write(data: any = '') {
-    writeFileSync(this.path, data, this.encoding)
+  async write(data: any = '') {
+    FileUtils.MakeDirExisted(this.path)
+    return writeFile(this.path, data, this.encoding)
   }
 
 }

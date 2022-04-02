@@ -3,9 +3,9 @@ import chalk from 'chalk';
 import merge from "lodash.merge";
 import { ElementProxy } from '../ElementProxy';
 import { IElement } from '../IElement';
-import { File } from './adapter/File';
 import { FileAdapterFactory } from './adapter/FileAdapterFactory';
 import { IFileAdapter } from './adapter/IFileAdapter';
+import { Resource } from './adapter/Resource';
 
 /**
  * @guide
@@ -99,18 +99,31 @@ You can write a new adapter by yourself then use in adapters.
  * @end
  */
 export default class Reader implements IElement {
-  proxy: ElementProxy<Reader>
+  proxy: ElementProxy<this>
+  $$: IElement
+  $: this
 
-  title: string
+  title?: string
   var: string
   path: string
-  adapters: (string | object)[]
+  adapters: (string | any)[]
 
-  private _adapter: IFileAdapter
-  private _adapterClasses: {
-    AdapterClass: any,
-    args?: any
-  }[]
+  private get _adapter() {
+    let _adapter: IFileAdapter = new Resource(this.path)
+    for (const adapter of this.adapters) {
+      const adapterName = typeof adapter === 'string' ? adapter : Object.keys(adapter)[0]
+      if (!adapterName) throw new TraceError('"adapters" is not valid', { adapter })
+
+      const AdapterClass = FileAdapterFactory.GetAdapter(adapterName)
+      const args = typeof adapter === 'object' ? adapter[adapterName] : undefined
+      _adapter = new AdapterClass(_adapter, args)
+    }
+    return _adapter
+  }
+
+  constructor() {
+    this.adapters = []
+  }
 
   init(props: any) {
     merge(this, props)
@@ -119,28 +132,15 @@ export default class Reader implements IElement {
     if (!this.adapters.length) this.adapters.push('Text')
   }
 
-  prepare() {
+  async prepare() {
+    await this.proxy.applyVars(this, 'title', 'path', 'adapters')
     this.path = this.proxy.resolvePath(this.path)
-    this._adapterClasses = this.adapters.map(adapter => {
-      const adapterName = typeof adapter === 'string' ? adapter : Object.keys(adapter)[0]
-      if (!adapterName) throw new TraceError('"adapters" is not valid', { adapter })
-      return {
-        AdapterClass: FileAdapterFactory.GetAdapter(adapterName),
-        args: adapter[adapterName]
-      }
-    })
   }
 
   async exec() {
     if (this.title) this.proxy.logger.info('%s', this.title)
     console.group()
-
-    this._adapterClasses.forEach(({ AdapterClass, args }) => {
-      this._adapter = new AdapterClass(this._adapter || new File(this.path), args)
-    })
-
     const obj = await this._adapter.read()
-
     if (this.var) await this.proxy.setVar(this.var, { _: obj }, '_')
     this.proxy.logger.debug('%s %s', chalk.magenta('- Read file at'), chalk.gray(this.path))
     console.groupEnd()

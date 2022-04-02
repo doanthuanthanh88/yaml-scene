@@ -29,13 +29,16 @@ import { IElement } from "../IElement";
  * @end
  */
 export default class Group implements IElement {
-  proxy: ElementProxy<Group>
-  title: string
-  description: string
+  proxy: ElementProxy<this>
+  $$: IElement
+  $: this
+
+  title?: string
+  description?: string
   stepDelay?: number
   steps: any[]
 
-  private _steps: ElementProxy<IElement>[]
+  private _steps?: ElementProxy<IElement>[]
 
   init(_props: any) {
     const { ...props } = _props
@@ -55,11 +58,11 @@ export default class Group implements IElement {
   }
 
   async prepare() {
-    this.title = await this.proxy.getVar(this.title)
-    this.description = await this.proxy.getVar(this.description)
+    await this.proxy.applyVars(this, 'title', 'description')
   }
 
   async exec() {
+    if (!this._steps?.length) return
     if (this.title) this.proxy.logger.info('%s %s', chalk.blue(this.title), chalk.gray(`${this.description || ''}`))
     console.group()
     const proms = []
@@ -98,8 +101,10 @@ export default class Group implements IElement {
   }
 
   async dispose() {
-    if (!this._steps) return
+    if (!this._steps?.length) return
     await Promise.all(this._steps.map(step => step?.dispose && step.dispose()))
   }
+
+  // TODO
 
 }

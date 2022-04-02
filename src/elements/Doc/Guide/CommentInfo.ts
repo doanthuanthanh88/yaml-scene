@@ -26,17 +26,19 @@ export class CommentInfo implements DataModel {
   add(txt: string) {
     const m = txt.match(/(@(name|description|exampleType|example|group|order|h1|h2))((\s+(.*))||($))$/);
     let cnt = txt
+    let isTagWithName: boolean = false
     if (m && m[2]) {
       this._current = m[2];
       cnt = m[5] || ''
+      isTagWithName = true
     }
     if (!this[this._current]) {
       this[this._current] = '';
     }
     if (typeof this[this._current] === 'number') {
-      this[this._current] = +cnt;
+      this[this._current] = +(cnt?.trim());
     } else {
-      this[this._current] += (this[this._current] ? '\n' : '') + cnt?.replace(/\s+$/g, '');
+      this[this._current] += (this[this._current] ? '\n' : '') + (isTagWithName ? cnt?.trim() : cnt?.replace(/\s+$/g, ''))
     }
   }
 

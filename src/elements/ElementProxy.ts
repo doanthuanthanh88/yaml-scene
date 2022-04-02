@@ -1,4 +1,4 @@
-import { LoggerManager } from "@app/singleton/LoggerManager";
+import { Logger, LoggerManager, LogLevel } from "@app/singleton/LoggerManager";
 import { Scenario } from "@app/singleton/Scenario";
 import { TemplateManager } from "@app/singleton/TemplateManager";
 import { VariableManager } from "@app/singleton/VariableManager";
@@ -82,7 +82,7 @@ import { IElement } from "./IElement";
     stepDelay: 1s
     steps:
       - Script/Js: |
-          $.proxy.setVar('begin', Date.now())   # `$` is referenced to `Js` element in `Script`
+          $.proxy.vars.begin = Date.now()   # `$` is referenced to `Js` element in `Script`
       - Echo: ${Date.now() - begin}
       - Echo: ${Date.now() - begin}
 
@@ -139,13 +139,21 @@ import { IElement } from "./IElement";
  */
 export class ElementProxy<T extends IElement> {
 
-  get logger() {
+  get logger(): Logger {
     return (this.element.logLevel ? LoggerManager.GetLogger(this.element.logLevel) : this.element.$$?.proxy.logger) || LoggerManager.GetLogger()
+  }
+
+  get vars() {
+    return VariableManager.Instance.vars
   }
 
   constructor(public element: T) {
     this.element.$ = this.element
     this.element.proxy = this
+  }
+
+  get isAttacted() {
+    return !!this.element.$$
   }
 
   init(props: any) {
@@ -232,25 +240,23 @@ export class ElementProxy<T extends IElement> {
 
   clone() {
     let proxy: ElementProxy<T>
-    const oldProxy = this.element.proxy
-    this.element.proxy = undefined
     if (this.element.clone) {
       proxy = new ElementProxy<T>(this.element.clone())
     } else {
-      proxy = new ElementProxy<T>(cloneDeep(this.element))
+      const { proxy: _, ...element } = this.element
+      proxy = new ElementProxy<T>(cloneDeep(element) as T)
     }
-    this.element.proxy = oldProxy
     if (proxy.element instanceof Group) {
       proxy.element.initSteps()
     }
     return proxy
   }
 
-  resolvePath(path: string) {
+  resolvePath(path?: string) {
     return Scenario.Instance.resolvePath(path)
   }
 
-  changeLogLevel(level: string) {
+  changeLogLevel(level: LogLevel) {
     this.element.logLevel = level
   }
 
@@ -262,14 +268,18 @@ export class ElementProxy<T extends IElement> {
     }
   }
 
-  async eval(obj: any, baseContext = {} as any) {
-    const vl = await VariableManager.Instance.eval(obj, { $: this.element.$ || this.element, $$: this.element.$$, ...baseContext })
-    return vl
+  async eval<T>(func?: string, baseContext = {} as any) {
+    const vl = await VariableManager.Instance.eval(func, { $: this.element.$ || this.element, $$: this.element.$$, ...baseContext })
+    return vl as T
   }
 
   async getVar(obj: any, baseContext = {}) {
     const vl = await VariableManager.Instance.get(obj, { $: this.element.$ || this.element, $$: this.element.$$, ...baseContext })
     return vl
+  }
+
+  async applyVars(obj: any, ...props: string[]) {
+    await Promise.all(props.map(async p => obj[p] = await this.getVar(obj[p])))
   }
 
   inherit(props: any) {

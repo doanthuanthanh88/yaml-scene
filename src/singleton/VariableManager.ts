@@ -7,7 +7,7 @@ import chalk from "chalk"
 
 export class VariableManager {
   private static readonly _NavPattern = /^(\$\{){1}([^\}]+)\}$/
-  private static _Instance: VariableManager
+  private static _Instance: VariableManager | null
 
   static get Instance() {
     return this._Instance || (this._Instance = new VariableManager())
@@ -74,27 +74,16 @@ export class VariableManager {
     }
   }
 
-  async eval(obj: any, baseCtx?: any) {
-    if (!obj) return obj
-    if (Array.isArray(obj)) {
-      const ctx = { ...this.vars, ...baseCtx }
-      obj = await Promise.all(obj.map(o => this.get(o, ctx)))
-    } else if (typeof obj === 'object') {
-      const ctx = { ...this.vars, ...baseCtx }
-      for (const [key, vl] of Object.entries(obj)) {
-        obj[key] = await this.get(vl, ctx)
-      }
-    } else if (typeof obj === 'string') {
-      let vl;
-      const ctx = { ...this.vars, ...baseCtx }
-      const isAsync = obj.includes('await ')
-      const evalStr = `vl = (${isAsync ? 'async' : ''}({${Object.keys(ctx).join(',')}}) => { 
-        ${obj}
+  async eval(func?: string, baseCtx?: any) {
+    if (!func) throw new TraceError(`Could not eval with empty code`, { func })
+    let vl;
+    const ctx = { ...this.vars, ...baseCtx }
+    const isAsync = func.includes('await ')
+    const evalStr = `vl = (${isAsync ? 'async' : ''}({${Object.keys(ctx).join(',')}}) => { 
+        ${func}
       })(ctx)`
-      eval(evalStr)
-      return vl
-    }
-    return obj
+    eval(evalStr)
+    return vl
   }
 
   async get(obj: any, baseCtx?: any, isPassed?: boolean) {
@@ -111,7 +100,7 @@ export class VariableManager {
       for (const [key, vl] of Object.entries(obj)) {
         obj[key] = await this.get(vl, ctx, true)
       }
-    } else if (typeof obj === 'string' && obj.includes('${')) {
+    } else if (this.isIncludeFormula(obj)) {
       let vl;
       const ctx = isPassed ? baseCtx : { ...this.vars, ...baseCtx }
       let evalStr = `let {${Object.keys(ctx).join(',')}} = ctx;\n`
@@ -125,5 +114,9 @@ export class VariableManager {
       return vl
     }
     return obj
+  }
+
+  isIncludeFormula(obj: any) {
+    return typeof obj === 'string' && obj.includes('${')
   }
 }

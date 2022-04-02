@@ -1,0 +1,5 @@
+password: example
+steps:
+  - File/Writer:
+      path: ${file}
+      content: Hello

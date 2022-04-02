@@ -1,5 +1,5 @@
-import { IFileAdapter } from "./IFileAdapter";
 import { Builder, parseStringPromise } from 'xml2js';
+import { IFileAdapter } from "./IFileAdapter";
 
 /**
  * @guide
@@ -36,7 +36,7 @@ export class Xml implements IFileAdapter {
 
   async write(data: any) {
     const rs = await new Builder().buildObject(data)
-    await this.file.write(rs)
+    return this.file.write(rs)
   }
 
 }

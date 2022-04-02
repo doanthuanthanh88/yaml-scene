@@ -30,12 +30,12 @@ export class Json implements IFileAdapter {
 
   async read() {
     const cnt = await this.file.read()
-    const obj = await JSON.parse(cnt.toString())
+    const obj = JSON.parse(cnt.toString())
     return obj
   }
 
   async write(data: any) {
     const rs = this.config.pretty ? JSON.stringify(data, null, '  ') : JSON.stringify(data)
-    await this.file.write(rs)
+    return this.file.write(rs)
   }
 }

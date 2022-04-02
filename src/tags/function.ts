@@ -9,7 +9,7 @@ import { Functional } from './model/Functional'
  * @example
 - Script/Js: !function |
     console.log('oldAge', age)
-    $.proxy.setVar('newAge', age + 10)
+    await $.proxy.setVar('newAge', age + 10)
  * @end
  */
 export class FunctionScalar extends Type {

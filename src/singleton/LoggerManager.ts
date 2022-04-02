@@ -1,18 +1,17 @@
-import Logger from 'loglevel'
+import LoggerLevel from 'loglevel'
+
+export type Logger = LoggerLevel.Logger & { is: (logLevel: string) => Boolean }
+
+export type LogLevel = 'slient' | 'error' | 'warn' | 'info' | 'debug' | 'trace' | ''
 
 export class LoggerManager {
-  static readonly LogLevel = {
-    TRACE: 0,
-    DEBUG: 1,
-    INFO: 2,
-    WARN: 3,
-    ERROR: 4,
-    SILENT: 5,
+  static get LogLevel() {
+    return LoggerLevel.levels
   }
 
   private static _Instance = new LoggerManager()
 
-  static GetLogger(level?: string) {
+  static GetLogger(level?: LogLevel) {
     return this._Instance.getLogger(level)
   }
 
@@ -30,13 +29,16 @@ export class LoggerManager {
     this.getLogger().setDefaultLevel('info')
   }
 
-  getLogger(level = '') {
-    const logger = !level ? Logger : Logger.getLogger(level)
+  getLogger(level: LogLevel = '') {
+    const logger = (!level ? LoggerLevel : LoggerLevel.getLogger(level)) as Logger
     if (!this.#loggers.has(level)) {
       if (level === 'slient') {
         logger.disableAll(true)
       } else if (level) {
         logger.setDefaultLevel(level as any)
+      }
+      logger.is = function (level: string) {
+        return this.getLevel() >= LoggerLevel.levels[level.toUpperCase()]
       }
       this.#loggers.add(level)
     }

@@ -1,4 +1,5 @@
 
+import { File } from "./File";
 import { IFileAdapter } from "./IFileAdapter";
 
 /**
@@ -55,7 +56,7 @@ export class Excel implements IFileAdapter {
 
   constructor(private file: IFileAdapter, config = {} as any) {
     this.config = config
-    this.file['encoding'] = 'binary'
+    if (this.file instanceof File) this.file.encoding = 'binary'
   }
 
   async read() {

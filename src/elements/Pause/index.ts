@@ -1,5 +1,4 @@
-import { TraceError } from "@app/utils/error/TraceError"
-import { TimeUtils } from "@app/utils/TimeUtils"
+import { TimeUnit, TimeUtils } from "@app/utils/TimeUtils"
 import chalk from "chalk"
 import merge from "lodash.merge"
 import Delay from "../Delay"
@@ -28,11 +27,13 @@ import { QuestionType } from "../UserInput/QuestionType"
  * @end
  */
 export default class Pause implements IElement {
-  proxy: ElementProxy<Pause>
+  proxy: ElementProxy<this>
+  $$: IElement
+  $: this
 
-  title: string
-  time: number
-  timeout: number
+  title?: string
+  time?: number
+  timeout?: number
 
   init(props: any) {
     if (props && typeof props === 'object') {
@@ -43,9 +44,9 @@ export default class Pause implements IElement {
   }
 
   async prepare() {
-    this.title = await this.proxy.getVar(this.title)
-    this.time = await this.proxy.getVar(this.time)
-    this.timeout = await this.proxy.getVar(this.timeout)
+    await this.proxy.applyVars(this, 'title', 'time', 'timeout')
+    this.time = TimeUtils.GetMsTime(this.time as TimeUnit)
+    this.timeout = TimeUtils.GetMsTime(this.timeout as TimeUnit)
   }
 
   async exec() {
@@ -64,17 +65,11 @@ export default class Pause implements IElement {
       .title(chalk.yellow(this.title || 'Continue'))
       .default(true)
       .build()
-    let tm: NodeJS.Timeout
-    if (this.timeout) {
-      tm = setTimeout(() => ques.sendKey(), TimeUtils.GetMsTime(this.timeout))
-    }
+    const tm = this.timeout && setTimeout(() => ques.sendKey(), this.timeout)
     try {
-      const rs = await ques.exec()
-      if (!rs) {
-        throw new TraceError('Stop')
-      }
+      await ques.exec()
     } finally {
-      tm && clearTimeout(tm)
+      if (tm) clearTimeout(tm)
     }
   }
 

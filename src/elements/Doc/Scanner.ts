@@ -11,7 +11,7 @@ export class Scanner implements IScanner {
 
   event: EventEmitter
 
-  constructor(public exporter: Exporter<DataModel>, public ParserClass: new (...args) => DataParser) {
+  constructor(public exporter: Exporter<DataModel>, public ParserClass: new (...args: any[]) => DataParser) {
     this.event = new EventEmitter()
   }
 

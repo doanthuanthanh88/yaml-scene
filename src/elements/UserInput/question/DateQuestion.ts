@@ -1,4 +1,5 @@
 import { ElementProxy } from "@app/elements/ElementProxy";
+import UserInput from "..";
 import { AbsQuestion } from "../AbsQuestion";
 import { QuestionType } from "../QuestionType";
 
@@ -12,8 +13,8 @@ export class DateQuestion extends AbsQuestion {
     this.mask = mask
   }
 
-  async prepare(proxy: ElementProxy<any>) {
+  async prepare(proxy: ElementProxy<UserInput>) {
     await super.prepare(proxy)
-    this.mask = await proxy.getVar(this.mask)
+    await proxy.applyVars(this, 'mask')
   }
 }

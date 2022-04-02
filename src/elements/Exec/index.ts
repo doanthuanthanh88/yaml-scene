@@ -21,24 +21,28 @@ import { IElement } from '../IElement';
  * @end
  */
 export default class Exec implements IElement {
-  static Run(cmds = [] as string[], isShow = true) {
+  static Run(cmds: string[] = [], isShow = true) {
     const [cmd, ...args] = cmds
     return spawnSync(cmd, args, !isShow ? undefined : { stdio: 'inherit' })
   }
 
-  proxy: ElementProxy<Exec>
+  proxy: ElementProxy<this>
+  $$: IElement
+  $: this
 
-  title: string
+  title?: string
+  opts?: any
   args: string[]
-  var: string | { [key: string]: any }
-  code: number
-  messages: string
-  opts: any
 
-  private _prc: ChildProcessWithoutNullStreams
+  var?: string | { [key: string]: any }
+  code?: number
+  messages?: string
+
+  private _prc?: ChildProcessWithoutNullStreams | null
 
   constructor() {
     this.opts = { stdio: 'inherit' }
+    this.args = []
   }
 
   init(props: any) {
@@ -46,17 +50,14 @@ export default class Exec implements IElement {
   }
 
   async prepare() {
-    if (this.title) this.title = await this.proxy.getVar(this.title)
-    if (this.opts) this.opts = await this.proxy.getVar(this.opts)
-    if (!this.args) this.args = []
-    this.args = await this.proxy.getVar(this.args)
+    await this.proxy.applyVars(this, 'title', 'opts', 'args')
   }
 
   async exec() {
     if (this.title) this.proxy.logger.info(this.title)
-    const [cmd, ...args] = this.args
-    this._prc = spawn(cmd, args, this.opts)
-    return new Promise<string>((resolve, reject) => {
+    return new Promise<string | undefined>((resolve, reject) => {
+      const [cmd, ...args] = this.args
+      this._prc = spawn(cmd, args, this.opts)
       const msgs = this.var ? [] : undefined
       this._prc.stdout?.on('data', msg => {
         const _msg = msg?.toString()
@@ -68,18 +69,17 @@ export default class Exec implements IElement {
         this.proxy.logger.debug(_msg)
         msgs?.push(_msg)
       })
-      this._prc.on('error', (err) => {
-        reject(err)
-      })
-      this._prc.on('close', async code => {
-        this.code = code
-        if (this.var) {
-          this.messages = msgs?.join('\n')
-          await this.proxy.setVar(this.var)
-        }
-        this._prc = null
-        resolve(!code ? this.messages : null)
-      })
+      this._prc
+        .on('error', reject)
+        .on('close', async code => {
+          this.code = code
+          if (this.var) {
+            this.messages = msgs?.join('\n')
+            await this.proxy.setVar(this.var)
+          }
+          this._prc = null
+          resolve(this.messages)
+        })
     })
   }
 

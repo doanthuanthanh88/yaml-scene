@@ -1,6 +1,5 @@
 import { stdin } from 'process';
 import prompts from 'prompts';
-import { Writable } from 'stream';
 import { ElementProxy } from '../ElementProxy';
 import { QuestionType } from "./QuestionType";
 
@@ -13,7 +12,6 @@ export abstract class AbsQuestion {
   default: any
   format: (vl: any) => any
   opts: any
-  stdout: Writable
 
   get config() {
     const { title: message, var: name, opts, default: initial, ...props } = this
@@ -36,19 +34,18 @@ export abstract class AbsQuestion {
   }
 
   async prepare(proxy: ElementProxy<any>) {
-    this.title = await proxy.getVar(this.title)
-    this.required = await proxy.getVar(this.required)
-    this.pattern = await proxy.getVar(this.pattern)
-    this.var = await proxy.getVar(this.var)
-    this.default = await proxy.getVar(this.default)
+    await proxy.applyVars(this, 'title', 'required', 'pattern', 'default')
   }
 
   async exec() {
-    if (!this.var) {
-      this.var = `rd${Math.random()}`
-    }
-    const response = await prompts(this.config, this.opts)
-    return response[this.var]
+    const varName = this.var || `varName${Math.random()}`
+    let response: prompts.Answers<any>
+    let vl: any
+    do {
+      response = await prompts(this.config, this.opts)
+      vl = response[varName]
+    } while (this.required && (vl === undefined || vl === null || vl === '' || Number.isNaN(vl)))
+    return response
   }
 
   sendKey(opts = { key: '\r', name: 'return' }, sin = stdin) {

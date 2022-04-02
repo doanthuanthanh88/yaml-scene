@@ -30,8 +30,8 @@ export class Text implements IFileAdapter {
     return cnt.toString()
   }
 
-  async write(data: any) {
-    await this.file.write(data.toString())
+  write(data: any) {
+    return this.file.write(data.toString())
   }
 
 }

@@ -24,11 +24,12 @@
     "install:dist": "yarn install --production --modules-folder ./dist/node_modules",
     "dev": "npx nodemon --watch src --watch test --ext .ts --exec 'node -r ts-node/register -r ./bin/tsconfig-paths-bootstrap.js --inspect-brk src/index.ts'",
     "start": "node -r ts-node/register -r ./bin/tsconfig-paths-bootstrap.js src/index.ts",
-    "test": "npx jest --detectOpenHandles",
+    "test": "npx jest",
     "schema": "node -r ts-node/register -r ./bin/tsconfig-paths-bootstrap.js src/index.ts ./scenes/generate_schema.yas.yaml",
     "test:debug": "npx --node-options=\"--inspect-brk\" jest --detectOpenHandles",
     "doc": "node -r ts-node/register -r ./bin/tsconfig-paths-bootstrap.js src/index.ts scenes/guide.yas.yaml && yarn schema",
     "prebuild": "yarn clean",
+    "lint": "tsc --project tsconfig.lint.json",
     "build": "tsc --project tsconfig.build.json",
     "postbuild": "node bin/tsconfig && node bin/update_package",
     "clean": "rm -rf dist",
@@ -41,12 +42,12 @@
     "docker:pub": "docker buildx build --build-arg=version=$version --push --force-rm --no-cache --platform linux/arm64,linux/amd64 -t doanthuanthanh88/yaml-scene:latest -t doanthuanthanh88/yaml-scene:$version ."
   },
   "optionalDependencies": {
+    "convert-excel-to-json": "^1.7.0",
     "csv-parse": "^4.16.3",
     "csv-stringify": "^5.6.5",
+    "json2xls": "^0.1.2",
     "to-json-schema": "^0.2.5",
-    "xml2js": "^0.4.23",
-    "convert-excel-to-json": "^1.7.0",
-    "json2xls": "^0.1.2"
+    "xml2js": "^0.4.23"
   },
   "dependencies": {
     "chai": "^4.3.6",
@@ -65,6 +66,11 @@
     "@types/convert-excel-to-json": "^1.7.1",
     "@types/jest": "^27.0.3",
     "@types/js-yaml": "^4.0.5",
+    "@types/lodash.clonedeep": "^4.5.6",
+    "@types/lodash.merge": "^4.6.6",
+    "@types/lodash.omit": "^4.5.6",
+    "@types/lodash.uniqwith": "^4.5.6",
+    "@types/loglevel": "^1.6.3",
     "@types/node": "^14.14.6",
     "@types/prompts": "^2.0.14",
     "@types/to-json-schema": "^0.2.0",
@@ -78,6 +84,7 @@
     "ts-jest": "^27.0.7",
     "ts-node": "^9.1.1",
     "typescript": "^4.3.5",
+    "weak-napi": "^2.0.2",
     "xml2js": "^0.4.23"
   },
   "homepage": "https://github.com/doanthuanthanh88",

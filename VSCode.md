@@ -20,8 +20,7 @@ Example: `Yaml-scene scheme is updated. "$YOUR_YAML_SCHEMA_PATH/yaml-scene.yas.j
 ```json
 {
     "yaml.customTags": [
-        "!binary scalar",
-        "!fragment scalar",
+        "!tag mapping",
         "!function scalar",
     ],
     "yaml.schemas": {

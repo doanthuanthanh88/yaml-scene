@@ -1,12 +1,16 @@
 import { TraceError } from "@app/utils/error/TraceError";
-import { createReadStream, existsSync } from "fs";
+import { FileUtils } from "@app/utils/FileUtils";
 import { ElementProxy } from "../ElementProxy";
+import { IFileAdapter } from "../File/adapter/IFileAdapter";
+import { Resource } from "../File/adapter/Resource";
 import { IElement } from "../IElement";
 
 /**
  * @guide
  * @name !tag tags/binary
- * @description Transform file to binary
+ * @description Transform file/URL to binary
+- File in local path
+- File from url
  * @group !Tags
  * @example
 - yas-http/Post:
@@ -14,25 +18,35 @@ import { IElement } from "../IElement";
     headers:
       content-type: multipart/form-data
     body:
-      file: !tag
+      file1: !tag
         tags/binary: ~/data.json
+      file2: !tag
+        tags/binary: https://raw....
  * @end
  */
 export default class binary implements IElement {
-  proxy: ElementProxy<binary>
+  proxy: ElementProxy<this>
+  $$: IElement
+  $: this
+
   file: string
+
+  private _adapter: IFileAdapter
 
   init(file: string) {
     this.file = file
   }
 
   async prepare() {
-    this.file = await this.proxy.getVar(this.file)
+    await this.proxy.applyVars(this, 'file')
     this.file = this.proxy.resolvePath(this.file)
-    if (!existsSync(this.file)) throw new TraceError(`File ${this.file} is not found`)
+    if (!FileUtils.Existed(this.file)) {
+      throw new TraceError(`File "${this.file}" is not found`)
+    }
+    this._adapter = new Resource(this.file, 'stream')
   }
 
   exec() {
-    return createReadStream(this.file)
+    return this._adapter.read()
   }
 }

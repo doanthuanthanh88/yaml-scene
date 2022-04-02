@@ -25,7 +25,7 @@ type QuestionBuilderConfig = {
 
 export class QuestionBuilder {
   private _config: QuestionBuilderConfig = {}
-  private _type: QuestionType
+  private _type?: QuestionType
 
   type(type: QuestionType) {
     this._type = type

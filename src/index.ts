@@ -7,7 +7,6 @@ import { ScenarioMonitor } from "./singleton/Scenario/ScenarioMonitor";
 import { VariableManager } from "./singleton/VariableManager";
 import { ExtensionNotFound } from "./utils/error/ExtensionNotFound";
 import { TraceError } from "./utils/error/TraceError";
-import './utils/RequireModule';
 
 export class Main {
 
@@ -20,7 +19,7 @@ export class Main {
   }
 
   static async Exec() {
-    let isRun: boolean
+    let isRun: boolean | undefined
     do {
       this.printLogo()
       try {
@@ -37,6 +36,11 @@ export class Main {
         }
         await Scenario.Instance.exec()
       } catch (err: any) {
+        if (err?.code === 'MODULE_NOT_FOUND') {
+          const [, name] = err.message.toString().match(/['"]([^"']+)'/)
+          const [packageName] = name.split('/')
+          err = new ExtensionNotFound(name, `The scenario is use package "${packageName}"`, 'local')
+        }
         if (err instanceof ExtensionNotFound) {
           const [extensionName] = err.extensionName.split("/")
           LoggerManager.GetLogger().warn(chalk.yellow('⚠️', err.message))
@@ -78,7 +82,7 @@ export class Main {
   } catch (err) {
     if (err instanceof TraceError && err.info) {
       console.group('TraceErrorData:')
-      console.log(JSON.stringify(err.info, null, '  '))
+      console.error(JSON.stringify(err.info, null, '  '))
       console.groupEnd()
     }
     throw err

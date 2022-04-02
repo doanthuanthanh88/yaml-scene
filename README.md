@@ -54,14 +54,12 @@ Install via `npm` or `yarn`
 
 3. Upgrade extensions
 ```sh
-  yas upgrade yas-http yas-grpc
-  yas update yas-http yas-grpc
   yas up yas-http yas-grpc
 ```
 
 4. Uninstall extensions
 ```sh
-  yas remove yas-http yas-grpc
+  yas rm yas-http yas-grpc
 ```
 
 5. Merge `json schema` of list extensions then save in a file which is used for validation or suggestion purpose.  

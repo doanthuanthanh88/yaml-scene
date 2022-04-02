@@ -25,7 +25,7 @@ import Exec from "../Exec";
     bin: sh                         # Path to executor
     mode: 777                       # chmod 
     content: |                      # Content script
-      echo ${$.tempFile}
+      echo ${$._tempFile}
       echo ${name}
       echo $1
       echo $2
@@ -34,9 +34,9 @@ import Exec from "../Exec";
     title: My command
     args:                           # Custom run script
       - sh                          # Executor
-      - ${$.tempFile}               # Temp script file which includes content script and is removed after done
+      - ${$._tempFile}               # Temp script file which includes content script and is removed after done
     content: |                      # Content script
-      echo ${$.tempFile}            # `$` is referenced to `Sh` element in `Script`
+      echo ${$._tempFile}            # `$` is referenced to `Sh` element in `Script`
       echo ${name}
       echo $1
       echo $2
@@ -47,16 +47,16 @@ export default class Sh extends Exec {
   content: string
   mode: number
 
-  tempFile: string
+  private _tempFile: string
 
   constructor() {
     super()
     this.mode = 777
     this.bin = 'sh'
+    this._tempFile = join(tmpdir(), Date.now() + '_' + Math.random() + '.sh')
   }
 
   init(props: any) {
-    this.tempFile = join(tmpdir(), Date.now() + '_' + Math.random() + '.sh')
     this.args = []
     if (typeof props === 'string') {
       this.content = props
@@ -66,20 +66,19 @@ export default class Sh extends Exec {
   }
 
   async prepare() {
-    this.content = await this.proxy.getVar(this.content)
-    this.args = await this.proxy.getVar(this.args)
+    await super.prepare()
+    await this.proxy.applyVars(this, 'content')
     if (!this.content) throw new TraceError('Shell script is required')
     if (!this.args?.length) {
-      this.args = [this.bin, `${this.tempFile}`]
+      this.args = [this.bin, `${this._tempFile}`]
     }
-    writeFileSync(this.tempFile, this.content, {
+    writeFileSync(this._tempFile, this.content, {
       mode: this.mode
     })
-    await super.prepare()
   }
 
   dispose() {
-    existsSync(this.tempFile) && unlink(this.tempFile)
+    existsSync(this._tempFile) && unlink(this._tempFile)
     return super.dispose()
   }
 

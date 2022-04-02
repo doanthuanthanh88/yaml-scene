@@ -1,12 +1,13 @@
+import { LogLevel } from "@app/singleton/LoggerManager";
 import { ElementProxy } from "./ElementProxy";
 
 export interface IElement {
   // Proxy object which provides some utils functions (logger...)
-  proxy?: ElementProxy<any>
+  proxy: ElementProxy<this>
+  $$: IElement
+  $: this
 
-  $$?: IElement
-  $?: this
-  logLevel?: any
+  logLevel?: LogLevel
   if?: any
   delay?: any
   async?: any
@@ -23,5 +24,5 @@ export interface IElement {
   // After executed done need dispose object
   dispose?(): Promise<void> | void
   // Clone new object in loop or template...
-  clone?(): any
+  clone?(): this
 }
