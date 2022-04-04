@@ -1,3 +1,4 @@
+import { Functional } from '@app/tags/model/Functional';
 import { assert, expect, should } from 'chai';
 import chalk from "chalk";
 import merge from "lodash.merge";
@@ -21,6 +22,13 @@ Currently only support chai `https://www.chaijs.com`
     chai: ${assert.equal(userInfo.display_name, 'thanh');}
 - Validate:
     title: Assert method          # Not define "chai" then it auto passes
+
+- Vars:
+    age: 10
+- Validate:
+    title: Customize validate by code
+    chai: !function |
+      if (age <= 10) assert.fail('Age must be greater than 10')
  * @end
  */
 export default class Validate implements IElement {
@@ -29,7 +37,7 @@ export default class Validate implements IElement {
   $: this
 
   title?: string
-  chai?: string
+  chai?: string | Functional
 
   init(props: any) {
     merge(this, props)
@@ -42,17 +50,11 @@ export default class Validate implements IElement {
   async exec() {
     try {
       if (this.chai) {
-        const ctx = {} as any
-        if (this.chai.includes('expect(')) {
-          ctx.expect = expect
+        if (this.chai instanceof Functional) {
+          await this.proxy.eval(this.chai.toString(), { expect, assert, should: should() })
+        } else {
+          await this.proxy.getVar(this.chai, { expect, assert, should: should() })
         }
-        if (this.chai.includes('assert(')) {
-          ctx.assert = assert
-        }
-        if (this.chai.includes('should.')) {
-          ctx.should = should()
-        }
-        await this.proxy.getVar(this.chai, ctx)
       }
       this.proxy.logger.info(chalk.green('✔', this.title))
     } catch (err: any) {

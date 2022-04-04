@@ -990,8 +990,10 @@ Group contains 1 or many elements
       - Group:
           async: true
           delay: 1s
+          stepAsync: true
           steps:
             - Echo: Hello 1
+            - Echo: Hello 1.1
       - Group:
           async: true
           steps:
@@ -1069,6 +1071,13 @@ Currently only support chai `https://www.chaijs.com`
     chai: ${assert.equal(userInfo.display_name, 'thanh');}
 - Validate:
     title: Assert method          # Not define "chai" then it auto passes
+
+- Vars:
+    age: 10
+- Validate:
+    title: Customize validate by code
+    chai: !function |
+      if (age <= 10) assert.fail('Age must be greater than 10')
 ```
 
 <br/>

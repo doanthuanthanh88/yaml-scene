@@ -114,6 +114,4 @@ export default class Group implements IElement {
     await Promise.all(this._steps.map(step => step?.dispose && step.dispose()))
   }
 
-  // TODO
-
 }
