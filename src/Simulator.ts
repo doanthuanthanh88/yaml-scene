@@ -33,14 +33,9 @@ export class Simulator {
           VariableManager.Instance.init(env)
           await Scenario.Instance.exec()
         } catch (err: any) {
-          if (err?.code === 'MODULE_NOT_FOUND') {
-            const [, name] = err.message.toString().match(/['"]([^"']+)'/)
-            const [packageName] = name.split('/')
-            err = new ExtensionNotFound(name, `The scenario is use package "${packageName}"`, 'local')
-          }
           if (err instanceof ExtensionNotFound) {
             const [extensionName] = err.extensionName.split("/")
-            const isContinue = await CLI.Instance.installExtensions([extensionName], err.scope, true)
+            const isContinue = await CLI.Instance.installExtensions([extensionName], err.localPath, err.scope, true)
             if (isContinue) {
               isRun = true
 

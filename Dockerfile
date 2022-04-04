@@ -3,6 +3,8 @@ FROM alpine
 WORKDIR /test
 
 ARG version
+
+ENV NODE_ENV=production
 ENV EXTENSIONS=
 
 RUN apk add --no-cache nodejs 

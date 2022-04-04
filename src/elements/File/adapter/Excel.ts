@@ -1,4 +1,5 @@
 
+import { LazyImport } from "@app/utils/LazyImport";
 import { File } from "./File";
 import { IFileAdapter } from "./IFileAdapter";
 
@@ -60,7 +61,7 @@ export class Excel implements IFileAdapter {
   }
 
   async read() {
-    const { default: excelToJson } = await import('convert-excel-to-json')
+    const { default: excelToJson } = await LazyImport(import('convert-excel-to-json'))
     const data = excelToJson({
       source: await this.file.read(),
       ...this.config
@@ -69,7 +70,7 @@ export class Excel implements IFileAdapter {
   }
 
   async write(data: any) {
-    const { default: json2xls } = await import('json2xls')
+    const { default: json2xls } = await LazyImport(import('json2xls'))
     const xls = json2xls(data);
     return this.file.write(xls)
   }

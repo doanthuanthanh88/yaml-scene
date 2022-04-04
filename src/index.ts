@@ -36,15 +36,11 @@ export class Main {
         }
         await Scenario.Instance.exec()
       } catch (err: any) {
-        if (err?.code === 'MODULE_NOT_FOUND') {
-          const [, name] = err.message.toString().match(/['"]([^"']+)'/)
-          const [packageName] = name.split('/')
-          err = new ExtensionNotFound(name, `The scenario is use package "${packageName}"`, 'local')
-        }
         if (err instanceof ExtensionNotFound) {
+          new Array(10).fill(null).forEach(() => console.groupEnd())
           const [extensionName] = err.extensionName.split("/")
           LoggerManager.GetLogger().warn(chalk.yellow('⚠️', err.message))
-          const isContinue = await CLI.Instance.installExtensions([extensionName], err.scope, CLI.Instance.force)
+          const isContinue = await CLI.Instance.installExtensions([extensionName], err.localPath, err.scope, CLI.Instance.force)
           if (isContinue) {
             let continuePlay = CLI.Instance.force
             if (!continuePlay) {

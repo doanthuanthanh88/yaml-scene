@@ -286,7 +286,7 @@ export class CLI {
     return true
   }
 
-  async installExtensions(extensionNames: string[], installType = 'global' as 'local' | 'global', isForce = false as boolean) {
+  async installExtensions(extensionNames: string[], customPath?: string, installType = 'global' as 'local' | 'global', isForce = false as boolean) {
     extensionNames = extensionNames.map(e => e.trim()).filter(e => e)
     if (!extensionNames) return false
 
@@ -296,7 +296,7 @@ export class CLI {
       if (installType === 'global') {
         choices.push({ title: `Global (Recommend)`, value: 'global', description: 'Install in global directory of "yarn" OR "npm"' })
       }
-      choices.push({ title: `Local${installType === 'local' ? ' (Recommend)' : ''}`, value: 'local', description: 'Install in "yaml-scene" package' })
+      choices.push({ title: `Local${installType === 'local' ? ' (Recommend)' : ''}`, value: 'local', description: `Install in "${customPath || 'yaml-scene'}"` })
 
       confirmType.init([{
         title: `Install ${extensionNames.map(e => chalk.yellow(`"${e}"`)).join(', ')} to:`,
@@ -314,6 +314,7 @@ export class CLI {
     }
     await ExtensionManager.InstallPackage(
       installType === 'local' ? {
+        localPath: customPath,
         dependencies: extensionNames,
         global: false,
         isSave: false,

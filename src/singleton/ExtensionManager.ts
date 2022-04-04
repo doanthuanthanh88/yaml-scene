@@ -144,7 +144,7 @@ export class ExtensionManager {
 
   static async InstallPackage(installInfo: { dependencies: string[], localPath?: string, global?: boolean, isSave?: boolean }) {
     let cmds = []
-    const { dependencies = [], localPath = join(__dirname, '../../'), global, isSave } = installInfo
+    const { dependencies = [], localPath = join(__dirname, '../../'), global } = installInfo
     if (global) {
       cmds = [
         { title: `in yarn global`, cmd: ['yarn', 'global', 'add', ...dependencies] },
@@ -152,10 +152,10 @@ export class ExtensionManager {
       ]
     } else {
       cmds = [
-        { title: `yarn local at ${localPath}`, cmd: ['yarn', 'add', '--prefix', localPath, ...dependencies].filter(e => e) },
-        { title: `npm local at ${localPath}`, cmd: ['npm', 'install', `${!isSave ? '--no-save' : ''}`, '--prefix', localPath, ...dependencies].filter(e => e) },
+        { title: `yarn local at ${localPath}`, cmd: ['yarn', 'add', ...dependencies, '--prod', '-O', '--no-lockfile', '--no-bin-links', '--ignore-scripts', '--modules-folder', join(localPath, 'node_modules')].filter(e => e) },
+        { title: `npm local at ${localPath}`, cmd: ['npm', 'install', ...dependencies, '--save-prod', '--prod', '--no-package-lock', '--no-bin-links', '--ignore-scripts', '--prefix', localPath].filter(e => e) }, //`${!isSave ? '--no-save' : ''}`,
       ]
-      if (!isSave) cmds.reverse()
+      // if (!isSave) cmds.reverse()
     }
     let errors = []
     LoggerManager.GetLogger().info(chalk.green(`Installing ${dependencies.map(e => `"${e}"`).join(", ")}...`))
@@ -183,12 +183,13 @@ export class ExtensionManager {
 
   async install(installInfo: { dependencies: string[], localPath?: string, global?: boolean, isSave?: boolean }) {
     if (!installInfo) return
-    if (!installInfo.localPath) installInfo.localPath = Scenario.Instance.rootDir
-    installInfo.localPath = Scenario.Instance.resolvePath(installInfo.localPath)
-    if (installInfo.isSave === undefined && Simulator.IS_RUNNING) installInfo.isSave = false
     if (!installInfo.global) {
-      this.installExtensionPath = installInfo.localPath
+      if (installInfo.isSave === undefined && Simulator.IS_RUNNING) installInfo.isSave = false
+
+      if (!installInfo.localPath) installInfo.localPath = Scenario.Instance.rootDir
+      this.installExtensionPath = installInfo.localPath = Scenario.Instance.resolvePath(installInfo.localPath)
       this.globalModuleManager.add(this.installExtensionPath)
+
       FileUtils.MakeDirExisted(this.installExtensionPath, 'dir')
     }
     await ExtensionManager.InstallPackage(installInfo)
@@ -239,8 +240,7 @@ class LocalModuleManager {
       const path = this.modules[localExtensionKey]
       const modulePath = join(path, name.replace(new RegExp(`^${localExtensionKey}\\/?`), ''))
       try {
-        require.resolve(modulePath);
-        return modulePath;
+        return require.resolve(modulePath);
       } catch { }
     }
   }

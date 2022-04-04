@@ -16,8 +16,10 @@ import { IElement } from "../IElement";
       - Group:
           async: true
           delay: 1s
+          stepAsync: true
           steps:
             - Echo: Hello 1
+            - Echo: Hello 1.1
       - Group:
           async: true
           steps:
@@ -36,6 +38,7 @@ export default class Group implements IElement {
   title?: string
   description?: string
   stepDelay?: number
+  stepAsync?: boolean
   steps: any[]
 
   private _steps?: ElementProxy<IElement>[]
@@ -72,8 +75,11 @@ export default class Group implements IElement {
         if (isValid) {
           proms.push((async (step) => {
             await step.prepare()
-            if (this.stepDelay && !step.element.delay) {
+            if (this.stepDelay && step.element.delay === undefined) {
               step.element.delay = this.stepDelay
+            }
+            if (this.stepAsync && step.element.async === undefined) {
+              step.element.async = this.stepAsync
             }
             await step.exec()
           })(step))
@@ -87,8 +93,11 @@ export default class Group implements IElement {
       const isValid = await step.isValid()
       if (isValid) {
         await step.prepare()
-        if (this.stepDelay && !step.element.delay) {
+        if (this.stepDelay && !step.element.delay === undefined) {
           step.element.delay = this.stepDelay
+        }
+        if (this.stepAsync && step.element.async === undefined) {
+          step.element.async = this.stepAsync
         }
         await step.exec()
       }

@@ -10,10 +10,9 @@ afterAll(async () => {
   await Scenario.Instance.clean()
 })
 
-test('Test install and use packages in local modules', async () => {
+test.skip('Test install and use packages in local modules', async () => {
   await Simulator.Run(`
 install:
-  global: false
   localPath: ${localPath}
   dependencies: 
     - yas-sequence-diagram
