@@ -117,12 +117,12 @@ export default class GuideMD implements IElement {
   }
 
   async prepare() {
+    await this.proxy.applyVars(this, 'includes', 'excludes', 'pattern', 'includePattern', 'outFile')
     if (!this.includes) this.includes = []
     if (!this.excludes) this.excludes = []
     if (this.includePattern) this.includePattern = new RegExp(this.includePattern.toString())
     this.includes = this.includes.map(p => this.proxy.resolvePath(p))
     this.excludes = this.excludes.map(p => this.proxy.resolvePath(p))
-    await this.proxy.applyVars(this, 'outFile')
     this.outFile = this.proxy.resolvePath(this.outFile)
   }
 

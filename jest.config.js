@@ -5,6 +5,7 @@ module.exports = {
   // verbose: true,
   roots: ["src", "test"],
   detectLeaks: true,
+  logHeapUsage: true,
   detectOpenHandles: true,
   testTimeout: 60000,
   moduleNameMapper: {

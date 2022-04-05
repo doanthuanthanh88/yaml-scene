@@ -143,7 +143,7 @@ export default class UserInput implements IElement {
     const response = {}
     for (const question of this._questions) {
       const res = await question.exec()
-      Object.assign(response, res)
+      Object.assign(response, { [question.var]: null }, res)
     }
     if (this.proxy.isAttacted) {
       Object.assign(VariableManager.Instance.vars, response)

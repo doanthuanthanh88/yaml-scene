@@ -8,7 +8,7 @@ export class CommentExporter implements Exporter<CommentInfo> {
   constructor(private writer: IFileAdapter) {
   }
 
-  export(models: CommentInfo[]) {
+  async export(models: CommentInfo[]) {
     const mdMenu = ['# Document', `*Describe all of elements in tool. (meaning, how to use...)*`, `| Element | Description |  `, `|---|---|  `];
     const mdExample = ['# Details'];
 
@@ -82,6 +82,6 @@ ${h2.examples}
       }
     })
 
-    this.writer.write([...mdMenu, '  ', ...mdH1, '  ', ...mdExample, '  ', ...mdH2].join('\n'));
+    await this.writer.write([...mdMenu, '  ', ...mdH1, '  ', ...mdExample, '  ', ...mdH2].join('\n'));
   }
 }

@@ -169,25 +169,18 @@ export class ElementProxy<T extends IElement> {
   }
 
   async prepare() {
+    this.element.if = await this.getVar(this.element.if)
+    if (!this.isValid) return
     this.element.logLevel = await this.getVar(this.element.logLevel)
     this.element.async = await this.getVar(this.element.async)
-    this.element.if = await this.getVar(this.element.if)
     this.element.delay = await this.getVar(this.element.delay)
     if (this.element.prepare) {
       return this.element.prepare()
     }
   }
 
-  async isValid() {
-    let isOk = true
-    if (this.element.if !== undefined) {
-      if (typeof this.element.if === 'string') {
-        isOk = await this.getVar(this.element.if)
-      } else {
-        isOk = this.element.if
-      }
-    }
-    return isOk
+  get isValid() {
+    return this.element.if === undefined || this.element.if
   }
 
   setGroup(group: IElement) {
@@ -195,6 +188,7 @@ export class ElementProxy<T extends IElement> {
   }
 
   async exec() {
+    if (!this.isValid) return
     if (this.element.loop === undefined) {
       if (this.element.delay) {
         await TimeUtils.Delay(this.element.delay)
@@ -243,8 +237,11 @@ export class ElementProxy<T extends IElement> {
     if (this.element.clone) {
       proxy = new ElementProxy<T>(this.element.clone())
     } else {
-      const { proxy: _, ...element } = this.element
-      proxy = new ElementProxy<T>(cloneDeep(element) as T)
+      // const { proxy: _, ...element } = this.element
+      const oldProxy = this.element['proxy']
+      this.element['proxy'] = undefined
+      proxy = new ElementProxy<T>(cloneDeep(this.element) as T)
+      this.element.proxy = oldProxy
     }
     if (proxy.element instanceof Group) {
       proxy.element.initSteps()

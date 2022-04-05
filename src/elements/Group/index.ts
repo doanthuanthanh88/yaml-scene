@@ -1,3 +1,4 @@
+import { LogLevel } from "@app/singleton/LoggerManager";
 import chalk from "chalk";
 import merge from "lodash.merge";
 import { ElementFactory } from "../ElementFactory";
@@ -35,6 +36,7 @@ export default class Group implements IElement {
   $$: IElement
   $: this
 
+  logLevel?: LogLevel
   title?: string
   description?: string
   stepDelay?: number
@@ -67,46 +69,37 @@ export default class Group implements IElement {
   async exec() {
     if (!this._steps?.length) return
     if (this.title) this.proxy.logger.info('%s %s', chalk.blue(this.title), chalk.gray(`${this.description || ''}`))
-    console.group()
-    const proms = []
-    for (const step of this._steps) {
-      if (step.element.async) {
-        const isValid = await step.isValid()
-        if (isValid) {
-          proms.push((async (step) => {
-            await step.prepare()
-            if (this.stepDelay && step.element.delay === undefined) {
-              step.element.delay = this.stepDelay
-            }
-            if (this.stepAsync && step.element.async === undefined) {
-              step.element.async = this.stepAsync
-            }
-            await step.exec()
-          })(step))
+    this.title && console.group()
+    try {
+      let proms = []
+      const func = async (step: ElementProxy<IElement>, stepDelay?: number, stepAsync?: boolean) => {
+        if (stepDelay && step.element.delay === undefined) {
+          step.element.delay = stepDelay
         }
-        continue
-      }
-      if (proms.length) {
-        await Promise.all(proms)
-        proms.splice(0, proms.length)
-      }
-      const isValid = await step.isValid()
-      if (isValid) {
-        await step.prepare()
-        if (this.stepDelay && !step.element.delay === undefined) {
-          step.element.delay = this.stepDelay
-        }
-        if (this.stepAsync && step.element.async === undefined) {
-          step.element.async = this.stepAsync
+        if (stepAsync && step.element.async === undefined) {
+          step.element.async = stepAsync
         }
         await step.exec()
       }
+      for (const step of this._steps) {
+        await step.prepare()
+        if (!step.isValid) continue
+        if (step.element.async) {
+          proms.push(func(step, this.stepDelay, this.stepAsync))
+        } else {
+          if (proms.length) {
+            await Promise.all(proms)
+            proms = []
+          }
+          await func(step, this.stepDelay, this.stepAsync)
+        }
+      }
+      if (proms.length) {
+        await Promise.all(proms)
+      }
+    } finally {
+      this.title && console.groupEnd()
     }
-    if (proms.length) {
-      await Promise.all(proms)
-      proms.splice(0, proms.length)
-    }
-    console.groupEnd()
   }
 
   async dispose() {

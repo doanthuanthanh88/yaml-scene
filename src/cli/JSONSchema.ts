@@ -46,19 +46,21 @@ export class JSONSchema {
           json = await this.getFileData(url)
         }
         console.group()
-        const { templates = {}, $id, oneOf, anyOf, allOf, ...schema } = json
-        this.injectAttrs(schema, merge(templates, this.templates))
-        this.replaceID(schema, $id)
-        const childs = (oneOf || anyOf || allOf || [])
-        this.replaceID(childs, $id)
-        this.yamlScene.definitions.allOfSteps.items.anyOf.push(...childs)
-        this.yamlScene.definitions.allOfSteps.items.anyOf = uniqWith(this.yamlScene.definitions.allOfSteps.items.anyOf, (a: any, b: any) => { return a.$ref === b.$ref && a.$ref })
-        this.yamlScene = merge({}, schema, this.yamlScene)
-        LoggerManager.GetLogger().info(`✅ Done`)
+        try {
+          const { templates = {}, $id, oneOf, anyOf, allOf, ...schema } = json
+          this.injectAttrs(schema, merge(templates, this.templates))
+          this.replaceID(schema, $id)
+          const childs = (oneOf || anyOf || allOf || [])
+          this.replaceID(childs, $id)
+          this.yamlScene.definitions.allOfSteps.items.anyOf.push(...childs)
+          this.yamlScene.definitions.allOfSteps.items.anyOf = uniqWith(this.yamlScene.definitions.allOfSteps.items.anyOf, (a: any, b: any) => { return a.$ref === b.$ref && a.$ref })
+          this.yamlScene = merge({}, schema, this.yamlScene)
+          LoggerManager.GetLogger().info(`✅ Done`)
+        } finally {
+          console.groupEnd()
+        }
       } catch (err: any) {
         LoggerManager.GetLogger().warn(chalk.yellow('⚠️', err?.message))
-      } finally {
-        console.groupEnd()
       }
     }
   }

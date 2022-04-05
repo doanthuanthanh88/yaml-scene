@@ -48,8 +48,13 @@ export default class Js implements IElement {
 
   async exec() {
     if (this.title) this.proxy.logger.info(this.title)
-    const rs = await this.proxy.eval<any>(this.func?.toString())
-    return rs
+    this.title && console.group()
+    try {
+      const rs = await this.proxy.eval<any>(this.func?.toString())
+      return rs
+    } finally {
+      this.title && console.groupEnd()
+    }
   }
 
 }

@@ -972,9 +972,13 @@ Import a scenario file (URL or file local) in the scenario.
 - Fragment: http://raw.github.../scenario1.yas.yaml
 
 - Fragment:
-    title: Load from another file
     file: ./scenario1.yas.yaml
     password: $PASS_TO_DECRYPT
+    title: Override title in scenario
+    description: ""                       # Hide description in scenario
+    logLevel: slient                      # hide logger in scenario
+    vars:
+      varInScenario1: override here
 ```
 
 <br/>

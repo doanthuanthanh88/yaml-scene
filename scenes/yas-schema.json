@@ -204,6 +204,10 @@
           "description": "Password to encrypt scenario file to share to someone",
           "type": "string"
         },
+        "vars": {
+          "type": "object",
+          "description": "Expose the variables to environment variables for override purpose"
+        },
         "install": {
           "properties": {
             "dependencies": {
@@ -244,6 +248,52 @@
         },
         "steps": {
           "$ref": "#/definitions/allOfSteps"
+        }
+      }
+    },
+    "Fragment": {
+      "type": "object",
+      "properties": {
+        "Fragment": {
+          "description": "Load and execute scenario from a scenario file",
+          "anyOf": [
+            {
+              "description": "Path or URL of scenario file",
+              "$ref": "#/definitions/getVarString"
+            },
+            {
+              "type": "object",
+              "required": [
+                "file"
+              ],
+              "properties": {
+                "title": {
+                  "type": "string",
+                  "description": "Group title"
+                },
+                "description": {
+                  "type": "string",
+                  "description": "Group description"
+                },
+                "file": {
+                  "description": "Path or URL of scenario file",
+                  "$ref": "#/definitions/getVarString"
+                },
+                "password": {
+                  "description": "Password to encrypt scenario file to share to someone",
+                  "type": "string"
+                },
+                "vars": {
+                  "type": "object",
+                  "description": "Override vars in scenario"
+                },
+                "logLevel": {
+                  "description": "Set log level",
+                  "$ref": "#/definitions/logLevel"
+                }
+              }
+            }
+          ]
         }
       }
     },

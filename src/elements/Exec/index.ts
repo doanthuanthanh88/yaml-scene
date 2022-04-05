@@ -55,6 +55,7 @@ export default class Exec implements IElement {
 
   async exec() {
     if (this.title) this.proxy.logger.info(this.title)
+    this.title && console.group()
     return new Promise<string | undefined>((resolve, reject) => {
       const [cmd, ...args] = this.args
       this._prc = spawn(cmd, args, this.opts)
@@ -80,6 +81,8 @@ export default class Exec implements IElement {
           this._prc = null
           resolve(this.messages)
         })
+    }).finally(() => {
+      this.title && console.groupEnd()
     })
   }
 

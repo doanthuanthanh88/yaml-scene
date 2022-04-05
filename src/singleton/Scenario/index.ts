@@ -1,20 +1,12 @@
-import { File } from '@app/elements/File/adapter/File'
-import { Password } from '@app/elements/File/adapter/Password'
-import { Resource } from '@app/elements/File/adapter/Resource'
+import Fragment from '@app/elements/Fragment'
 import { LoggerManager } from '@app/singleton/LoggerManager'
 import { VariableManager } from '@app/singleton/VariableManager'
-import { MD5 } from '@app/utils/encrypt/MD5'
-import { TraceError } from '@app/utils/error/TraceError'
 import { FileUtils } from '@app/utils/FileUtils'
-import { rmSync } from 'fs'
-import { load } from 'js-yaml'
 import { homedir } from 'os'
-import { basename, dirname, isAbsolute, join, resolve } from 'path'
+import { dirname, isAbsolute, join, resolve } from 'path'
 import { EventEmitter } from 'stream'
 import { ElementFactory } from '../../elements/ElementFactory'
 import { ElementProxy } from '../../elements/ElementProxy'
-import Group from '../../elements/Group'
-import { YAMLSchema } from '../../tags'
 import { ExtensionManager } from '../ExtensionManager'
 import { TemplateManager } from '../TemplateManager'
 
@@ -74,7 +66,6 @@ steps:                                              # Includes all which you wan
  */
 
 export class Scenario {
-  private static readonly SALTED_PASSWORD = '|-YAML-SCENE-|'
   private static _Instance: Scenario | null
   static get Instance() {
     if (this._Instance) return this._Instance
@@ -83,19 +74,20 @@ export class Scenario {
   }
 
   events: EventEmitter
-
-  password?: string
   isPassed: boolean = false
-
   scenarioFile?: string
   rootDir: string
-  hasEnvVar?: boolean
-  private rootGroup?: ElementProxy<Group>
+  private rootGroup?: ElementProxy<Fragment>
+  get hasEnvVar() {
+    return this.rootGroup?.element.hasEnvVar
+  }
 
   get scenarioPasswordFile() {
-    if (!this.scenarioFile) throw new TraceError('Scenario file is null')
-    const name = basename(this.scenarioFile)
-    return join(dirname(this.scenarioFile), name.substring(0, name.indexOf('.')))
+    return this.rootGroup?.element.scenarioPasswordFile
+  }
+
+  get password() {
+    return this.rootGroup?.element.password
   }
 
   get title() {
@@ -120,25 +112,21 @@ export class Scenario {
   async init(scenarioFile = 'index.yas.yaml', password?: string) {
     this.events.emit('scenario.init', { time: Date.now() })
 
-    const scenarioObject = await this.getScenarioFile(scenarioFile, password)
+    this.scenarioFile = this.resolvePath(scenarioFile)
 
-    const { extensions, install, vars, logLevel, ...scenarioProps } = scenarioObject
-    if (!scenarioProps) throw new TraceError('File scenario is not valid', { scenarioFile, scenarioObject })
-
-    LoggerManager.SetDefaultLoggerLevel(logLevel)
-
-    // Load extensions
-    if (extensions) await ExtensionManager.Instance.registerGlobalExtension(extensions)
-    if (install) await ExtensionManager.Instance.install(install)
-
-    // Load global variables which is overrided by env variables
-    if (vars) {
-      VariableManager.Instance.init(vars)
-      this.hasEnvVar = true
+    const existed = FileUtils.Existed(this.scenarioFile)
+    if (existed === true) {
+      this.rootDir = dirname(this.scenarioFile)
     }
-    // Load Scenario
-    this.rootGroup = ElementFactory.CreateElement<Group>('Group')
-    this.rootGroup?.init(scenarioProps)
+
+    this.rootGroup = ElementFactory.CreateElement<Fragment>('Fragment')
+    this.rootGroup?.init({
+      file: this.scenarioFile,
+      password,
+    })
+
+    LoggerManager.SetDefaultLoggerLevel(this.rootGroup?.element.logLevel)
+
   }
 
   async prepare() {
@@ -153,7 +141,7 @@ export class Scenario {
   }
 
   async clean() {
-    this.password && rmSync(this.scenarioPasswordFile, { force: true })
+    this.rootGroup?.element.clean()
     await ExtensionManager.Instance.uninstall()
   }
 
@@ -170,43 +158,4 @@ export class Scenario {
     return resolve(path)
   }
 
-  async getScenarioFile(scenarioFile: string, password?: string) {
-    if (typeof scenarioFile !== 'string') throw new TraceError('Scenario must be a path of file')
-
-    this.scenarioFile = scenarioFile = this.resolvePath(scenarioFile)
-
-    const existed = FileUtils.Existed(scenarioFile)
-    if (!existed) throw new TraceError(`Scenario file is not existed at "${this.scenarioFile}"`)
-
-    if (existed === true) {
-      this.rootDir = dirname(this.scenarioFile)
-    }
-
-    const resource = new Resource(scenarioFile)
-    const reader = new Password(resource, this.getPassword(password))
-    const fileContent = await reader.read()
-    let scenarioObject = load(fileContent, {
-      schema: YAMLSchema.Schema
-    }) as any
-
-    if (Array.isArray(scenarioObject)) {
-      scenarioObject = { title: basename(this.scenarioFile), steps: scenarioObject.flat() }
-    }
-    if (typeof scenarioObject !== 'object') throw new TraceError('Scenario must be an object or array', { scenarioObject })
-
-    const { password: pwd, ...scenarioProps } = scenarioObject
-    if (!scenarioProps) throw new TraceError('File scenario is not valid', { scenarioObject })
-
-    if (pwd && resource.isFile) {
-      this.password = this.getPassword(pwd)
-      const writer = new Password(new File(this.scenarioPasswordFile), this.password)
-      await writer.write(fileContent.toString().replace(/^password:.+$/m, ''))
-    }
-
-    return scenarioProps
-  }
-
-  private getPassword(password?: string) {
-    return password && MD5.Instance.encrypt(`${Scenario.SALTED_PASSWORD}${password}`)
-  }
 }

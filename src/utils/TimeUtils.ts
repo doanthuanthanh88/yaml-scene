@@ -8,7 +8,7 @@ export class TimeUtils {
       return parseInt(eval(time.replace('ms', '').replace('h', '*60m').replace('m', '*60s').replace('s', '*1000')))
     } else if (typeof time === 'number') {
       return time
-    } else if (time === undefined) {
+    } else if (!time) {
       return time
     }
     throw new TraceError(`Time "${time}" is not valid`, { time })

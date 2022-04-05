@@ -143,10 +143,13 @@ export default class Writer implements IElement {
 
   async exec() {
     if (this.title) this.proxy.logger.info('%s', this.title)
-    console.group()
-    await this._adapter.write(this.content)
-    this.proxy.logger.debug('%s %s', chalk.magenta('- Write file to'), chalk.gray(this.path))
-    console.groupEnd()
+    this.title && console.group()
+    try {
+      await this._adapter.write(this.content)
+      this.proxy.logger.debug('%s %s', chalk.magenta('- Write file to'), chalk.gray(this.path))
+    } finally {
+      this.title && console.groupEnd()
+    }
   }
 
 }

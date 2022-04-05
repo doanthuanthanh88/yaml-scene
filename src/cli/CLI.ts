@@ -109,8 +109,10 @@ export class CLI {
             for (const extensionNameFullVer of extensionNames) {
               const [extensionName] = extensionNameFullVer.split('@')
               try {
-                const extension = ExtensionManager.Instance.load(`${extensionName}/schema.json`)
-                extensions.push(extension)
+                const extension = ExtensionManager.Instance.load(`${extensionName}/schema.json`) || {}
+                if (Object.keys(extension).length) {
+                  extensions.push(extension)
+                }
               } catch { }
             }
             if (extensions.length) {
@@ -138,8 +140,10 @@ export class CLI {
             for (const extensionNameFullVer of extensionNames) {
               const [extensionName] = extensionNameFullVer.split('@')
               try {
-                const extension = ExtensionManager.Instance.load(`${extensionName}/schema.json`)
-                extensions.push(extension)
+                const extension = ExtensionManager.Instance.load(`${extensionName}/schema.json`) || {}
+                if (Object.keys(extension).length) {
+                  extensions.push(extension)
+                }
               } catch { }
             }
             if (extensions.length) {
