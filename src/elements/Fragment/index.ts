@@ -62,7 +62,7 @@ export default class Fragment extends Group {
       this.hasEnvVar = true
     }
     if (this.vars) {
-      VariableManager.Instance.init(this.vars)
+      this.proxy.setVar(this.vars)
     }
     // Load extensions
     if (extensions) await ExtensionManager.Instance.registerGlobalExtension(extensions)
