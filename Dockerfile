@@ -1,6 +1,6 @@
 ####################
 FROM alpine
-WORKDIR /test
+WORKDIR /yaml-scene
 
 ARG version
 

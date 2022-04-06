@@ -4,3 +4,4 @@ my-yaml
 *.log
 private
 Note.md
+*.yasc.yaml

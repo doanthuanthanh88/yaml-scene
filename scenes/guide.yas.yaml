@@ -9,5 +9,6 @@
 - Script/Sh: |
     cp GUIDE.md yaml-scene.wiki/Home.md
     cp VSCode.md "yaml-scene.wiki/Visual Studio Code.md"
+    cp sharing/README.md "yaml-scene.wiki/Sharing.md"
 
 - Echo/Green: Guidline document generated successfully

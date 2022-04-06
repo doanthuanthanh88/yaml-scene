@@ -12,14 +12,15 @@ It's a platform to do everything with only yaml scenario files
 9. Support run a scenario file via http(s)
 10. Support json schema to suggest or validate scenario
 
-## Some extensions
+## Extensions
 1. [yas-http](https://github.com/doanthuanthanh88/yas-http): Manage http(s) request, mocking api server, create testcases, generate to document...
 2. [yas-grpc](https://github.com/doanthuanthanh88/yas-grpc): Manage gRPC request, mocking gRPC server, create testcases, generate to document...
 3. [yas-sequence-diagram](https://github.com/doanthuanthanh88/yas-sequence-diagram): Generate to sequence diagram, flow diagram base on comment in code
 
-## Demo
-1. [Download youtube mp3 file](https://github.com/doanthuanthanh88/yas-http/blob/main/practice/youtube_audio/README.md)
-2. [Quick upload file to get a share link](https://github.com/doanthuanthanh88/yas-http/blob/main/practice/upload/README.md)
+> You can [build a extension](#create-a-new-extension) by yourself
+
+## Sharing
+[SHARING](./sharing/README.md)
 
 ## Guideline document
 > **[Wiki Pages](https://github.com/doanthuanthanh88/yaml-scene/wiki)**  
@@ -62,35 +63,14 @@ Install via `npm` or `yarn`
   yas rm yas-http yas-grpc
 ```
 
-5. Merge `json schema` of list extensions then save in a file which is used for validation or suggestion purpose.  
-Example [Integrate with Visual Studio Code](https://github.com/doanthuanthanh88/yaml-scene/wiki/Visual-Studio-Code)
-```sh
-  yas schema -f https://raw.githubusercontent.com/doanthuanthanh88/yaml-scene/main/schema.json \
-    https://raw.githubusercontent.com/doanthuanthanh88/yas-http/main/schema.json \
-    https://raw.githubusercontent.com/doanthuanthanh88/yas-grpc/main/schema.json
-```
-
-6. Run scenario via docker container
-```sh
-  yas docker \
-    --dir "yaml-test/examples" \
-    --extensions "yas-http yas-grpc" \
-    --env-file .env \
-    --env "name=thanh;age=11" \
-    echo.yas.yaml
-```
-
-7. Show version
+5. Show version
 ```sh
   yas -v
 ```
 
-8. Show help content
+6. Show help content
 ```sh
   yas -h
-  yas add -h
-  yas remove -h
-  yas docker -h
 ```
 
 ## How to use a new extensions
@@ -127,9 +107,9 @@ Example [Integrate with Visual Studio Code](https://github.com/doanthuanthanh88/
 - `$PASSWORD`: Password to run encrypted scenario file which contains property "password" in scenario file content.
 
 ## Create a new extension
-Clone [Extension template project](https://github.com/doanthuanthanh88/yaml-scene-extensions) which includes examples, commands to unit test, build, document... to deploy to npm or something like that
+Please clone [Extension template project](https://github.com/doanthuanthanh88/yaml-scene-extensions) which includes examples, commands to unit test, build, document...
 
-- [Simple extension file](./yaml-test/examples/custom-extension/custom.js)
+Or you can write [a simple extension js file](./yaml-test/examples/custom-extension/custom1.js)
 
 ## How to create a yaml scene file
 Please follow [wiki pages](https://github.com/doanthuanthanh88/yaml-scene/wiki) to create a scene file for your self.

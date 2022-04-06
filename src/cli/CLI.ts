@@ -3,9 +3,8 @@ import chalk from "chalk";
 import { program } from "commander";
 import { readFileSync, statSync } from "fs";
 import merge from "lodash.merge";
-import { basename, join, resolve } from "path";
+import { join } from "path";
 import { ElementFactory } from "../elements/ElementFactory";
-import Exec from "../elements/Exec";
 import { ExtensionManager } from "../singleton/ExtensionManager";
 import { JSONSchema } from "./JSONSchema";
 
@@ -49,6 +48,7 @@ export class CLI {
       .argument("[password]", "Password to decrypt scenario file")
       .enablePositionalOptions(true)
       .passThroughOptions(true)
+      .showHelpAfterError(true)
       .option("-f, --force", `Auto install miss packages/extensions without confirm`)
       .option("--env-file <string>", `Environment variables file`)
       .option(
@@ -56,7 +56,6 @@ export class CLI {
                          + csv: key1=value1;key2=value2
                          + json: {"key1": "value1", "key2": "value2"}`
       )
-      // .showHelpAfterError(true)
       .action((file, pwd, opts) => {
         this.yamlFile = file
         this.password = pwd
@@ -64,23 +63,6 @@ export class CLI {
         this.env = this.parseEnv(opts.env)
         this.force = opts.force;
       })
-      .addCommand(program
-        .createCommand('docker')
-        .description('Run via docker')
-        .argument("<file>", "Scenario path or file")
-        .argument("[password]", "Password to decrypt scenario file")
-        .option("-n, --name <string>", `Container name. Reused an existed container`)
-        .option("-d, --dir <string>", `Directory includes scenarios`)
-        .option("-ex, --extensions <string>", `External extensions which need to be installed. Separate by space " "`)
-        .option("--env-file <string>", `Environment variables file`)
-        .option("-e, --env <csv|json>", `Environment variables.    
-                             + csv: key1=value1;key2=value2
-                             + json: {"key1": "value1", "key2": "value2"}`)
-        .action(async (file = '', password = '', options) => {
-          await this.runDocker(file, password, options)
-          isRunScenario = false
-        })
-      )
       .addCommand(program
         .createCommand('schema')
         .description('Merge schemas of extensions')
@@ -93,7 +75,7 @@ export class CLI {
           const fout = await jsonSchema.save()
           LoggerManager.GetLogger().info(chalk.green(`Yaml-scene scheme is generated. "${chalk.bold(fout)}"`))
           isRunScenario = false
-        })
+        }), { hidden: true }
       )
       .addCommand(program
         .createCommand('add')
@@ -127,7 +109,7 @@ export class CLI {
       .addCommand(program
         .createCommand('upgrade')
         .aliases(['up'])
-        .description('Upgrade `yaml-scene` or extensions')
+        .description('Upgrade extensions version. Default is `yaml-scene`')
         .argument("[extensions...]", "ExtensionManager package in npm registry")
         .action(async (extensionNames) => {
           if (!extensionNames.length) extensionNames.push('yaml-scene')
@@ -327,54 +309,6 @@ export class CLI {
         global: true,
       })
     return true
-  }
-
-  private async runDocker(file: string, password: string, options: any) {
-    let { dir, extensions, env, envFile, name } = options
-    const prms = []
-    let fileRun = ''
-    let rm = [] as string[]
-    if (!name) {
-      name = `yas-${basename(file)}`
-      rm = ['--rm']
-    }
-    if (dir) {
-      prms.push('-v', `"${resolve(dir)}:/test"`, '\\\n  ')
-      fileRun = join('/test', file)
-    } else {
-      const filename = basename(file)
-      prms.push('-v', `"${resolve(file)}:/test/${filename}"`, '\\\n  ')
-      fileRun = join('/test', filename)
-    }
-    if (envFile) {
-      prms.push('--env-file', `"${resolve(envFile)}"`, '\\\n  ')
-    }
-    if (extensions) {
-      prms.push('-e', `"EXTENSIONS=${extensions}"`, '\\\n  ')
-    }
-    if (env) {
-      const envObject = this.parseEnv(env)
-      prms.push(...Object.keys(envObject).map(key => ['-e', `"${key}=${envObject[key]}"`, '\\\n  ']).flat())
-    }
-    prms.push("doanthuanthanh88/yaml-scene", '\\\n  ')
-    prms.push(fileRun)
-    if (password) prms.push(`"${password}"`)
-    const cmd = ['docker', 'run', ...rm, '-it', '--name', `"${name}"`, '\\\n  ', ...prms]
-    LoggerManager.GetLogger().info(chalk.magenta(cmd.join(' ')))
-    const confirm = ElementFactory.CreateElement('UserInput')
-    confirm.init([{
-      title: 'Run now ?',
-      type: 'confirm',
-      default: true,
-      var: 'isRun'
-    }])
-    await confirm.prepare()
-    const cmds = cmd.filter(e => e !== '\\\n  ').map(e => e.replace(/^"|"$/g, ""))
-    const { isRun } = await confirm.exec()
-    await confirm.dispose()
-    if (isRun) {
-      Exec.Run(cmds)
-    }
   }
 
   private parseEnv(env: string | any) {
