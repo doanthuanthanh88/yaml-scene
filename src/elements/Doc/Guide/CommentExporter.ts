@@ -1,11 +1,14 @@
 import { IFileAdapter } from '@app/elements/File/adapter/IFileAdapter';
 import { Exporter } from '@app/utils/doc/Exporter';
-import { join } from 'path';
 import { escape } from 'querystring';
 import { CommentInfo } from './CommentInfo';
 
 export class CommentExporter implements Exporter<CommentInfo> {
-  constructor(private writer: IFileAdapter) {
+  constructor(private writer: IFileAdapter, public prefixHashLink: string) {
+  }
+
+  getHashLink(...txts: string[]) {
+    return escape(this.prefixHashLink + txts.join('-')).toLowerCase()
   }
 
   async export(models: CommentInfo[]) {
@@ -65,13 +68,14 @@ ${h2.examples}
           } else {
             mdMenu.push(`| --- | --- |`);
           }
-          mdMenu.push(...infos.map(info => `|[${info.name}](#${escape(join(info.group || '', info.name))})| ${info.description1}|  `));
+          mdMenu.push(...infos.map(info => `|[${info.name}](#${this.getHashLink(info.group, info.name)})| ${info.description1}|  `));
           mdExample.push(...infos
             .filter(h => !unique.info.has(h))
             .map(info => {
               unique.info.add(info)
-              const mes = [`## ${info.name} <a name="${escape(join(info.group || '', info.name))}"></a>  `]
-              if (info.group) mes.push(`\`(${info.group})\`  `)
+              const hash = `${this.getHashLink(info.group, info.name)}`
+              const mes = [`<a id="${hash}" name="${hash}"></a>`, `## ${info.name}`]
+              if (info.group) mes.push(`\`${info.group}\`  `)
               mes.push(`${info.description || ''}  `)
               mes.push(`${info.examples}`)
               mes.push(`<br/>\n`)

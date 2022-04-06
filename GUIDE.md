@@ -3,47 +3,47 @@
 | Element | Description |  
 |---|---|  
 | !TAGS | --- |
-|[!function](#!Tags%2F!function)| Write code as a function in js ...|  
-|[!tag](#!Tags%2F!tag)| Lazy load tag ...|  
-|[!tag tags/binary](#!Tags%2F!tag%20tags%2Fbinary)| Transform file/URL to binary ...|  
+|[!function](#user-content-!tags-!function)| Write code as a function in js ...|  
+|[!tag](#user-content-!tags-!tag)| Lazy load tag ...|  
+|[!tag tags/binary](#user-content-!tags-!tag%20tags%2fbinary)| Transform file/URL to binary ...|  
 | +FILE.ADAPTER | --- |
-|[Csv](#File%2C%20%2BFile.Adapter%2FCsv)| Read and write csv file. Used in File/Writer, File/Reader ...|  
-|[Excel](#File%2C%20%2BFile.Adapter%2FExcel)| Read and write excel file. Used in File/Writer, File/Reader ...|  
-|[Json](#File%2C%20%2BFile.Adapter%2FJson)| Read and write json file. Used in File/Writer, File/Reader ...|  
-|[Password](#File%2C%20%2BFile.Adapter%2FPassword)| Read and write a encrypted file (`aes-128-cbc`). Used in File/Writer, File/Reader ...|  
-|[Text](#File%2C%20%2BFile.Adapter%2FText)| Read and write text file. Used in File/Writer, File/Reader ...|  
-|[Xml](#File%2C%20%2BFile.Adapter%2FXml)| Read and write xml file. Used in File/Writer, File/Reader ...|  
-|[Yaml](#File%2C%20%2BFile.Adapter%2FYaml)| Read and write yaml file. Used in File/Writer, File/Reader ...|  
+|[Csv](#user-content-file%2c%20%2bfile.adapter-csv)| Read and write csv file. Used in File/Writer, File/Reader ...|  
+|[Excel](#user-content-file%2c%20%2bfile.adapter-excel)| Read and write excel file. Used in File/Writer, File/Reader ...|  
+|[Json](#user-content-file%2c%20%2bfile.adapter-json)| Read and write json file. Used in File/Writer, File/Reader ...|  
+|[Password](#user-content-file%2c%20%2bfile.adapter-password)| Read and write a encrypted file (`aes-128-cbc`). Used in File/Writer, File/Reader ...|  
+|[Text](#user-content-file%2c%20%2bfile.adapter-text)| Read and write text file. Used in File/Writer, File/Reader ...|  
+|[Xml](#user-content-file%2c%20%2bfile.adapter-xml)| Read and write xml file. Used in File/Writer, File/Reader ...|  
+|[Yaml](#user-content-file%2c%20%2bfile.adapter-yaml)| Read and write yaml file. Used in File/Writer, File/Reader ...|  
 | DOC | --- |
-|[Doc/Guide/MD](#Doc%2FDoc%2FGuide%2FMD)| Auto scan file to detect the comment format which is generated to markdown document ...|  
+|[Doc/Guide/MD](#user-content-doc-doc%2fguide%2fmd)| Auto scan file to detect the comment format which is generated to markdown document ...|  
 | EXTERNAL | --- |
-|[Exec](#External%2FExec)| Execute external command ...|  
-|[Script/Js](#External%2FScript%2FJs)| Embed javascript code into scene ...|  
-|[Script/Sh](#External%2FScript%2FSh)| Embed shell script into scene ...|  
+|[Exec](#user-content-external-exec)| Execute external command ...|  
+|[Script/Js](#user-content-external-script%2fjs)| Embed javascript code into scene ...|  
+|[Script/Sh](#user-content-external-script%2fsh)| Embed shell script into scene ...|  
 | FILE | --- |
-|[Csv](#File%2C%20%2BFile.Adapter%2FCsv)| Read and write csv file. Used in File/Writer, File/Reader ...|  
-|[Excel](#File%2C%20%2BFile.Adapter%2FExcel)| Read and write excel file. Used in File/Writer, File/Reader ...|  
-|[File/Reader](#File%2C%20Input%2FFile%2FReader)| Read a file then set content to a variable ...|  
-|[File/Writer](#File%2C%20Output%2FFile%2FWriter)| Write content to a file ...|  
-|[Json](#File%2C%20%2BFile.Adapter%2FJson)| Read and write json file. Used in File/Writer, File/Reader ...|  
-|[Password](#File%2C%20%2BFile.Adapter%2FPassword)| Read and write a encrypted file (`aes-128-cbc`). Used in File/Writer, File/Reader ...|  
-|[Text](#File%2C%20%2BFile.Adapter%2FText)| Read and write text file. Used in File/Writer, File/Reader ...|  
-|[Xml](#File%2C%20%2BFile.Adapter%2FXml)| Read and write xml file. Used in File/Writer, File/Reader ...|  
-|[Yaml](#File%2C%20%2BFile.Adapter%2FYaml)| Read and write yaml file. Used in File/Writer, File/Reader ...|  
+|[Csv](#user-content-file%2c%20%2bfile.adapter-csv)| Read and write csv file. Used in File/Writer, File/Reader ...|  
+|[Excel](#user-content-file%2c%20%2bfile.adapter-excel)| Read and write excel file. Used in File/Writer, File/Reader ...|  
+|[File/Reader](#user-content-file%2c%20input-file%2freader)| Read a file then set content to a variable ...|  
+|[File/Writer](#user-content-file%2c%20output-file%2fwriter)| Write content to a file ...|  
+|[Json](#user-content-file%2c%20%2bfile.adapter-json)| Read and write json file. Used in File/Writer, File/Reader ...|  
+|[Password](#user-content-file%2c%20%2bfile.adapter-password)| Read and write a encrypted file (`aes-128-cbc`). Used in File/Writer, File/Reader ...|  
+|[Text](#user-content-file%2c%20%2bfile.adapter-text)| Read and write text file. Used in File/Writer, File/Reader ...|  
+|[Xml](#user-content-file%2c%20%2bfile.adapter-xml)| Read and write xml file. Used in File/Writer, File/Reader ...|  
+|[Yaml](#user-content-file%2c%20%2bfile.adapter-yaml)| Read and write yaml file. Used in File/Writer, File/Reader ...|  
 | INPUT | --- |
-|[File/Reader](#File%2C%20Input%2FFile%2FReader)| Read a file then set content to a variable ...|  
-|[UserInput](#Input%2FUserInput)| Get user input from keyboard ...|  
+|[File/Reader](#user-content-file%2c%20input-file%2freader)| Read a file then set content to a variable ...|  
+|[UserInput](#user-content-input-userinput)| Get user input from keyboard ...|  
 | OUTPUT | --- |
-|[Clear](#Output%2FClear)| Clear screen ...|  
-|[Echo](#Output%2FEcho)| Print data to screen ...|  
-|[File/Writer](#File%2C%20Output%2FFile%2FWriter)| Write content to a file ...|  
+|[Clear](#user-content-output-clear)| Clear screen ...|  
+|[Echo](#user-content-output-echo)| Print data to screen ...|  
+|[File/Writer](#user-content-file%2c%20output-file%2fwriter)| Write content to a file ...|  
 | --- | --- |
-|[Fragment](#Fragment)| Import a scenario file (URL or file local) in the scenario. ...|  
-|[Group](#Group)| Group contains 1 or many elements ...|  
-|[Pause](#Pause)| Program will be paused and wait user input ...|  
-|[Templates](#Templates)| Declare elements which not `inited` or `run` ...|  
-|[Validate](#Validate)| Validate data in running progress ...|  
-|[Vars](#Vars)| Declare variables in scene ...|  
+|[Fragment](#user-content--fragment)| Import a scenario file (URL or file local) in the scenario. ...|  
+|[Group](#user-content--group)| Group contains 1 or many elements ...|  
+|[Pause](#user-content--pause)| Program will be paused and wait user input ...|  
+|[Templates](#user-content--templates)| Declare elements which not `inited` or `run` ...|  
+|[Validate](#user-content--validate)| Validate data in running progress ...|  
+|[Vars](#user-content--vars)| Declare variables in scene ...|  
   
 # Default attributes
 Attributes in all of elements  
@@ -207,8 +207,9 @@ A simple scenario file
 
   
 # Details
-## !function <a name="!Tags%2F!function"></a>  
-`(!Tags)`  
+<a id="user-content-!tags-!function" name="user-content-!tags-!function"></a>
+## !function
+`!Tags`  
 Write code as a function in js  
 
 ```yaml
@@ -219,8 +220,9 @@ Write code as a function in js
 
 <br/>
 
-## !tag <a name="!Tags%2F!tag"></a>  
-`(!Tags)`  
+<a id="user-content-!tags-!tag" name="user-content-!tags-!tag"></a>
+## !tag
+`!Tags`  
 Lazy load tag  
 
 ```yaml
@@ -235,8 +237,9 @@ Lazy load tag
 
 <br/>
 
-## !tag tags/binary <a name="!Tags%2F!tag%20tags%2Fbinary"></a>  
-`(!Tags)`  
+<a id="user-content-!tags-!tag%20tags%2fbinary" name="user-content-!tags-!tag%20tags%2fbinary"></a>
+## !tag tags/binary
+`!Tags`  
 Transform file/URL to binary
 - File in local path
 - File from url  
@@ -255,8 +258,9 @@ Transform file/URL to binary
 
 <br/>
 
-## Csv <a name="File%2C%20%2BFile.Adapter%2FCsv"></a>  
-`(File, +File.Adapter)`  
+<a id="user-content-file%2c%20%2bfile.adapter-csv" name="user-content-file%2c%20%2bfile.adapter-csv"></a>
+## Csv
+`File, +File.Adapter`  
 Read and write csv file. Used in File/Writer, File/Reader  
 
 ```yaml
@@ -281,8 +285,9 @@ Read and write csv file. Used in File/Writer, File/Reader
 
 <br/>
 
-## Excel <a name="File%2C%20%2BFile.Adapter%2FExcel"></a>  
-`(File, +File.Adapter)`  
+<a id="user-content-file%2c%20%2bfile.adapter-excel" name="user-content-file%2c%20%2bfile.adapter-excel"></a>
+## Excel
+`File, +File.Adapter`  
 Read and write excel file. Used in File/Writer, File/Reader  
 
 ```yaml
@@ -322,8 +327,9 @@ Read and write excel file. Used in File/Writer, File/Reader
 
 <br/>
 
-## Json <a name="File%2C%20%2BFile.Adapter%2FJson"></a>  
-`(File, +File.Adapter)`  
+<a id="user-content-file%2c%20%2bfile.adapter-json" name="user-content-file%2c%20%2bfile.adapter-json"></a>
+## Json
+`File, +File.Adapter`  
 Read and write json file. Used in File/Writer, File/Reader  
 
 ```yaml
@@ -348,8 +354,9 @@ Read and write json file. Used in File/Writer, File/Reader
 
 <br/>
 
-## Password <a name="File%2C%20%2BFile.Adapter%2FPassword"></a>  
-`(File, +File.Adapter)`  
+<a id="user-content-file%2c%20%2bfile.adapter-password" name="user-content-file%2c%20%2bfile.adapter-password"></a>
+## Password
+`File, +File.Adapter`  
 Read and write a encrypted file (`aes-128-cbc`). Used in File/Writer, File/Reader  
 
 ```yaml
@@ -376,8 +383,9 @@ Read and write a encrypted file (`aes-128-cbc`). Used in File/Writer, File/Reade
 
 <br/>
 
-## Text <a name="File%2C%20%2BFile.Adapter%2FText"></a>  
-`(File, +File.Adapter)`  
+<a id="user-content-file%2c%20%2bfile.adapter-text" name="user-content-file%2c%20%2bfile.adapter-text"></a>
+## Text
+`File, +File.Adapter`  
 Read and write text file. Used in File/Writer, File/Reader  
 
 ```yaml
@@ -399,8 +407,9 @@ Read and write text file. Used in File/Writer, File/Reader
 
 <br/>
 
-## Xml <a name="File%2C%20%2BFile.Adapter%2FXml"></a>  
-`(File, +File.Adapter)`  
+<a id="user-content-file%2c%20%2bfile.adapter-xml" name="user-content-file%2c%20%2bfile.adapter-xml"></a>
+## Xml
+`File, +File.Adapter`  
 Read and write xml file. Used in File/Writer, File/Reader  
 
 ```yaml
@@ -424,8 +433,9 @@ Read and write xml file. Used in File/Writer, File/Reader
 
 <br/>
 
-## Yaml <a name="File%2C%20%2BFile.Adapter%2FYaml"></a>  
-`(File, +File.Adapter)`  
+<a id="user-content-file%2c%20%2bfile.adapter-yaml" name="user-content-file%2c%20%2bfile.adapter-yaml"></a>
+## Yaml
+`File, +File.Adapter`  
 Read and write yaml file. Used in File/Writer, File/Reader  
 
 ```yaml
@@ -450,14 +460,16 @@ Read and write yaml file. Used in File/Writer, File/Reader
 
 <br/>
 
-## Doc/Guide/MD <a name="Doc%2FDoc%2FGuide%2FMD"></a>  
-`(Doc)`  
+<a id="user-content-doc-doc%2fguide%2fmd" name="user-content-doc-doc%2fguide%2fmd"></a>
+## Doc/Guide/MD
+`Doc`  
 Auto scan file to detect the comment format which is generated to markdown document  
 ```yaml
 - Doc/Guide/MD:
     # pattern:
     #   begin: ^\s*\*\s@guide\\s*$         # Default pattern
     #   end: \s*\*\s@end\\s*$              # Default pattern
+    prefixHashLink:                        # Default is `user-content-` for github
     includes:
       - src
     excludes: []
@@ -535,8 +547,9 @@ List `@h2` content
 
 <br/>
 
-## Exec <a name="External%2FExec"></a>  
-`(External)`  
+<a id="user-content-external-exec" name="user-content-external-exec"></a>
+## Exec
+`External`  
 Execute external command  
 
 ```yaml
@@ -553,8 +566,9 @@ Execute external command
 
 <br/>
 
-## Script/Js <a name="External%2FScript%2FJs"></a>  
-`(External)`  
+<a id="user-content-external-script%2fjs" name="user-content-external-script%2fjs"></a>
+## Script/Js
+`External`  
 Embed javascript code into scene  
 
 ```yaml
@@ -576,8 +590,9 @@ Embed javascript code into scene
 
 <br/>
 
-## Script/Sh <a name="External%2FScript%2FSh"></a>  
-`(External)`  
+<a id="user-content-external-script%2fsh" name="user-content-external-script%2fsh"></a>
+## Script/Sh
+`External`  
 Embed shell script into scene  
 
 ```yaml
@@ -614,8 +629,9 @@ Embed shell script into scene
 
 <br/>
 
-## File/Reader <a name="File%2C%20Input%2FFile%2FReader"></a>  
-`(File, Input)`  
+<a id="user-content-file%2c%20input-file%2freader" name="user-content-file%2c%20input-file%2freader"></a>
+## File/Reader
+`File, Input`  
 Read a file then set content to a variable
 
 File adapters:
@@ -701,8 +717,9 @@ You can write a new adapter by yourself then use in adapters.
   ```
 <br/>
 
-## File/Writer <a name="File%2C%20Output%2FFile%2FWriter"></a>  
-`(File, Output)`  
+<a id="user-content-file%2c%20output-file%2fwriter" name="user-content-file%2c%20output-file%2fwriter"></a>
+## File/Writer
+`File, Output`  
 Write content to a file
 File adapters:
 
@@ -792,8 +809,9 @@ You can write a new adapter by yourself then use in adapters.
   ```
 <br/>
 
-## UserInput <a name="Input%2FUserInput"></a>  
-`(Input)`  
+<a id="user-content-input-userinput" name="user-content-input-userinput"></a>
+## UserInput
+`Input`  
 Get user input from keyboard  
 
 ```yaml
@@ -888,8 +906,9 @@ Get user input from keyboard
 
 <br/>
 
-## Clear <a name="Output%2FClear"></a>  
-`(Output)`  
+<a id="user-content-output-clear" name="user-content-output-clear"></a>
+## Clear
+`Output`  
 Clear screen  
 
 ```yaml
@@ -898,8 +917,9 @@ Clear screen
 
 <br/>
 
-## Echo <a name="Output%2FEcho"></a>  
-`(Output)`  
+<a id="user-content-output-echo" name="user-content-output-echo"></a>
+## Echo
+`Output`  
 Print data to screen  
 
 ```yaml
@@ -937,7 +957,8 @@ Print data to screen
 
 <br/>
 
-## Fragment <a name="Fragment"></a>  
+<a id="user-content--fragment" name="user-content--fragment"></a>
+## Fragment
 Import a scenario file (URL or file local) in the scenario.  
 
 ```yaml
@@ -955,7 +976,8 @@ Import a scenario file (URL or file local) in the scenario.
 
 <br/>
 
-## Group <a name="Group"></a>  
+<a id="user-content--group" name="user-content--group"></a>
+## Group
 Group contains 1 or many elements  
 
 ```yaml
@@ -982,7 +1004,8 @@ Group contains 1 or many elements
 
 <br/>
 
-## Pause <a name="Pause"></a>  
+<a id="user-content--pause" name="user-content--pause"></a>
+## Pause
 Program will be paused and wait user input  
 
 ```yaml
@@ -1001,7 +1024,8 @@ Program will be paused and wait user input
 
 <br/>
 
-## Templates <a name="Templates"></a>  
+<a id="user-content--templates" name="user-content--templates"></a>
+## Templates
 Declare elements which not `inited` or `run`
 It's only used for `extends` or `inherit` purposes  
 
@@ -1031,7 +1055,8 @@ It's only used for `extends` or `inherit` purposes
 
 <br/>
 
-## Validate <a name="Validate"></a>  
+<a id="user-content--validate" name="user-content--validate"></a>
+## Validate
 Validate data in running progress
 Currently only support chai `https://www.chaijs.com`  
 
@@ -1058,7 +1083,8 @@ Currently only support chai `https://www.chaijs.com`
 
 <br/>
 
-## Vars <a name="Vars"></a>  
+<a id="user-content--vars" name="user-content--vars"></a>
+## Vars
 Declare variables in scene  
 
 ```yaml
