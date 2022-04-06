@@ -4,7 +4,6 @@ import { join } from "path";
 import { CLI } from "./cli/CLI";
 import { LoggerManager } from "./singleton/LoggerManager";
 import { Scenario } from "./singleton/Scenario";
-import { VariableManager } from "./singleton/VariableManager";
 import { ExtensionNotFound } from "./utils/error/ExtensionNotFound";
 
 export class Simulator {
@@ -18,7 +17,7 @@ export class Simulator {
   }) {
     Simulator.IS_RUNNING = true
     const { env, logLevel = 'error', password } = opts
-
+    CLI.Instance.env = env
     LoggerManager.SetDefaultLoggerLevel(logLevel)
     const tmpFile = join(tmpdir(), Date.now() + '_' + Math.random() + ".yas.yaml")
     try {
@@ -27,10 +26,12 @@ export class Simulator {
       do {
         isRun = false
         try {
-          Scenario.Instance?.reset()
-          await Scenario.Instance.init(tmpFile, password)
-          await Scenario.Instance.prepare()
-          VariableManager.Instance.init(env)
+          Scenario.Instance.element.reset()
+          Scenario.Instance.init({
+            file: tmpFile,
+            password,
+            logLevel
+          })
           await Scenario.Instance.exec()
         } catch (err: any) {
           if (err instanceof ExtensionNotFound) {

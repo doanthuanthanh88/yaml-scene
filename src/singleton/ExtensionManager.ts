@@ -186,7 +186,7 @@ export class ExtensionManager {
     if (!installInfo.global) {
       if (installInfo.isSave === undefined && Simulator.IS_RUNNING) installInfo.isSave = false
 
-      if (!installInfo.localPath) installInfo.localPath = Scenario.Instance.rootDir
+      if (!installInfo.localPath) installInfo.localPath = Scenario.Instance.element.rootDir
       this.installExtensionPath = installInfo.localPath = Scenario.Instance.resolvePath(installInfo.localPath)
       this.globalModuleManager.add(this.installExtensionPath)
 

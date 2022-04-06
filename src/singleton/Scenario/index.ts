@@ -1,12 +1,13 @@
+import { CLI } from '@app/cli/CLI'
+import { ElementProxy } from '@app/elements/ElementProxy'
 import Fragment from '@app/elements/Fragment'
-import { LoggerManager } from '@app/singleton/LoggerManager'
+import { LoggerManager, LogLevel } from '@app/singleton/LoggerManager'
 import { VariableManager } from '@app/singleton/VariableManager'
 import { FileUtils } from '@app/utils/FileUtils'
 import { homedir } from 'os'
 import { dirname, isAbsolute, join, resolve } from 'path'
 import { EventEmitter } from 'stream'
 import { ElementFactory } from '../../elements/ElementFactory'
-import { ElementProxy } from '../../elements/ElementProxy'
 import { ExtensionManager } from '../ExtensionManager'
 import { TemplateManager } from '../TemplateManager'
 
@@ -65,39 +66,20 @@ steps:                                              # Includes all which you wan
  * @end
  */
 
-export class Scenario {
-  private static _Instance: Scenario | null
+export class Scenario extends Fragment {
+  private static _Instance: ElementProxy<Scenario> | null
   static get Instance() {
     if (this._Instance) return this._Instance
-    this._Instance = new Scenario()
+    this._Instance = ElementFactory.CreateElement<Scenario>('Scenario', join(__dirname, '..'))
     return this._Instance
   }
 
   events: EventEmitter
   isPassed: boolean = false
-  scenarioFile?: string
   rootDir: string
-  private rootGroup?: ElementProxy<Fragment>
-  get hasEnvVar() {
-    return this.rootGroup?.element.hasEnvVar
-  }
-
-  get scenarioPasswordFile() {
-    return this.rootGroup?.element.scenarioPasswordFile
-  }
-
-  get password() {
-    return this.rootGroup?.element.password
-  }
-
-  get title() {
-    return this.rootGroup?.element.title
-  }
-  get description() {
-    return this.rootGroup?.element.description
-  }
 
   constructor() {
+    super()
     this.rootDir = process.cwd()
     this.events = new EventEmitter()
   }
@@ -109,45 +91,42 @@ export class Scenario {
     VariableManager.Instance?.reset()
   }
 
-  async init(scenarioFile = 'index.yas.yaml', password?: string) {
+  async init(props: { file: string, password?: string, logLevel?: LogLevel, vars?: any }) {
+    super.init(props)
     this.events.emit('scenario.init', { time: Date.now() })
 
-    this.scenarioFile = this.resolvePath(scenarioFile)
+    this.file = this.resolvePath(this.file)
 
-    const existed = FileUtils.Existed(this.scenarioFile)
+    const existed = FileUtils.Existed(this.file)
     if (existed === true) {
-      this.rootDir = dirname(this.scenarioFile)
+      this.rootDir = dirname(this.file)
     }
-
-    this.rootGroup = ElementFactory.CreateElement<Fragment>('Fragment')
-    this.rootGroup?.init({
-      file: this.scenarioFile,
-      password,
-    })
-
-    LoggerManager.SetDefaultLoggerLevel(this.rootGroup?.element.logLevel)
-
+    LoggerManager.SetDefaultLoggerLevel(this.logLevel)
   }
 
   async prepare() {
     this.events.emit('scenario.prepare', { time: Date.now() })
-    await this.rootGroup?.prepare()
+    await super.prepare()
+    if (this.hasEnvVar) {
+      CLI.Instance.loadEnv(VariableManager.Instance.vars, Scenario.Instance.resolvePath(CLI.Instance.envFile), process.env, CLI.Instance.env)
+    }
   }
 
   async exec() {
     this.events.emit('scenario.exec', { time: Date.now() })
-    await this.rootGroup?.exec()
+    await super.exec()
+
     this.isPassed = true
   }
 
   async clean() {
-    this.rootGroup?.element.clean()
+    await super.clean()
     await ExtensionManager.Instance.uninstall()
   }
 
   async dispose() {
     this.events.emit('scenario.dispose', { time: Date.now(), isPassed: this.isPassed })
-    await this.rootGroup?.dispose()
+    await super.dispose()
     this.events.emit('scenario.end', { time: Date.now(), isPassed: this.isPassed })
   }
 

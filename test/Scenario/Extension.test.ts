@@ -3,7 +3,7 @@ import { Scenario } from "@app/singleton/Scenario"
 import { join } from "path"
 
 afterAll(async () => {
-  await Scenario.Instance.clean()
+  await Scenario.Instance.element.clean()
 })
 
 test('Extension', async () => {

@@ -62,13 +62,13 @@ export default class Fragment extends Group {
       this.hasEnvVar = true
     }
     if (this.vars) {
-      VariableManager.Instance.init(this.vars)
+      await this.proxy.setVar(this.vars)
     }
     // Load extensions
     if (extensions) await ExtensionManager.Instance.registerGlobalExtension(extensions)
     if (install) await ExtensionManager.Instance.install(install)
     const { file: _file, vars: _vars, hasEnvVar: _hasEnvVar, ...props } = this
-    super.init(merge({}, {
+    super.init(merge({
       title,
       description,
       logLevel,
@@ -77,7 +77,11 @@ export default class Fragment extends Group {
     return super.prepare()
   }
 
-  async getScenarioFile() {
+  clean() {
+    this.password && FileUtils.RemoveFilesDirs(this.scenarioPasswordFile)
+  }
+
+  private async getScenarioFile() {
     if (typeof this.file !== 'string') throw new TraceError('Scenario must be a path of file')
 
     const existed = FileUtils.Existed(this.file)
@@ -108,10 +112,6 @@ export default class Fragment extends Group {
     }
 
     return scenarioProps
-  }
-
-  clean() {
-    this.password && FileUtils.RemoveFilesDirs(this.scenarioPasswordFile)
   }
 
   private getPassword(password?: string) {

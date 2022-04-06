@@ -2,6 +2,7 @@ import { Logger, LoggerManager, LogLevel } from "@app/singleton/LoggerManager";
 import { Scenario } from "@app/singleton/Scenario";
 import { TemplateManager } from "@app/singleton/TemplateManager";
 import { VariableManager } from "@app/singleton/VariableManager";
+import { TraceError } from "@app/utils/error/TraceError";
 import { TimeUtils } from "@app/utils/TimeUtils";
 import cloneDeep from "lodash.clonedeep";
 import merge from "lodash.merge";
@@ -180,18 +181,16 @@ export class ElementProxy<T extends IElement> {
   }
 
   async prepare() {
-    this.element.if = await this.getVar(this.element.if)
-    if (!this.isValid) return
+    const _if = await this.getVar(this.element.if)
+    this.element.if = _if === undefined || _if
+    if (!this.element.if) return
+
     this.element.logLevel = await this.getVar(this.element.logLevel)
     this.element.async = await this.getVar(this.element.async)
     this.element.delay = await this.getVar(this.element.delay)
     if (this.element.prepare && this.element.loop === undefined) {
-      return this.element.prepare()
+      await this.element.prepare()
     }
-  }
-
-  get isValid() {
-    return this.element.if === undefined || this.element.if
   }
 
   setGroup(group: IElement) {
@@ -199,45 +198,50 @@ export class ElementProxy<T extends IElement> {
   }
 
   async exec() {
-    if (!this.isValid) return
+    await this.prepare()
+    if (!this.element.if) return
+
     if (this.element.loop === undefined) {
       if (this.element.delay) {
         await TimeUtils.Delay(this.element.delay)
       }
       if (this.element.exec) {
-        const rs = await this.element.exec()
-        return rs
+        return this.element.exec()
       }
     } else {
       let loop = await this.getVar(this.element.loop)
-      if (typeof loop === 'object') {
-        for (const key in loop) {
-          const tmp = this.clone()
-          tmp.element.loop = undefined
-          tmp.element.loopKey = key
-          tmp.element.loopValue = loop[key]
-          // if (tmp.element instanceof Group) {
-          //   tmp.element.updateChildGroup(tmp)
-          // }
-          await tmp.prepare()
-          await tmp.exec()
-          await tmp.dispose()
-        }
-      } else {
-        while (loop) {
-          const tmp = this.clone()
-          tmp.element.loop = undefined
-          // tmp.parent = this.proxy.parent
-          await tmp.prepare()
-          await tmp.exec()
-          await tmp.dispose()
-          loop = await this.getVar(this.element.loop)
-        }
+      switch (typeof loop) {
+        case 'object':
+          for (const key in loop) {
+            const tmp = this.clone()
+            tmp.element.loop = undefined
+            tmp.element.loopKey = key
+            tmp.element.loopValue = loop[key]
+            // if (tmp.element instanceof Group) {
+            //   tmp.element.updateChildGroup(tmp)
+            // }
+            await tmp.exec()
+            await tmp.dispose()
+          }
+          return
+        case 'boolean':
+          while (loop) {
+            const tmp = this.clone()
+            tmp.element.loop = undefined
+            // tmp.parent = this.proxy.parent
+            await tmp.exec()
+            await tmp.dispose()
+            loop = await this.getVar(this.element.loop)
+          }
+          return
+        default:
+          throw new TraceError('Loop is not valid', { loop: this.element.loop, loopValue: loop })
       }
     }
   }
 
   dispose() {
+    if (!this.element.if) return
     if (this.element.dispose) {
       return this.element.dispose()
     }
@@ -258,7 +262,7 @@ export class ElementProxy<T extends IElement> {
   }
 
   resolvePath(path?: string) {
-    return Scenario.Instance.resolvePath(path)
+    return Scenario.Instance.element.resolvePath(path)
   }
 
   changeLogLevel(level: LogLevel) {

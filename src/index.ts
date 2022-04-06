@@ -4,7 +4,6 @@ import { ElementFactory } from "./elements/ElementFactory";
 import { LoggerManager } from "./singleton/LoggerManager";
 import { Scenario } from "./singleton/Scenario";
 import { ScenarioMonitor } from "./singleton/Scenario/ScenarioMonitor";
-import { VariableManager } from "./singleton/VariableManager";
 import { ExtensionNotFound } from "./utils/error/ExtensionNotFound";
 import { TraceError } from "./utils/error/TraceError";
 
@@ -28,12 +27,11 @@ export class Main {
         }
         if (!isRun) return
         isRun = false
-        ScenarioMonitor.Attach(Scenario.Instance)
-        await Scenario.Instance.init(CLI.Instance.yamlFile, CLI.Instance.password)
-        await Scenario.Instance.prepare()
-        if (Scenario.Instance.hasEnvVar) {
-          CLI.Instance.loadEnv(VariableManager.Instance.vars, Scenario.Instance.resolvePath(CLI.Instance.envFile), process.env, CLI.Instance.env)
-        }
+        ScenarioMonitor.Attach(Scenario.Instance.element)
+        Scenario.Instance.init({
+          file: CLI.Instance.yamlFile,
+          password: CLI.Instance.password
+        })
         await Scenario.Instance.exec()
       } catch (err: any) {
         if (err instanceof ExtensionNotFound) {
@@ -59,7 +57,7 @@ export class Main {
             }
             if (continuePlay) {
               isRun = true
-              Scenario.Instance.reset()
+              Scenario.Instance.element.reset()
               continue
             }
           }

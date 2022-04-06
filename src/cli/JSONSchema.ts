@@ -41,7 +41,7 @@ export class JSONSchema {
           json = url
           LoggerManager.GetLogger().debug(chalk.yellow(`- Merging ${json.$id}...`))
         } else {
-          url = Scenario.Instance.resolvePath(url)
+          url = Scenario.Instance.resolvePath(url) as string
           LoggerManager.GetLogger().debug(chalk.yellow(`- Merging ${url}...`))
           json = await this.getFileData(url)
         }

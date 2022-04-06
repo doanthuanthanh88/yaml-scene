@@ -1,0 +1,13 @@
+title: Upload to tmpfiles
+steps:
+  - Fragment:
+      title: Pick a file to upload
+      file: https://raw.githubusercontent.com/doanthuanthanh88/yaml-scene/main/sharing/components/finder.yas.yaml
+
+  - Fragment:
+      # file: https://raw.githubusercontent.com/doanthuanthanh88/yas-http/main/sharing/upload/tmpfiles
+      file: /workspaces/yaml-scene/rm/tmpfiles.yasc.yaml
+      title: ""
+      description: ""
+      vars:
+        tmpFilesPath: ${finderPath}
