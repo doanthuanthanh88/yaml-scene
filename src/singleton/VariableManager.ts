@@ -47,7 +47,7 @@ export class VariableManager {
       if (this.vars[varObj] === undefined) this.vars[varObj] = undefined
     } else if (varObj && typeof varObj === 'object') {
       Object.keys(varObj).forEach(key => {
-        if (this.vars[key] === undefined) this.vars[key] = undefined
+        if (this.vars[key] === undefined) this.vars[key] = varObj[key]
       })
     }
   }

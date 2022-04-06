@@ -57,14 +57,12 @@ export default class Fragment extends Group {
 
     const { vars, title, description, steps, logLevel, extensions, install } = await this.getScenarioFile()
 
-    if (vars || this.vars) {
-      if (vars) {
-        VariableManager.Instance.init(vars)
-        this.hasEnvVar = true
-      }
-      steps?.splice(0, 0, {
-        Vars: merge({}, vars || {}, this.vars || {})
-      })
+    if (vars) {
+      VariableManager.Instance.declare(vars)
+      this.hasEnvVar = true
+    }
+    if (this.vars) {
+      VariableManager.Instance.init(this.vars)
     }
     // Load extensions
     if (extensions) await ExtensionManager.Instance.registerGlobalExtension(extensions)
