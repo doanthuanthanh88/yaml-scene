@@ -1,6 +1,6 @@
 import { TraceError } from "@app/utils/error/TraceError";
-import { existsSync, writeFileSync } from "fs";
-import { unlink } from "fs/promises";
+import { FileUtils } from "@app/utils/FileUtils";
+import { writeFileSync } from "fs";
 import { tmpdir } from "os";
 import { join } from "path";
 import Exec from "../Exec";
@@ -78,7 +78,7 @@ export default class Sh extends Exec {
   }
 
   dispose() {
-    existsSync(this._tempFile) && unlink(this._tempFile)
+    FileUtils.RemoveFilesDirs(this._tempFile)
     return super.dispose()
   }
 

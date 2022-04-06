@@ -4,6 +4,7 @@ import { existsSync, readFileSync } from "fs"
 
 afterAll(async () => {
   await Scenario.Instance.clean()
+  expect(existsSync(Scenario.Instance.scenarioPasswordFile)).toBe(false)
 })
 
 test('Generate a scenario is encrypted', async () => {

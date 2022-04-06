@@ -49,10 +49,9 @@ export default class Group implements IElement {
     const { ...props } = _props
     merge(this, props)
     this.steps = this.steps?.flat(Number.MAX_SAFE_INTEGER) || []
-    this.initSteps()
   }
 
-  initSteps() {
+  initStep() {
     this._steps = this.steps.map(step => {
       const [name, vl] = Object.entries(step)[0]
       const elem = ElementFactory.CreateElement<IElement>(name as any)
@@ -63,6 +62,7 @@ export default class Group implements IElement {
   }
 
   async prepare() {
+    this.initStep()
     await this.proxy.applyVars(this, 'title', 'description')
   }
 

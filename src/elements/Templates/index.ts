@@ -40,6 +40,7 @@ export default class Templates extends Group {
     super.init({
       steps: templates
     })
+    this.initStep()
   }
 
   override async prepare() { }

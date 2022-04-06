@@ -60,7 +60,7 @@ export class FileUtils {
   }
 
   static RemoveFilesDirs(path: string) {
-    rmSync(path, { recursive: true, force: true })
+    existsSync(path) && rmSync(path, { recursive: true, force: true })
   }
 
   static Existed(path: string) {

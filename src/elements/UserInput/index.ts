@@ -107,11 +107,15 @@ export default class UserInput implements IElement {
   $$: IElement
   $: this
 
-  private _questions = new Array<AbsQuestion>()
+  private _questions: AbsQuestion[]
+  private questionConfigs: any[]
 
   init(_questionConfigs: any[] | any) {
-    const questionConfigs = Array.isArray(_questionConfigs) ? _questionConfigs : [_questionConfigs]
-    this._questions = questionConfigs.map(({ type, title, required, choices, var: varName, default: df, format, mask, ...otherConfigs }) => {
+    this.questionConfigs = Array.isArray(_questionConfigs) ? _questionConfigs : [_questionConfigs]
+  }
+
+  async prepare() {
+    this._questions = this.questionConfigs?.map(({ type, title, required, choices, var: varName, default: df, format, mask, ...otherConfigs }) => {
       const builder = new QuestionBuilder()
       const ques = builder
         .type((type || QuestionType.TEXT) as QuestionType)
@@ -127,16 +131,16 @@ export default class UserInput implements IElement {
         ques.masks(mask)
       }
       return ques.build()
-    })
-  }
+    }) || []
 
-  async prepare() {
-    await Promise.all(this._questions?.map(async question => {
-      if (question.format) {
-        question.format = await this.proxy.eval<(vl: any) => any>(Functional.GetFuntion(question.format)?.toReturn())
-      }
-      await question.prepare(this.proxy)
-    }))
+    if (this._questions.length) {
+      await Promise.all(this._questions.map(async question => {
+        if (question.format) {
+          question.format = await this.proxy.eval<(vl: any) => any>(Functional.GetFuntion(question.format)?.toReturn())
+        }
+        await question.prepare(this.proxy)
+      }))
+    }
   }
 
   async exec() {

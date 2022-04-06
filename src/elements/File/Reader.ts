@@ -127,13 +127,14 @@ export default class Reader implements IElement {
 
   init(props: any) {
     merge(this, props)
-    if (!this.adapters) this.adapters = []
-    if (!Array.isArray(this.adapters)) this.adapters = [this.adapters]
-    if (!this.adapters.length) this.adapters.push('Text')
   }
 
   async prepare() {
     await this.proxy.applyVars(this, 'title', 'path', 'adapters')
+
+    if (!Array.isArray(this.adapters)) this.adapters = [this.adapters]
+    if (!this.adapters.length) this.adapters.push('Text')
+
     this.path = this.proxy.resolvePath(this.path)
   }
 

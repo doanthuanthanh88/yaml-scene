@@ -57,14 +57,21 @@ export default class Echo implements IElement {
 
   private _transform: IPrinterTransform
 
+  constructor() {
+    this.transforms = []
+  }
+
   init(props: any) {
     if (typeof props === 'object') {
       merge(this, props)
     } else {
       this.message = props
     }
+  }
 
-    if (!this.transforms) this.transforms = []
+  async prepare() {
+    await this.proxy.applyVars(this, 'color', 'pretty', 'schema', 'transforms')
+
     if (!Array.isArray(this.transforms)) this.transforms = [this.transforms]
     if (!this.transforms.length) {
       if (this.schema) this.transforms.push({ Schema: {} })
@@ -73,10 +80,7 @@ export default class Echo implements IElement {
 
       if (!this.transforms.length) this.transforms.push('Json')
     }
-  }
 
-  async prepare() {
-    await this.proxy.applyVars(this, 'color', 'pretty', 'schema', 'transforms')
     this.transforms
       .forEach(transform => {
         const transformName = typeof transform === 'string' ? transform : Object.keys(transform)[0]

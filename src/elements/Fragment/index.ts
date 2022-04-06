@@ -38,11 +38,7 @@ export default class Fragment extends Group {
   vars?: any
   hasEnvVar?: boolean
 
-  get scenarioPasswordFile() {
-    if (!this.file) throw new TraceError('Scenario file is null')
-    const name = basename(this.file)
-    return join(dirname(this.file), name.substring(0, name.indexOf('.')))
-  }
+  scenarioPasswordFile: string
 
   override init(props: { file: string, password?: string, logLevel?: LogLevel, vars?: any } | string) {
     if (typeof props === 'string') {
@@ -105,6 +101,9 @@ export default class Fragment extends Group {
     if (!scenarioProps) throw new TraceError('File scenario is not valid', { scenarioObject })
 
     if (pwd && resource.isFile) {
+      const name = basename(this.file)
+      this.scenarioPasswordFile = join(dirname(this.file), name.substring(0, name.indexOf('.')))
+
       this.password = this.getPassword(pwd)
       const writer = new Password(new File(this.scenarioPasswordFile), this.password)
       await writer.write(fileContent.toString().replace(/^password:.+$/m, ''))

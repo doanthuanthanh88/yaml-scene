@@ -131,12 +131,15 @@ export default class Writer implements IElement {
 
   init(props: any) {
     merge(this, props)
-    if (!Array.isArray(this.adapters)) this.adapters = [this.adapters]
-    if (!this.adapters.length) this.adapters.push('Text')
+
   }
 
   async prepare() {
     await this.proxy.applyVars(this, 'title', 'content', 'path', 'adapters')
+
+    if (!Array.isArray(this.adapters)) this.adapters = [this.adapters]
+    if (!this.adapters.length) this.adapters.push('Text')
+
     if (!this.content) throw new TraceError('"content" is required')
     this.path = this.proxy.resolvePath(this.path)
   }

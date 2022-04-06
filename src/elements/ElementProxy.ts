@@ -6,7 +6,6 @@ import { TimeUtils } from "@app/utils/TimeUtils";
 import cloneDeep from "lodash.clonedeep";
 import merge from "lodash.merge";
 import omit from "lodash.omit";
-import Group from "./Group";
 import { IElement } from "./IElement";
 
 /** 
@@ -147,6 +146,18 @@ export class ElementProxy<T extends IElement> {
     return VariableManager.Instance.vars
   }
 
+  get loopKey() {
+    return this.element?.loopKey
+  }
+
+  get loopValue() {
+    return this.element?.loopValue
+  }
+
+  get if() {
+    return this.element?.if
+  }
+
   constructor(public element: T) {
     this.element.$ = this.element
     this.element.proxy = this
@@ -174,7 +185,7 @@ export class ElementProxy<T extends IElement> {
     this.element.logLevel = await this.getVar(this.element.logLevel)
     this.element.async = await this.getVar(this.element.async)
     this.element.delay = await this.getVar(this.element.delay)
-    if (this.element.prepare) {
+    if (this.element.prepare && this.element.loop === undefined) {
       return this.element.prepare()
     }
   }
@@ -242,9 +253,6 @@ export class ElementProxy<T extends IElement> {
       this.element['proxy'] = undefined
       proxy = new ElementProxy<T>(cloneDeep(this.element) as T)
       this.element.proxy = oldProxy
-    }
-    if (proxy.element instanceof Group) {
-      proxy.element.initSteps()
     }
     return proxy
   }
