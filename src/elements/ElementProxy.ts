@@ -33,7 +33,7 @@ import { IElement } from "./IElement";
     if: ${sayHello}
     title: Hello
 
-- Delay:
+- Pause:
     if: ${sayHello}
     time: 1s
     title: Delay 1s before say goodbye after say hello

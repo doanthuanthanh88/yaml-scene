@@ -38,7 +38,6 @@
 |[Echo](#Output%2FEcho)| Print data to screen ...|  
 |[File/Writer](#File%2C%20Output%2FFile%2FWriter)| Write content to a file ...|  
 | --- | --- |
-|[Delay](#Delay)| Program will be delayed at here after specific time then it keeps playing next steps ...|  
 |[Fragment](#Fragment)| Import a scenario file (URL or file local) in the scenario. ...|  
 |[Group](#Group)| Group contains 1 or many elements ...|  
 |[Pause](#Pause)| Program will be paused and wait user input ...|  
@@ -108,7 +107,7 @@ Check condition before decided to run this element or not
     if: ${sayHello}
     title: Hello
 
-- Delay:
+- Pause:
     if: ${sayHello}
     time: 1s
     title: Delay 1s before say goodbye after say hello
@@ -934,33 +933,6 @@ Print data to screen
     message: ${user}
     color: gray
     pretty: true
-```
-
-<br/>
-
-## Delay <a name="Delay"></a>  
-Program will be delayed at here after specific time then it keeps playing next steps  
-
-```yaml
-- Delay: 10s
-- Delay:
-    title: Delay 10s
-    time: 10s
-
-- Delay: 10m
-- Delay:
-    title: Delay 10 minutes
-    time: 10m
-
-- Delay: 10h
-- Delay:
-    title: Delay 10 hours
-    time: 10h
-
-- Delay: 1000
-- Delay:
-    title: Delay 1000 miliseconds
-    time: 1000
 ```
 
 <br/>

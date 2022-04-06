@@ -186,93 +186,6 @@
         }
       }
     },
-    "Delay": {
-      "type": "object",
-      "properties": {
-        "Delay": {
-          "title": "Delay the current step",
-          "oneOf": [
-            {
-              "type": "object",
-              "description": "Delay",
-              "properties": {
-                "title": {
-                  "$ref": "#/definitions/getVarString",
-                  "description": "Description"
-                },
-                "time": {
-                  "$ref": "#/definitions/time",
-                  "description": "Delay time"
-                }
-              },
-              "async": {
-                "description": "Run asynchronized",
-                "$ref": "#/definitions/getVarBooleanString",
-                "examples": [
-                  "true",
-                  "false",
-                  "${isAsync}"
-                ]
-              },
-              "loop": {
-                "description": "Conditional to check before loop steps. ($.loopValue, $.loopKey)",
-                "$ref": "#/definitions/getVarAny",
-                "examples": [
-                  "${[1,2,3,4]}",
-                  "${{key1: value1, key2: value2}}",
-                  "${list}",
-                  "${isRun}"
-                ]
-              },
-              "logLevel": {
-                "description": "How to show log",
-                "$ref": "#/definitions/logLevel"
-              },
-              "delay": {
-                "description": "Delay in specific time before keep playing the next",
-                "$ref": "#/definitions/time"
-              },
-              "if": {
-                "description": "Check conditional to decide to run it or NOT",
-                "$ref": "#/definitions/getVarBooleanString"
-              },
-              "->": {
-                "description": "Expose for others extends",
-                "oneOf": [
-                  {
-                    "type": "string"
-                  },
-                  {
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    }
-                  }
-                ]
-              },
-              "<-": {
-                "description": "Extends others which is exposed by '->'",
-                "oneOf": [
-                  {
-                    "type": "string"
-                  },
-                  {
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    }
-                  }
-                ]
-              }
-            },
-            {
-              "$ref": "#/definitions/time",
-              "description": "Delay time"
-            }
-          ]
-        }
-      }
-    },
     "Pause": {
       "type": "object",
       "properties": {
@@ -1136,9 +1049,6 @@
             "$ref": "#/definitions/Script"
           },
           {
-            "$ref": "#/definitions/Delay"
-          },
-          {
             "$ref": "#/definitions/Templates"
           },
           {
@@ -1149,6 +1059,9 @@
           },
           {
             "$ref": "#/definitions/Vars"
+          },
+          {
+            "$ref": "#/definitions/Fragment"
           }
         ]
       }

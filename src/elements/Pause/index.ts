@@ -1,8 +1,6 @@
 import { TimeUnit, TimeUtils } from "@app/utils/TimeUtils"
 import chalk from "chalk"
 import merge from "lodash.merge"
-import Delay from "../Delay"
-import { ElementFactory } from "../ElementFactory"
 import { ElementProxy } from "../ElementProxy"
 import { IElement } from "../IElement"
 import { QuestionBuilder } from "../UserInput/QuestionBuilder"
@@ -50,26 +48,24 @@ export default class Pause implements IElement {
   }
 
   async exec() {
-    if (this.time) {
-      const sleep = ElementFactory.CreateElement<Delay>('Delay')
-      sleep.init({
-        title: this.title,
-        time: this.time
-      })
-      await sleep.prepare()
-      await sleep.exec()
-      return
-    }
-    const ques = new QuestionBuilder()
-      .type(QuestionType.CONFIRM)
-      .title(chalk.yellow(this.title || 'Continue'))
-      .default(true)
-      .build()
-    const tm = this.timeout && setTimeout(() => ques.sendKey(), this.timeout)
+    if (this.title) this.proxy.logger.info(this.title)
+    this.title && console.group()
+    let tm: NodeJS.Timeout
     try {
-      await ques.exec()
+      if (this.time) {
+        await TimeUtils.Delay(this.time)
+      } else {
+        const ques = new QuestionBuilder()
+          .type(QuestionType.CONFIRM)
+          .title(chalk.yellow(this.title || 'Continue'))
+          .default(true)
+          .build()
+        tm = this.timeout && setTimeout(() => ques.sendKey(), this.timeout)
+        await ques.exec()
+      }
     } finally {
       if (tm) clearTimeout(tm)
+      this.title && console.group()
     }
   }
 

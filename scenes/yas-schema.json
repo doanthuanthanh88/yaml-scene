@@ -70,35 +70,6 @@
         }
       }
     },
-    "Delay": {
-      "type": "object",
-      "properties": {
-        "Delay": {
-          "title": "Delay the current step",
-          "oneOf": [
-            {
-              "...": "defaultAttrs",
-              "type": "object",
-              "description": "Delay",
-              "properties": {
-                "title": {
-                  "$ref": "#/definitions/getVarString",
-                  "description": "Description"
-                },
-                "time": {
-                  "$ref": "#/definitions/time",
-                  "description": "Delay time"
-                }
-              }
-            },
-            {
-              "$ref": "#/definitions/time",
-              "description": "Delay time"
-            }
-          ]
-        }
-      }
-    },
     "Pause": {
       "type": "object",
       "properties": {
@@ -598,9 +569,6 @@
             "$ref": "#/definitions/Script"
           },
           {
-            "$ref": "#/definitions/Delay"
-          },
-          {
             "$ref": "#/definitions/Templates"
           },
           {
@@ -611,6 +579,9 @@
           },
           {
             "$ref": "#/definitions/Vars"
+          },
+          {
+            "$ref": "#/definitions/Fragment"
           }
         ]
       }
