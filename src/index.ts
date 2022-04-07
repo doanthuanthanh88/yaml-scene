@@ -34,7 +34,7 @@ export class Main {
       } catch (err: any) {
         if (err instanceof ExtensionNotFound) {
           new Array(10).fill(null).forEach(() => console.groupEnd())
-          const [extensionName] = err.extensionName.split("/")
+          const [extensionName] = err.extensionName.split("/", 1)
           LoggerManager.GetLogger().warn(chalk.yellow('⚠️', err.message))
           const isContinue = await CLI.Instance.installExtensions([extensionName], err.localPath, err.scope, CLI.Instance.force)
           if (isContinue) {

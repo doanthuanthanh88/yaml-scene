@@ -107,7 +107,7 @@ export default class Fragment extends Group {
 
     if (pwd && resource.isFile) {
       const name = basename(this.file)
-      this.scenarioPasswordFile = join(dirname(this.file), name.substring(0, name.indexOf('.')))
+      this.scenarioPasswordFile = join(dirname(this.file), name.split('.', 1)[0])
 
       this.password = this.getPassword(pwd)
       const writer = new Password(new File(this.scenarioPasswordFile), this.password)

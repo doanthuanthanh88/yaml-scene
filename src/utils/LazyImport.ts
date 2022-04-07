@@ -9,7 +9,7 @@ export async function LazyImport(imports: Promise<any>) {
   } catch (err: any) {
     if (err?.code === 'MODULE_NOT_FOUND') {
       const [, name] = err.message.toString().match(/['"]([^"']+)'/)
-      const [packageName] = name.split('/')
+      const [packageName] = name.split('/', 1)
       let [errPath] = err.requireStack || []
       if (errPath) {
         err = new ExtensionNotFound(name, `The scenario is use package "${packageName}"`, 'local')

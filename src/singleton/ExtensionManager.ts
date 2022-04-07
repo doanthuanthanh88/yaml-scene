@@ -7,7 +7,7 @@ import { FileUtils } from "@app/utils/FileUtils";
 import chalk from "chalk";
 import { execSync } from "child_process";
 import { existsSync } from "fs";
-import { join } from "path";
+import { basename, join } from "path";
 import { ExtensionNotFound } from "../utils/error/ExtensionNotFound";
 import { LoggerManager } from "./LoggerManager";
 
@@ -198,7 +198,8 @@ export class ExtensionManager {
   private loadNpmYarnGlobalPaths() {
     ["yarn global dir", "npm root -g"].forEach(cmd => {
       try {
-        execSync(cmd, { stdio: ['ignore', 'pipe', 'ignore'] }).toString().split('\n')
+        execSync(cmd, { stdio: ['ignore', 'pipe', 'ignore'] }).toString()
+          .split('\n')
           .map((f = '') => {
             f = f.trim()
             if (f && !f.endsWith('/node_modules')) {
@@ -218,7 +219,7 @@ export class ExtensionManager {
   }
 
   private getObjectInExport(obj: any, p: string) {
-    return obj.default || obj[p.substring(p.lastIndexOf('/') + 1)]
+    return obj.default || obj[basename(p)]
   }
 }
 

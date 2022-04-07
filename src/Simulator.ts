@@ -36,7 +36,7 @@ export class Simulator {
           await Scenario.Instance.exec()
         } catch (err: any) {
           if (err instanceof ExtensionNotFound) {
-            const [extensionName] = err.extensionName.split("/")
+            const [extensionName] = err.extensionName.split("/", 1)
             const isContinue = await CLI.Instance.installExtensions([extensionName], err.localPath, err.scope, true)
             if (isContinue) {
               isRun = true

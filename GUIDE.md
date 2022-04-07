@@ -574,6 +574,7 @@ Embed javascript code into scene
 ```yaml
 - Vars:
     name: 10
+    age: 10
 
 - Script/Js:
     title: Test something
@@ -582,6 +583,11 @@ Embed javascript code into scene
       await $.proxy.setVar('newName', name + 10)      # `$` is referenced to `Js` element in `Script`
 
 - Script/Js: !function |
+    console.log('oldValue', name)
+    $.proxy.vars.newName = name + 10                  # `$` is referenced to `Js` element in `Script`
+
+- Script/Js: !function |
+    ({ name, age })                                        # For best performance, you should add this line to asks vm provides some variables, not at all
     console.log('oldValue', name)
     $.proxy.vars.newName = name + 10                  # `$` is referenced to `Js` element in `Script`
 
@@ -970,7 +976,7 @@ Import a scenario file (URL or file local) in the scenario.
     title: Override title in scenario
     description: ""                       # Hide description in scenario
     logLevel: slient                      # hide logger in scenario
-    vars:
+    vars:                                 # Override variables value which is only declared in `vars` in the scenario file
       varInScenario1: override here
 ```
 

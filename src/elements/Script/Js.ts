@@ -12,6 +12,7 @@ import { IElement } from "../IElement";
  * @example
 - Vars:
     name: 10
+    age: 10
 
 - Script/Js: 
     title: Test something
@@ -23,6 +24,11 @@ import { IElement } from "../IElement";
     console.log('oldValue', name)
     $.proxy.vars.newName = name + 10                  # `$` is referenced to `Js` element in `Script`
 
+- Script/Js: !function |
+    ({ name, age })                                        # For best performance, you should add this line to asks vm provides some variables, not at all
+    console.log('oldValue', name)
+    $.proxy.vars.newName = name + 10                  # `$` is referenced to `Js` element in `Script`
+    
 - Echo: New value ${newName}
  * @end
  */

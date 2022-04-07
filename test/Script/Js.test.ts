@@ -12,13 +12,18 @@ describe('Test scripts', () => {
 
   test('Run nodejs code', async () => {
     await Simulator.Run(`
+- Vars:
+    text: Hello world
+    
 - Script/Js: 
     title: Write hello 1
     content: !function |
-      require('fs').writeFileSync('${tmpFile}', 'Hello world 1')
+      require('fs').writeFileSync('${tmpFile}', text + ' 1')
 
 - Script/Js: !function |
-    require('fs').writeFileSync('${tmpFile}', 'Hello world')
+    ({ text })
+    
+    require('fs').writeFileSync('${tmpFile}', text)
 `)
     expect(existsSync(tmpFile)).toBe(true)
     expect(readFileSync(tmpFile).toString()).toBe('Hello world')
