@@ -147,10 +147,6 @@ export class ElementProxy<T extends IElement> {
     return VariableManager.Instance.vars
   }
 
-  get events() {
-    return Scenario.Instance.element.events
-  }
-
   get loopKey() {
     return this.element?.loopKey
   }

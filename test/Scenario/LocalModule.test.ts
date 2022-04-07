@@ -10,22 +10,14 @@ afterAll(async () => {
   await Scenario.Instance.element.clean()
 })
 
-test.skip('Test install and use packages in local modules', async () => {
+test('Test install and use packages in local modules', async () => {
   await Simulator.Run(`
 install:
   localPath: ${localPath}
   dependencies: 
-    - yas-sequence-diagram
+    - loglevel
 steps:
-- yas-sequence-diagram:
-    commentTag: ///
-    includes: 
-      - ${join(__dirname, '../../src')}
-    excludes: 
-      - node_modules
-    includePattern: ".+\\\\.ts$"
-    outDir: "${localPath}"
+  - Echo: Done
 `)
-  expect(existsSync(join(localPath, 'README.md'))).toEqual(true)
-  expect(existsSync(join(localPath, 'node_modules', 'yas-sequence-diagram'))).toEqual(true)
+  expect(existsSync(join(localPath, 'node_modules', 'loglevel'))).toEqual(true)
 }, 120000)
