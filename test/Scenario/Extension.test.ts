@@ -3,12 +3,12 @@ import { Scenario } from "@app/singleton/Scenario"
 import { join } from "path"
 
 afterAll(async () => {
-  await Scenario.Instance.clean()
+  await Scenario.Instance.element.clean()
 })
 
 test('Extension', async () => {
   await Simulator.Run(`
-logLevel: debug
+logLevel: slient
 extensions:
   element1: ${join(__dirname, '../assets/custom1.js')}
   customFolder: ${join(__dirname, '../assets')}

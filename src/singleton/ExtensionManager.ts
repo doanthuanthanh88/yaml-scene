@@ -7,7 +7,7 @@ import { FileUtils } from "@app/utils/FileUtils";
 import chalk from "chalk";
 import { execSync } from "child_process";
 import { existsSync } from "fs";
-import { join } from "path";
+import { basename, join } from "path";
 import { ExtensionNotFound } from "../utils/error/ExtensionNotFound";
 import { LoggerManager } from "./LoggerManager";
 
@@ -186,7 +186,7 @@ export class ExtensionManager {
     if (!installInfo.global) {
       if (installInfo.isSave === undefined && Simulator.IS_RUNNING) installInfo.isSave = false
 
-      if (!installInfo.localPath) installInfo.localPath = Scenario.Instance.rootDir
+      if (!installInfo.localPath) installInfo.localPath = Scenario.Instance.element.rootDir
       this.installExtensionPath = installInfo.localPath = Scenario.Instance.resolvePath(installInfo.localPath)
       this.globalModuleManager.add(this.installExtensionPath)
 
@@ -198,7 +198,8 @@ export class ExtensionManager {
   private loadNpmYarnGlobalPaths() {
     ["yarn global dir", "npm root -g"].forEach(cmd => {
       try {
-        execSync(cmd, { stdio: ['ignore', 'pipe', 'ignore'] }).toString().split('\n')
+        execSync(cmd, { stdio: ['ignore', 'pipe', 'ignore'] }).toString()
+          .split('\n')
           .map((f = '') => {
             f = f.trim()
             if (f && !f.endsWith('/node_modules')) {
@@ -218,7 +219,7 @@ export class ExtensionManager {
   }
 
   private getObjectInExport(obj: any, p: string) {
-    return obj.default || obj[p.substring(p.lastIndexOf('/') + 1)]
+    return obj.default || obj[basename(p)]
   }
 }
 

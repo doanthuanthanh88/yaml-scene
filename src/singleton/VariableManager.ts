@@ -7,6 +7,7 @@ import chalk from "chalk"
 
 export class VariableManager {
   private static readonly _NavPattern = /^(\$\{){1}([^\}]+)\}$/
+  private static readonly _PreloadVarPattern = /^\(\s*\{[a-zA-Z0-9_$,\s]+\}\s*\)$/
   private static _Instance: VariableManager | null
 
   static get Instance() {
@@ -52,6 +53,16 @@ export class VariableManager {
     }
   }
 
+  async replace(varObj: any, obj: any, defaultKey?: string) {
+    const newVars = Object.keys(varObj)
+      .filter(key => VariableManager.Instance.vars[key] !== undefined)
+      .reduce((sum, key) => {
+        sum[key] = varObj[key]
+        return sum
+      }, {})
+    await this.set(newVars, obj, defaultKey)
+  }
+
   async set(varObj: any, obj: any, defaultKey?: string) {
     // if (!obj) return
     if (typeof varObj === 'string') {
@@ -78,10 +89,17 @@ export class VariableManager {
     if (!func) throw new TraceError(`Could not eval with empty code`, { func })
     let vl;
     const ctx = { ...this.vars, ...baseCtx }
-    const isAsync = func.includes('await ')
-    const evalStr = `vl = (${isAsync ? 'async' : ''}({${Object.keys(ctx).join(',')}}) => { 
-        ${func}
-      })(ctx)`
+    func = func.trim()
+    const isAsync = func.includes('await ') ? 'async' : ''
+    const [firstLine] = func.split('\n', 1)
+    let args: string
+    if (firstLine && VariableManager._PreloadVarPattern.test(firstLine)) {
+      func = func.substring(firstLine.length)
+      args = firstLine
+    } else {
+      args = `({${Object.keys(ctx).join(',')}})`
+    }
+    const evalStr = `vl = (${isAsync}${args} => {\n${func}\n})(ctx)`
     eval(evalStr)
     return vl
   }

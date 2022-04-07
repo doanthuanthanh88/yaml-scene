@@ -1,4 +1,5 @@
 import { LoggerManager } from "@app/singleton/LoggerManager";
+import { StringUtils } from "@app/utils/StringUtils";
 import chalk from "chalk";
 import { program } from "commander";
 import { readFileSync, statSync } from "fs";
@@ -89,7 +90,7 @@ export class CLI {
             await jsonSchema.merge(join(__dirname, '../../schema.yas.json'))
             const extensions = []
             for (const extensionNameFullVer of extensionNames) {
-              const [extensionName] = extensionNameFullVer.split('@')
+              const [extensionName] = extensionNameFullVer.split('@', 1)
               try {
                 const extension = ExtensionManager.Instance.load(`${extensionName}/schema.json`) || {}
                 if (Object.keys(extension).length) {
@@ -120,7 +121,7 @@ export class CLI {
             await jsonSchema.merge(join(__dirname, '../../schema.yas.json'))
             const extensions = []
             for (const extensionNameFullVer of extensionNames) {
-              const [extensionName] = extensionNameFullVer.split('@')
+              const [extensionName] = extensionNameFullVer.split('@', 1)
               try {
                 const extension = ExtensionManager.Instance.load(`${extensionName}/schema.json`) || {}
                 if (Object.keys(extension).length) {
@@ -150,7 +151,7 @@ export class CLI {
             await jsonSchema.merge(join(__dirname, '../../schema.yas.json'))
             let isRemoved: boolean = false
             for (const extensionNameFullVer of extensionNames) {
-              const [extensionName] = extensionNameFullVer.split('@')
+              const [extensionName] = extensionNameFullVer.split('@', 1)
               try {
                 jsonSchema.removeSchema(extensionName)
                 isRemoved = true
@@ -230,12 +231,12 @@ export class CLI {
           if (file && statSync(file)) {
             readFileSync(file)
               .toString()
-              .split('\\\n  ')
+              .split('\n')
               .map(e => e.trim())
               .filter(e => e && !e.startsWith('#'))
               .forEach(e => {
-                const idx = e.indexOf('=')
-                env[e.substring(0, idx).trim().toLowerCase()] = e.substring(idx + 1).trim()
+                const [key, vl] = StringUtils.Split2(e, '=')
+                env[key.trim().toLowerCase()] = vl.trim()
               })
           }
         } catch (err) {
@@ -322,8 +323,8 @@ export class CLI {
         .reduce((sum, e) => {
           e = e.trim();
           if (e) {
-            const idx = e.indexOf("=");
-            if (idx !== -1) sum[e.substring(0, idx)] = e.substring(idx + 1);
+            const [key, vl] = StringUtils.Split2(e, '=')
+            sum[key] = vl
           }
           return sum;
         }, {} as { [key: string]: string });

@@ -7,7 +7,7 @@ import { join } from "path"
 const localPath = join(tmpdir(), Math.random().toString())
 
 afterAll(async () => {
-  await Scenario.Instance.clean()
+  await Scenario.Instance.element.clean()
 })
 
 test.skip('Test install and use packages in local modules', async () => {

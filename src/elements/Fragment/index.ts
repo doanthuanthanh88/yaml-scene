@@ -28,7 +28,7 @@ const SALTED_PASSWORD = '|-YAML-SCENE-|'
     title: Override title in scenario
     description: ""                       # Hide description in scenario
     logLevel: slient                      # hide logger in scenario
-    vars:
+    vars:                                 # Override variables value which is only declared in `vars` in the scenario file
       varInScenario1: override here
  * @end
  */
@@ -36,7 +36,6 @@ export default class Fragment extends Group {
   file: string
   password?: string
   vars?: any
-  hasEnvVar?: boolean
 
   scenarioPasswordFile: string
 
@@ -58,26 +57,34 @@ export default class Fragment extends Group {
     const { vars, title, description, steps, logLevel, extensions, install } = await this.getScenarioFile()
 
     if (vars) {
-      VariableManager.Instance.declare(vars)
-      this.hasEnvVar = true
+      this.declareVars(vars)
     }
     if (this.vars) {
-      this.proxy.setVar(this.vars)
+      await this.proxy.replaceVar(this.vars)
     }
     // Load extensions
     if (extensions) await ExtensionManager.Instance.registerGlobalExtension(extensions)
     if (install) await ExtensionManager.Instance.install(install)
-    const { file: _file, vars: _vars, hasEnvVar: _hasEnvVar, ...props } = this
-    super.init(merge({}, {
+    const { file: _file, vars: _vars, ...props } = this
+    super.init(merge({
       title,
       description,
-      logLevel,
       steps,
-    }, props))
-    return super.prepare()
+    }, props, {
+      logLevel: await this.proxy.getVar(logLevel),
+    }))
+    await super.prepare()
   }
 
-  async getScenarioFile() {
+  declareVars(vars: any) {
+    VariableManager.Instance.declare(vars)
+  }
+
+  clean() {
+    this.password && FileUtils.RemoveFilesDirs(this.scenarioPasswordFile)
+  }
+
+  private async getScenarioFile() {
     if (typeof this.file !== 'string') throw new TraceError('Scenario must be a path of file')
 
     const existed = FileUtils.Existed(this.file)
@@ -91,7 +98,7 @@ export default class Fragment extends Group {
     }) as any
 
     if (Array.isArray(scenarioObject)) {
-      scenarioObject = { title: basename(this.file), steps: scenarioObject.flat() }
+      scenarioObject = { steps: scenarioObject.flat() }
     }
     if (typeof scenarioObject !== 'object') throw new TraceError('Scenario must be an object or array', { scenarioObject })
 
@@ -100,7 +107,7 @@ export default class Fragment extends Group {
 
     if (pwd && resource.isFile) {
       const name = basename(this.file)
-      this.scenarioPasswordFile = join(dirname(this.file), name.substring(0, name.indexOf('.')))
+      this.scenarioPasswordFile = join(dirname(this.file), name.split('.', 1)[0])
 
       this.password = this.getPassword(pwd)
       const writer = new Password(new File(this.scenarioPasswordFile), this.password)
@@ -108,10 +115,6 @@ export default class Fragment extends Group {
     }
 
     return scenarioProps
-  }
-
-  clean() {
-    this.password && FileUtils.RemoveFilesDirs(this.scenarioPasswordFile)
   }
 
   private getPassword(password?: string) {

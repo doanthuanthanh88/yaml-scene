@@ -4,6 +4,18 @@ import { Base64 } from "@app/utils/encrypt/Base64"
 import { MD5 } from "@app/utils/encrypt/MD5"
 
 describe('Test assign value to global vars', () => {
+  test('Use vars when variables not declared', async () => {
+    let err
+    try {
+      await Simulator.Run(`
+- Echo: \${text}
+    `)
+    } catch (error) {
+      err = error
+    }
+    expect(err?.message).toBe('text is not defined')
+  })
+
   test('Simple value', async () => {
     await Simulator.Run(`
 - Vars:
@@ -20,6 +32,18 @@ describe('Test assign value to global vars', () => {
 `)
     expect(VariableManager.Instance.vars.name).toBe(undefined)
     expect(VariableManager.Instance.vars.hello).toBe('Say hello to thanh')
+  })
+
+  test('Change var in scenario', async () => {
+    await Simulator.Run(`
+vars:
+  text: local
+steps:
+  - Vars:
+      text: \${text}-updated
+  - Echo: \${text}
+  `)
+    expect(VariableManager.Instance.vars.text).toBe('local-updated')
   })
 
   test('Utility variables', async () => {

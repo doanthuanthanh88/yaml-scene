@@ -1,8 +1,8 @@
 exports.default = class Ex2 {
-  init() {
-
+  init({ title }) {
+    this.title = title
   }
   exec() {
-    console.log('echo 02', this.title)
+    this.proxy.logger.info('echo 02', this.title)
   }
 }

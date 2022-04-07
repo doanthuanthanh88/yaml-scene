@@ -45,8 +45,7 @@ export default class Group implements IElement {
 
   private _steps?: ElementProxy<IElement>[]
 
-  init(_props: any) {
-    const { ...props } = _props
+  init(props: any) {
     merge(this, props)
     this.steps = this.steps?.flat(Number.MAX_SAFE_INTEGER) || []
   }
@@ -62,36 +61,34 @@ export default class Group implements IElement {
   }
 
   async prepare() {
-    this.initStep()
     await this.proxy.applyVars(this, 'title', 'description')
+    this.initStep()
+  }
+
+  private async execStep(step: ElementProxy<IElement>) {
+    if (this.stepDelay && step.element.delay === undefined) {
+      step.element.delay = this.stepDelay
+    }
+    if (this.stepAsync && step.element.async === undefined) {
+      step.element.async = this.stepAsync
+    }
+    await step.exec()
   }
 
   async exec() {
-    if (!this._steps?.length) return
     if (this.title) this.proxy.logger.info('%s %s', chalk.blue(this.title), chalk.gray(`${this.description || ''}`))
     this.title && console.group()
     try {
       let proms = []
-      const func = async (step: ElementProxy<IElement>, stepDelay?: number, stepAsync?: boolean) => {
-        if (stepDelay && step.element.delay === undefined) {
-          step.element.delay = stepDelay
-        }
-        if (stepAsync && step.element.async === undefined) {
-          step.element.async = stepAsync
-        }
-        await step.exec()
-      }
       for (const step of this._steps) {
-        await step.prepare()
-        if (!step.isValid) continue
         if (step.element.async) {
-          proms.push(func(step, this.stepDelay, this.stepAsync))
+          proms.push(this.execStep(step))
         } else {
           if (proms.length) {
             await Promise.all(proms)
             proms = []
           }
-          await func(step, this.stepDelay, this.stepAsync)
+          await this.execStep(step)
         }
       }
       if (proms.length) {
@@ -103,8 +100,10 @@ export default class Group implements IElement {
   }
 
   async dispose() {
-    if (!this._steps?.length) return
-    await Promise.all(this._steps.map(step => step?.dispose && step.dispose()))
+    const proms = this._steps?.map(step => step?.dispose && step.dispose()).filter(vl => vl)
+    if (proms?.length) {
+      await Promise.all(proms)
+    }
   }
 
 }

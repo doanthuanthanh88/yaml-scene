@@ -3,8 +3,6 @@ import { CLI } from "./cli/CLI";
 import { ElementFactory } from "./elements/ElementFactory";
 import { LoggerManager } from "./singleton/LoggerManager";
 import { Scenario } from "./singleton/Scenario";
-import { ScenarioMonitor } from "./singleton/Scenario/ScenarioMonitor";
-import { VariableManager } from "./singleton/VariableManager";
 import { ExtensionNotFound } from "./utils/error/ExtensionNotFound";
 import { TraceError } from "./utils/error/TraceError";
 
@@ -25,20 +23,18 @@ export class Main {
       try {
         if (isRun === undefined) {
           isRun = await CLI.Instance.exec()
+          if (!isRun) return
         }
-        if (!isRun) return
         isRun = false
-        ScenarioMonitor.Attach(Scenario.Instance)
-        await Scenario.Instance.init(CLI.Instance.yamlFile, CLI.Instance.password)
-        await Scenario.Instance.prepare()
-        if (Scenario.Instance.hasEnvVar) {
-          CLI.Instance.loadEnv(VariableManager.Instance.vars, Scenario.Instance.resolvePath(CLI.Instance.envFile), process.env, CLI.Instance.env)
-        }
+        Scenario.Instance.init({
+          file: CLI.Instance.yamlFile,
+          password: CLI.Instance.password
+        })
         await Scenario.Instance.exec()
       } catch (err: any) {
         if (err instanceof ExtensionNotFound) {
           new Array(10).fill(null).forEach(() => console.groupEnd())
-          const [extensionName] = err.extensionName.split("/")
+          const [extensionName] = err.extensionName.split("/", 1)
           LoggerManager.GetLogger().warn(chalk.yellow('⚠️', err.message))
           const isContinue = await CLI.Instance.installExtensions([extensionName], err.localPath, err.scope, CLI.Instance.force)
           if (isContinue) {
@@ -59,7 +55,7 @@ export class Main {
             }
             if (continuePlay) {
               isRun = true
-              Scenario.Instance.reset()
+              Scenario.Reset()
               continue
             }
           }

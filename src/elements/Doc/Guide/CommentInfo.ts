@@ -20,7 +20,7 @@ export class CommentInfo implements DataModel {
 
   get description1() {
     if (!this.description) return ''
-    return this.description.split('\n')[0].trim() + ' ...'
+    return this.description.split('\n', 1)[0].trim() + ' ...'
   }
 
   add(txt: string) {

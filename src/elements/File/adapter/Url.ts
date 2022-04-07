@@ -1,5 +1,6 @@
 import { TraceError } from "@app/utils/error/TraceError";
 import { FileUtils } from "@app/utils/FileUtils";
+import { StringUtils } from "@app/utils/StringUtils";
 import http from 'http';
 import https from 'https';
 import { parse, stringify } from "querystring";
@@ -26,7 +27,7 @@ export class Url implements IFileAdapter {
   private async getBufferFromUrl(urlStr: string) {
     const content = await new Promise<Buffer>((resolve, reject) => {
       const req = urlStr.startsWith('https://') ? https : http
-      const [path, query = ''] = urlStr.split('?')
+      const [path, query] = StringUtils.Split2(urlStr, '?')
       const { headers = '{}', ...queries } = parse(query) as any
 
       const url = `${path}${Object.keys(queries).length ? '?' : ''}${stringify(queries)}`
@@ -49,7 +50,7 @@ export class Url implements IFileAdapter {
   private async getStreamFromUrl(urlStr: string) {
     const content = await new Promise<Readable>((resolve) => {
       const req = urlStr.startsWith('https://') ? https : http
-      const [path, query = ''] = urlStr.split('?')
+      const [path, query] = StringUtils.Split2(urlStr, '?')
       const { headers = '{}', ...queries } = parse(query) as any
 
       const url = `${path}${Object.keys(queries).length ? '?' : ''}${stringify(queries)}`
