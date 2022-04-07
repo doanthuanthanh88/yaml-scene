@@ -8,7 +8,7 @@ afterAll(async () => {
 
 test('Extension', async () => {
   await Simulator.Run(`
-logLevel: debug
+logLevel: slient
 extensions:
   element1: ${join(__dirname, '../assets/custom1.js')}
   customFolder: ${join(__dirname, '../assets')}

@@ -1,15 +1,18 @@
 import { CLI } from '@app/cli/CLI'
 import { ElementProxy } from '@app/elements/ElementProxy'
 import Fragment from '@app/elements/Fragment'
+import { Simulator } from '@app/Simulator'
 import { LoggerManager, LogLevel } from '@app/singleton/LoggerManager'
 import { VariableManager } from '@app/singleton/VariableManager'
 import { FileUtils } from '@app/utils/FileUtils'
+import { TimeUtils } from '@app/utils/TimeUtils'
+import chalk from 'chalk'
 import { homedir } from 'os'
-import { dirname, isAbsolute, join, resolve } from 'path'
+import { basename, dirname, isAbsolute, join, resolve } from 'path'
 import { EventEmitter } from 'stream'
-import { ElementFactory } from '../../elements/ElementFactory'
-import { ExtensionManager } from '../ExtensionManager'
-import { TemplateManager } from '../TemplateManager'
+import { ElementFactory } from '../elements/ElementFactory'
+import { ExtensionManager } from './ExtensionManager'
+import { TemplateManager } from './TemplateManager'
 
 /**
  * @guide
@@ -70,8 +73,15 @@ export class Scenario extends Fragment {
   private static _Instance: ElementProxy<Scenario> | null
   static get Instance() {
     if (this._Instance) return this._Instance
-    this._Instance = ElementFactory.CreateElement<Scenario>('Scenario', join(__dirname, '..'))
+    this._Instance = ElementFactory.CreateElement<Scenario>('Scenario', __dirname)
     return this._Instance
+  }
+
+  static Reset() {
+    ExtensionManager.Instance?.reset()
+    TemplateManager.Instance?.reset()
+    VariableManager.Instance?.reset()
+    Scenario._Instance = null
   }
 
   events: EventEmitter
@@ -84,14 +94,9 @@ export class Scenario extends Fragment {
     this.events = new EventEmitter()
   }
 
-  reset() {
-    Scenario._Instance = null
-    ExtensionManager.Instance?.reset()
-    TemplateManager.Instance?.reset()
-    VariableManager.Instance?.reset()
-  }
+  override async init(props: { file: string, password?: string, logLevel?: LogLevel }) {
+    if (!Simulator.IS_RUNNING) this.monitor()
 
-  async init(props: { file: string, password?: string, logLevel?: LogLevel, vars?: any }) {
     super.init(props)
     this.events.emit('scenario.init', { time: Date.now() })
 
@@ -101,22 +106,32 @@ export class Scenario extends Fragment {
     if (existed === true) {
       this.rootDir = dirname(this.file)
     }
+  }
+
+  override declareVars(vars: any) {
+    super.declareVars(vars)
+    CLI.Instance.loadEnv(VariableManager.Instance.vars, this.proxy.resolvePath(CLI.Instance.envFile), process.env, CLI.Instance.env)
+  }
+
+  override async prepare() {
+    this.events.emit('scenario.prepare', { time: Date.now() })
+    await super.prepare()
+    if (!this.title) this.title = basename(this.file)
     LoggerManager.SetDefaultLoggerLevel(this.logLevel)
   }
 
-  async prepare() {
-    this.events.emit('scenario.prepare', { time: Date.now() })
-    await super.prepare()
-    if (this.hasEnvVar) {
-      CLI.Instance.loadEnv(VariableManager.Instance.vars, Scenario.Instance.resolvePath(CLI.Instance.envFile), process.env, CLI.Instance.env)
-    }
-  }
-
-  async exec() {
+  override async exec() {
     this.events.emit('scenario.exec', { time: Date.now() })
     await super.exec()
 
     this.isPassed = true
+  }
+
+  override async dispose() {
+    this.events.emit('scenario.dispose', { time: Date.now(), isPassed: this.isPassed })
+    await super.dispose()
+    this.events.emit('scenario.end', { time: Date.now(), isPassed: this.isPassed })
+    this.events.removeAllListeners()
   }
 
   async clean() {
@@ -124,17 +139,47 @@ export class Scenario extends Fragment {
     await ExtensionManager.Instance.uninstall()
   }
 
-  async dispose() {
-    this.events.emit('scenario.dispose', { time: Date.now(), isPassed: this.isPassed })
-    await super.dispose()
-    this.events.emit('scenario.end', { time: Date.now(), isPassed: this.isPassed })
-  }
-
   resolvePath(path?: string) {
     if (!path || /^https?:\/\//.test(path)) return path || ''
     if (path.startsWith('~/')) return path.replace(/^\~/, homedir())
     if (!isAbsolute(path)) return join(this.rootDir, path)
     return resolve(path)
+  }
+
+  private monitor() {
+    const executeTime = {
+      init: 0,
+      prepare: 0,
+      exec: 0,
+      dispose: 0
+    }
+    this.events
+      .on('scenario.init', ({ time }) => {
+        executeTime.init = time
+      })
+      .on('scenario.prepare', ({ time }) => {
+        executeTime.prepare = time
+      })
+      .on('scenario.exec', ({ time }) => {
+        executeTime.exec = time
+      })
+      .on('scenario.dispose', ({ time }) => {
+        executeTime.dispose = time
+      })
+      .on('scenario.end', ({ time, isPassed }) => {
+        if (isPassed) {
+          const msg = []
+          msg.push('\n')
+          msg.push(chalk.bgBlue.white(` Total ${TimeUtils.Pretty(time - executeTime.init)} `))
+          msg.push(chalk.bgCyan.white(` `))
+          msg.push(chalk.bgWhite.gray(` Init ${TimeUtils.Pretty(executeTime.prepare - executeTime.init)} `))
+          msg.push(chalk.bgYellow.gray(` Prepare ${TimeUtils.Pretty(executeTime.exec - executeTime.prepare)} `))
+          msg.push(chalk.bgGreen.white(` Execute ${TimeUtils.Pretty(executeTime.dispose - executeTime.exec)} `))
+          msg.push(chalk.bgGray.white(` Dispose ${TimeUtils.Pretty(time - executeTime.dispose)} `))
+          msg.push('\n')
+          LoggerManager.GetLogger().info(msg.join(''))
+        }
+      })
   }
 
 }

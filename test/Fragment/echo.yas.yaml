@@ -1,0 +1,5 @@
+vars:
+  text: local
+steps:
+  - Echo: ${text}
+  - Echo: ${textGlobal}

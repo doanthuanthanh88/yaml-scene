@@ -13,14 +13,13 @@ describe('Fragment', () => {
 
   test('Execute fragment', async () => {
     await Simulator.Run(`
-  - Vars:
-      file: ${file}
-  
-  - Fragment: 
-      file: ${join(__dirname, 'write')}
-      password: example
-  
-  `, { logLevel: 'info' })
+- Vars:
+    file: ${file}
+
+- Fragment: 
+    file: ${join(__dirname, 'write')}
+    password: example
+  `)
 
     expect(existsSync(file)).toBe(true)
 
@@ -34,7 +33,7 @@ describe('Fragment with password', () => {
     existsSync(file) && unlinkSync(file)
   })
 
-  test('Execute frafment with encrypted scenario file', async () => {
+  test('Execute fragment with encrypted scenario file', async () => {
     await Simulator.Run(`
 - Vars:
     file: ${file}
@@ -43,7 +42,7 @@ describe('Fragment with password', () => {
     file: ${join(__dirname, 'write')}
     password: example
 
-`, { logLevel: 'info' })
+`)
 
     expect(existsSync(file)).toBe(true)
 

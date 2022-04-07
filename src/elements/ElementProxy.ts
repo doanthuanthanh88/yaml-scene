@@ -147,6 +147,10 @@ export class ElementProxy<T extends IElement> {
     return VariableManager.Instance.vars
   }
 
+  get events() {
+    return Scenario.Instance.element.events
+  }
+
   get loopKey() {
     return this.element?.loopKey
   }
@@ -267,6 +271,12 @@ export class ElementProxy<T extends IElement> {
 
   changeLogLevel(level: LogLevel) {
     this.element.logLevel = level
+  }
+
+  async replaceVar(varObj: any, obj = {} as any, defaultKey?: string) {
+    if (typeof varObj === 'object') {
+      await VariableManager.Instance.replace(varObj, { $: this.element.$ || this.element, $$: this.element.$$, ...obj }, defaultKey)
+    }
   }
 
   async setVar(varObj: any, obj = {} as any, defaultKey?: string) {

@@ -1,10 +1,11 @@
-import { existsSync, unlinkSync, writeFileSync } from "fs";
+import { writeFileSync } from "fs";
 import { tmpdir } from "os";
 import { join } from "path";
 import { CLI } from "./cli/CLI";
 import { LoggerManager } from "./singleton/LoggerManager";
 import { Scenario } from "./singleton/Scenario";
 import { ExtensionNotFound } from "./utils/error/ExtensionNotFound";
+import { FileUtils } from "./utils/FileUtils";
 
 export class Simulator {
 
@@ -26,7 +27,7 @@ export class Simulator {
       do {
         isRun = false
         try {
-          Scenario.Instance.element.reset()
+          Scenario.Reset()
           Scenario.Instance.init({
             file: tmpFile,
             password,
@@ -39,17 +40,16 @@ export class Simulator {
             const isContinue = await CLI.Instance.installExtensions([extensionName], err.localPath, err.scope, true)
             if (isContinue) {
               isRun = true
-
               continue
             }
           }
           throw err
         } finally {
-          await Scenario.Instance?.dispose()
+          await Scenario.Instance.dispose()
         }
       } while (isRun)
     } finally {
-      if (existsSync(tmpFile)) unlinkSync(tmpFile)
+      FileUtils.RemoveFilesDirs(tmpFile)
     }
   }
 

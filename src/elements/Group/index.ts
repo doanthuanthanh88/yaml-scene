@@ -100,7 +100,7 @@ export default class Group implements IElement {
   }
 
   async dispose() {
-    const proms = this._steps?.filter(step => step?.dispose).map(step => step.dispose())
+    const proms = this._steps?.map(step => step?.dispose && step.dispose()).filter(vl => vl)
     if (proms?.length) {
       await Promise.all(proms)
     }

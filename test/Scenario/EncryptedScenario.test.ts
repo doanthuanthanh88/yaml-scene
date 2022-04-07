@@ -11,11 +11,9 @@ test('Generate a scenario is encrypted', async () => {
   await Simulator.Run(`
 title: Test encrypt file
 password: thanh123
-logLevel: error
 steps:
 - Echo: 
     message: Hello world
-    logLevel: info
 `)
   expect(existsSync(Scenario.Instance.element.scenarioPasswordFile)).toEqual(true)
 })

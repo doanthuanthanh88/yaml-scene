@@ -52,6 +52,16 @@ export class VariableManager {
     }
   }
 
+  async replace(varObj: any, obj: any, defaultKey?: string) {
+    const newVars = Object.keys(varObj)
+      .filter(key => VariableManager.Instance.vars[key] !== undefined)
+      .reduce((sum, key) => {
+        sum[key] = varObj[key]
+        return sum
+      }, {})
+    await this.set(newVars, obj, defaultKey)
+  }
+
   async set(varObj: any, obj: any, defaultKey?: string) {
     // if (!obj) return
     if (typeof varObj === 'string') {

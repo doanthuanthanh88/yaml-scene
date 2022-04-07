@@ -1,0 +1,3 @@
+steps:
+  - Vars:
+      fragmentLogLevel2: ${$.proxy.logger.getLevel()}

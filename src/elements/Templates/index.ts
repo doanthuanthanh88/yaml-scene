@@ -1,4 +1,6 @@
-import Group from "../Group";
+import { ElementFactory } from "../ElementFactory";
+import { ElementProxy } from "../ElementProxy";
+import { IElement } from "../IElement";
 
 /**
  * @guide
@@ -29,23 +31,23 @@ It's only used for `extends` or `inherit` purposes
       id: 2
  * @end
  */
-export default class Templates extends Group {
+export default class Templates implements IElement {
+  proxy: ElementProxy<this>
+  $$: IElement
+  $: this
 
-  override init(items = [] as { [name: string]: any } | any[]) {
-    const templates = Array.isArray(items) ? items : Object.keys(items).map(templateName => {
+  init(items = [] as { [name: string]: any } | any[]) {
+    const steps = Array.isArray(items) ? items : Object.keys(items).map(templateName => {
       const elementName = Object.keys(items[templateName])[0]
       items[templateName][elementName]['->'] = templateName
       return items[templateName]
     })
-    super.init({
-      steps: templates
+    steps.flat(Number.MAX_SAFE_INTEGER).forEach(step => {
+      const name = Object.keys(step)[0]
+      const elem = ElementFactory.CreateElement<IElement>(name)
+      elem.init(step[name])
     })
-    this.initStep()
   }
-
-  override async prepare() { }
-
-  override async exec() { }
 
   clone() {
     return this

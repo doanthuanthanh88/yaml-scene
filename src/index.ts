@@ -3,7 +3,6 @@ import { CLI } from "./cli/CLI";
 import { ElementFactory } from "./elements/ElementFactory";
 import { LoggerManager } from "./singleton/LoggerManager";
 import { Scenario } from "./singleton/Scenario";
-import { ScenarioMonitor } from "./singleton/Scenario/ScenarioMonitor";
 import { ExtensionNotFound } from "./utils/error/ExtensionNotFound";
 import { TraceError } from "./utils/error/TraceError";
 
@@ -24,10 +23,9 @@ export class Main {
       try {
         if (isRun === undefined) {
           isRun = await CLI.Instance.exec()
+          if (!isRun) return
         }
-        if (!isRun) return
         isRun = false
-        ScenarioMonitor.Attach(Scenario.Instance.element)
         Scenario.Instance.init({
           file: CLI.Instance.yamlFile,
           password: CLI.Instance.password
@@ -57,7 +55,7 @@ export class Main {
             }
             if (continuePlay) {
               isRun = true
-              Scenario.Instance.element.reset()
+              Scenario.Reset()
               continue
             }
           }
