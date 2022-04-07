@@ -53,13 +53,18 @@ export class VariableManager {
     }
   }
 
-  async replace(varObj: any, obj: any, defaultKey?: string) {
+  diffWithGlobalVar(varObj: any) {
     const newVars = Object.keys(varObj)
       .filter(key => VariableManager.Instance.vars[key] !== undefined)
       .reduce((sum, key) => {
         sum[key] = varObj[key]
         return sum
       }, {})
+    return newVars
+  }
+
+  async replace(varObj: any, obj: any, defaultKey?: string) {
+    const newVars = this.diffWithGlobalVar(varObj)
     await this.set(newVars, obj, defaultKey)
   }
 
@@ -73,7 +78,9 @@ export class VariableManager {
       }
     } else if (varObj && typeof varObj === 'object') {
       for (const [key, vl] of Object.entries(varObj)) {
-        this.vars[key] = await this.get(vl, obj)
+        if (!key.startsWith('$$')) {
+          this.vars[key] = await this.get(vl, obj)
+        }
       }
     } else {
       const error = new TraceError('VariableManager.set() only support "string" or "object" type', {

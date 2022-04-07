@@ -7,9 +7,9 @@ import { VariableManager } from '@app/singleton/VariableManager'
 import { FileUtils } from '@app/utils/FileUtils'
 import { TimeUtils } from '@app/utils/TimeUtils'
 import chalk from 'chalk'
+import { EventEmitter } from "events"
 import { homedir } from 'os'
 import { basename, dirname, isAbsolute, join, resolve } from 'path'
-import { EventEmitter } from 'stream'
 import { ElementFactory } from '../elements/ElementFactory'
 import { ExtensionManager } from './ExtensionManager'
 import { TemplateManager } from './TemplateManager'
@@ -108,9 +108,10 @@ export class Scenario extends Fragment {
     }
   }
 
-  override declareVars(vars: any) {
-    super.declareVars(vars)
+  override async declareAndInit(vars: any) {
+    VariableManager.Instance.declare(vars)
     CLI.Instance.loadEnv(VariableManager.Instance.vars, this.proxy.resolvePath(CLI.Instance.envFile), process.env, CLI.Instance.env)
+    await this.proxy.setVar(VariableManager.Instance.vars)
   }
 
   override async prepare() {

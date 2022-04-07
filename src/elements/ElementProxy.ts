@@ -4,6 +4,7 @@ import { TemplateManager } from "@app/singleton/TemplateManager";
 import { VariableManager } from "@app/singleton/VariableManager";
 import { TraceError } from "@app/utils/error/TraceError";
 import { TimeUtils } from "@app/utils/TimeUtils";
+import EventEmitter from "events";
 import cloneDeep from "lodash.clonedeep";
 import merge from "lodash.merge";
 import omit from "lodash.omit";
@@ -141,6 +142,10 @@ export class ElementProxy<T extends IElement> {
 
   get logger(): Logger {
     return (this.element.logLevel ? LoggerManager.GetLogger(this.element.logLevel) : this.element.$$?.proxy.logger) || LoggerManager.GetLogger()
+  }
+
+  get events(): EventEmitter {
+    return Scenario.Instance.element.events
   }
 
   get vars() {

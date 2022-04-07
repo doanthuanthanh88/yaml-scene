@@ -57,7 +57,7 @@ export default class Fragment extends Group {
     const { vars, title, description, steps, logLevel, extensions, install } = await this.getScenarioFile()
 
     if (vars) {
-      this.declareVars(vars)
+      await this.declareAndInit(vars)
     }
     if (this.vars) {
       await this.proxy.replaceVar(this.vars)
@@ -76,8 +76,9 @@ export default class Fragment extends Group {
     await super.prepare()
   }
 
-  declareVars(vars: any) {
+  async declareAndInit(vars: any) {
     VariableManager.Instance.declare(vars)
+    await this.proxy.setVar(vars)
   }
 
   clean() {
