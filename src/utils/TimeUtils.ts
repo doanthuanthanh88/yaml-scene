@@ -2,7 +2,19 @@ import { TraceError } from "./error/TraceError"
 
 export type TimeUnit = string | number
 
+/**
+ * Utility functionals to handle DateTime
+ * @class
+ */
 export class TimeUtils {
+  /**
+   * Convert time with friendly name to miliseconds
+   * @param {string | number} time Time
+   * @returns {number} Miliseconds
+   * @example 
+   * GetMsTime('2s') => 2000
+   * GetMsTime(5000) => 5000
+   */
   static GetMsTime(time?: TimeUnit) {
     if (typeof time === 'string') {
       return parseInt(eval(time.replace('ms', '').replace('h', '*60m').replace('m', '*60s').replace('s', '*1000')))
@@ -13,11 +25,24 @@ export class TimeUtils {
     }
     throw new TraceError(`Time "${time}" is not valid`, { time })
   }
+
+  /**
+   * Sleep for a time before keep playing
+   * @param time Time to sleep
+   * @returns {Promise}
+   */
   static Delay(time: TimeUnit) {
     return new Promise((resolve) => {
       setTimeout(() => resolve(true), TimeUtils.GetMsTime(time))
     })
   }
+
+  /**
+   * Convert time to pretty format
+   * @param {number} time Miliseconds
+   * @returns {string} Friend time
+   * @example Pretty(65000) => 1m5s 0ms
+   */
   static Pretty(time: number) {
     let h, m, s, ms
     const msg = []
@@ -33,12 +58,5 @@ export class TimeUtils {
     msg.push(ms + 'ms')
     return msg.join('')
   }
-  static async Until(condition: boolean, timeInterval: any) {
-    return new Promise(async (resolve) => {
-      while (!condition) {
-        await TimeUtils.Delay(timeInterval)
-      }
-      resolve(condition)
-    })
-  }
+
 }
