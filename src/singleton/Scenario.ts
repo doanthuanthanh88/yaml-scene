@@ -1,4 +1,5 @@
 import { CLI } from '@app/cli/CLI'
+import { ElementFactory } from '@app/elements/ElementFactory'
 import { ElementProxy } from '@app/elements/ElementProxy'
 import Fragment from '@app/elements/Fragment'
 import { Simulator } from '@app/Simulator'
@@ -10,9 +11,7 @@ import chalk from 'chalk'
 import { EventEmitter } from "events"
 import { homedir } from 'os'
 import { basename, dirname, isAbsolute, join, resolve } from 'path'
-import { ElementFactory } from '../elements/ElementFactory'
 import { ExtensionManager } from './ExtensionManager'
-import { TemplateManager } from './TemplateManager'
 
 /**
  * @guide
@@ -70,18 +69,17 @@ steps:                                              # Includes all which you wan
  */
 
 export class Scenario extends Fragment {
-  private static _Instance: ElementProxy<Scenario> | null
+  private static _Instance: ElementProxy<Scenario>
   static get Instance() {
-    if (this._Instance) return this._Instance
-    this._Instance = ElementFactory.CreateElement<Scenario>('Scenario', __dirname)
+    if (!this._Instance) {
+      this._Instance = ElementFactory.CreateTheElement<Scenario>(Scenario)
+    }
     return this._Instance
   }
 
   static Reset() {
-    ExtensionManager.Instance?.reset()
-    TemplateManager.Instance?.reset()
-    VariableManager.Instance?.reset()
-    Scenario._Instance = null
+    this._Instance?.events.emit('scenario.reset')
+    this._Instance = undefined
   }
 
   events: EventEmitter
@@ -132,7 +130,7 @@ export class Scenario extends Fragment {
     this.events.emit('scenario.dispose', { time: Date.now(), isPassed: this.isPassed })
     await super.dispose()
     this.events.emit('scenario.end', { time: Date.now(), isPassed: this.isPassed })
-    this.events.removeAllListeners()
+    // this.events.removeAllListeners()
   }
 
   async clean() {

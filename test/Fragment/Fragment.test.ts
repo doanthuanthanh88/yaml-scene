@@ -1,14 +1,14 @@
 import { Simulator } from "@app/Simulator"
-import { existsSync, unlinkSync } from "fs"
-import { tmpdir } from "os"
+import { FileUtils } from "@app/utils/FileUtils"
+import { existsSync } from "fs"
 import { join } from "path"
 
 
 describe('Fragment', () => {
-  const file = join(tmpdir(), Math.random() + '.txt')
+  const file = FileUtils.GetNewTempPath('.txt')
 
   afterAll(() => {
-    existsSync(file) && unlinkSync(file)
+    FileUtils.RemoveFilesDirs(file)
   })
 
   test('Execute fragment', async () => {
@@ -27,10 +27,10 @@ describe('Fragment', () => {
 })
 
 describe('Fragment with password', () => {
-  const file = join(tmpdir(), Math.random() + '.txt')
+  const file = FileUtils.GetNewTempPath('.txt')
 
   afterAll(() => {
-    existsSync(file) && unlinkSync(file)
+    FileUtils.RemoveFilesDirs(file)
   })
 
   test('Execute fragment with encrypted scenario file', async () => {

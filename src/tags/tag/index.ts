@@ -14,7 +14,7 @@ import { Type } from 'js-yaml'
       content-type: multipart/form-data
     body:
       file: !tag 
-        tags/binary: ~/data.json
+        file/stream: ~/data.json
  * @end
  */
 export class TagMapping extends Type {
@@ -24,7 +24,7 @@ export class TagMapping extends Type {
       instanceOf: ElementProxy,
       construct: (props) => {
         const key = Object.keys(props)[0]
-        const proxy = ElementFactory.CreateElement(key)
+        const proxy = ElementFactory.CreateElement(key, __dirname)
         proxy.init(props[key])
         return proxy
       }

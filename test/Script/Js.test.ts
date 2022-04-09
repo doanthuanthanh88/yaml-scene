@@ -1,13 +1,12 @@
 import { Simulator } from "@app/Simulator"
-import { existsSync, readFileSync, unlinkSync } from "fs"
-import { tmpdir } from "os"
-import { join } from "path"
+import { FileUtils } from "@app/utils/FileUtils"
+import { existsSync, readFileSync } from "fs"
 
 describe('Test scripts', () => {
-  const tmpFile = join(tmpdir(), Math.random().toString())
+  const tmpFile = FileUtils.GetNewTempPath('.txt')
 
   afterAll(() => {
-    unlinkSync(tmpFile)
+    FileUtils.RemoveFilesDirs(tmpFile)
   })
 
   test('Run nodejs code', async () => {

@@ -1,6 +1,7 @@
 import chalk from "chalk";
 import { CLI } from "./cli/CLI";
 import { ElementFactory } from "./elements/ElementFactory";
+import UserInput from "./elements/UserInput";
 import { LoggerManager } from "./singleton/LoggerManager";
 import { Scenario } from "./singleton/Scenario";
 import { ExtensionNotFound } from "./utils/error/ExtensionNotFound";
@@ -41,7 +42,7 @@ export class Main {
             let continuePlay = CLI.Instance.force
             if (!continuePlay) {
               LoggerManager.GetLogger().info()
-              const confirmContinue = ElementFactory.CreateElement('UserInput')
+              const confirmContinue = ElementFactory.CreateTheElement(UserInput)
               confirmContinue.init([{
                 title: `Replay the scenario ?`,
                 type: 'confirm',

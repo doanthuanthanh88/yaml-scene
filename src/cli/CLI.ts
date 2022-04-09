@@ -1,3 +1,4 @@
+import UserInput from "@app/elements/UserInput";
 import { LoggerManager } from "@app/singleton/LoggerManager";
 import { StringUtils } from "@app/utils/StringUtils";
 import chalk from "chalk";
@@ -83,6 +84,7 @@ export class CLI {
         .description('Add new extensions')
         .argument("<extensions...>", "ExtensionManager package in npm registry")
         .action(async (extensionNames) => {
+          extensionNames = extensionNames.map(extensionName => extensionName.includes('@') ? extensionName : `${extensionName}@latest`)
           const isOK = await this.installExtensions(extensionNames)
           if (isOK) {
             const jsonSchema = new JSONSchema()
@@ -114,6 +116,7 @@ export class CLI {
         .argument("[extensions...]", "ExtensionManager package in npm registry")
         .action(async (extensionNames) => {
           if (!extensionNames.length) extensionNames.push('yaml-scene')
+          extensionNames = extensionNames.map(extensionName => extensionName.includes('@') ? extensionName : `${extensionName}@latest`)
           const isOK = await this.upgradeExtensions(extensionNames)
           if (isOK) {
             const jsonSchema = new JSONSchema()
@@ -278,7 +281,7 @@ export class CLI {
     if (!extensionNames) return false
 
     if (!isForce) {
-      const confirmType = ElementFactory.CreateElement('UserInput')
+      const confirmType = ElementFactory.CreateTheElement(UserInput)
       const choices = []
       if (installType === 'global') {
         choices.push({ title: `Global (Recommend)`, value: 'global', description: 'Install in global directory of "yarn" OR "npm"' })

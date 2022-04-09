@@ -4,7 +4,7 @@ import { IFileAdapter } from "./IFileAdapter";
  * @guide
  * @name Text 
  * @description Read and write text file. Used in File/Writer, File/Reader
- * @group File, +File.Adapter
+ * @group File, File.Adapter
  * @example
 - File/Reader:
     title: Read a text file

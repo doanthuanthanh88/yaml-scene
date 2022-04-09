@@ -5,15 +5,11 @@
 | !TAGS | --- |
 |[!function](#user-content-!tags-!function)| Write code as a function in js ...|  
 |[!tag](#user-content-!tags-!tag)| Lazy load tag ...|  
-|[!tag tags/binary](#user-content-!tags-!tag%20tags%2fbinary)| Transform file/URL to binary ...|  
-| +FILE.ADAPTER | --- |
-|[Csv](#user-content-file%2c%20%2bfile.adapter-csv)| Read and write csv file. Used in File/Writer, File/Reader ...|  
-|[Excel](#user-content-file%2c%20%2bfile.adapter-excel)| Read and write excel file. Used in File/Writer, File/Reader ...|  
-|[Json](#user-content-file%2c%20%2bfile.adapter-json)| Read and write json file. Used in File/Writer, File/Reader ...|  
-|[Password](#user-content-file%2c%20%2bfile.adapter-password)| Read and write a encrypted file (`aes-128-cbc`). Used in File/Writer, File/Reader ...|  
-|[Text](#user-content-file%2c%20%2bfile.adapter-text)| Read and write text file. Used in File/Writer, File/Reader ...|  
-|[Xml](#user-content-file%2c%20%2bfile.adapter-xml)| Read and write xml file. Used in File/Writer, File/Reader ...|  
-|[Yaml](#user-content-file%2c%20%2bfile.adapter-yaml)| Read and write yaml file. Used in File/Writer, File/Reader ...|  
+|[!tag file](#user-content-!tags-!tag%20file)| Transform file/URL to a file reader which includes adapters ...|  
+|[!tag file/buffer](#user-content-!tags-!tag%20file%2fbuffer)| Transform file/URL to buffer ...|  
+|[!tag file/json](#user-content-!tags-!tag%20file%2fjson)| Transform file/URL to json object ...|  
+|[!tag file/stream](#user-content-!tags-!tag%20file%2fstream)| Transform file/URL to stream ...|  
+|[!tag file/text](#user-content-!tags-!tag%20file%2ftext)| Transform file/URL to text ...|  
 | DOC | --- |
 |[Doc/Guide/MD](#user-content-doc-doc%2fguide%2fmd)| Auto scan file to detect the comment format which is generated to markdown document ...|  
 | EXTERNAL | --- |
@@ -21,15 +17,23 @@
 |[Script/Js](#user-content-external-script%2fjs)| Embed javascript code into scene ...|  
 |[Script/Sh](#user-content-external-script%2fsh)| Embed shell script into scene ...|  
 | FILE | --- |
-|[Csv](#user-content-file%2c%20%2bfile.adapter-csv)| Read and write csv file. Used in File/Writer, File/Reader ...|  
-|[Excel](#user-content-file%2c%20%2bfile.adapter-excel)| Read and write excel file. Used in File/Writer, File/Reader ...|  
+|[Csv](#user-content-file%2c%20file.adapter-csv)| Read and write csv file. Used in File/Writer, File/Reader ...|  
+|[Excel](#user-content-file%2c%20file.adapter-excel)| Read and write excel file. Used in File/Writer, File/Reader ...|  
 |[File/Reader](#user-content-file%2c%20input-file%2freader)| Read a file then set content to a variable ...|  
 |[File/Writer](#user-content-file%2c%20output-file%2fwriter)| Write content to a file ...|  
-|[Json](#user-content-file%2c%20%2bfile.adapter-json)| Read and write json file. Used in File/Writer, File/Reader ...|  
-|[Password](#user-content-file%2c%20%2bfile.adapter-password)| Read and write a encrypted file (`aes-128-cbc`). Used in File/Writer, File/Reader ...|  
-|[Text](#user-content-file%2c%20%2bfile.adapter-text)| Read and write text file. Used in File/Writer, File/Reader ...|  
-|[Xml](#user-content-file%2c%20%2bfile.adapter-xml)| Read and write xml file. Used in File/Writer, File/Reader ...|  
-|[Yaml](#user-content-file%2c%20%2bfile.adapter-yaml)| Read and write yaml file. Used in File/Writer, File/Reader ...|  
+|[Json](#user-content-file%2c%20file.adapter-json)| Read and write json file. Used in File/Writer, File/Reader ...|  
+|[Password](#user-content-file%2c%20file.adapter-password)| Read and write a encrypted file (`aes-128-cbc`). Used in File/Writer, File/Reader ...|  
+|[Text](#user-content-file%2c%20file.adapter-text)| Read and write text file. Used in File/Writer, File/Reader ...|  
+|[Xml](#user-content-file%2c%20file.adapter-xml)| Read and write xml file. Used in File/Writer, File/Reader ...|  
+|[Yaml](#user-content-file%2c%20file.adapter-yaml)| Read and write yaml file. Used in File/Writer, File/Reader ...|  
+| FILE.ADAPTER | --- |
+|[Csv](#user-content-file%2c%20file.adapter-csv)| Read and write csv file. Used in File/Writer, File/Reader ...|  
+|[Excel](#user-content-file%2c%20file.adapter-excel)| Read and write excel file. Used in File/Writer, File/Reader ...|  
+|[Json](#user-content-file%2c%20file.adapter-json)| Read and write json file. Used in File/Writer, File/Reader ...|  
+|[Password](#user-content-file%2c%20file.adapter-password)| Read and write a encrypted file (`aes-128-cbc`). Used in File/Writer, File/Reader ...|  
+|[Text](#user-content-file%2c%20file.adapter-text)| Read and write text file. Used in File/Writer, File/Reader ...|  
+|[Xml](#user-content-file%2c%20file.adapter-xml)| Read and write xml file. Used in File/Writer, File/Reader ...|  
+|[Yaml](#user-content-file%2c%20file.adapter-yaml)| Read and write yaml file. Used in File/Writer, File/Reader ...|  
 | INPUT | --- |
 |[File/Reader](#user-content-file%2c%20input-file%2freader)| Read a file then set content to a variable ...|  
 |[UserInput](#user-content-input-userinput)| Get user input from keyboard ...|  
@@ -232,15 +236,15 @@ Lazy load tag
       content-type: multipart/form-data
     body:
       file: !tag
-        tags/binary: ~/data.json
+        file/stream: ~/data.json
 ```
 
 <br/>
 
-<a id="user-content-!tags-!tag%20tags%2fbinary" name="user-content-!tags-!tag%20tags%2fbinary"></a>
-## !tag tags/binary
+<a id="user-content-!tags-!tag%20file" name="user-content-!tags-!tag%20file"></a>
+## !tag file
 `!Tags`  
-Transform file/URL to binary
+Transform file/URL to a file reader which includes adapters
 - File in local path
 - File from url  
 
@@ -251,211 +255,99 @@ Transform file/URL to binary
       content-type: multipart/form-data
     body:
       file1: !tag
-        tags/binary: ~/data.json
+        file:
+          path: ~/data.json
+          adapters:
+            - Json
       file2: !tag
-        tags/binary: https://raw....
+        file:
+          path: https://raw....
+          adapters:
+            - Text
 ```
 
 <br/>
 
-<a id="user-content-file%2c%20%2bfile.adapter-csv" name="user-content-file%2c%20%2bfile.adapter-csv"></a>
-## Csv
-`File, +File.Adapter`  
-Read and write csv file. Used in File/Writer, File/Reader  
+<a id="user-content-!tags-!tag%20file%2fbuffer" name="user-content-!tags-!tag%20file%2fbuffer"></a>
+## !tag file/buffer
+`!Tags`  
+Transform file/URL to buffer
+- File in local path
+- File from url  
 
 ```yaml
-- File/Reader:
-    title: Read a csv file
-    path: assets/data1.csv
-    adapters:
-      - Csv
-    var: data                       # Set file content result to "data" variable
-
-- File/Writer:
-    title: Write to csv file
-    path: assets/data2.csv
-    adapters:
-      - Csv
-    content:
-      - name: name 1
-        age: 1
-      - name: name 2
-        age: 3
+- yas-http/Post:
+    url: http://localhost/upload
+    headers:
+      content-type: multipart/form-data
+    body:
+      file1: !tag
+        file/buffer: ~/data.json
+      file2: !tag
+        file/buffer: https://raw...
 ```
 
 <br/>
 
-<a id="user-content-file%2c%20%2bfile.adapter-excel" name="user-content-file%2c%20%2bfile.adapter-excel"></a>
-## Excel
-`File, +File.Adapter`  
-Read and write excel file. Used in File/Writer, File/Reader  
+<a id="user-content-!tags-!tag%20file%2fjson" name="user-content-!tags-!tag%20file%2fjson"></a>
+## !tag file/json
+`!Tags`  
+Transform file/URL to json object
+- File in local path
+- File from url  
 
 ```yaml
-- File/Reader:
-    title: Read text file 1 with password
-    path: assets/data1.xlsx
-    adapters:
-      - Excel: MyPassword           # Decrypt content with password is "MyPassword"
-          sheets:                   # Read data only these sheets
-            - name: Sheet 1         # Sheet name
-              range: 'A1:C9'        # Only take cell in the region
-              header:
-                rows: 1             # Skip, dont take data in these rows
-              columnToKey:          # Mapping column key (A,B,C) to name
-                A: foo name
-                B: qux label
-                C: poo title
-    var: data                       # Set file data result to "data" variable
-
-- File/Writer:
-    path: assets/data1.xlsx
-    adapters:
-      - Excel                       # Write data to excel format
-    content: [{
-      foo: 'bar',
-      qux: 'moo',
-      poo: null,
-      age: 1
-    },
-    {
-      foo: 'bar1',
-      qux: 'moo2',
-      poo: 444,
-      age: 2
-    }]
+- yas-http/Post:
+    url: http://localhost/upload
+    headers:
+      content-type: multipart/form-data
+    body:
+      file1: !tag
+        file/json: ~/data.json
+      file2: !tag
+        file/json: https://raw....
 ```
 
 <br/>
 
-<a id="user-content-file%2c%20%2bfile.adapter-json" name="user-content-file%2c%20%2bfile.adapter-json"></a>
-## Json
-`File, +File.Adapter`  
-Read and write json file. Used in File/Writer, File/Reader  
+<a id="user-content-!tags-!tag%20file%2fstream" name="user-content-!tags-!tag%20file%2fstream"></a>
+## !tag file/stream
+`!Tags`  
+Transform file/URL to stream
+- File in local path
+- File from url  
 
 ```yaml
-- File/Reader:
-    title: Read a json file
-    path: assets/data1.json
-    adapters:
-      - Json
-    var: data                       # Set file content result to "data" variable
-
-- File/Writer:
-    title: Write to json file
-    path: assets/data2.json
-    adapters:
-      - Json
-    content:
-      - name: name 1
-        age: 1
-      - name: name 2
-        age: 3
+- yas-http/Post:
+    url: http://localhost/upload
+    headers:
+      content-type: multipart/form-data
+    body:
+      file1: !tag
+        file/stream: ~/data.json
+      file2: !tag
+        file/stream: https://raw....
 ```
 
 <br/>
 
-<a id="user-content-file%2c%20%2bfile.adapter-password" name="user-content-file%2c%20%2bfile.adapter-password"></a>
-## Password
-`File, +File.Adapter`  
-Read and write a encrypted file (`aes-128-cbc`). Used in File/Writer, File/Reader  
+<a id="user-content-!tags-!tag%20file%2ftext" name="user-content-!tags-!tag%20file%2ftext"></a>
+## !tag file/text
+`!Tags`  
+Transform file/URL to text
+- File in local path
+- File from url  
 
 ```yaml
-- File/Reader:
-    title: Read a json file
-    path: assets/data1
-    adapters:
-      - Password: My Password       # The first: Decrypt file data with password
-      - Json                        # The second: Parse data to json before return result
-    var: data                       # Set file content result to "data" variable
-
-- File/Writer:
-    title: Write to json file
-    path: assets/data2
-    adapters:
-      - Json                        # The first: Convert to json format
-      - Password: My Password       # The second: Encrypt file content with password before save to file
-    content:
-      - name: name 1
-        age: 1
-      - name: name 2
-        age: 3
-```
-
-<br/>
-
-<a id="user-content-file%2c%20%2bfile.adapter-text" name="user-content-file%2c%20%2bfile.adapter-text"></a>
-## Text
-`File, +File.Adapter`  
-Read and write text file. Used in File/Writer, File/Reader  
-
-```yaml
-- File/Reader:
-    title: Read a text file
-    path: assets/data1.txt
-    adapters:                       # Not set, it use `Text` to default adapter
-      - Text
-    var: data                       # Set file content result to "data" variable
-
-- File/Writer:
-    title: Write to text file
-    path: assets/data2.txt
-    adapters:                       # Not set, it use `Text` to default adapter
-      - Text
-    content: |
-      Hello world
-```
-
-<br/>
-
-<a id="user-content-file%2c%20%2bfile.adapter-xml" name="user-content-file%2c%20%2bfile.adapter-xml"></a>
-## Xml
-`File, +File.Adapter`  
-Read and write xml file. Used in File/Writer, File/Reader  
-
-```yaml
-- File/Reader:
-    title: Read a xml file
-    path: assets/data1.xml
-    adapters:
-      - Xml
-    var: data                       # Set file content result to "data" variable
-
-- File/Writer:
-    title: Write to xml file
-    path: assets/data2.xml
-    adapters:
-      - Xml
-    content:
-      name: name 1
-      age: 1
-      class: 01
-```
-
-<br/>
-
-<a id="user-content-file%2c%20%2bfile.adapter-yaml" name="user-content-file%2c%20%2bfile.adapter-yaml"></a>
-## Yaml
-`File, +File.Adapter`  
-Read and write yaml file. Used in File/Writer, File/Reader  
-
-```yaml
-- File/Reader:
-    title: Read a yaml file
-    path: assets/data1.yaml
-    adapters:
-      - Yaml
-    var: data                       # Set file content result to "data" variable
-
-- File/Writer:
-    title: Write to yaml file
-    path: assets/data2.yaml
-    adapters:
-      - Yaml
-    content:
-      - name: name 1
-        age: 1
-      - name: name 2
-        age: 3
+- yas-http/Post:
+    url: http://localhost/upload
+    headers:
+      content-type: multipart/form-data
+    body:
+      file1: !tag
+        file/text: ~/data.json
+      file2: !tag
+        file/text: https://raw....
 ```
 
 <br/>
@@ -631,6 +523,75 @@ Embed shell script into scene
       echo ${name}
       echo $1
       echo $2
+```
+
+<br/>
+
+<a id="user-content-file%2c%20file.adapter-csv" name="user-content-file%2c%20file.adapter-csv"></a>
+## Csv
+`File, File.Adapter`  
+Read and write csv file. Used in File/Writer, File/Reader  
+
+```yaml
+- File/Reader:
+    title: Read a csv file
+    path: assets/data1.csv
+    adapters:
+      - Csv
+    var: data                       # Set file content result to "data" variable
+
+- File/Writer:
+    title: Write to csv file
+    path: assets/data2.csv
+    adapters:
+      - Csv
+    content:
+      - name: name 1
+        age: 1
+      - name: name 2
+        age: 3
+```
+
+<br/>
+
+<a id="user-content-file%2c%20file.adapter-excel" name="user-content-file%2c%20file.adapter-excel"></a>
+## Excel
+`File, File.Adapter`  
+Read and write excel file. Used in File/Writer, File/Reader  
+
+```yaml
+- File/Reader:
+    title: Read text file 1 with password
+    path: assets/data1.xlsx
+    adapters:
+      - Excel: MyPassword           # Decrypt content with password is "MyPassword"
+          sheets:                   # Read data only these sheets
+            - name: Sheet 1         # Sheet name
+              range: 'A1:C9'        # Only take cell in the region
+              header:
+                rows: 1             # Skip, dont take data in these rows
+              columnToKey:          # Mapping column key (A,B,C) to name
+                A: foo name
+                B: qux label
+                C: poo title
+    var: data                       # Set file data result to "data" variable
+
+- File/Writer:
+    path: assets/data1.xlsx
+    adapters:
+      - Excel                       # Write data to excel format
+    content: [{
+      foo: 'bar',
+      qux: 'moo',
+      poo: null,
+      age: 1
+    },
+    {
+      foo: 'bar1',
+      qux: 'moo2',
+      poo: 444,
+      age: 2
+    }]
 ```
 
 <br/>
@@ -813,6 +774,139 @@ You can write a new adapter by yourself then use in adapters.
         - name: name 2
           age: 3
   ```
+<br/>
+
+<a id="user-content-file%2c%20file.adapter-json" name="user-content-file%2c%20file.adapter-json"></a>
+## Json
+`File, File.Adapter`  
+Read and write json file. Used in File/Writer, File/Reader  
+
+```yaml
+- File/Reader:
+    title: Read a json file
+    path: assets/data1.json
+    adapters:
+      - Json
+    var: data                       # Set file content result to "data" variable
+
+- File/Writer:
+    title: Write to json file
+    path: assets/data2.json
+    adapters:
+      - Json
+    content:
+      - name: name 1
+        age: 1
+      - name: name 2
+        age: 3
+```
+
+<br/>
+
+<a id="user-content-file%2c%20file.adapter-password" name="user-content-file%2c%20file.adapter-password"></a>
+## Password
+`File, File.Adapter`  
+Read and write a encrypted file (`aes-128-cbc`). Used in File/Writer, File/Reader  
+
+```yaml
+- File/Reader:
+    title: Read a json file
+    path: assets/data1
+    adapters:
+      - Password: My Password       # The first: Decrypt file data with password
+      - Json                        # The second: Parse data to json before return result
+    var: data                       # Set file content result to "data" variable
+
+- File/Writer:
+    title: Write to json file
+    path: assets/data2
+    adapters:
+      - Json                        # The first: Convert to json format
+      - Password: My Password       # The second: Encrypt file content with password before save to file
+    content:
+      - name: name 1
+        age: 1
+      - name: name 2
+        age: 3
+```
+
+<br/>
+
+<a id="user-content-file%2c%20file.adapter-text" name="user-content-file%2c%20file.adapter-text"></a>
+## Text
+`File, File.Adapter`  
+Read and write text file. Used in File/Writer, File/Reader  
+
+```yaml
+- File/Reader:
+    title: Read a text file
+    path: assets/data1.txt
+    adapters:                       # Not set, it use `Text` to default adapter
+      - Text
+    var: data                       # Set file content result to "data" variable
+
+- File/Writer:
+    title: Write to text file
+    path: assets/data2.txt
+    adapters:                       # Not set, it use `Text` to default adapter
+      - Text
+    content: |
+      Hello world
+```
+
+<br/>
+
+<a id="user-content-file%2c%20file.adapter-xml" name="user-content-file%2c%20file.adapter-xml"></a>
+## Xml
+`File, File.Adapter`  
+Read and write xml file. Used in File/Writer, File/Reader  
+
+```yaml
+- File/Reader:
+    title: Read a xml file
+    path: assets/data1.xml
+    adapters:
+      - Xml
+    var: data                       # Set file content result to "data" variable
+
+- File/Writer:
+    title: Write to xml file
+    path: assets/data2.xml
+    adapters:
+      - Xml
+    content:
+      name: name 1
+      age: 1
+      class: 01
+```
+
+<br/>
+
+<a id="user-content-file%2c%20file.adapter-yaml" name="user-content-file%2c%20file.adapter-yaml"></a>
+## Yaml
+`File, File.Adapter`  
+Read and write yaml file. Used in File/Writer, File/Reader  
+
+```yaml
+- File/Reader:
+    title: Read a yaml file
+    path: assets/data1.yaml
+    adapters:
+      - Yaml
+    var: data                       # Set file content result to "data" variable
+
+- File/Writer:
+    title: Write to yaml file
+    path: assets/data2.yaml
+    adapters:
+      - Yaml
+    content:
+      - name: name 1
+        age: 1
+      - name: name 2
+        age: 3
+```
+
 <br/>
 
 <a id="user-content-input-userinput" name="user-content-input-userinput"></a>

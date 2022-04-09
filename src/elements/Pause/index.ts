@@ -48,8 +48,6 @@ export default class Pause implements IElement {
   }
 
   async exec() {
-    if (this.title) this.proxy.logger.info(this.title)
-    this.title && console.group()
     let tm: NodeJS.Timeout
     try {
       if (this.time) {
@@ -65,7 +63,6 @@ export default class Pause implements IElement {
       }
     } finally {
       if (tm) clearTimeout(tm)
-      this.title && console.group()
     }
   }
 

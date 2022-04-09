@@ -19,4 +19,8 @@ export class ElementFactory {
     }
     return new ElementProxy<T>(tag)
   }
+
+  static CreateTheElement<T extends IElement>(Clazz: any) {
+    return new ElementProxy<T>(new Clazz())
+  }
 }

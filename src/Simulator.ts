@@ -1,6 +1,4 @@
 import { writeFileSync } from "fs";
-import { tmpdir } from "os";
-import { join } from "path";
 import { CLI } from "./cli/CLI";
 import { LoggerManager } from "./singleton/LoggerManager";
 import { Scenario } from "./singleton/Scenario";
@@ -20,7 +18,7 @@ export class Simulator {
     const { env, logLevel = 'error', password } = opts
     CLI.Instance.env = env
     LoggerManager.SetDefaultLoggerLevel(logLevel)
-    const tmpFile = join(tmpdir(), Date.now() + '_' + Math.random() + ".yas.yaml")
+    const tmpFile = FileUtils.GetNewTempPath('.yas.yaml')
     try {
       writeFileSync(tmpFile, steps)
       let isRun: boolean

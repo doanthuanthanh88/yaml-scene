@@ -1,8 +1,6 @@
 import { TraceError } from "@app/utils/error/TraceError";
 import { FileUtils } from "@app/utils/FileUtils";
 import { writeFileSync } from "fs";
-import { tmpdir } from "os";
-import { join } from "path";
 import Exec from "../Exec";
 
 /**
@@ -53,7 +51,7 @@ export default class Sh extends Exec {
     super()
     this.mode = 777
     this.bin = 'sh'
-    this._tempFile = join(tmpdir(), Date.now() + '_' + Math.random() + '.sh')
+    this._tempFile = FileUtils.GetNewTempPath('.sh')
   }
 
   init(props: any) {

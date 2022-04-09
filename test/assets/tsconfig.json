@@ -1,0 +1,19 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "skipDefaultLibCheck": true,
+    "skipLibCheck": true,
+    "paths": {
+      "@app/*": [
+        "./src/*"
+      ],
+      "@test/*": [
+        "./test/*"
+      ]
+    }
+  },
+  "include": [
+    "src",
+    "test"
+  ]
+}

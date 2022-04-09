@@ -1,10 +1,10 @@
 import { Simulator } from "@app/Simulator"
 import { Scenario } from "@app/singleton/Scenario"
+import { FileUtils } from "@app/utils/FileUtils"
 import { existsSync } from "fs"
-import { tmpdir } from "os"
 import { join } from "path"
 
-const localPath = join(tmpdir(), Math.random().toString())
+const localPath = FileUtils.GetNewTempPath()
 
 afterAll(async () => {
   await Scenario.Instance.element.clean()

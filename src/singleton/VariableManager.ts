@@ -4,14 +4,21 @@ import { Base64 } from "@app/utils/encrypt/Base64"
 import { MD5 } from "@app/utils/encrypt/MD5"
 import { TraceError } from "@app/utils/error/TraceError"
 import chalk from "chalk"
+import { Scenario } from "./Scenario"
 
 export class VariableManager {
   private static readonly _NavPattern = /^(\$\{){1}([^\}]+)\}$/
   private static readonly _PreloadVarPattern = /^\(\s*\{[a-zA-Z0-9_$,\s]+\}\s*\)$/
-  private static _Instance: VariableManager | null
+  private static _Instance: VariableManager
 
   static get Instance() {
-    return this._Instance || (this._Instance = new VariableManager())
+    if (!this._Instance) {
+      Scenario.Instance.events.on('scenario.reset', () => {
+        this._Instance = undefined
+      })
+      this._Instance = new VariableManager()
+    }
+    return this._Instance
   }
 
   readonly vars = {} as { [key: string]: any }

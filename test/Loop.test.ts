@@ -1,10 +1,8 @@
 import { Simulator } from "@app/Simulator"
 import { FileUtils } from "@app/utils/FileUtils"
 import { existsSync, readFileSync } from "fs"
-import { tmpdir } from "os"
-import { join } from "path"
 
-const path = join(tmpdir(), Math.random().toString())
+const path = FileUtils.GetNewTempPath()
 const arr = [1, 2, 3]
 
 afterAll(() => {

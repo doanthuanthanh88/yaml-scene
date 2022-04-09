@@ -109,14 +109,19 @@ export default class Reader implements IElement {
   adapters: (string | any)[]
 
   private get _adapter() {
-    let _adapter: IFileAdapter = new Resource(this.path)
+    let _adapter: IFileAdapter
     for (const adapter of this.adapters) {
       const adapterName = typeof adapter === 'string' ? adapter : Object.keys(adapter)[0]
       if (!adapterName) throw new TraceError('"adapters" is not valid', { adapter })
 
       const AdapterClass = FileAdapterFactory.GetAdapter(adapterName)
       const args = typeof adapter === 'object' ? adapter[adapterName] : undefined
-      _adapter = new AdapterClass(_adapter, args)
+      if (!_adapter) {
+        if (!['Resource', 'Url', 'File'].includes(adapterName)) {
+          _adapter = new Resource(this.path)
+        }
+      }
+      _adapter = new AdapterClass(_adapter || this.path, args)
     }
     return _adapter
   }

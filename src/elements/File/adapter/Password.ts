@@ -5,7 +5,7 @@ import { IFileAdapter } from "./IFileAdapter";
  * @guide
  * @name Password 
  * @description Read and write a encrypted file (`aes-128-cbc`). Used in File/Writer, File/Reader
- * @group File, +File.Adapter
+ * @group File, File.Adapter
  * @example
 - File/Reader:
     title: Read a json file

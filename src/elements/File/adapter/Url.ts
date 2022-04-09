@@ -3,21 +3,30 @@ import { FileUtils } from "@app/utils/FileUtils";
 import { StringUtils } from "@app/utils/StringUtils";
 import http from 'http';
 import https from 'https';
+import merge from "lodash.merge";
 import { parse, stringify } from "querystring";
 import { Readable } from "stream";
 import { IFileAdapter } from "./IFileAdapter";
 
 export class Url implements IFileAdapter {
 
-  constructor(public link: string, public readType = 'buffer' as 'stream' | 'buffer') {
+  constructor(public link: string, public config = {} as { readType?: 'stream' | 'buffer' }) {
     if (!link) {
       throw new TraceError(`"Link" is required`)
     }
+    this.config = merge({ readType: 'buffer' }, this.config)
   }
 
   async read() {
     if (!FileUtils.Existed(this.link)) throw new TraceError(`"${this.link}" is not valid`)
-    return this.readType === 'buffer' ? this.getBufferFromUrl(this.link) : this.getStreamFromUrl(this.link)
+    switch (this.config.readType) {
+      case 'buffer':
+        return this.getBufferFromUrl(this.link)
+      case 'stream':
+        return this.getStreamFromUrl(this.link)
+      default:
+        throw new TraceError(`Adapter "File" is not support "readType" is "${this.config.readType}"`)
+    }
   }
 
   async write(_data: any = '') {

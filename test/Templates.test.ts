@@ -1,13 +1,12 @@
 import { Simulator } from "@app/Simulator"
-import { existsSync, readFileSync, unlinkSync } from "fs"
-import { tmpdir } from "os"
-import { join } from "path"
+import { FileUtils } from "@app/utils/FileUtils"
+import { existsSync, readFileSync } from "fs"
 
 describe('Test element Templates', () => {
-  const path = join(tmpdir(), Math.random() + 'data.xlsx')
+  const path = FileUtils.GetNewTempPath('.txt')
 
   afterAll(() => {
-    existsSync(path) && unlinkSync(path)
+    FileUtils.RemoveFilesDirs(path)
   })
 
   test('Template is an array', async () => {

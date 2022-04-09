@@ -7,7 +7,7 @@ import { IFileAdapter } from "./IFileAdapter";
  * @guide
  * @name Excel 
  * @description Read and write excel file. Used in File/Writer, File/Reader
- * @group File, +File.Adapter
+ * @group File, File.Adapter
  * @example
 - File/Reader:
     title: Read text file 1 with password
@@ -57,7 +57,9 @@ export class Excel implements IFileAdapter {
 
   constructor(private file: IFileAdapter, config = {} as any) {
     this.config = config
-    if (this.file instanceof File) this.file.encoding = 'binary'
+    if (this.file instanceof File) {
+      this.file.config.encoding = 'binary'
+    }
   }
 
   async read() {

@@ -23,23 +23,33 @@ Please reference the below links for details:
  * @end
  */
 export class ExtensionManager {
-  private static _Instance: ExtensionManager | null
+  private static _Instance: ExtensionManager
 
   static get Instance() {
-    return this._Instance || (this._Instance = new ExtensionManager())
+    if (!this._Instance) {
+      Scenario.Instance.events.on('scenario.reset', () => {
+        this._Instance = undefined
+      })
+      this._Instance = new ExtensionManager()
+    }
+    return this._Instance
+  }
+
+  static Resolve(name: string) {
+    try {
+      return require.resolve(name)
+    } catch { }
+    return undefined
   }
 
   private extensionElements: { [key: string]: IElement } = {}
-  private globalModuleManager = new GlobalModuleManager()
+  private globalModuleManager?: GlobalModuleManager
+  private installModuleManager?: GlobalModuleManager
   private localModuleManager?: LocalModuleManager
   private installExtensionPath?: string
 
   constructor() {
     this.loadNpmYarnGlobalPaths()
-  }
-
-  reset() {
-    ExtensionManager._Instance = null
   }
 
   load(p: string, modulePath = '') {
@@ -51,23 +61,16 @@ export class ExtensionManager {
     } catch (err1) {
       if (this.extensionElements[p]) return this.extensionElements[p]
       try {
-        // Load from local or global module
-        modulePath = this.localModuleManager?.get(p) || this.globalModuleManager.get(p)
-        if (!modulePath) {
-          throw new ExtensionNotFound(p, `The scenario is using a new element "${p}"`)
-        }
+        // Load from `extensions` OR `install` in scenario OR yaml-scene/node_modules OR `yarn global` or `npm global`
+        modulePath = this.localModuleManager?.get(p) || this.installModuleManager?.get(p) || ExtensionManager.Resolve(p) || this.globalModuleManager?.get(p)
+        if (!modulePath) throw new ExtensionNotFound(p, `The scenario is using a new element "${p}"`)
+
         obj = require(modulePath)
         obj = this.getObjectInExport(obj, p)
         this.extensionElements[p] = obj
       } catch (err2) {
-        // Load from packages in node_modules
-        try {
-          obj = require(p)
-          obj = this.getObjectInExport(obj, p)
-        } catch (err3) {
-          LoggerManager.GetLogger().trace(err1, err2, err3)
-          throw err2
-        }
+        LoggerManager.GetLogger().trace(err1, err2)
+        throw err2
       }
     }
     return obj
@@ -188,7 +191,8 @@ export class ExtensionManager {
 
       if (!installInfo.localPath) installInfo.localPath = Scenario.Instance.element.rootDir
       this.installExtensionPath = installInfo.localPath = Scenario.Instance.resolvePath(installInfo.localPath)
-      this.globalModuleManager.add(this.installExtensionPath)
+      if (!this.installModuleManager) this.installModuleManager = new GlobalModuleManager()
+      this.installModuleManager.add(this.installExtensionPath)
 
       FileUtils.MakeDirExisted(this.installExtensionPath, 'dir')
     }
@@ -198,8 +202,11 @@ export class ExtensionManager {
   private loadNpmYarnGlobalPaths() {
     ["yarn global dir", "npm root -g"].forEach(cmd => {
       try {
-        execSync(cmd, { stdio: ['ignore', 'pipe', 'ignore'] }).toString()
-          .split('\n')
+        const cnt = execSync(cmd, { stdio: ['ignore', 'pipe', 'ignore'] }).toString()
+        if (!this.globalModuleManager && cnt) {
+          this.globalModuleManager = new GlobalModuleManager()
+        }
+        cnt.split('\n')
           .map((f = '') => {
             f = f.trim()
             if (f && !f.endsWith('/node_modules')) {
@@ -213,8 +220,8 @@ export class ExtensionManager {
         LoggerManager.GetLogger().trace(err)
       }
     })
-    if (!this.globalModuleManager.modules.length) {
-      throw new TraceError('Could not found "npm" or "yarn"')
+    if (!this.globalModuleManager?.modules.length) {
+      LoggerManager.GetLogger().warn('Could not found "npm" or "yarn"')
     }
   }
 
@@ -240,9 +247,7 @@ class LocalModuleManager {
     if (localExtensionKey) {
       const path = this.modules[localExtensionKey]
       const modulePath = join(path, name.replace(new RegExp(`^${localExtensionKey}\\/?`), ''))
-      try {
-        return require.resolve(modulePath);
-      } catch { }
+      return ExtensionManager.Resolve(modulePath)
     }
   }
 
@@ -261,9 +266,7 @@ class GlobalModuleManager {
 
   get(name: string) {
     for (const module of this.modules) {
-      try {
-        return require.resolve(join(module, name))
-      } catch { }
+      return ExtensionManager.Resolve(join(module, name))
     }
     return ''
   }

@@ -2,12 +2,11 @@ import { Simulator } from "@app/Simulator"
 import { VariableManager } from "@app/singleton/VariableManager"
 import { FileUtils } from "@app/utils/FileUtils"
 import { readdirSync } from "fs"
-import { tmpdir } from "os"
 import { join } from "path"
 import { Readable } from "stream"
 
-describe.skip('!binary tag', () => {
-  const uploadDir = join(tmpdir(), 'uploadFile')
+describe.skip('!stream tag', () => {
+  const uploadDir = FileUtils.GetNewTempPath(undefined, 'uploadFile')
 
   beforeAll(() => {
     FileUtils.MakeDirExisted(uploadDir, 'dir')
@@ -24,7 +23,7 @@ describe.skip('!binary tag', () => {
     uploadFile: ${join(__dirname, '../assets/custom1.js')}
 - Vars:
     myBin: !tag
-      tags/binary: \${uploadFile}
+      @file/stream: \${uploadFile}
 
 - Fragment: ${join(__dirname, 'upload.yas.yaml')}
     
@@ -36,7 +35,7 @@ describe.skip('!binary tag', () => {
       content-type: multipart/form-data
     body:
       files: !tag
-        tags/binary: \${uploadFile}
+        @file/stream: \${uploadFile}
 `)
     expect(VariableManager.Instance.vars.myBin).toBeInstanceOf(Readable)
     expect(readdirSync(uploadDir).length).toBe(1)
@@ -49,7 +48,7 @@ describe.skip('!binary tag', () => {
     uploadFile: https://raw.githubusercontent.com/doanthuanthanh88/yaml-scene/main/tsconfig.json
 - Vars:
     myBin: !tag
-      tags/binary: \${uploadFile}
+      @file/stream: \${uploadFile}
 
 - Fragment: ${join(__dirname, 'upload.yas.yaml')}
 
@@ -61,7 +60,7 @@ describe.skip('!binary tag', () => {
       content-type: multipart/form-data
     body:
       files: !tag
-        tags/binary: \${uploadFile}
+        @file/stream: \${uploadFile}
 `)
     expect(VariableManager.Instance.vars.myBin).toBeInstanceOf(Readable)
     expect(readdirSync(uploadDir).length).toBe(2)

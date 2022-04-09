@@ -2,16 +2,19 @@ import { IElement } from "@app/elements/IElement"
 import { TraceError } from "@app/utils/error/TraceError"
 import cloneDeep from "lodash.clonedeep"
 import omit from "lodash.omit"
+import { Scenario } from "./Scenario"
 
 export class TemplateManager extends Map<string, IElement> {
-  private static _Instance: TemplateManager | null
+  private static _Instance: TemplateManager
 
   static get Instance() {
-    return this._Instance || (this._Instance = new TemplateManager())
-  }
-
-  reset() {
-    TemplateManager._Instance = null
+    if (!this._Instance) {
+      Scenario.Instance.events.on('scenario.reset', () => {
+        this._Instance = undefined
+      })
+      this._Instance = new TemplateManager()
+    }
+    return this._Instance
   }
 
   setElement(name: string, elem: IElement) {

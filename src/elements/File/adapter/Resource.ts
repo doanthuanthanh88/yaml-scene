@@ -1,5 +1,6 @@
 import { TraceError } from "@app/utils/error/TraceError";
 import { FileUtils } from "@app/utils/FileUtils";
+import { WriteFileOptions } from "fs";
 import { File } from "./File";
 import { IFileAdapter } from "./IFileAdapter";
 import { Url } from "./Url";
@@ -12,12 +13,12 @@ export class Resource implements IFileAdapter {
     return this.existed === true
   }
 
-  constructor(public path: string, public readType = 'buffer' as 'stream' | 'buffer') {
+  constructor(public path: string, public config = {} as { encoding?: WriteFileOptions, readType?: 'stream' | 'buffer' }) {
     this.existed = FileUtils.Existed(this.path)
     if (!this.existed) {
       throw new TraceError(`"${this.path}" is not valid`)
     }
-    this._adapter = this.existed === 'url' ? new Url(this.path, this.readType) : new File(this.path, undefined, this.readType)
+    this._adapter = this.existed === 'url' ? new Url(this.path, this.config) : new File(this.path, this.config)
   }
 
   async read() {
@@ -25,7 +26,7 @@ export class Resource implements IFileAdapter {
   }
 
   async write(data: any) {
-    return this._adapter?.write(data)
+    return this._adapter.write(data)
   }
 
 }

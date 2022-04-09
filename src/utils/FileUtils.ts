@@ -1,72 +1,36 @@
 import { existsSync, mkdirSync, rmSync } from 'fs'
-import { dirname } from 'path'
+import { tmpdir } from 'os'
+import { dirname, join } from 'path'
+
+const YAML_SCENE_CACHED_DIR = 'YAML_SCENE_CACHED_DIR'
 
 export class FileUtils {
-
-  // static async GetStreamFromUrlOrPath(urlOrPath: string) {
-  //   const existed = FileUtils.Existed(urlOrPath)
-  //   if (!existed) throw new TraceError(`File "${urlOrPath}" is not existed`)
-  //   if (existed === 'url') {
-  //     const content = await new Promise<Readable>((resolve) => {
-  //       const req = urlOrPath.startsWith('https://') ? https : http
-  //       const [path, query = ''] = urlOrPath.split('?')
-  //       const { headers = '{}', ...queries } = parse(query) as any
-
-  //       const url = `${path}${Object.keys(queries).length ? '?' : ''}${stringify(queries)}`
-  //       req.get(url, {
-  //         headers: JSON.parse(headers)
-  //       }, response => {
-  //         resolve(response)
-  //       });
-  //     })
-  //     return content
-  //   }
-  //   return createReadStream(urlOrPath)
-  // }
-
-  // static async GetContentFromUrlOrPath(urlOrPath: string) {
-  //   const existed = FileUtils.Existed(urlOrPath)
-  //   if (!existed) throw new TraceError(`File "${urlOrPath}" is not existed`)
-  //   if (existed === 'url') {
-  //     const content = await new Promise<Buffer>((resolve, reject) => {
-  //       const req = urlOrPath.startsWith('https://') ? https : http
-  //       const [path, query = ''] = urlOrPath.split('?')
-  //       const { headers = '{}', ...queries } = parse(query) as any
-
-  //       const url = `${path}${Object.keys(queries).length ? '?' : ''}${stringify(queries)}`
-  //       req.get(url, {
-  //         headers: JSON.parse(headers)
-  //       }, response => {
-  //         const data = new Array<Buffer>()
-  //         response.on('data', (chunk) => {
-  //           data.push(chunk)
-  //         })
-  //         response.on('end', () => {
-  //           resolve(Buffer.concat(data))
-  //         })
-  //         response.on('error', reject)
-  //       });
-  //     })
-  //     return content
-  //   }
-  //   return readFile(urlOrPath)
-  // }
+  private static _DefaultTmpDir?: string
 
   static MakeDirExisted(path: string, type = 'file' as 'file' | 'dir') {
     if (!existsSync(path)) {
       const dir = type === 'file' ? dirname(path) : path
       mkdirSync(dir, { recursive: true })
     }
+    return path
   }
 
-  static RemoveFilesDirs(path: string) {
-    existsSync(path) && rmSync(path, { recursive: true, force: true })
+  static RemoveFilesDirs(...paths: string[]) {
+    paths.forEach(path => existsSync(path) && rmSync(path, { recursive: true, force: true }))
   }
 
   static Existed(path: string) {
     if (!path) return false
     if (/^https?:\/\//.test(path)) return 'url'
     return existsSync(path)
+  }
+
+  static get UniqueName() {
+    return Math.random().toString().substring(2)
+  }
+
+  static GetNewTempPath(ext = '', ...subPaths: string[]) {
+    return join(this._DefaultTmpDir || (this._DefaultTmpDir = this.MakeDirExisted(join(process.env[YAML_SCENE_CACHED_DIR] || tmpdir(), 'yaml-scene.cached'), 'dir')), ...subPaths, this.UniqueName + ext)
   }
 
 }

@@ -1,14 +1,12 @@
 import { Simulator } from "@app/Simulator"
 import { VariableManager } from "@app/singleton/VariableManager"
-import { existsSync, unlinkSync } from "fs"
-import { tmpdir } from "os"
-import { join } from "path"
+import { FileUtils } from "@app/utils/FileUtils"
 
 describe('File/Reader and File/Writer', () => {
-  const path = join(tmpdir(), Math.random() + 'data.xlsx')
+  const path = FileUtils.GetNewTempPath('.xlsx')
 
   afterAll(() => {
-    existsSync(path) && unlinkSync(path)
+    FileUtils.RemoveFilesDirs(path)
   })
 
   test('Excel file', async () => {
@@ -55,13 +53,13 @@ describe('File/Reader and File/Writer', () => {
 })
 
 describe.each([
-  { adapter: 'Text', filename: 'data.txt', data: 'Hello world' },
-  { adapter: 'Json', filename: 'data.json', data: { "say": "hello world" } },
-  { adapter: 'Csv', filename: 'data.csv', data: [['label 1', 'label 2', 'label 3', 'label 4'], ['1', '2', '3', '4']] },
-  { adapter: 'Yaml', filename: 'data.yaml', data: { "say": "hello world" } },
-  { adapter: 'Xml', filename: 'data.xml', data: { "say": "hello world" } },
+  { adapter: 'Text', filename: '.txt', data: 'Hello world' },
+  { adapter: 'Json', filename: '.json', data: { "say": "hello world" } },
+  { adapter: 'Csv', filename: '.csv', data: [['label 1', 'label 2', 'label 3', 'label 4'], ['1', '2', '3', '4']] },
+  { adapter: 'Yaml', filename: '.yaml', data: { "say": "hello world" } },
+  { adapter: 'Xml', filename: '.xml', data: { "say": "hello world" } },
 ])('File/Reader and File/Writer', ({ adapter, filename, data }) => {
-  const path = join(tmpdir(), Math.random() + filename)
+  const path = FileUtils.GetNewTempPath(filename)
 
   beforeAll(async () => {
     await Simulator.Run(`
@@ -83,8 +81,7 @@ describe.each([
   })
 
   afterAll(() => {
-    unlinkSync(`${path}`)
-    unlinkSync(`${path}.encrypted`)
+    FileUtils.RemoveFilesDirs(`${path}`, `${path}.encrypted`)
   })
 
   test(`Read a ${adapter} file`, async () => {
