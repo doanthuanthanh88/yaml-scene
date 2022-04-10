@@ -1,12 +1,11 @@
 import { dump, load } from "js-yaml";
 import { IFileAdapter } from "./IFileAdapter";
 
-/**
- * @guide
- * @name Yaml 
- * @description Read and write yaml file. Used in File/Writer, File/Reader
- * @group File, File.Adapter
- * @example
+/*****
+@name Yaml 
+@description Read and write yaml file. Used in File/Writer, File/Reader
+@group File, File.Adapter
+@example
 - File/Reader:
     title: Read a yaml file
     path: assets/data1.yaml
@@ -24,8 +23,7 @@ import { IFileAdapter } from "./IFileAdapter";
         age: 1
       - name: name 2
         age: 3
- * @end
- */
+*/
 export class Yaml implements IFileAdapter {
   constructor(private file: IFileAdapter) { }
 

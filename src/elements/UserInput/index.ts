@@ -7,12 +7,11 @@ import { AbsQuestion } from './AbsQuestion';
 import { QuestionBuilder } from './QuestionBuilder';
 import { QuestionType } from './QuestionType';
 
-/**
- * @guide
- * @name UserInput
- * @description Get user input from keyboard
- * @group Input
- * @example
+/*****
+@name UserInput
+@description Get user input from keyboard
+@group Input
+@example
 - UserInput:
     - title: Enter your name
       type: text # Default is text if not specific
@@ -100,8 +99,7 @@ import { QuestionType } from './QuestionType';
       type: confirm
       default: true
       var: submit
- * @end
- */
+*/
 export default class UserInput implements IElement {
   proxy: ElementProxy<this>
   $$: IElement

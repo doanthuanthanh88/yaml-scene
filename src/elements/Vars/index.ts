@@ -2,11 +2,10 @@ import { VariableManager } from "@app/singleton/VariableManager";
 import { ElementProxy } from "../ElementProxy";
 import { IElement } from "../IElement";
 
-/**
- * @guide
- * @name Vars
- * @description Declare variables in scene
- * @example
+/*****
+@name Vars
+@description Declare variables in scene
+@example
 - Vars:
     userA:
       name: thanh
@@ -14,8 +13,7 @@ import { IElement } from "../IElement";
 
 - Echo: ${userA}
 - Echo: ${userA.name}
- * @end
- */
+*/
 export default class Vars implements IElement {
   proxy: ElementProxy<this>
   $$: IElement

@@ -10,23 +10,20 @@ import merge from "lodash.merge";
 import omit from "lodash.omit";
 import { IElement } from "./IElement";
 
-/** 
- * @guide
- * @name Default attributes
- * @description Attributes in all of elements
- * @group Attribute
- * @order 0
- * @h1 #
- * @end
- */
+/*****
+@name Default attributes
+@description Attributes in all of elements
+@group Attribute
+@order 0
+@h1 #
+*/
 
-/** 
- * @guide
- * @name if
- * @description Check condition before decided to run this element or not
- * @group Attribute
- * @h1 ##
- * @example
+/*****
+@name if
+@description Check condition before decided to run this element or not
+@group Attribute
+@h1 ##
+@example
 - Vars:
     isEnd: true
 
@@ -42,16 +39,14 @@ import { IElement } from "./IElement";
 - Echo: 
     if: ${!sayHello}
     title: Goodbye
- * @end
- */
+*/
 
-/**
- * @guide
- * @name async
- * @description Run element asynchronized which not blocked others
- * @group Attribute
- * @h1 ##
- * @example
+/*****
+@name async
+@description Run element asynchronized which not blocked others
+@group Attribute
+@h1 ##
+@example
 - Group:
     title: Run async jobs
     stepDelay: 2s
@@ -68,16 +63,14 @@ import { IElement } from "./IElement";
           async: true
           steps:
             - Echo: Hello 3
- * @end
- */
+*/
 
-/**
- * @guide
- * @name delay
- * @description Delay after a specific time before keep playing the nexts
- * @group Attribute
- * @h1 ##
- * @example
+/*****
+@name delay
+@description Delay after a specific time before keep playing the nexts
+@group Attribute
+@h1 ##
+@example
 - Group:
     title: Delay all of steps in a group
     stepDelay: 1s
@@ -95,16 +88,14 @@ import { IElement } from "./IElement";
           title: step 2 run after 2s
           time: 2s
       - Echo: <step 2>
- * @end
- */
+*/
 
-/**
- * @guide
- * @name loop
- * @description Loop element in Array, Object or any conditional
- * @group Attribute
- * @h1 ##
- * @example
+/*****
+@name loop
+@description Loop element in Array, Object or any conditional
+@group Attribute
+@h1 ##
+@example
 # Loop in array
 - Vars:
     i: 0
@@ -136,32 +127,78 @@ import { IElement } from "./IElement";
       - Echo: ${i++}
       - Vars:
           i: ${i+1}
- * @end
+*/
+
+/**
+ * Wrapper for element which provides utility functions
+ * @class
  */
 export class ElementProxy<T extends IElement> {
 
+  /**
+   * Get logger
+   * @readonly
+   * @returns {Logger}
+   */
   get logger(): Logger {
     return (this.element.logLevel ? LoggerManager.GetLogger(this.element.logLevel) : this.element.$$?.proxy.logger) || LoggerManager.GetLogger()
   }
 
+  /**
+   * Get global events
+   * @readonly
+   * @returns {EventEmitter}
+   */
   get events(): EventEmitter {
     return Scenario.Instance.element.events
   }
 
+  /**
+   * Get global variables
+   * @readonly
+   * @returns {EventEmitter}
+   */
   get vars() {
     return VariableManager.Instance.vars
   }
 
+  /**
+   * Get loop key
+   * @description It only used in the loop
+   * @readonly
+   * @returns {number | string}
+   */
   get loopKey() {
     return this.element?.loopKey
   }
 
+  /**
+   * Get loop value
+   * @description It only used in the loop
+   * @readonly
+   * @returns {any}
+   */
   get loopValue() {
     return this.element?.loopValue
   }
 
+  /**
+   * Get conditional value
+   * @description It only used in the conditional
+   * @readonly
+   * @returns {any}
+   */
   get if() {
     return this.element?.if
+  }
+
+  /**
+   * Check the element is attachted to the scenario
+   * @readonly
+   * @returns {boolean}
+   */
+  get isAttacted() {
+    return !!this.element.$$
   }
 
   constructor(public element: T) {
@@ -169,10 +206,11 @@ export class ElementProxy<T extends IElement> {
     this.element.proxy = this
   }
 
-  get isAttacted() {
-    return !!this.element.$$
-  }
-
+  /**
+   * Init data value from yaml
+   * @description Handle logic to inherit or expose a template before make the element init data
+   * @param {any} props Passed value from yaml file to it before passed to element
+   */
   init(props: any) {
     const exposeKeys = props && props['->']
     props = this.inherit(props)
@@ -185,6 +223,11 @@ export class ElementProxy<T extends IElement> {
     }
   }
 
+  /**
+   * Prepare data before executing
+   * @description Handle logic to decided the element prepare data or not
+   * @async
+   */
   async prepare() {
     const _if = await this.getVar(this.element.if)
     this.element.if = _if === undefined || _if
@@ -198,10 +241,18 @@ export class ElementProxy<T extends IElement> {
     }
   }
 
+  /**
+   * Change parent Group
+   * @param {IElement} group 
+   */
   setGroup(group: IElement) {
     this.element.$$ = group
   }
 
+  /**
+   * Execute main tasks
+   * @async
+   */
   async exec() {
     await this.prepare()
     if (!this.element.if) return
@@ -245,6 +296,10 @@ export class ElementProxy<T extends IElement> {
     }
   }
 
+  /**
+   * Release resources after executed successfully
+   * @async
+   */
   dispose() {
     if (!this.element.if) return
     if (this.element.dispose) {
@@ -252,6 +307,12 @@ export class ElementProxy<T extends IElement> {
     }
   }
 
+  /**
+   * Clone data when it is in the loop or get in templates
+   * @async
+   * @returns Instance of this element
+   * @default undefined
+   */
   clone() {
     let proxy: ElementProxy<T>
     if (this.element.clone) {
@@ -266,43 +327,83 @@ export class ElementProxy<T extends IElement> {
     return proxy
   }
 
+  /**
+   * Get absolute path
+   * @param path Root path is directory which includes scenario file
+   * @returns {string}
+   */
   resolvePath(path?: string) {
     return Scenario.Instance.element.resolvePath(path)
   }
 
+  /**
+   * Change logger
+   * @param {LogLevel} level
+   */
   changeLogLevel(level: LogLevel) {
     this.element.logLevel = level
   }
 
-  async replaceVar(varObj: any, obj = {} as any, defaultKey?: string) {
-    if (typeof varObj === 'object') {
-      await VariableManager.Instance.replace(varObj, { $: this.element.$ || this.element, $$: this.element.$$, ...obj }, defaultKey)
+  /**
+   * Replace value in global variable if it's existed
+   * @param {any} yamlValue Object value in yaml. which includes global variables
+   * @param {Object} baseContext Context value which is used in the yamlValue
+   * @param {?string} defaultKey If yamlValue is string, then it return baseContext['defaultKey']
+   */
+  async replaceVar(yamlValue: any, baseContext = {} as any, defaultKey?: string) {
+    if (typeof yamlValue === 'object') {
+      await VariableManager.Instance.replace(yamlValue, { $: this.element.$ || this.element, $$: this.element.$$, ...baseContext }, defaultKey)
     }
   }
 
-  async setVar(varObj: any, obj = {} as any, defaultKey?: string) {
-    if (typeof varObj === 'string') {
-      await VariableManager.Instance.set(varObj, obj, defaultKey)
+  /**
+   * Set value to global variable
+   * @param {any} yamlValue Object value in yaml. which includes global variables
+   * @param {Object} baseContext Context value which is used in the yamlValue
+   * @param {?string} defaultKey If yamlValue is string, then it return baseContext['defaultKey']
+   */
+  async setVar(yamlValue: any, baseContext = {} as any, defaultKey?: string) {
+    if (typeof yamlValue === 'string') {
+      await VariableManager.Instance.set(yamlValue, baseContext, defaultKey)
     } else {
-      await VariableManager.Instance.set(varObj, { $: this.element.$ || this.element, $$: this.element.$$, ...obj }, defaultKey)
+      await VariableManager.Instance.set(yamlValue, { $: this.element.$ || this.element, $$: this.element.$$, ...baseContext }, defaultKey)
     }
   }
 
+  /**
+   * Execute a function content
+   * @param {string} func Function source code
+   * @param {Object} baseContext Context used in the function
+   */
   async eval<T>(func?: string, baseContext = {} as any) {
     const vl = await VariableManager.Instance.eval(func, { $: this.element.$ || this.element, $$: this.element.$$, ...baseContext })
     return vl as T
   }
 
-  async getVar(obj: any, baseContext = {}) {
-    const vl = await VariableManager.Instance.get(obj, { $: this.element.$ || this.element, $$: this.element.$$, ...baseContext })
+  /**
+   * Get a variable value
+   * @param {any} yamlValue Object value in yaml. which includes global variables
+   * @param {Object} baseContext Context used in the function
+   */
+  async getVar(yamlValue: any, baseContext = {}) {
+    const vl = await VariableManager.Instance.get(yamlValue, { $: this.element.$ || this.element, $$: this.element.$$, ...baseContext })
     return vl
   }
 
+  /**
+   * Get multiple variable values
+   * @param {any} obj Current object
+   * @param {...string} props List of object properties will is apply value
+   */
   async applyVars(obj: any, ...props: string[]) {
     await Promise.all(props.map(async p => obj[p] = await this.getVar(obj[p])))
   }
 
-  inherit(props: any) {
+  /**
+   * Get properties in templates by a key to merge to element
+   * @private
+   */
+  private inherit(props: any) {
     if (props && props['<-']) {
       const keys = Array.isArray(props['<-']) ? props['<-'] : [props['<-']]
       keys.forEach(key => {
@@ -315,7 +416,11 @@ export class ElementProxy<T extends IElement> {
     return props
   }
 
-  expose(exposeKeys: string[] | string) {
+  /**
+   * Push properties to templates with a key
+   * @private
+   */
+  private expose(exposeKeys: string[] | string) {
     if (exposeKeys) {
       const keys = Array.isArray(exposeKeys) ? exposeKeys : [exposeKeys]
       keys.forEach(key => {

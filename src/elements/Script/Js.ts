@@ -4,12 +4,11 @@ import merge from 'lodash.merge';
 import { ElementProxy } from "../ElementProxy";
 import { IElement } from "../IElement";
 
-/**
- * @guide
- * @name Script/Js
- * @description Embed javascript code into scene
- * @group External
- * @example
+/*****
+@name Script/Js
+@description Embed javascript code into scene
+@group External
+@example
 - Vars:
     name: 10
     age: 10
@@ -30,8 +29,7 @@ import { IElement } from "../IElement";
     $.proxy.vars.newName = name + 10                  # `$` is referenced to `Js` element in `Script`
     
 - Echo: New value ${newName}
- * @end
- */
+*/
 export default class Js implements IElement {
   proxy: ElementProxy<this>
   $$: IElement

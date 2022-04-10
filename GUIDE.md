@@ -359,8 +359,8 @@ Auto scan file to detect the comment format which is generated to markdown docum
 ```yaml
 - Doc/Guide/MD:
     # pattern:
-    #   begin: ^\s*\*\s@guide\\s*$         # Default pattern
-    #   end: \s*\*\s@end\\s*$              # Default pattern
+    #   begin: ^\s*\/\*{5}\s*$             # Default pattern
+    #   end:   ^\s*\*{1,}\/\s*$            # Default pattern
     prefixHashLink:                        # Default is `user-content-` for github
     includes:
       - src
@@ -372,34 +372,32 @@ Auto scan file to detect the comment format which is generated to markdown docum
 ** Code example **
 
 ```js
-/**
- * @guide
- * @name Element1
- * @description Embed javascript code into scene
+/*****
+@name Element1
+@description Embed javascript code into scene
 ***Details***
 
- * @h1 ##
+@h1 ##
 Could not combine `@h1` and `@h2` in same guideline block
 More information above detail block
 
- * @h2 ##
+@h2 ##
 Could not combine `@h1` and `@h2` in same guideline block
 More information below detail block
 
- * @group Tag1, Tag2
- * @exampleType custom
- * @example
+@group Tag1, Tag2
+@exampleType custom
+@example
 **Example**
 ```js
 console.log('Hello world')
 ``\`
- \* @end
- *\/
+*\/
 class Element1 {
 
 }
 ```
-- `@guide`: Begin scan a new guideline block
+- `/*****`: Begin scan a new guideline block
 - `@name`: Element name
 - `@description`: Element description. (Markdown format)
 - `@exampleType`: This is content type in hightlight code block in markdown. \`\`\`yaml ... \`\`\`
@@ -418,7 +416,7 @@ class Element1 {
   - Default: 5
 - `@h1`: Describe header in markdown (#, ##...). This content is markdown format which show above document details block. Could not combine `@h1` and `@h2` in same guideline block
 - `@h2`: Describe header in markdown (#, ##...). This content is markdown format which show below document details block. Could not combine `@h1` and `@h2` in same guideline block
-- `@end`: Mark to scan done a guideline block
+- `*\/`: Mark to scan done a guideline block
 
 **Header position**
 
@@ -603,13 +601,13 @@ Read a file then set content to a variable
 
 File adapters:
 
-- [Read a text file](#File%2C%20%2BFile.Adapter%2FText)
-- [Read a csv file](#File%2C%20%2BFile.Adapter%2FCsv)
-- [Read a json file](#File%2C%20%2BFile.Adapter%2FJson)
-- [Read a xml file](#File%2C%20%2BFile.Adapter%2FXml)
-- [Read a yaml file](#File%2C%20%2BFile.Adapter%2FYaml)
-- [Read a excel file](#File%2C%20%2BFile.Adapter%2FExcel)
-- [Read a encrypted file](#File%2C%20%2BFile.Adapter%2FPassword)  
+- [Read a text file](#user-content-file%2c%20file.adapter-text)
+- [Read a csv file](#user-content-file%2c%20file.adapter-csv)
+- [Read a json file](#user-content-file%2c%20file.adapter-json)
+- [Read a xml file](#user-content-file%2c%20file.adapter-xml)
+- [Read a yaml file](#user-content-file%2c%20file.adapter-yaml)
+- [Read a excel file](#user-content-file%2c%20file.adapter-excel)
+- [Read a encrypted file](#user-content-file%2c%20file.adapter-password)  
 ```yaml
 - File/Reader:
     title: Read a json file
@@ -690,13 +688,13 @@ You can write a new adapter by yourself then use in adapters.
 Write content to a file
 File adapters:
 
-- [Read a text file](#File%2C%20%2BFile.Adapter%2FText)
-- [Read a csv file](#File%2C%20%2BFile.Adapter%2FCsv)
-- [Read a json file](#File%2C%20%2BFile.Adapter%2FJson)
-- [Read a xml file](#File%2C%20%2BFile.Adapter%2FXml)
-- [Read a yaml file](#File%2C%20%2BFile.Adapter%2FYaml)
-- [Read a excel file](#File%2C%20%2BFile.Adapter%2FExcel)
-- [Read a encrypted file](#File%2C%20%2BFile.Adapter%2FPassword)  
+- [Read a text file](#user-content-file%2c%20file.adapter-text)
+- [Read a csv file](#user-content-file%2c%20file.adapter-csv)
+- [Read a json file](#user-content-file%2c%20file.adapter-json)
+- [Read a xml file](#user-content-file%2c%20file.adapter-xml)
+- [Read a yaml file](#user-content-file%2c%20file.adapter-yaml)
+- [Read a excel file](#user-content-file%2c%20file.adapter-excel)
+- [Read a encrypted file](#user-content-file%2c%20file.adapter-password)  
 ```yaml
 - File/Writer:
     title: Write to a json file

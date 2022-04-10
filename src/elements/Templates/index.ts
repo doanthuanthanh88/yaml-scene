@@ -2,12 +2,11 @@ import { ElementFactory } from "../ElementFactory";
 import { ElementProxy } from "../ElementProxy";
 import { IElement } from "../IElement";
 
-/**
- * @guide
- * @name Templates
- * @description Declare elements which not `inited` or `run`  
+/*****
+@name Templates
+@description Declare elements which not `inited` or `run`  
 It's only used for `extends` or `inherit` purposes
- * @example
+@example
 - Templates:
     - Get:
         ->: base1    # Declare a template with name is "base"
@@ -29,8 +28,7 @@ It's only used for `extends` or `inherit` purposes
     url: /product/:id
     params:
       id: 2
- * @end
- */
+*/
 export default class Templates implements IElement {
   proxy: ElementProxy<this>
   $$: IElement

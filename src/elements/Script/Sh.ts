@@ -3,12 +3,11 @@ import { FileUtils } from "@app/utils/FileUtils";
 import { writeFileSync } from "fs";
 import Exec from "../Exec";
 
-/**
- * @guide
- * @name Script/Sh
- * @description Embed shell script into scene
- * @group External
- * @example
+/*****
+@name Script/Sh
+@description Embed shell script into scene
+@group External
+@example
 - Vars:
     name: 'thanh'
 
@@ -38,8 +37,7 @@ import Exec from "../Exec";
       echo ${name}
       echo $1
       echo $2
- * @end
- */
+*/
 export default class Sh extends Exec {
   bin: string
   content: string

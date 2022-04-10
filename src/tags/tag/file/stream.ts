@@ -1,13 +1,12 @@
 import file from ".";
 
-/**
- * @guide
- * @name !tag file/stream
- * @description Transform file/URL to stream
+/*****
+@name !tag file/stream
+@description Transform file/URL to stream
 - File in local path
 - File from url
- * @group !Tags
- * @example
+@group !Tags
+@example
 - yas-http/Post:
     url: http://localhost/upload
     headers:
@@ -17,8 +16,7 @@ import file from ".";
         file/stream: ~/data.json
       file2: !tag
         file/stream: https://raw....
- * @end
- */
+*/
 export default class stream extends file {
 
   override init(path: any) {

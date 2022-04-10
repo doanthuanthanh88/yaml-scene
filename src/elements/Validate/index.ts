@@ -5,12 +5,11 @@ import merge from "lodash.merge";
 import { ElementProxy } from '../ElementProxy';
 import { IElement } from '../IElement';
 
-/**
- * @guide
- * @name Validate
- * @description Validate data in running progress  
+/*****
+@name Validate
+@description Validate data in running progress  
 Currently only support chai `https://www.chaijs.com`
- * @example
+@example
 - Validate:
     title: Expect method
     chai: ${expect(userInfo).to.have.property('display_name')}
@@ -29,8 +28,7 @@ Currently only support chai `https://www.chaijs.com`
     title: Customize validate by code
     chai: !function |
       if (age <= 10) assert.fail('Age must be greater than 10')
- * @end
- */
+*/
 export default class Validate implements IElement {
   proxy: ElementProxy<this>
   $$: IElement

@@ -4,14 +4,13 @@ import { ElementProxy } from "../../../elements/ElementProxy";
 import Reader from "../../../elements/File/Reader";
 import { IElement } from "../../../elements/IElement";
 
-/**
- * @guide
- * @name !tag file
- * @description Transform file/URL to a file reader which includes adapters
+/*****
+@name !tag file
+@description Transform file/URL to a file reader which includes adapters
 - File in local path
 - File from url
- * @group !Tags
- * @example
+@group !Tags
+@example
 - yas-http/Post:
     url: http://localhost/upload
     headers:
@@ -27,8 +26,7 @@ import { IElement } from "../../../elements/IElement";
           path: https://raw....
           adapters: 
             - Text
- * @end
- */
+*/
 export default class file implements IElement {
   proxy: ElementProxy<this>;
   $$: IElement;

@@ -15,11 +15,10 @@ import Group from "../Group";
 
 const SALTED_PASSWORD = '|-YAML-SCENE-|'
 
-/**
- * @guide
- * @name Fragment
- * @description Import a scenario file (URL or file local) in the scenario.
- * @example
+/*****
+@name Fragment
+@description Import a scenario file (URL or file local) in the scenario.
+@example
 - Fragment: http://raw.github.../scenario1.yas.yaml
 
 - Fragment: 
@@ -30,8 +29,7 @@ const SALTED_PASSWORD = '|-YAML-SCENE-|'
     logLevel: slient                      # hide logger in scenario
     vars:                                 # Override variables value which is only declared in `vars` in the scenario file
       varInScenario1: override here
- * @end
- */
+*/
 export default class Fragment extends Group {
   file: string
   password?: string

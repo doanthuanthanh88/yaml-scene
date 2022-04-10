@@ -1,13 +1,12 @@
 import file from ".";
 
-/**
- * @guide
- * @name !tag file/buffer
- * @description Transform file/URL to buffer
+/*****
+@name !tag file/buffer
+@description Transform file/URL to buffer
 - File in local path
 - File from url
- * @group !Tags
- * @example
+@group !Tags
+@example
 - yas-http/Post:
     url: http://localhost/upload
     headers:
@@ -17,8 +16,7 @@ import file from ".";
         file/buffer: ~/data.json
       file2: !tag
         file/buffer: https://raw...
- * @end
- */
+*/
 export default class buffer extends file {
 
   override init(path: any) {

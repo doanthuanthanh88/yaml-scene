@@ -1,12 +1,11 @@
 import { AES } from '@app/utils/encrypt/AES';
 import { IFileAdapter } from "./IFileAdapter";
 
-/**
- * @guide
- * @name Password 
- * @description Read and write a encrypted file (`aes-128-cbc`). Used in File/Writer, File/Reader
- * @group File, File.Adapter
- * @example
+/*****
+@name Password 
+@description Read and write a encrypted file (`aes-128-cbc`). Used in File/Writer, File/Reader
+@group File, File.Adapter
+@example
 - File/Reader:
     title: Read a json file
     path: assets/data1
@@ -26,8 +25,7 @@ import { IFileAdapter } from "./IFileAdapter";
         age: 1
       - name: name 2
         age: 3
- * @end
- */
+*/
 export class Password implements IFileAdapter {
   private aes?: AES
 

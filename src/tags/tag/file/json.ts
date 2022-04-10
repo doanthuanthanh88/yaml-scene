@@ -1,13 +1,12 @@
 import file from ".";
 
-/**
- * @guide
- * @name !tag file/json
- * @description Transform file/URL to json object
+/*****
+@name !tag file/json
+@description Transform file/URL to json object
 - File in local path
 - File from url
- * @group !Tags
- * @example
+@group !Tags
+@example
 - yas-http/Post:
     url: http://localhost/upload
     headers:
@@ -17,8 +16,7 @@ import file from ".";
         file/json: ~/data.json
       file2: !tag
         file/json: https://raw....
- * @end
- */
+*/
 export default class json extends file {
 
   override init(path: any) {

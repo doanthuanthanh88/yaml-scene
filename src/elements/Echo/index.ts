@@ -6,12 +6,11 @@ import { Base } from "./transform/Base"
 import { IPrinterTransform } from "./transform/IPrinterTransform"
 import { PrinterTransformFactory } from "./transform/PrinterTransformFactory"
 
-/**
- * @guide
- * @name Echo
- * @description Print data to screen
- * @group Output
- * @example
+/*****
+@name Echo
+@description Print data to screen
+@group Output
+@example
 - Echo: Hello world                       # Print white text
 
 - Echo/Green: Green text                  # Print green text
@@ -42,8 +41,7 @@ import { PrinterTransformFactory } from "./transform/PrinterTransformFactory"
     message: ${user}
     color: gray
     pretty: true
- * @end
- */
+*/
 export default class Echo implements IElement {
   proxy: ElementProxy<this>
   $$: IElement

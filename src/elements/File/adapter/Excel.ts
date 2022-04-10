@@ -3,12 +3,11 @@ import { LazyImport } from "@app/utils/LazyImport";
 import { File } from "./File";
 import { IFileAdapter } from "./IFileAdapter";
 
-/**
- * @guide
- * @name Excel 
- * @description Read and write excel file. Used in File/Writer, File/Reader
- * @group File, File.Adapter
- * @example
+/*****
+@name Excel 
+@description Read and write excel file. Used in File/Writer, File/Reader
+@group File, File.Adapter
+@example
 - File/Reader:
     title: Read text file 1 with password
     path: assets/data1.xlsx
@@ -41,8 +40,7 @@ import { IFileAdapter } from "./IFileAdapter";
       poo: 444,
       age: 2
     }]
- * @end
- */
+*/
 export class Excel implements IFileAdapter {
   public config: {
     sheets: {

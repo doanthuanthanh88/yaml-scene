@@ -3,12 +3,11 @@ import merge from "lodash.merge";
 import { ElementProxy } from '../ElementProxy';
 import { IElement } from '../IElement';
 
-/**
- * @guide
- * @name Exec
- * @group External
- * @description Execute external command
- * @example
+/*****
+@name Exec
+@group External
+@description Execute external command
+@example
 - Exec:
     title: Show yarn global directories
     args:
@@ -18,8 +17,7 @@ import { IElement } from '../IElement';
     var:                                  # Get log content or exit code
       logContent: ${$.messages}           # `$` is referenced to `Exec` element
       exitCode: ${$.code}                
- * @end
- */
+*/
 export default class Exec implements IElement {
   static Run(cmds: string[] = [], isShow = true) {
     const [cmd, ...args] = cmds

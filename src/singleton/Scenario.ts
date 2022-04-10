@@ -13,13 +13,12 @@ import { homedir } from 'os'
 import { basename, dirname, isAbsolute, join, resolve } from 'path'
 import { ExtensionManager } from './ExtensionManager'
 
-/**
- * @guide
- * @name Standard Scenario file
- * @h1
- * @order 1
- * @description A standard scenario file
- * @example
+/*****
+@name Standard Scenario file
+@h1
+@order 1
+@description A standard scenario file
+@example
 title: Scene name                                   # Scene name
 description: Scene description                      # Scene description
 password:                                           # File will be encrypted to $FILE_NAME.encrypt to share to someone run it for privacy
@@ -53,20 +52,17 @@ steps:                                              # Includes all which you wan
   - Script/Js: |
       require('lodash').merge({}, {})
   - yas-sequence-diagram~SequenceDiagram:           # Load yas-sequence-diagram from npm/yarn global dirs then use class SequenceDiagram to handle
- * @end
- */
+*/
 
-/**
- * @guide
- * @name Simple Scenario file
- * @h1
- * @order 2
- * @description A simple scenario file
- * @example
+/*****
+@name Simple Scenario file
+@h1
+@order 2
+@description A simple scenario file
+@example
 - Fragment ./scene1.yas.yaml                        # Includes all which you want to do (URL or file local)
 - Fragment ./scene2.yas.yaml
- * @end
- */
+*/
 
 export class Scenario extends Fragment {
   private static _Instance: ElementProxy<Scenario>

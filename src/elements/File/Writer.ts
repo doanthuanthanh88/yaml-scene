@@ -7,22 +7,21 @@ import { File } from './adapter/File';
 import { FileAdapterFactory } from './adapter/FileAdapterFactory';
 import { IFileAdapter } from './adapter/IFileAdapter';
 
-/**
- * @guide
- * @name File/Writer
- * @description Write content to a file
+/*****
+@name File/Writer
+@description Write content to a file
 File adapters:
 
-- [Read a text file](#File%2C%20%2BFile.Adapter%2FText)
-- [Read a csv file](#File%2C%20%2BFile.Adapter%2FCsv)
-- [Read a json file](#File%2C%20%2BFile.Adapter%2FJson)
-- [Read a xml file](#File%2C%20%2BFile.Adapter%2FXml)
-- [Read a yaml file](#File%2C%20%2BFile.Adapter%2FYaml)
-- [Read a excel file](#File%2C%20%2BFile.Adapter%2FExcel)
-- [Read a encrypted file](#File%2C%20%2BFile.Adapter%2FPassword)
- * @group File, Output
- * @exampleType custom
- * @example
+- [Read a text file](#user-content-file%2c%20file.adapter-text)
+- [Read a csv file](#user-content-file%2c%20file.adapter-csv)
+- [Read a json file](#user-content-file%2c%20file.adapter-json)
+- [Read a xml file](#user-content-file%2c%20file.adapter-xml)
+- [Read a yaml file](#user-content-file%2c%20file.adapter-yaml)
+- [Read a excel file](#user-content-file%2c%20file.adapter-excel)
+- [Read a encrypted file](#user-content-file%2c%20file.adapter-password)
+@group File, Output
+@exampleType custom
+@example
 ```yaml
 - File/Writer:
     title: Write to a json file
@@ -100,8 +99,7 @@ You can write a new adapter by yourself then use in adapters.
         - name: name 2
           age: 3
   ```
- * @end
- */
+*/
 export default class Writer implements IElement {
   proxy: ElementProxy<this>
   $$: IElement

@@ -1,12 +1,11 @@
 import { Builder, parseStringPromise } from 'xml2js';
 import { IFileAdapter } from "./IFileAdapter";
 
-/**
- * @guide
- * @name Xml 
- * @description Read and write xml file. Used in File/Writer, File/Reader
- * @group File, File.Adapter
- * @example
+/*****
+@name Xml 
+@description Read and write xml file. Used in File/Writer, File/Reader
+@group File, File.Adapter
+@example
 - File/Reader:
     title: Read a xml file
     path: assets/data1.xml
@@ -23,8 +22,7 @@ import { IFileAdapter } from "./IFileAdapter";
       name: name 1
       age: 1
       class: 01
- * @end
- */
+*/
 export class Xml implements IFileAdapter {
   constructor(private file: IFileAdapter) { }
 

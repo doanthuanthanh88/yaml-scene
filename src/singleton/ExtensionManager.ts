@@ -11,17 +11,15 @@ import { basename, join } from "path";
 import { ExtensionNotFound } from "../utils/error/ExtensionNotFound";
 import { LoggerManager } from "./LoggerManager";
 
-/**
- * @guide
- * @h2 #
- * @name How to create a new extension
- * @description You can create a new extension in local or publish to npm registry
+/*****
+@h2 #
+@name How to create a new extension
+@description You can create a new extension in local or publish to npm registry
 
 Please reference the below links for details:  
 - A [Extension template project](https://github.com/doanthuanthanh88/yaml-scene-extensions) which provides commands to unit test, build, document... to deploy to npm or something like that
 - [Extension files](./yaml-test/examples/custom-extension) which implemented extension interface
- * @end
- */
+*/
 export class ExtensionManager {
   private static _Instance: ExtensionManager
 

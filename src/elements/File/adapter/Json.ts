@@ -1,11 +1,10 @@
 import { IFileAdapter } from "./IFileAdapter"
 
-/**
- * @guide
- * @name Json 
- * @description Read and write json file. Used in File/Writer, File/Reader
- * @group File, File.Adapter
- * @example
+/*****
+@name Json 
+@description Read and write json file. Used in File/Writer, File/Reader
+@group File, File.Adapter
+@example
 - File/Reader:
     title: Read a json file
     path: assets/data1.json
@@ -23,8 +22,7 @@ import { IFileAdapter } from "./IFileAdapter"
         age: 1
       - name: name 2
         age: 3
- * @end
- */
+*/
 export class Json implements IFileAdapter {
   constructor(private file: IFileAdapter, public config = { pretty: false }) { }
 

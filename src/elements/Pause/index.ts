@@ -6,11 +6,10 @@ import { IElement } from "../IElement"
 import { QuestionBuilder } from "../UserInput/QuestionBuilder"
 import { QuestionType } from "../UserInput/QuestionType"
 
-/**
- * @guide
- * @name Pause
- * @description Program will be paused and wait user input
- * @example
+/*****
+@name Pause
+@description Program will be paused and wait user input
+@example
 - Pause:
     title: It keeps playing when user enter OR after 1 second, user not enter then it keeps playing
     timeout: 1s
@@ -22,8 +21,7 @@ import { QuestionType } from "../UserInput/QuestionType"
     time: 3s
 
 - Pause:          # It will be paused until user enter
- * @end
- */
+*/
 export default class Pause implements IElement {
   proxy: ElementProxy<this>
   $$: IElement

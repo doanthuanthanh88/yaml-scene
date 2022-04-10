@@ -1,12 +1,11 @@
 import { LazyImport } from "@app/utils/LazyImport";
 import { IFileAdapter } from "./IFileAdapter";
 
-/**
- * @guide
- * @name Csv 
- * @description Read and write csv file. Used in File/Writer, File/Reader
- * @group File, File.Adapter
- * @example
+/*****
+@name Csv 
+@description Read and write csv file. Used in File/Writer, File/Reader
+@group File, File.Adapter
+@example
 - File/Reader:
     title: Read a csv file
     path: assets/data1.csv
@@ -24,8 +23,7 @@ import { IFileAdapter } from "./IFileAdapter";
         age: 1
       - name: name 2
         age: 3
- * @end
- */
+*/
 export class Csv implements IFileAdapter {
   constructor(private file: IFileAdapter) { }
 

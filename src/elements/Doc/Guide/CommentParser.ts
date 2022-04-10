@@ -4,7 +4,7 @@ import { CommentInfo } from './CommentInfo';
 export class CommentParser extends ContentParser<CommentInfo> {
   private info?: CommentInfo;
 
-  constructor(file: string, beginPattern = `^\\s*\\*\\s+@guide\\s*$`, endPattern = `\\s*\\*\\s+@end\\s*$`, noTagPattern: string) {
+  constructor(file: string, beginPattern = `^\\s*\\/\\*{5}\\s*$`, endPattern = `^\\s*\\*{1,}\\/\\s*$`, noTagPattern: string) {
     super(file, beginPattern, endPattern, noTagPattern)
   }
 

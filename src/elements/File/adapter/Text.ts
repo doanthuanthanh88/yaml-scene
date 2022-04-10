@@ -1,11 +1,10 @@
 import { IFileAdapter } from "./IFileAdapter";
 
-/**
- * @guide
- * @name Text 
- * @description Read and write text file. Used in File/Writer, File/Reader
- * @group File, File.Adapter
- * @example
+/*****
+@name Text 
+@description Read and write text file. Used in File/Writer, File/Reader
+@group File, File.Adapter
+@example
 - File/Reader:
     title: Read a text file
     path: assets/data1.txt
@@ -20,8 +19,7 @@ import { IFileAdapter } from "./IFileAdapter";
       - Text 
     content: |
       Hello world
- * @end
- */
+*/
 export class Text implements IFileAdapter {
   constructor(private file: IFileAdapter) { }
 

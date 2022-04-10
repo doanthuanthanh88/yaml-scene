@@ -5,11 +5,10 @@ import { ElementFactory } from "../ElementFactory";
 import { ElementProxy } from "../ElementProxy";
 import { IElement } from "../IElement";
 
-/**
- * @guide
- * @name Group
- * @description Group contains 1 or many elements
- * @example
+/*****
+@name Group
+@description Group contains 1 or many elements
+@example
 - Group:
     title: Run async jobs
     stepDelay: 2s
@@ -29,8 +28,7 @@ import { IElement } from "../IElement";
           async: true
           steps:
             - Echo: Hello 3
- * @end
- */
+*/
 export default class Group implements IElement {
   proxy: ElementProxy<this>
   $$: IElement
