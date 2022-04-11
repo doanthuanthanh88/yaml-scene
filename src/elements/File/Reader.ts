@@ -106,13 +106,13 @@ export default class Reader implements IElement {
   path: string
   adapters: (string | any)[]
 
-  private get _adapter() {
+  private async getAdapter() {
     let _adapter: IFileAdapter
     for (const adapter of this.adapters) {
       const adapterName = typeof adapter === 'string' ? adapter : Object.keys(adapter)[0]
       if (!adapterName) throw new TraceError('"adapters" is not valid', { adapter })
 
-      const AdapterClass = FileAdapterFactory.GetAdapter(adapterName)
+      const AdapterClass = await FileAdapterFactory.GetAdapter(adapterName)
       const args = typeof adapter === 'object' ? adapter[adapterName] : undefined
       if (!_adapter) {
         if (!['Resource', 'Url', 'File'].includes(adapterName)) {
@@ -145,7 +145,8 @@ export default class Reader implements IElement {
     if (this.title) this.proxy.logger.info('%s', this.title)
     this.title && console.group()
     try {
-      const obj = await this._adapter.read()
+      const adapters = await this.getAdapter()
+      const obj = await adapters.read()
       if (this.var) await this.proxy.setVar(this.var, { _: obj }, '_')
       this.proxy.logger.debug('%s %s', chalk.magenta('- Read file at'), chalk.gray(this.path))
       return obj

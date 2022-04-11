@@ -1,14 +1,12 @@
-import Exec from "@app/elements/Exec";
 import { IElement } from "@app/elements/IElement";
-import { Simulator } from "@app/Simulator";
 import { Scenario } from "@app/singleton/Scenario";
 import { TraceError } from "@app/utils/error/TraceError";
 import { FileUtils } from "@app/utils/FileUtils";
-import chalk from "chalk";
 import { execSync } from "child_process";
 import { existsSync } from "fs";
 import { basename, join } from "path";
 import { ExtensionNotFound } from "../utils/error/ExtensionNotFound";
+import { InstallationManager } from "./InstallationManager";
 import { LoggerManager } from "./LoggerManager";
 
 /*****
@@ -41,7 +39,7 @@ export class ExtensionManager {
   }
 
   private extensionElements: { [key: string]: IElement } = {}
-  private globalModuleManager?: GlobalModuleManager
+  public globalModuleManager?: GlobalModuleManager
   private installModuleManager?: GlobalModuleManager
   private localModuleManager?: LocalModuleManager
   private installExtensionPath?: string
@@ -50,27 +48,29 @@ export class ExtensionManager {
     this.loadNpmYarnGlobalPaths()
   }
 
-  load(p: string, modulePath = '') {
+  async load(p: string, modulePath = '') {
     let obj: any;
-    try {
-      // Load directly from src/elements/
-      obj = require(join(modulePath, p))
-      obj = this.getObjectInExport(obj, p)
-    } catch (err1) {
-      if (this.extensionElements[p]) return this.extensionElements[p]
+    do {
       try {
-        // Load from `extensions` OR `install` in scenario OR yaml-scene/node_modules OR `yarn global` or `npm global`
-        modulePath = this.localModuleManager?.get(p) || this.installModuleManager?.get(p) || ExtensionManager.Resolve(p) || this.globalModuleManager?.get(p)
-        if (!modulePath) throw new ExtensionNotFound(p, `The scenario is using a new element "${p}"`)
-
-        obj = require(modulePath)
+        // Load directly from src/elements/
+        obj = require(join(modulePath, p))
         obj = this.getObjectInExport(obj, p)
-        this.extensionElements[p] = obj
-      } catch (err2) {
-        LoggerManager.GetLogger().trace(err1, err2)
-        throw err2
+      } catch (err1) {
+        if (this.extensionElements[p]) return this.extensionElements[p]
+        try {
+          // Load from `extensions` OR `install` in scenario OR yaml-scene/node_modules OR `yarn global` or `npm global`
+          modulePath = this.localModuleManager?.get(p) || this.installModuleManager?.get(p) || ExtensionManager.Resolve(p) || this.globalModuleManager?.get(p)
+          if (!modulePath) throw new ExtensionNotFound(p, `The scenario is using a new element "${p}"`)
+
+          obj = require(modulePath)
+          obj = this.getObjectInExport(obj, p)
+          this.extensionElements[p] = obj
+        } catch (err) {
+          LoggerManager.GetLogger().trace(err1, err)
+          await InstallationManager.Instance.installNow(err)
+        }
       }
-    }
+    } while (!obj)
     return obj
   }
 
@@ -93,108 +93,39 @@ export class ExtensionManager {
       })
   }
 
-  static async UninstallPackage(installInfo: { dependencies: string[], localPath?: string }) {
-    let cmds = []
-    const { dependencies = [], localPath = join(__dirname, '../../') } = installInfo
-    cmds = [
-      { title: 'in yarn global', cmd: ['yarn', 'global', 'remove', ...dependencies] },
-      { title: 'in npm global', cmd: ['npm', 'uninstall', '-g', ...dependencies] },
-      { title: `yarn local at ${localPath}`, cmd: ['yarn', 'remove', '--prefix', localPath, ...dependencies].filter(e => e) },
-      { title: `npm local at ${localPath}`, cmd: ['npm', 'uninstall', '--prefix', localPath, ...dependencies].filter(e => e) },
-    ]
-    let errors = []
-    LoggerManager.GetLogger().info(chalk.red(`Unstalling ...`))
-    for (const { title, cmd } of cmds) {
-      try {
-        const log = Exec.Run(cmd)
-        if (log.error) throw log.error
-        dependencies.forEach(e => LoggerManager.GetLogger().info(chalk.red(`✔ ${e} ${chalk.gray(title)}`)))
-      } catch (err) {
-        errors.push(err)
-      }
-    }
-    if (errors.length === cmds.length) {
-      throw new TraceError(`Could not install "${dependencies}" to ${global ? 'global' : `"${localPath}"`}`, { errors })
-    }
-  }
-
-  static async UpgradePackage(installInfo: { dependencies: string[], localPath?: string }) {
-    let cmds = []
-    const { dependencies = [], localPath = join(__dirname, '../../') } = installInfo
-    cmds = [
-      { title: 'in yarn global', cmd: ['yarn', 'global', 'upgrade', ...dependencies] },
-      { title: 'in npm global', cmd: ['npm', 'upgrade', '-g', ...dependencies] },
-      { title: `yarn local at ${localPath}`, cmd: ['cd', localPath, '&&', 'yarn', 'upgrade', ...dependencies].filter(e => e) },
-      { title: `npm local at ${localPath}`, cmd: ['cd', localPath, '&&', 'npm', 'upgrade', ...dependencies].filter(e => e) },
-    ]
-    let errors = []
-    LoggerManager.GetLogger().info(chalk.yellow(`Upgrading ...`))
-    for (const { title, cmd } of cmds) {
-      try {
-        const log = Exec.Run(cmd)
-        if (log.error) throw log.error
-        dependencies.forEach(e => LoggerManager.GetLogger().info(chalk.yellow(`✔ ${e} ${chalk.gray(title)}`)))
-      } catch (err) {
-        errors.push(err)
-      }
-    }
-    if (errors.length === cmds.length) {
-      throw new TraceError(`Could not upgrade "${dependencies}" to ${global ? 'global' : `"${localPath}"`}`, { errors })
-    }
-  }
-
-  static async InstallPackage(installInfo: { dependencies: string[], localPath?: string, global?: boolean, isSave?: boolean }) {
-    let cmds = []
-    const { dependencies = [], localPath = join(__dirname, '../../'), global } = installInfo
-    if (global) {
-      cmds = [
-        { title: `in yarn global`, cmd: ['yarn', 'global', 'add', ...dependencies] },
-        { title: `in npm global`, cmd: ['npm', 'install', '-g', ...dependencies] },
-      ]
-    } else {
-      cmds = [
-        { title: `yarn local at ${localPath}`, cmd: ['yarn', 'add', ...dependencies, '--prod', '-O', '--no-lockfile', '--no-bin-links', '--ignore-scripts', '--modules-folder', join(localPath, 'node_modules')].filter(e => e) },
-        { title: `npm local at ${localPath}`, cmd: ['npm', 'install', ...dependencies, '--save-prod', '--prod', '--no-package-lock', '--no-bin-links', '--ignore-scripts', '--prefix', localPath].filter(e => e) }, //`${!isSave ? '--no-save' : ''}`,
-      ]
-      // if (!isSave) cmds.reverse()
-    }
-    let errors = []
-    LoggerManager.GetLogger().info(chalk.green(`Installing ${dependencies.map(e => `"${e}"`).join(", ")}...`))
-    for (const { title, cmd } of cmds) {
-      try {
-        const log = Exec.Run(cmd)
-        if (log.error) throw log.error
-        dependencies.forEach(e => LoggerManager.GetLogger().info(chalk.green(`✔ ${e} ${chalk.gray(title)}`)))
-        errors = []
-        break
-      } catch (err) {
-        errors.push(err)
-      }
-    }
-    if (errors.length) {
-      throw new TraceError(`Could not install "${dependencies}" to ${global ? 'global' : `"${localPath}"`}`, { errors })
-    }
-  }
-
   async uninstall() {
     if (this.installExtensionPath) {
       FileUtils.RemoveFilesDirs(this.installExtensionPath)
     }
   }
 
-  async install(installInfo: { dependencies: string[], localPath?: string, global?: boolean, isSave?: boolean }) {
-    if (!installInfo) return
-    if (!installInfo.global) {
-      if (installInfo.isSave === undefined && Simulator.IS_RUNNING) installInfo.isSave = false
+  async install(installInfos: { local?: { dependencies: string[], path?: string }, global?: { dependencies: string[] } }) {
+    if (!installInfos) return
+    const dependencies = new Array<ExtensionNotFound>()
+    if (installInfos.local) {
+      const info = installInfos.local
+      dependencies.push(...info.dependencies.map(packageName => {
+        if (!info.path) info.path = Scenario.Instance.element.rootDir
+        this.installExtensionPath = info.path = Scenario.Instance.resolvePath(info.path)
+        if (!this.installModuleManager) this.installModuleManager = new GlobalModuleManager()
+        this.installModuleManager.add(this.installExtensionPath)
 
-      if (!installInfo.localPath) installInfo.localPath = Scenario.Instance.element.rootDir
-      this.installExtensionPath = installInfo.localPath = Scenario.Instance.resolvePath(installInfo.localPath)
-      if (!this.installModuleManager) this.installModuleManager = new GlobalModuleManager()
-      this.installModuleManager.add(this.installExtensionPath)
-
-      FileUtils.MakeDirExisted(this.installExtensionPath, 'dir')
+        FileUtils.MakeDirExisted(this.installExtensionPath, 'dir')
+        const ext = new ExtensionNotFound(packageName, `Installing "${packageName}" ...`, 'local')
+        ext.localPath = info.path
+        ext.force = true
+        return ext
+      }))
     }
-    await ExtensionManager.InstallPackage(installInfo)
+    if (installInfos.global) {
+      const info = installInfos.global
+      dependencies.push(...info.dependencies.map(packageName => {
+        const ext = new ExtensionNotFound(packageName, `Installing "${packageName}" ...`, 'global')
+        ext.force = true
+        return ext
+      }))
+    }
+    await InstallationManager.Instance.installNow(...dependencies)
   }
 
   private loadNpmYarnGlobalPaths() {

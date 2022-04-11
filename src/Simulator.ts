@@ -2,7 +2,6 @@ import { writeFileSync } from "fs";
 import { CLI } from "./cli/CLI";
 import { LoggerManager } from "./singleton/LoggerManager";
 import { Scenario } from "./singleton/Scenario";
-import { ExtensionNotFound } from "./utils/error/ExtensionNotFound";
 import { FileUtils } from "./utils/FileUtils";
 
 export class Simulator {
@@ -32,16 +31,6 @@ export class Simulator {
             logLevel
           })
           await Scenario.Instance.exec()
-        } catch (err: any) {
-          if (err instanceof ExtensionNotFound) {
-            const [extensionName] = err.extensionName.split("/", 1)
-            const isContinue = await CLI.Instance.installExtensions([extensionName], err.localPath, err.scope, true)
-            if (isContinue) {
-              isRun = true
-              continue
-            }
-          }
-          throw err
         } finally {
           await Scenario.Instance.dispose()
         }

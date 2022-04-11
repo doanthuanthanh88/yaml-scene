@@ -1,7 +1,8 @@
 extensions:
   yas-file-adapter: ./excel.js
 install:
-  localPath: .
+  local:
+    path: .
 steps:
   - File/Reader:
       title: Read excel file

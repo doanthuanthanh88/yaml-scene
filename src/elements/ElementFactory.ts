@@ -6,9 +6,9 @@ import { IElement } from './IElement'
 
 export class ElementFactory {
 
-  static CreateElement<T extends IElement>(name: string, dirname = __dirname) {
+  static async CreateElement<T extends IElement>(name: string, dirname = __dirname) {
     let Clazz: typeof Element
-    Clazz = ExtensionManager.Instance.load(`${name}`, dirname)
+    Clazz = await ExtensionManager.Instance.load(`${name}`, dirname)
     if (!Clazz) throw new TraceError(`Could not found "${name}"`)
     let tag: any
     if (Clazz.prototype) {

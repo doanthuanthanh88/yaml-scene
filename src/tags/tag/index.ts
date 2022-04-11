@@ -20,9 +20,9 @@ export class TagMapping extends Type {
     super('!tag', {
       kind: 'mapping',
       instanceOf: ElementProxy,
-      construct: (props) => {
+      construct: async (props) => {
         const key = Object.keys(props)[0]
-        const proxy = ElementFactory.CreateElement(key, __dirname)
+        const proxy = await ElementFactory.CreateElement(key, __dirname) as any
         proxy.init(props[key])
         return proxy
       }

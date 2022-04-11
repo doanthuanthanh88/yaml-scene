@@ -123,14 +123,19 @@ export class VariableManager {
     if (Array.isArray(obj)) {
       const ctx = isPassed ? baseCtx : { ...this.vars, ...baseCtx }
       obj = await Promise.all(obj.map(o => this.get(o, ctx, true)))
-    } else if (obj instanceof ElementProxy) {
-      await obj.prepare()
-      obj = await obj.exec()
-      return obj
     } else if (typeof obj === 'object') {
-      const ctx = isPassed ? baseCtx : { ...this.vars, ...baseCtx }
-      for (const [key, vl] of Object.entries(obj)) {
-        obj[key] = await this.get(vl, ctx, true)
+      if (obj instanceof Promise) {
+        obj = await obj
+      }
+      if (obj instanceof ElementProxy) {
+        await obj.prepare()
+        obj = await obj.exec()
+        return obj
+      } else {
+        const ctx = isPassed ? baseCtx : { ...this.vars, ...baseCtx }
+        for (const [key, vl] of Object.entries(obj)) {
+          obj[key] = await this.get(vl, ctx, true)
+        }
       }
     } else if (this.isIncludeFormula(obj)) {
       let vl;

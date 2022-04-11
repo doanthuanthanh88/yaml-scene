@@ -1,4 +1,4 @@
-import UserInput from "@app/elements/UserInput";
+import { InstallationManager } from "@app/singleton/InstallationManager";
 import { LoggerManager } from "@app/singleton/LoggerManager";
 import { StringUtils } from "@app/utils/StringUtils";
 import chalk from "chalk";
@@ -6,8 +6,6 @@ import { program } from "commander";
 import { readFileSync, statSync } from "fs";
 import merge from "lodash.merge";
 import { join } from "path";
-import { ElementFactory } from "../elements/ElementFactory";
-import { ExtensionManager } from "../singleton/ExtensionManager";
 import { JSONSchema } from "./JSONSchema";
 
 export class CLI {
@@ -85,26 +83,24 @@ export class CLI {
         .argument("<extensions...>", "ExtensionManager package in npm registry")
         .action(async (extensionNames) => {
           extensionNames = extensionNames.map(extensionName => extensionName.includes('@') ? extensionName : `${extensionName}@latest`)
-          const isOK = await this.installExtensions(extensionNames)
-          if (isOK) {
-            const jsonSchema = new JSONSchema()
-            await jsonSchema.init()
-            await jsonSchema.merge(join(__dirname, '../../schema.yas.json'))
-            const extensions = []
-            for (const extensionNameFullVer of extensionNames) {
-              const [extensionName] = extensionNameFullVer.split('@', 1)
-              try {
-                const extension = ExtensionManager.Instance.load(`${extensionName}/schema.json`) || {}
-                if (Object.keys(extension).length) {
-                  extensions.push(extension)
-                }
-              } catch { }
-            }
-            if (extensions.length) {
-              await jsonSchema.addSchema(...extensions)
-              const fout = await jsonSchema.save()
-              LoggerManager.GetLogger().info(chalk.green(`Yaml-scene scheme is updated. "${chalk.bold(fout)}"`))
-            }
+          await InstallationManager.Instance.installExtensions(extensionNames, undefined, 'global', true)
+          const jsonSchema = new JSONSchema()
+          await jsonSchema.init()
+          await jsonSchema.merge(join(__dirname, '../../schema.yas.json'))
+          const extensions = []
+          for (const extensionNameFullVer of extensionNames) {
+            const [extensionName] = extensionNameFullVer.split('@', 1)
+            try {
+              const extension = require(`${extensionName}/schema.json`) || {}
+              if (Object.keys(extension).length) {
+                extensions.push(extension)
+              }
+            } catch { }
+          }
+          if (extensions.length) {
+            await jsonSchema.addSchema(...extensions)
+            const fout = await jsonSchema.save()
+            LoggerManager.GetLogger().info(chalk.green(`Yaml-scene scheme is updated. "${chalk.bold(fout)}"`))
           }
           isRunScenario = false
         })
@@ -117,26 +113,24 @@ export class CLI {
         .action(async (extensionNames) => {
           if (!extensionNames.length) extensionNames.push('yaml-scene')
           extensionNames = extensionNames.map(extensionName => extensionName.includes('@') ? extensionName : `${extensionName}@latest`)
-          const isOK = await this.upgradeExtensions(extensionNames)
-          if (isOK) {
-            const jsonSchema = new JSONSchema()
-            await jsonSchema.init()
-            await jsonSchema.merge(join(__dirname, '../../schema.yas.json'))
-            const extensions = []
-            for (const extensionNameFullVer of extensionNames) {
-              const [extensionName] = extensionNameFullVer.split('@', 1)
-              try {
-                const extension = ExtensionManager.Instance.load(`${extensionName}/schema.json`) || {}
-                if (Object.keys(extension).length) {
-                  extensions.push(extension)
-                }
-              } catch { }
-            }
-            if (extensions.length) {
-              await jsonSchema.addSchema(...extensions)
-              const fout = await jsonSchema.save()
-              LoggerManager.GetLogger().info(chalk.green(`Yaml-scene scheme is updated. "${chalk.bold(fout)}"`))
-            }
+          await InstallationManager.Instance.upgradeExtensions(extensionNames)
+          const jsonSchema = new JSONSchema()
+          await jsonSchema.init()
+          await jsonSchema.merge(join(__dirname, '../../schema.yas.json'))
+          const extensions = []
+          for (const extensionNameFullVer of extensionNames) {
+            const [extensionName] = extensionNameFullVer.split('@', 1)
+            try {
+              const extension = require(`${extensionName}/schema.json`) || {}
+              if (Object.keys(extension).length) {
+                extensions.push(extension)
+              }
+            } catch { }
+          }
+          if (extensions.length) {
+            await jsonSchema.addSchema(...extensions)
+            const fout = await jsonSchema.save()
+            LoggerManager.GetLogger().info(chalk.green(`Yaml-scene scheme is updated. "${chalk.bold(fout)}"`))
           }
           isRunScenario = false
         })
@@ -147,23 +141,21 @@ export class CLI {
         .description('Remove the extensions')
         .argument("<extensions...>", "ExtensionManager package in npm registry")
         .action(async (extensionNames) => {
-          const isOK = await this.uninstallExtensions(extensionNames)
-          if (isOK) {
-            const jsonSchema = new JSONSchema()
-            await jsonSchema.init()
-            await jsonSchema.merge(join(__dirname, '../../schema.yas.json'))
-            let isRemoved: boolean = false
-            for (const extensionNameFullVer of extensionNames) {
-              const [extensionName] = extensionNameFullVer.split('@', 1)
-              try {
-                jsonSchema.removeSchema(extensionName)
-                isRemoved = true
-              } catch { }
-            }
-            if (isRemoved) {
-              const fout = await jsonSchema.save()
-              LoggerManager.GetLogger().info(chalk.green(`Yaml-scene scheme is updated. "${chalk.bold(fout)}"`))
-            }
+          await InstallationManager.Instance.uninstallExtensions(extensionNames)
+          const jsonSchema = new JSONSchema()
+          await jsonSchema.init()
+          await jsonSchema.merge(join(__dirname, '../../schema.yas.json'))
+          let isRemoved: boolean = false
+          for (const extensionNameFullVer of extensionNames) {
+            const [extensionName] = extensionNameFullVer.split('@', 1)
+            try {
+              jsonSchema.removeSchema(extensionName)
+              isRemoved = true
+            } catch { }
+          }
+          if (isRemoved) {
+            const fout = await jsonSchema.save()
+            LoggerManager.GetLogger().info(chalk.green(`Yaml-scene scheme is updated. "${chalk.bold(fout)}"`))
           }
           isRunScenario = false
         })
@@ -256,63 +248,6 @@ export class CLI {
     castToObject(baseConfig, config, '')
     if (baseConfig.NODE_ENV) process.env.NODE_ENV = baseConfig.NODE_ENV
     return baseConfig
-  }
-
-  async uninstallExtensions(extensionNames: string[]) {
-    extensionNames = extensionNames.map(e => e.trim()).filter(e => e)
-    if (!extensionNames) return false
-    await ExtensionManager.UninstallPackage({
-      dependencies: extensionNames
-    })
-    return true
-  }
-
-  async upgradeExtensions(extensionNames: string[]) {
-    extensionNames = extensionNames.map(e => e.trim()).filter(e => e)
-    if (!extensionNames) return false
-    await ExtensionManager.UpgradePackage({
-      dependencies: extensionNames
-    })
-    return true
-  }
-
-  async installExtensions(extensionNames: string[], customPath?: string, installType = 'global' as 'local' | 'global', isForce = false as boolean) {
-    extensionNames = extensionNames.map(e => e.trim()).filter(e => e)
-    if (!extensionNames) return false
-
-    if (!isForce) {
-      const confirmType = ElementFactory.CreateTheElement(UserInput)
-      const choices = []
-      if (installType === 'global') {
-        choices.push({ title: `Global (Recommend)`, value: 'global', description: 'Install in global directory of "yarn" OR "npm"' })
-      }
-      choices.push({ title: `Local${installType === 'local' ? ' (Recommend)' : ''}`, value: 'local', description: `Install in "${customPath || 'yaml-scene'}"` })
-
-      confirmType.init([{
-        title: `Install ${extensionNames.map(e => chalk.yellow(`"${e}"`)).join(', ')} to:`,
-        type: 'select',
-        default: installType,
-        choices,
-        var: 'installType'
-      }])
-      await confirmType.prepare()
-      const type = await confirmType.exec()
-      installType = type.installType
-      await confirmType.dispose()
-
-      if (!installType) return false
-    }
-    await ExtensionManager.InstallPackage(
-      installType === 'local' ? {
-        localPath: customPath,
-        dependencies: extensionNames,
-        global: false,
-        isSave: false,
-      } : {
-        dependencies: extensionNames,
-        global: true,
-      })
-    return true
   }
 
   private parseEnv(env: string | any) {

@@ -30,11 +30,14 @@ logLevel: debug                                     # How to show log is debug)
                                                     # - debug: Show log details, infor, error log ( Default )
                                                     # - trace: Show all of log
 install:                                            # Install extensions from npm registry
-  global: false                                     # Install extension to global (npm install -g)
-  localPath: ./                                     # Install extensions to local path (npm install --prefix $localPath/node_modules)
-  dependencies:
-    - lodash
-    - axios
+  local:                                            # Install extensions to local path (npm install --prefix $path/node_modules)
+    path: ./
+    dependencies:
+      - lodash
+  global:                                           # Install extension to global (npm install -g)
+    dependencies:
+      - axios
+
 extensions:                                         # Extension elements.
   extension_name1: ./cuz_extensions/custom1.js      # - Load a element in a file with exports.default (extension_name1:)
   extensions_folders: ./cuz_extensions              # - Load elements in files in the folder with file name is element name (extensions_folders/custom1:)

@@ -13,8 +13,8 @@ export class FileUtils {
 
   /**
    * Auto make dir or file if it's not existed
-   * @param {string} path Path of file or directory
-   * @param {'file' | 'dir'} [type=file] Specific input path is `file` or `dir`. Default is `file`
+   * @param path Path of file or directory
+   * @param type Specific input path is `file` or `dir`
    * @returns Input path
    */
   static MakeDirExisted(path: string, type: 'file' | 'dir' = 'file') {
@@ -27,7 +27,7 @@ export class FileUtils {
 
   /**
    * Remove files or folders
-   * @param {...string} paths Path of dirs or files
+   * @param paths Path of dirs or files
    */
   static RemoveFilesDirs(...paths: string[]) {
     paths.forEach(path => existsSync(path) && rmSync(path, { recursive: true, force: true }))
@@ -35,30 +35,31 @@ export class FileUtils {
 
   /**
    * Check file path/URL is existed or not
-   * @param {string} path Path of file, dir or link
-   * @returns {'url' | boolean} Return true: Existed, false: Not existed, 'url': It's a link
+   * @param path Path of file, dir or link
+   * @returns 
+   * true: Existed  
+   * false: Not existed  
+   * 'url': It's a link  
    */
-  static Existed(path: string) {
+  static Existed(path: string): boolean | 'url' {
     if (!path) return false
     if (/^https?:\/\//.test(path)) return 'url'
     return existsSync(path)
   }
 
-  /**
-   * Get unique name
-   */
-  static get UniqueName() {
+  // Get unique name
+  static get UniqueName(): string {
     return Math.random().toString().substring(2)
   }
 
   /**
    * Get unique path of file or dir in tmp dir in os
-   * @param {string} [ext=''] File name which includes extensions or only extension. Example '.text' || 'abc.txt'
-   * @param {...string} subPaths Subpath
-   * @returns {string} New unique path which in tmp dir in os
+   * @param ext File name which includes extensions or only extension. Example '.text' || 'abc.txt'
+   * @param subPaths Subpath of directories
+   * @returns New unique path which in tmp dir in os
    * @example GetNewTempPath('abc.txt', 'node_modules') => /tmp/$UNIQUE/node_modules/abc.txt
    */
-  static GetNewTempPath(ext = '', ...subPaths: string[]) {
+  static GetNewTempPath(ext = '', ...subPaths: string[]): string {
     return join(this._DefaultTmpDir || (this._DefaultTmpDir = this.MakeDirExisted(join(process.env[YAML_SCENE_CACHED_DIR] || tmpdir(), 'yaml-scene.cached'), 'dir')), ...subPaths, this.UniqueName + ext)
   }
 

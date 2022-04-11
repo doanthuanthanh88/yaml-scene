@@ -129,35 +129,20 @@ import { IElement } from "./IElement";
           i: ${i+1}
 */
 
-/**
- * Wrapper for element which provides utility functions
- * @class
- */
+// Wrapper for element which provides utility functions
 export class ElementProxy<T extends IElement> {
 
-  /**
-   * Get logger
-   * @readonly
-   * @returns {Logger}
-   */
+  // Get logger
   get logger(): Logger {
     return (this.element.logLevel ? LoggerManager.GetLogger(this.element.logLevel) : this.element.$$?.proxy.logger) || LoggerManager.GetLogger()
   }
 
-  /**
-   * Get global events
-   * @readonly
-   * @returns {EventEmitter}
-   */
+  // Get global events
   get events(): EventEmitter {
     return Scenario.Instance.element.events
   }
 
-  /**
-   * Get global variables
-   * @readonly
-   * @returns {EventEmitter}
-   */
+  // Get global variables
   get vars() {
     return VariableManager.Instance.vars
   }
@@ -165,8 +150,6 @@ export class ElementProxy<T extends IElement> {
   /**
    * Get loop key
    * @description It only used in the loop
-   * @readonly
-   * @returns {number | string}
    */
   get loopKey() {
     return this.element?.loopKey
@@ -175,8 +158,6 @@ export class ElementProxy<T extends IElement> {
   /**
    * Get loop value
    * @description It only used in the loop
-   * @readonly
-   * @returns {any}
    */
   get loopValue() {
     return this.element?.loopValue
@@ -185,18 +166,12 @@ export class ElementProxy<T extends IElement> {
   /**
    * Get conditional value
    * @description It only used in the conditional
-   * @readonly
-   * @returns {any}
    */
   get if() {
     return this.element?.if
   }
 
-  /**
-   * Check the element is attachted to the scenario
-   * @readonly
-   * @returns {boolean}
-   */
+  // Check the element is attachted to the scenario
   get isAttacted() {
     return !!this.element.$$
   }
@@ -209,7 +184,7 @@ export class ElementProxy<T extends IElement> {
   /**
    * Init data value from yaml
    * @description Handle logic to inherit or expose a template before make the element init data
-   * @param {any} props Passed value from yaml file to it before passed to element
+   * @param props Passed value from yaml file to it before passed to element
    */
   init(props: any) {
     const exposeKeys = props && props['->']
@@ -226,7 +201,6 @@ export class ElementProxy<T extends IElement> {
   /**
    * Prepare data before executing
    * @description Handle logic to decided the element prepare data or not
-   * @async
    */
   async prepare() {
     const _if = await this.getVar(this.element.if)
@@ -241,18 +215,12 @@ export class ElementProxy<T extends IElement> {
     }
   }
 
-  /**
-   * Change parent Group
-   * @param {IElement} group 
-   */
+  // Change parent Group
   setGroup(group: IElement) {
     this.element.$$ = group
   }
 
-  /**
-   * Execute main tasks
-   * @async
-   */
+  // Execute main tasks
   async exec() {
     await this.prepare()
     if (!this.element.if) return
@@ -296,10 +264,7 @@ export class ElementProxy<T extends IElement> {
     }
   }
 
-  /**
-   * Release resources after executed successfully
-   * @async
-   */
+  // Release resources after executed successfully
   dispose() {
     if (!this.element.if) return
     if (this.element.dispose) {
@@ -307,13 +272,8 @@ export class ElementProxy<T extends IElement> {
     }
   }
 
-  /**
-   * Clone data when it is in the loop or get in templates
-   * @async
-   * @returns Instance of this element
-   * @default undefined
-   */
-  clone() {
+  // Clone data when it is in the loop or get in templates
+  clone(): ElementProxy<T> {
     let proxy: ElementProxy<T>
     if (this.element.clone) {
       proxy = new ElementProxy<T>(this.element.clone())
@@ -330,25 +290,21 @@ export class ElementProxy<T extends IElement> {
   /**
    * Get absolute path
    * @param path Root path is directory which includes scenario file
-   * @returns {string}
    */
   resolvePath(path?: string) {
     return Scenario.Instance.element.resolvePath(path)
   }
 
-  /**
-   * Change logger
-   * @param {LogLevel} level
-   */
+  // Change logger
   changeLogLevel(level: LogLevel) {
     this.element.logLevel = level
   }
 
   /**
    * Replace value in global variable if it's existed
-   * @param {any} yamlValue Object value in yaml. which includes global variables
-   * @param {Object} baseContext Context value which is used in the yamlValue
-   * @param {?string} defaultKey If yamlValue is string, then it return baseContext['defaultKey']
+   * @param yamlValue Object value in yaml. which includes global variables
+   * @param baseContext Context value which is used in the yamlValue
+   * @param defaultKey If yamlValue is string, then it return baseContext['defaultKey']
    */
   async replaceVar(yamlValue: any, baseContext = {} as any, defaultKey?: string) {
     if (typeof yamlValue === 'object') {
@@ -358,9 +314,9 @@ export class ElementProxy<T extends IElement> {
 
   /**
    * Set value to global variable
-   * @param {any} yamlValue Object value in yaml. which includes global variables
-   * @param {Object} baseContext Context value which is used in the yamlValue
-   * @param {?string} defaultKey If yamlValue is string, then it return baseContext['defaultKey']
+   * @param yamlValue Object value in yaml. which includes global variables
+   * @param baseContext Context value which is used in the yamlValue
+   * @param defaultKey If yamlValue is string, then it return baseContext['defaultKey']
    */
   async setVar(yamlValue: any, baseContext = {} as any, defaultKey?: string) {
     if (typeof yamlValue === 'string') {
@@ -372,8 +328,8 @@ export class ElementProxy<T extends IElement> {
 
   /**
    * Execute a function content
-   * @param {string} func Function source code
-   * @param {Object} baseContext Context used in the function
+   * @param func Function source code
+   * @param baseContext Context used in the function
    */
   async eval<T>(func?: string, baseContext = {} as any) {
     const vl = await VariableManager.Instance.eval(func, { $: this.element.$ || this.element, $$: this.element.$$, ...baseContext })
@@ -382,8 +338,8 @@ export class ElementProxy<T extends IElement> {
 
   /**
    * Get a variable value
-   * @param {any} yamlValue Object value in yaml. which includes global variables
-   * @param {Object} baseContext Context used in the function
+   * @param yamlValue Object value in yaml. which includes global variables
+   * @param baseContext Context used in the function
    */
   async getVar(yamlValue: any, baseContext = {}) {
     const vl = await VariableManager.Instance.get(yamlValue, { $: this.element.$ || this.element, $$: this.element.$$, ...baseContext })
@@ -392,17 +348,14 @@ export class ElementProxy<T extends IElement> {
 
   /**
    * Get multiple variable values
-   * @param {any} obj Current object
-   * @param {...string} props List of object properties will is apply value
+   * @param obj Current object
+   * @param props List of object properties will is apply value
    */
   async applyVars(obj: any, ...props: string[]) {
     await Promise.all(props.map(async p => obj[p] = await this.getVar(obj[p])))
   }
 
-  /**
-   * Get properties in templates by a key to merge to element
-   * @private
-   */
+  // Get properties in templates by a key to merge to element
   private inherit(props: any) {
     if (props && props['<-']) {
       const keys = Array.isArray(props['<-']) ? props['<-'] : [props['<-']]
@@ -416,10 +369,7 @@ export class ElementProxy<T extends IElement> {
     return props
   }
 
-  /**
-   * Push properties to templates with a key
-   * @private
-   */
+  // Push properties to templates with a key
   private expose(exposeKeys: string[] | string) {
     if (exposeKeys) {
       const keys = Array.isArray(exposeKeys) ? exposeKeys : [exposeKeys]

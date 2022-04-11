@@ -1,10 +1,5 @@
-import chalk from "chalk";
 import { CLI } from "./cli/CLI";
-import { ElementFactory } from "./elements/ElementFactory";
-import UserInput from "./elements/UserInput";
-import { LoggerManager } from "./singleton/LoggerManager";
 import { Scenario } from "./singleton/Scenario";
-import { ExtensionNotFound } from "./utils/error/ExtensionNotFound";
 import { TraceError } from "./utils/error/TraceError";
 
 export class Main {
@@ -32,36 +27,6 @@ export class Main {
           password: CLI.Instance.password
         })
         await Scenario.Instance.exec()
-      } catch (err: any) {
-        if (err instanceof ExtensionNotFound) {
-          new Array(10).fill(null).forEach(() => console.groupEnd())
-          const [extensionName] = err.extensionName.split("/", 1)
-          LoggerManager.GetLogger().warn(chalk.yellow('⚠️', err.message))
-          const isContinue = await CLI.Instance.installExtensions([extensionName], err.localPath, err.scope, CLI.Instance.force)
-          if (isContinue) {
-            let continuePlay = CLI.Instance.force
-            if (!continuePlay) {
-              LoggerManager.GetLogger().info()
-              const confirmContinue = ElementFactory.CreateTheElement(UserInput)
-              confirmContinue.init([{
-                title: `Replay the scenario ?`,
-                type: 'confirm',
-                default: true,
-                var: 'continuePlay'
-              }])
-              await confirmContinue.prepare()
-              const confirmContinueValue = await confirmContinue.exec()
-              continuePlay = confirmContinueValue.continuePlay
-              await confirmContinue.dispose()
-            }
-            if (continuePlay) {
-              isRun = true
-              Scenario.Reset()
-              continue
-            }
-          }
-        }
-        throw err
       } finally {
         await Scenario.Instance.dispose()
       }

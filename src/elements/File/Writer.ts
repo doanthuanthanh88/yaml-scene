@@ -111,13 +111,13 @@ export default class Writer implements IElement {
 
   adapters: (string | any)[]
 
-  private get _adapter() {
+  private async getAdapter() {
     let _adapter: IFileAdapter
     for (const adapter of this.adapters.reverse()) {
       const adapterName = typeof adapter === 'string' ? adapter : Object.keys(adapter)[0]
       if (!adapterName) throw new TraceError('"adapters" is not valid', { adapter })
 
-      const AdapterClass = FileAdapterFactory.GetAdapter(adapterName)
+      const AdapterClass = await FileAdapterFactory.GetAdapter(adapterName)
       const args = typeof adapter === 'object' ? adapter[adapterName] : undefined
       if (!_adapter) {
         if (!['Resource', 'Url', 'File'].includes(adapterName)) {
@@ -152,7 +152,8 @@ export default class Writer implements IElement {
     if (this.title) this.proxy.logger.info('%s', this.title)
     this.title && console.group()
     try {
-      await this._adapter.write(this.content)
+      const adapters = await this.getAdapter()
+      await adapters.write(this.content)
       this.proxy.logger.debug('%s %s', chalk.magenta('- Write file to'), chalk.gray(this.path))
     } finally {
       this.title && console.groupEnd()

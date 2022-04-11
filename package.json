@@ -1,6 +1,6 @@
 {
   "name": "yaml-scene",
-  "version": "1.1.16",
+  "version": "1.1.17-alpha.1",
   "description": "Platform to do everything with only yaml scenario files",
   "keywords": [
     "yaml",
@@ -26,6 +26,7 @@
     "start": "node -r ts-node/register -r tsconfig-paths/register src/index.ts",
     "test": "jest",
     "test:debug": "node --inspect-brk node_modules/.bin/jest",
+    "jsdoc": "npx jsdoc -c jsdoc.json",
     "doc": "yarn start scenes/guide.yas.yaml && yarn start ./scenes/generate_schema.yas.yaml",
     "prebuild": "yarn clean",
     "lint": "tsc --project tsconfig.lint.json",
@@ -74,6 +75,7 @@
     "@types/prompts": "^2.0.14",
     "@types/to-json-schema": "^0.2.0",
     "@types/xml2js": "^0.4.9",
+    "better-docs": "^2.7.2",
     "convert-excel-to-json": "^1.7.0",
     "csv-parse": "^4.16.3",
     "csv-stringify": "^5.6.5",

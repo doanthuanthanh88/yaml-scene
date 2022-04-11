@@ -79,14 +79,13 @@ export default class Echo implements IElement {
       if (!this.transforms.length) this.transforms.push('Json')
     }
 
-    this.transforms
-      .forEach(transform => {
-        const transformName = typeof transform === 'string' ? transform : Object.keys(transform)[0]
-        if (!transformName) throw new TraceError('"transforms" is not valid', { transform })
-        const TransformClass = PrinterTransformFactory.GetTransform(transformName)
-        const args = transform[transformName]
-        this._transform = new TransformClass(this._transform || new Base(), args)
-      })
+    await Promise.all(this.transforms.map(async transform => {
+      const transformName = typeof transform === 'string' ? transform : Object.keys(transform)[0]
+      if (!transformName) throw new TraceError('"transforms" is not valid', { transform })
+      const TransformClass = await PrinterTransformFactory.GetTransform(transformName)
+      const args = transform[transformName]
+      this._transform = new TransformClass(this._transform || new Base(), args)
+    }))
   }
 
   async exec() {

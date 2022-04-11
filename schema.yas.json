@@ -428,25 +428,37 @@
           "description": "Expose the variables to environment variables for override purpose"
         },
         "install": {
+          "description": "Install these packages before start",
           "properties": {
-            "dependencies": {
-              "type": "array",
-              "description": "NPM Packages name which need to install before to used in scenario",
-              "items": {
-                "type": "string"
+            "local": {
+              "description": "Install npm packages in local path",
+              "type": "object",
+              "properties": {
+                "dependencies": {
+                  "type": "array",
+                  "description": "NPM Packages name",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "path": {
+                  "type": "string",
+                  "description": "Location install NPM Packages"
+                }
               }
             },
-            "localPath": {
-              "type": "string",
-              "description": "Location install NPM Packages"
-            },
             "global": {
-              "type": "boolean",
-              "description": "Install to global dir or in localPath"
-            },
-            "isSave": {
-              "type": "boolean",
-              "description": "Save in package.json or not"
+              "description": "Install npm packages in global",
+              "type": "object",
+              "properties": {
+                "dependencies": {
+                  "type": "array",
+                  "description": "NPM Packages name",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
             }
           }
         },

@@ -1,4 +1,3 @@
-import { ElementFactory } from "../ElementFactory";
 import { ElementProxy } from "../ElementProxy";
 import { IElement } from "../IElement";
 
@@ -35,16 +34,16 @@ export default class Templates implements IElement {
   $: this
 
   init(items = [] as { [name: string]: any } | any[]) {
-    const steps = Array.isArray(items) ? items : Object.keys(items).map(templateName => {
+    (Array.isArray(items) ? items.map(item => {
+      const elementName = Object.keys(item)[0]
+      return item[elementName]
+    }) : Object.keys(items).map(templateName => {
       const elementName = Object.keys(items[templateName])[0]
       items[templateName][elementName]['->'] = templateName
-      return items[templateName]
-    })
-    steps.flat(Number.MAX_SAFE_INTEGER).forEach(step => {
-      const name = Object.keys(step)[0]
-      const elem = ElementFactory.CreateElement<IElement>(name)
-      elem.init(step[name])
-    })
+      return items[templateName][elementName]
+    }))
+      .flat(Number.MAX_SAFE_INTEGER)
+      .forEach(step => new ElementProxy(step).init(step))
   }
 
   clone() {

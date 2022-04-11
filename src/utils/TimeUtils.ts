@@ -1,5 +1,8 @@
 import { TraceError } from "./error/TraceError"
 
+/**
+ * Input time value
+ */
 export type TimeUnit = string | number
 
 /**
@@ -9,13 +12,13 @@ export type TimeUnit = string | number
 export class TimeUtils {
   /**
    * Convert time with friendly name to miliseconds
-   * @param {string | number} time Time
-   * @returns {number} Miliseconds
+   * @param time Time
+   * @returns Miliseconds
    * @example 
    * GetMsTime('2s') => 2000
    * GetMsTime(5000) => 5000
    */
-  static GetMsTime(time?: TimeUnit) {
+  static GetMsTime(time?: TimeUnit): number {
     if (typeof time === 'string') {
       return parseInt(eval(time.replace('ms', '').replace('h', '*60m').replace('m', '*60s').replace('s', '*1000')))
     } else if (typeof time === 'number') {
@@ -29,9 +32,8 @@ export class TimeUtils {
   /**
    * Sleep for a time before keep playing
    * @param time Time to sleep
-   * @returns {Promise}
    */
-  static Delay(time: TimeUnit) {
+  static Delay(time: TimeUnit): Promise<true> {
     return new Promise((resolve) => {
       setTimeout(() => resolve(true), TimeUtils.GetMsTime(time))
     })
@@ -39,11 +41,11 @@ export class TimeUtils {
 
   /**
    * Convert time to pretty format
-   * @param {number} time Miliseconds
-   * @returns {string} Friend time
+   * @param time Miliseconds
+   * @returns Friendly time
    * @example Pretty(65000) => 1m5s 0ms
    */
-  static Pretty(time: number) {
+  static Pretty(time: number): string {
     let h, m, s, ms
     const msg = []
     h = Math.floor(time / (60 * 60 * 1000))

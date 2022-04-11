@@ -1,0 +1,24 @@
+{
+  "tags": {
+    "allowUnknownTags": [
+      "optional"
+    ]
+  },
+  "source": {
+    "include": [
+      "./src"
+    ],
+    "includePattern": ".ts$",
+    "excludePattern": "(node_modules/)"
+  },
+  "plugins": [
+    "plugins/markdown",
+    "node_modules/better-docs/typescript"
+  ],
+  "opts": {
+    "encoding": "utf8",
+    "destination": "docs/",
+    "readme": "readme.md",
+    "recurse": true
+  }
+}

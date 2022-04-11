@@ -1,34 +1,17 @@
 import { LogLevel } from "@app/singleton/LoggerManager";
 import { ElementProxy } from "./ElementProxy";
 
-/**
- * Describe functions and properties which a element must have
- * @interface
- */
+// Describe functions and properties which a element must have
 export interface IElement {
-  /**
-   * Wrapper for this element. It provides utility functions
-   * @implements
-   * @type {Object.ElementProxy<this>}
-   */
+  // Wrapper for this element. It provides utility functions
   proxy: ElementProxy<this>
-
-  /**
-   * This ref to parent Group element
-   * @type {IElement}
-   */
+  // This ref to parent Group element
   $$: IElement
 
-  /**
-   * This ref to this
-   * @type {this}
-   */
+  // This ref to this
   $: this
 
-  /**
-   * Pick a logger to print log
-   * @type {LogLevel}
-   */
+  // Pick a logger to print log
   logLevel?: LogLevel
 
   // Conditional
@@ -52,27 +35,21 @@ export interface IElement {
 
   /**
    * Create and prepare data for element.
-   * @async
    */
   prepare?(): Promise<void> | void
 
   /**
    * Element execute main tasks
-   * @async
    */
   exec?(): Promise<any> | any
 
   /**
    * Release resources after executed successfully
-   * @async
    */
   dispose?(): Promise<void> | void
 
   /**
    * Clone data when it is in the loop or get in templates
-   * @async
-   * @returns Instance of this element
-   * @default undefined
    */
   clone?(): this
 }

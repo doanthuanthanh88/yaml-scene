@@ -48,19 +48,15 @@ export default class Group implements IElement {
     this.steps = this.steps?.flat(Number.MAX_SAFE_INTEGER) || []
   }
 
-  initStep() {
-    this._steps = this.steps.map(step => {
+  async prepare() {
+    await this.proxy.applyVars(this, 'title', 'description')
+    this._steps = await Promise.all(this.steps.map(async step => {
       const [name, vl] = Object.entries(step)[0]
-      const elem = ElementFactory.CreateElement<IElement>(name as any)
+      const elem = await ElementFactory.CreateElement<IElement>(name as any)
       elem.init(vl)
       elem.setGroup(this)
       return elem
-    })
-  }
-
-  async prepare() {
-    await this.proxy.applyVars(this, 'title', 'description')
-    this.initStep()
+    }))
   }
 
   private async execStep(step: ElementProxy<IElement>) {

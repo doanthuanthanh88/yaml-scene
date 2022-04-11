@@ -1,3 +1,4 @@
+import { InstallationManager } from "@app/singleton/InstallationManager"
 import { existsSync } from "fs"
 import { dirname, join } from "path"
 import { ExtensionNotFound } from "./error/ExtensionNotFound"
@@ -18,6 +19,7 @@ export async function LazyImport(imports: Promise<any>) {
         while (i-- > 0) {
           if (existsSync(join(errPath, 'package.json'))) {
             err.localPath = errPath
+            await InstallationManager.Instance.installNow(err)
             break
           }
           errPath = join(errPath, '..')
