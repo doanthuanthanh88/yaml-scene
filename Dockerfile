@@ -2,6 +2,9 @@
 FROM alpine
 WORKDIR /yaml-scene
 
+COPY ./entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
 ARG version
 
 ENV NODE_ENV=production
@@ -16,5 +19,5 @@ RUN mkdir /test
 RUN echo -e '- Echo: Welcome to yaml-scene container' > /test/index.yas.yaml
 RUN yas /test/index.yas.yaml
 
-ENTRYPOINT ["yas"]
+ENTRYPOINT ["/entrypoint.sh"]
 CMD ["/test/index.yas.yaml", ""]

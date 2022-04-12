@@ -1,18 +1,26 @@
 #!/usr/bin/env sh
 
-if [ -z "$EXTENSIONS" ]
+if [ "$1" = "sh" ]
 then
-  echo "No extensions to be installed";
+  sh;
+elif [ "$1" = "bash" ]
+then
+  bash;
 else
-  echo "Installing extensions...";
+  if [ -z "$EXTENSIONS" ]
+  then
+    echo "No extensions to be installed";
+  else
+    echo "Installing extensions...";
 
-  list=$(echo $EXTENSIONS | tr " " "\n")
-  for item in $list
-  do
-    echo "- $item";
-  done
+    list=$(echo $EXTENSIONS | tr " " "\n")
+    for item in $list
+    do
+      echo "- $item";
+    done
 
-  yarn global add $EXTENSIONS;
+    yarn global add $EXTENSIONS;
+  fi
+
+  yas $@;
 fi
-
-yas $@
