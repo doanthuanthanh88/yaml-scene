@@ -1,55 +1,83 @@
 import { LogLevel } from "@app/singleton/LoggerManager";
 import { ElementProxy } from "./ElementProxy";
 
-// Describe functions and properties which a element must have
+/**
+ * Describe functions and properties which a element must have
+ * @interface
+ */
 export interface IElement {
-  // Wrapper for this element. It provides utility functions
+  /** 
+   * Wrapper for this element. It provides utility functions
+   */
   proxy: ElementProxy<this>
-  // This ref to parent Group element
+  /** 
+   * This ref to parent Group element
+   */
   $$: IElement
 
-  // This ref to this
+  /** 
+   * This ref to this
+   */
   $: this
 
-  // Pick a logger to print log
+  /** 
+   * Pick a logger to print log
+   */
   logLevel?: LogLevel
 
-  // Conditional
+  /** 
+   * Conditional
+   */
   if?: any
-  // Sleep for a time before keep playing
+  /** 
+   * Sleep for a time before keep playing
+   */
   delay?: any
-  // This element will be executed asynchronized
+  /** 
+   * This element will be executed asynchronized
+   */
   async?: any
-  // Loop this element
+  /** 
+   * Loop this element
+   */
   loop?: any
-  // Loop key. Depends loop
+  /** 
+   * Loop key. Depends loop
+   */
   loopKey?: any
-  // Loop value. Depends loop
+  /** 
+   * Loop value. Depends loop
+   */
   loopValue?: any
 
   /**
    * Init data value from yaml to the element. Only handle raw data
+   * @function
    * @param {any} props Element attribute which is passed from scenario yaml file
    */
   init?(props: any): void
 
   /**
    * Create and prepare data for element.
+   * @function
    */
   prepare?(): Promise<void> | void
 
   /**
    * Element execute main tasks
+   * @function
    */
   exec?(): Promise<any> | any
 
   /**
    * Release resources after executed successfully
+   * @function
    */
   dispose?(): Promise<void> | void
 
   /**
    * Clone data when it is in the loop or get in templates
+   * @function
    */
   clone?(): this
 }

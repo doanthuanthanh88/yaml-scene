@@ -1,0 +1,6 @@
+{
+  "key": "cmd+y",
+  "command": "workbench.action.tasks.runTask",
+  "args": "Yaml scene",
+  "when": "editorTextFocus"
+}

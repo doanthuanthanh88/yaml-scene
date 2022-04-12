@@ -997,8 +997,7 @@
             },
             "outFile": {
               "description": "Path of guideline file",
-              "type": "string",
-              "default": "GUIDE.md"
+              "type": "string"
             },
             "pattern": {
               "type": "object",

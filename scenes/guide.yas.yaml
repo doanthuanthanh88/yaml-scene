@@ -1,4 +1,6 @@
 - Doc/Guide/MD:
+    title: Document
+    description: Describe all of elements in tool. (meaning, how to use...)
     logLevel: debug
     includes:
       - ../src

@@ -4,7 +4,7 @@ import { IFileAdapter } from "./IFileAdapter";
 /*****
 @name Xml 
 @description Read and write xml file. Used in File/Writer, File/Reader
-@group File, File.Adapter
+@group File.Adapter
 @example
 - File/Reader:
     title: Read a xml file

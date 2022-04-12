@@ -2,17 +2,22 @@ import { IFileAdapter } from '@app/elements/File/adapter/IFileAdapter';
 import { Exporter } from '@app/utils/doc/Exporter';
 import { escape } from 'querystring';
 import { CommentInfo } from './CommentInfo';
+import GuideMD from './MD';
 
 export class CommentExporter implements Exporter<CommentInfo> {
-  constructor(private writer: IFileAdapter, public prefixHashLink: string) {
+  constructor(private writer: IFileAdapter, public md: GuideMD) {
   }
 
   getHashLink(...txts: string[]) {
-    return escape(this.prefixHashLink + txts.join('-')).toLowerCase()
+    return escape(this.md.prefixHashLink + txts.join('-')).toLowerCase()
   }
 
   async export(models: CommentInfo[]) {
-    const mdMenu = ['# Document', `*Describe all of elements in tool. (meaning, how to use...)*`, `| Element | Description |  `, `|---|---|  `];
+    const mdMenu = [];
+    if (this.md.title) mdMenu.push(`# ${this.md.title}`)
+    if (this.md.description) mdMenu.push(`${this.md.description}`)
+
+    mdMenu.push('', `| Element | Description |  `, `|---|---|  `)
     const mdExample = ['# Details'];
 
     const groups = models.reduce((sum, model) => {

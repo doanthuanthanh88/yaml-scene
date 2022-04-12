@@ -30,7 +30,11 @@ export abstract class AbsQuestion {
     this.var = varName
     this.default = df
     this.format = format
-    this.opts = opts
+    this.opts = opts || {}
+    if (!this.opts.onCancel) {
+      this.opts.onCancel = () => process.exit(0)
+    }
+
   }
 
   async prepare(proxy: ElementProxy<any>) {

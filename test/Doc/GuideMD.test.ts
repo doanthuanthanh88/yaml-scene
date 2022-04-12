@@ -8,6 +8,8 @@ describe('Test to generate guideline document', () => {
     const fout = `${join(__dirname, 'GuideMD.md')}`
     await Simulator.Run(`
 - Doc/Guide/MD:
+    title: Document
+    description: Describe all of elements in tool. (meaning, how to use...)
     includes: 
       - ${join(__dirname, '../../src')}
     excludes: []

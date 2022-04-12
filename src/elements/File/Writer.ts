@@ -12,13 +12,13 @@ import { IFileAdapter } from './adapter/IFileAdapter';
 @description Write content to a file
 File adapters:
 
-- [Read a text file](#user-content-file%2c%20file.adapter-text)
-- [Read a csv file](#user-content-file%2c%20file.adapter-csv)
-- [Read a json file](#user-content-file%2c%20file.adapter-json)
-- [Read a xml file](#user-content-file%2c%20file.adapter-xml)
-- [Read a yaml file](#user-content-file%2c%20file.adapter-yaml)
-- [Read a excel file](#user-content-file%2c%20file.adapter-excel)
-- [Read a encrypted file](#user-content-file%2c%20file.adapter-password)
+- [Read a text file](#user-content-file.adapter-text)
+- [Read a csv file](#user-content-file.adapter-csv)
+- [Read a json file](#user-content-file.adapter-json)
+- [Read a xml file](#user-content-file.adapter-xml)
+- [Read a yaml file](#user-content-file.adapter-yaml)
+- [Read a excel file](#user-content-file.adapter-excel)
+- [Read a encrypted file](#user-content-file.adapter-password)
 @group File, Output
 @exampleType custom
 @example

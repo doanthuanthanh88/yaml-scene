@@ -6,7 +6,7 @@ import { IFileAdapter } from "./IFileAdapter";
 /*****
 @name Excel 
 @description Read and write excel file. Used in File/Writer, File/Reader
-@group File, File.Adapter
+@group File.Adapter
 @example
 - File/Reader:
     title: Read text file 1 with password

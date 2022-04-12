@@ -1,10 +1,11 @@
 import { AES } from '@app/utils/encrypt/AES';
+import { TraceError } from '@app/utils/error/TraceError';
 import { IFileAdapter } from "./IFileAdapter";
 
 /*****
 @name Password 
 @description Read and write a encrypted file (`aes-128-cbc`). Used in File/Writer, File/Reader
-@group File, File.Adapter
+@group File.Adapter
 @example
 - File/Reader:
     title: Read a json file
@@ -30,7 +31,8 @@ export class Password implements IFileAdapter {
   private aes?: AES
 
   constructor(private file: IFileAdapter, password?: string) {
-    if (password) this.aes = new AES(password)
+    if (!password) throw new TraceError('Password is required in "IFileAdapter/Password"', { password })
+    this.aes = new AES(password)
   }
 
   async read() {

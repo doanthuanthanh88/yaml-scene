@@ -6,7 +6,8 @@
   },
   "source": {
     "include": [
-      "./src"
+      "./src",
+      "./test/assets/SimpleExtension.ts"
     ],
     "includePattern": ".ts$",
     "excludePattern": "(node_modules/)"

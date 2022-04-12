@@ -5,13 +5,18 @@ import { YAMLSchema } from "@app/tags";
 import { MD5 } from "@app/utils/encrypt/MD5";
 import { TraceError } from "@app/utils/error/TraceError";
 import { FileUtils } from "@app/utils/FileUtils";
+import chalk from "chalk";
 import { load } from "js-yaml";
 import merge from 'lodash.merge';
 import { basename, dirname, join } from "path";
+import { ElementFactory } from "../ElementFactory";
 import { File } from "../File/adapter/File";
+import { IFileAdapter } from "../File/adapter/IFileAdapter";
 import { Password } from "../File/adapter/Password";
 import { Resource } from "../File/adapter/Resource";
+import { Text } from "../File/adapter/Text";
 import Group from "../Group";
+import UserInput from "../UserInput";
 
 const SALTED_PASSWORD = '|-YAML-SCENE-|'
 
@@ -89,12 +94,52 @@ export default class Fragment extends Group {
     const existed = FileUtils.Existed(this.file)
     if (!existed) throw new TraceError(`Scenario file is not existed at "${this.file}"`)
 
+    let reader: IFileAdapter
+    let scenarioObject: any
+    let fileContent: string
     const resource = new Resource(this.file)
-    const reader = new Password(resource, this.getPassword(this.password))
-    const fileContent = await reader.read()
-    let scenarioObject = load(fileContent, {
-      schema: YAMLSchema.Schema
-    }) as any
+    let isLoaded: boolean
+
+    do {
+      if (isLoaded) isLoaded = false
+      if (this.password) {
+        reader = new Password(resource, this.getPassword(this.password))
+      } else {
+        reader = resource
+      }
+      reader = new Text(reader)
+
+      let enterPassword: boolean
+      try {
+        fileContent = await reader.read()
+        scenarioObject = load(fileContent, {
+          schema: YAMLSchema.Schema
+        }) as any
+        if (typeof scenarioObject === 'string') {
+          const parts = fileContent?.split(':')
+          if (parts?.length === 2 && parts[0].length === 32) {
+            enterPassword = true
+          }
+        }
+      } catch {
+        this.proxy.logger.error(chalk.red(`✗ Password is not valid`))
+        enterPassword = true
+      }
+      if (enterPassword) {
+        const inputPassword = ElementFactory.CreateTheElement<UserInput>(UserInput)
+        inputPassword.init([{
+          title: `Enter password to decrypted ${chalk.gray(`"${this.file}"`)}`,
+          type: 'password',
+          required: true,
+          var: 'pwd'
+        }])
+        await inputPassword.prepare()
+        const { pwd } = await inputPassword.exec()
+        await inputPassword.dispose()
+        this.password = pwd
+        isLoaded = true
+      }
+    } while (isLoaded)
 
     if (Array.isArray(scenarioObject)) {
       scenarioObject = { steps: scenarioObject.flat() }
@@ -110,7 +155,7 @@ export default class Fragment extends Group {
 
       this.password = this.getPassword(pwd)
       const writer = new Password(new File(this.scenarioPasswordFile), this.password)
-      await writer.write(fileContent.toString().replace(/^password:.+$/m, ''))
+      await writer.write(fileContent.replace(/^password:.+$/m, ''))
     }
 
     return scenarioProps

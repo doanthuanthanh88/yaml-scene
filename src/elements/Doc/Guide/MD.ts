@@ -16,6 +16,8 @@ import { CommentParser } from './CommentParser';
 @example
 ```yaml
 - Doc/Guide/MD: 
+    title: Guideline document
+    description: Describe all of elements in tool. (meaning, how to use...)
     # pattern:
     #   begin: ^\s*\/\*{5}\s*$             # Default pattern
     #   end:   ^\s*\*{1,}\/\s*$            # Default pattern
@@ -99,6 +101,8 @@ export default class GuideMD implements IElement {
   $$: IElement
   $: this
 
+  title?: string
+  description?: string
   includes: string[]
   excludes?: string[]
   pattern?: {
@@ -115,7 +119,7 @@ export default class GuideMD implements IElement {
   }
 
   async prepare() {
-    await this.proxy.applyVars(this, 'includes', 'excludes', 'pattern', 'includePattern', 'outFile', 'prefixHashLink')
+    await this.proxy.applyVars(this, 'title', 'description', 'includes', 'excludes', 'pattern', 'includePattern', 'outFile', 'prefixHashLink')
     if (!this.prefixHashLink) this.prefixHashLink = 'user-content-'
     if (!this.includes) this.includes = []
     if (!this.excludes) this.excludes = []
@@ -127,7 +131,7 @@ export default class GuideMD implements IElement {
 
   async exec() {
     this.proxy.logger.info('Scanning document...')
-    const scanner = new Scanner(new CommentExporter(new File(this.outFile), this.prefixHashLink), CommentParser)
+    const scanner = new Scanner(new CommentExporter(new File(this.outFile), this), CommentParser)
     scanner.event.on('scanfile', path => this.proxy.logger.debug('-', path))
     const commentModels = new Array<CommentInfo>()
     await Promise.all(

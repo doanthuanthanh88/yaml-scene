@@ -3,7 +3,7 @@ import { IFileAdapter } from "./IFileAdapter"
 /*****
 @name Json 
 @description Read and write json file. Used in File/Writer, File/Reader
-@group File, File.Adapter
+@group File.Adapter
 @example
 - File/Reader:
     title: Read a json file
