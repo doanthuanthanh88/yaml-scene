@@ -58,6 +58,7 @@ Run via docker
 1. [yas-http](https://github.com/doanthuanthanh88/yas-http): Manage http(s) request, mocking api server, create testcases, generate to document...
 2. [yas-grpc](https://github.com/doanthuanthanh88/yas-grpc): Manage gRPC request, mocking gRPC server, create testcases, generate to document...
 3. [yas-sequence-diagram](https://github.com/doanthuanthanh88/yas-sequence-diagram): Generate to sequence diagram, flow diagram base on comment in code
+4. [yas-redis](https://github.com/doanthuanthanh88/yas-redis): A redis client
 
 > You can [build a extension](#create-a-new-extension) by yourself
 
