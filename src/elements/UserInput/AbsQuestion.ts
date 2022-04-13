@@ -1,3 +1,4 @@
+import merge from 'lodash.merge';
 import { stdin } from 'process';
 import prompts from 'prompts';
 import { ElementProxy } from '../ElementProxy';
@@ -23,18 +24,12 @@ export abstract class AbsQuestion {
     }
   }
 
-  constructor({ title, required, pattern, var: varName, default: df, format, opts }: any) {
-    this.title = title
-    this.required = required
-    this.pattern = pattern
-    this.var = varName
-    this.default = df
-    this.format = format
-    this.opts = opts || {}
+  constructor(config: any) {
+    merge(this, config)
+    if (!this.opts) this.opts = {}
     if (!this.opts.onCancel) {
       this.opts.onCancel = () => process.exit(0)
     }
-
   }
 
   async prepare(proxy: ElementProxy<any>) {

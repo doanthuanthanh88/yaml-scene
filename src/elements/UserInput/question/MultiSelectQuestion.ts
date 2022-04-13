@@ -1,5 +1,6 @@
 import { ElementProxy } from "@app/elements/ElementProxy";
 import { TraceError } from "@app/utils/error/TraceError";
+import merge from "lodash.merge";
 import UserInput from "..";
 import { AbsQuestion } from "../AbsQuestion";
 import { QuestionType } from "../QuestionType";
@@ -13,7 +14,7 @@ export class MultiSelectQuestion extends AbsQuestion {
       throw new TraceError(`Need add choices in MultiSelectQuestion type`, { config })
     }
     super(config)
-    this.choices = config.choices
+    merge(this, config)
   }
 
   async prepare(proxy: ElementProxy<UserInput>) {
