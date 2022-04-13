@@ -3,7 +3,7 @@ import { Scenario } from "@app/singleton/Scenario";
 import { TraceError } from "@app/utils/error/TraceError";
 import { FileUtils } from "@app/utils/FileUtils";
 import { execSync } from "child_process";
-import { existsSync } from "fs";
+import { existsSync, statSync } from "fs";
 import { basename, join } from "path";
 import { ExtensionNotFound } from "../utils/error/ExtensionNotFound";
 import { InstallationManager } from "./InstallationManager";
@@ -86,6 +86,9 @@ export class ExtensionManager {
           const localModule = require(localPath)
           this.extensionElements[name] = this.getObjectInExport(localModule, name)
         } catch (err) {
+          LoggerManager.GetLogger().trace(err)
+        }
+        if (statSync(localPath).isDirectory()) {
           // If is directory
           if (!this.localModuleManager) this.localModuleManager = new LocalModuleManager()
           this.localModuleManager.add(name, localPath)
