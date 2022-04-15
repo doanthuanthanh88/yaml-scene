@@ -1,6 +1,3 @@
-const { join } = require('path')
-const { Functional } = require(join(require.main.path, '..', 'src/tags/model/Functional'))
-
 /*****
  * LineReader
  * @example
@@ -18,18 +15,22 @@ steps:
 exports.default = class LineReader {
   init(props = {}) {
     this.path = props.path
+    const { Functional } = require(this.proxy.resolvePath('#/tags/model/Functional'))
     this.onEachLine = Functional.GetFunction(props.onEachLine)
   }
 
   async prepare() {
     await this.proxy.applyVars(this, 'path')
     this.path = this.proxy.resolvePath(this.path)
+    if (!this.path) throw new Error(`File "${this.path}" is not found`)
   }
 
   async exec() {
     await new Promise(async (resolve) => {
+      const { Resource } = require(this.proxy.resolvePath('#/elements/File/adapter/Resource'))
+      const stream = new Resource(this.path, { readType: 'stream' })
       const rl = require('readline').createInterface({
-        input: require('fs').createReadStream(this.path)
+        input: await stream.read()
       })
       const func = await this.proxy.eval(this.onEachLine.toReturn())
       rl.on('line', async (line) => {
