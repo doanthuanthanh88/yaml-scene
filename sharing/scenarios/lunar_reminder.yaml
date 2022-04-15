@@ -1,0 +1,12 @@
+- Fragment:
+    file: https://raw.githubusercontent.com/doanthuanthanh88/yaml-scene/main/sharing/components/lunar-reminder/lunar_reminder.yaml
+    vars:
+      lunarCalendarRemindDays:
+        - pattern: "^1/\\d+$"
+          des: Thắp hương mùng 1 âm lịch
+        - pattern: "^15/\\d+$"
+          des: Thắp hương ngày rằm
+        - pattern: "^23/12$"
+          des: Ngày ông Công, ông Táo
+        - pattern: "^1/1$"
+          des: Ngày tết âm lịch
