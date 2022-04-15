@@ -1,6 +1,7 @@
 import { CLI } from "./cli/CLI";
 import { Scenario } from "./singleton/Scenario";
 import { TraceError } from "./utils/error/TraceError";
+import { FileUtils } from "./utils/FileUtils";
 
 export class Main {
 
@@ -44,5 +45,7 @@ export class Main {
       console.groupEnd()
     }
     throw err
+  } finally {
+    FileUtils.CleanTempPath()
   }
 })()

@@ -104,7 +104,12 @@ export class VariableManager {
     let vl;
     const ctx = { ...this.vars, ...baseCtx }
     func = func.trim()
-    const isAsync = func.includes('await ') ? 'async' : ''
+    let isAsync = ''
+    if (!func.startsWith('return ')) {
+      if (func.includes('await ') || func.includes('Promise.') || func.includes('new Promise')) {
+        isAsync = 'async'
+      }
+    }
     const [firstLine] = func.split('\n', 1)
     let args: string
     if (firstLine && VariableManager._PreloadVarPattern.test(firstLine)) {

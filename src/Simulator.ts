@@ -17,7 +17,7 @@ export class Simulator {
     const { env, logLevel = 'error', password } = opts
     CLI.Instance.env = env
     LoggerManager.SetDefaultLoggerLevel(logLevel)
-    const tmpFile = FileUtils.GetNewTempPath('.yas.yaml')
+    const tmpFile = FileUtils.GetNewTempPathThenClean('.yas.yaml')
     try {
       writeFileSync(tmpFile, steps)
       let isRun: boolean
@@ -36,7 +36,7 @@ export class Simulator {
         }
       } while (isRun)
     } finally {
-      FileUtils.RemoveFilesDirs(tmpFile)
+      FileUtils.CleanTempPath()
     }
   }
 

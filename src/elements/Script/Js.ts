@@ -40,11 +40,11 @@ export default class Js implements IElement {
 
   init(props: any) {
     if (typeof props === 'string' || props instanceof Functional) {
-      this.func = Functional.GetFuntion(props)
+      this.func = Functional.GetFunction(props)
     } else if (props?.content) {
       const { content, ...others } = props
       merge(this, others)
-      this.func = Functional.GetFuntion(content)
+      this.func = Functional.GetFunction(content)
     } else {
       throw new TraceError('JS script is required')
     }

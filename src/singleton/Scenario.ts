@@ -31,7 +31,12 @@ logLevel: debug                                     # How to show log is debug)
                                                     # - trace: Show all of log
 install:                                            # Install extensions from npm registry
   local:                                            # Install extensions to local path (npm install --prefix $path/node_modules)
-    path: ./
+    path: ./                                        # There are some type of path
+                                                    # - ./test/:  Relative path from folder which includes a scenario file
+                                                    # - test/:    Relative path from folder which includes a scenario file
+                                                    # - ~/test:   Relative path from user home directory
+                                                    # - #/test:   Relative path from yaml-scene/src
+                                                    # - /test:    Absolute path
     dependencies:
       - lodash
   global:                                           # Install extension to global (npm install -g)
@@ -140,6 +145,7 @@ export class Scenario extends Fragment {
   resolvePath(path?: string) {
     if (!path || /^https?:\/\//.test(path)) return path || ''
     if (path.startsWith('~/')) return path.replace(/^\~/, homedir())
+    if (path.startsWith('#/')) return path.replace(/^\#/, join(__dirname, '..'))
     if (!isAbsolute(path)) return join(this.rootDir, path)
     return resolve(path)
   }

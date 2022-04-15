@@ -1,3 +1,5 @@
+import { File } from "@app/elements/File/adapter/File";
+import { Url } from "@app/elements/File/adapter/Url";
 import { IElement } from "@app/elements/IElement";
 import { Scenario } from "@app/singleton/Scenario";
 import { TraceError } from "@app/utils/error/TraceError";
@@ -75,25 +77,34 @@ export class ExtensionManager {
   }
 
   async registerGlobalExtension(extensions: { [name: string]: string }) {
-    Object.entries(extensions)
-      .forEach(([name, pathExt]) => {
-        const localPath = Scenario.Instance.resolvePath(pathExt)
-        if (!existsSync(localPath)) {
-          throw new TraceError(`Could not found extensions "${name}" in "${localPath}"`, { localPath, name, pathExt })
-        }
-        try {
-          // If is file
-          const localModule = require(localPath)
-          this.extensionElements[name] = this.getObjectInExport(localModule, name)
-        } catch (err) {
-          LoggerManager.GetLogger().trace(err)
-        }
-        if (statSync(localPath).isDirectory()) {
-          // If is directory
-          if (!this.localModuleManager) this.localModuleManager = new LocalModuleManager()
-          this.localModuleManager.add(name, localPath)
-        }
-      })
+    for (const [name, pathExt] of Object.entries(extensions)) {
+      let localPath = Scenario.Instance.resolvePath(pathExt)
+      const exsited = FileUtils.Existed(localPath)
+      if (!exsited) {
+        throw new TraceError(`Could not found extensions "${name}" in "${localPath}"`, { localPath, name, pathExt })
+      }
+      if (exsited === 'url') {
+        const url = new Url(pathExt)
+        const buf = await url.read()
+
+        localPath = FileUtils.GetNewTempPathThenClean('.js')
+        const file = new File(localPath)
+        await file.write(buf)
+
+      }
+      try {
+        // If is file
+        const localModule = require(localPath)
+        this.extensionElements[name] = this.getObjectInExport(localModule, name)
+      } catch (err) {
+        LoggerManager.GetLogger().trace(err)
+      }
+      if (statSync(localPath).isDirectory()) {
+        // If is directory
+        if (!this.localModuleManager) this.localModuleManager = new LocalModuleManager()
+        this.localModuleManager.add(name, localPath)
+      }
+    }
   }
 
   async uninstall() {
