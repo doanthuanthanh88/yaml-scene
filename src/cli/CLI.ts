@@ -27,6 +27,10 @@ export class CLI {
   repositoryURL
   force: boolean
 
+  get latestVersion() {
+    return this.version.split('.', 1)[0]
+  }
+
   constructor() {
     this.envFile = '.env'
     const { version, description, name, bin, repository } = require(join(__dirname, "../../package.json"))
@@ -82,7 +86,7 @@ export class CLI {
         .description('Add new extensions')
         .argument("<extensions...>", "ExtensionManager package in npm registry")
         .action(async (extensionNames) => {
-          extensionNames = extensionNames.map(extensionName => extensionName.includes('@') ? extensionName : `${extensionName}@latest`)
+          extensionNames = extensionNames.map(extensionName => extensionName.includes('@') ? extensionName : `${extensionName}@${this.latestVersion}`)
           await InstallationManager.Instance.installExtensions(extensionNames, undefined, 'global', true)
           const jsonSchema = new JSONSchema()
           await jsonSchema.init()
@@ -112,7 +116,8 @@ export class CLI {
         .argument("[extensions...]", "ExtensionManager package in npm registry")
         .action(async (extensionNames) => {
           if (!extensionNames.length) extensionNames.push('yaml-scene')
-          extensionNames = extensionNames.map(extensionName => extensionName.includes('@') ? extensionName : `${extensionName}@latest`)
+          extensionNames = extensionNames.map(extensionName => extensionName.includes('@') ? extensionName : `${extensionName}@${this.latestVersion}`)
+          console.log(extensionNames)
           await InstallationManager.Instance.upgradeExtensions(extensionNames)
           const jsonSchema = new JSONSchema()
           await jsonSchema.init()
