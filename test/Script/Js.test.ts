@@ -17,12 +17,14 @@ describe('Test scripts', () => {
 - Script/Js: 
     title: Write hello 1
     content: !function |
-      require('fs').writeFileSync('${tmpFile}', text + ' 1')
+      ({ text }) {
+        require('fs').writeFileSync('${tmpFile}', text + ' 1')
+      }
 
 - Script/Js: !function |
-    ({ text })
-    
-    require('fs').writeFileSync('${tmpFile}', text)
+    ({ text }) {
+      require('fs').writeFileSync('${tmpFile}', text)
+    }
 `)
     expect(existsSync(tmpFile)).toBe(true)
     expect(readFileSync(tmpFile).toString()).toBe('Hello world')

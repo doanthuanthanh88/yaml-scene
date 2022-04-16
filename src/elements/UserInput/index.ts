@@ -134,7 +134,7 @@ export default class UserInput implements IElement {
     if (this._questions.length) {
       await Promise.all(this._questions.map(async question => {
         if (question.format) {
-          question.format = await this.proxy.eval<(vl: any) => any>(Functional.GetFunction(question.format)?.toReturn())
+          question.format = Functional.GetFunction(question.format).getFunctionFromBody() as any
         }
         await question.prepare(this.proxy)
       }))

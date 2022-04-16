@@ -6,6 +6,7 @@ import { IFileAdapter } from "./IFileAdapter";
 import { Url } from "./Url";
 
 export class Resource implements IFileAdapter {
+  static readonly Initable = true
   private existed: boolean | 'url'
   private _adapter: IFileAdapter
 

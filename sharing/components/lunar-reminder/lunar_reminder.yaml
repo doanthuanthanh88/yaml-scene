@@ -20,15 +20,16 @@ steps:
             list: []
 
         - Script/Js: !function |
-            ({ lunarCalendarRemindDays, $ })
-            lunarCalendarRemindDays = lunarCalendarRemindDays.map((d) => {
-              d.pattern = new RegExp(d.pattern)
-              return d
-            })
-            $.proxy.vars.$$remind = (date) => {
-              const rs = lunarCalendarRemindDays.filter(d => d.pattern.test(date)).map(d => d.des)
-              if (rs.length) return rs
-              return undefined
+            ({ lunarCalendarRemindDays }) {
+              lunarCalendarRemindDays = lunarCalendarRemindDays.map((d) => {
+                d.pattern = new RegExp(d.pattern)
+                return d
+              })
+              this.proxy.vars.$$remind = (date) => {
+                const rs = lunarCalendarRemindDays.filter(d => d.pattern.test(date)).map(d => d.des)
+                if (rs.length) return rs
+                return undefined
+              }
             }
 
         - Vars:
@@ -38,64 +39,65 @@ steps:
         - LineReader:
             path: ${file}
             onEachLine: !function |
-              ({ file, list, $, $$remind, lastSummary, newEvents, isStart })
-              async (line, isFinished) => {
-                if (line === 'BEGIN:VEVENT') {
-                  lastSummary = []
-                }
-                if (lastSummary) {
-                  lastSummary.push(line.trim())
-                } else {
-                  list.push(line)
-                  return
-                }
-                if (line.startsWith('SUMMARY:')) {
-                  let [,d] = line.split(':')
-                  d = d.trim()
-                  if (!isStart) {
-                    isStart = line === `SUMMARY:14/3`
+              ({ file, list, $, $$remind, lastSummary, newEvents, isStart }) {
+                return async (line, isFinished) => {
+                  if (line === 'BEGIN:VEVENT') {
+                    lastSummary = []
                   }
-                  const des = $$remind(d)
-                  if (des) {
-                    newEvents = des
+                  if (lastSummary) {
+                    lastSummary.push(line.trim())
+                  } else {
+                    list.push(line)
+                    return
                   }
-                } else if(line.startsWith('RRULE:') || line.startsWith('UID:')) {
-                  return
-                }
-                if (line === 'END:VEVENT') {
-                  if(list.length >= 0 && isStart) {
-                    list.push(lastSummary)
-                    if (newEvents) {
-                      newEvents.forEach(newEvent => {
-                        list.push(lastSummary.reduce((sum, m) => {
-                          if (m.startsWith('SUMMARY:')) {
-                            sum.push(`SUMMARY:${newEvent}`)
-                            sum.push(`RRULE:FREQ=DAILY;COUNT=1`)
-                            
-                            sum.push(`BEGIN:VALARM`)
-                            sum.push(`TRIGGER:-PT15H`)
-                            sum.push(`ATTACH;VALUE=URI:Chord`)
-                            sum.push(`ACTION:AUDIO`)
-                            sum.push(`END:VALARM`)
-
-                            sum.push(`BEGIN:VALARM`)
-                            sum.push(`TRIGGER:PT7H`)
-                            sum.push(`ATTACH;VALUE=URI:Chord`)
-                            sum.push(`ACTION:AUDIO`)
-                            sum.push(`END:VALARM`)
-
-                            sum.push(`END:VEVENT`)
-                            sum.push(`BEGIN:VEVENT`)
-                          } else {
-                            sum.push(m)
-                          }
-                          return sum
-                        }, []))
-                      })
+                  if (line.startsWith('SUMMARY:')) {
+                    let [,d] = line.split(':')
+                    d = d.trim()
+                    if (!isStart) {
+                      isStart = line === `SUMMARY:14/3`
                     }
+                    const des = $$remind(d)
+                    if (des) {
+                      newEvents = des
+                    }
+                  } else if(line.startsWith('RRULE:') || line.startsWith('UID:')) {
+                    return
                   }
-                  lastSummary = undefined
-                  newEvents = undefined
+                  if (line === 'END:VEVENT') {
+                    if(list.length >= 0 && isStart) {
+                      list.push(lastSummary)
+                      if (newEvents) {
+                        newEvents.forEach(newEvent => {
+                          list.push(lastSummary.reduce((sum, m) => {
+                            if (m.startsWith('SUMMARY:')) {
+                              sum.push(`SUMMARY:${newEvent}`)
+                              sum.push(`RRULE:FREQ=DAILY;COUNT=1`)
+                              
+                              sum.push(`BEGIN:VALARM`)
+                              sum.push(`TRIGGER:-PT15H`)
+                              sum.push(`ATTACH;VALUE=URI:Chord`)
+                              sum.push(`ACTION:AUDIO`)
+                              sum.push(`END:VALARM`)
+
+                              sum.push(`BEGIN:VALARM`)
+                              sum.push(`TRIGGER:PT7H`)
+                              sum.push(`ATTACH;VALUE=URI:Chord`)
+                              sum.push(`ACTION:AUDIO`)
+                              sum.push(`END:VALARM`)
+
+                              sum.push(`END:VEVENT`)
+                              sum.push(`BEGIN:VEVENT`)
+                            } else {
+                              sum.push(m)
+                            }
+                            return sum
+                          }, []))
+                        })
+                      }
+                    }
+                    lastSummary = undefined
+                    newEvents = undefined
+                  }
                 }
               }
 

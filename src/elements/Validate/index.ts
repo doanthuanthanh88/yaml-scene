@@ -27,7 +27,9 @@ Currently only support chai `https://www.chaijs.com`
 - Validate:
     title: Customize validate by code
     chai: !function |
-      if (age <= 10) assert.fail('Age must be greater than 10')
+      ({ age, assert }) {
+        if (age <= 10) assert.fail('Age must be greater than 10')
+      }
 */
 export default class Validate implements IElement {
   proxy: ElementProxy<this>
@@ -49,7 +51,9 @@ export default class Validate implements IElement {
     try {
       if (this.chai) {
         if (this.chai instanceof Functional) {
-          await this.proxy.eval(this.chai.toString(), { expect, assert, should: should() })
+          const func = this.chai.getFunctionFromBody()
+          await this.proxy.call(func, { expect, assert, should: should() }, this.$)
+          await func.call(this.$,)
         } else {
           await this.proxy.getVar(this.chai, { expect, assert, should: should() })
         }

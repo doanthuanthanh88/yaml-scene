@@ -2,7 +2,9 @@
     name: 10
 
 - Script/Js: !function |
-    console.log('oldValue', name)
-    await $.proxy.setVar('newName', name + 10)
+    ({ name }) {
+      console.log('oldValue', name)
+      await this.proxy.setVar('newName', name + 10)
+    }
 
 - Echo: New value ${newName}

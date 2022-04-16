@@ -116,11 +116,10 @@ export default class Writer implements IElement {
     for (const adapter of this.adapters.reverse()) {
       const adapterName = typeof adapter === 'string' ? adapter : Object.keys(adapter)[0]
       if (!adapterName) throw new TraceError('"adapters" is not valid', { adapter })
-
       const AdapterClass = await FileAdapterFactory.GetAdapter(adapterName)
       const args = typeof adapter === 'object' ? adapter[adapterName] : undefined
       if (!_adapter) {
-        if (!['Resource', 'Url', 'File'].includes(adapterName)) {
+        if (!AdapterClass['Initable']) {
           _adapter = new File(this.path)
         }
       }

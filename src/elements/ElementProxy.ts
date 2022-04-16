@@ -339,7 +339,7 @@ export class ElementProxy<T extends IElement> {
    */
   async replaceVar(yamlValue: any, baseContext = {} as any, defaultKey?: string) {
     if (typeof yamlValue === 'object') {
-      await VariableManager.Instance.replace(yamlValue, { $: this.element.$ || this.element, $$: this.element.$$, ...baseContext }, defaultKey)
+      await VariableManager.Instance.replace(yamlValue, this.getBaseContext(baseContext), defaultKey)
     }
   }
 
@@ -353,7 +353,7 @@ export class ElementProxy<T extends IElement> {
     if (typeof yamlValue === 'string') {
       await VariableManager.Instance.set(yamlValue, baseContext, defaultKey)
     } else {
-      await VariableManager.Instance.set(yamlValue, { $: this.element.$ || this.element, $$: this.element.$$, ...baseContext }, defaultKey)
+      await VariableManager.Instance.set(yamlValue, this.getBaseContext(baseContext), defaultKey)
     }
   }
 
@@ -362,9 +362,22 @@ export class ElementProxy<T extends IElement> {
    * @param {string} func Function source code
    * @param {any} baseContext Context used in the function
    */
-  async eval<T>(func?: string, baseContext = {} as any) {
-    const vl = await VariableManager.Instance.eval(func, { $: this.element.$ || this.element, $$: this.element.$$, ...baseContext })
+  async eval<T>(func?: string, baseContext = {} as any, mainContextProp?: string) {
+    const vl = await VariableManager.Instance.eval(func, this.getBaseContext(baseContext), mainContextProp)
     return vl as T
+  }
+
+  call(func: Function, baseContext?: any, _this?: any): any | Promise<any> {
+    return func.call(_this, this.getBaseContext(baseContext))
+  }
+
+  /**
+   * Return base context to apply to vars
+   * @param {Object} baseContext Init context
+   * @returns {Object} Full context which includes global vars, element and their proxy...
+   */
+  getBaseContext(baseContext?: any) {
+    return { $: this.element.$ || this.element, $$: this.element.$$, ...this.vars, ...baseContext }
   }
 
   /**
@@ -373,7 +386,7 @@ export class ElementProxy<T extends IElement> {
    * @param {any} baseContext Context used in the function
    */
   async getVar(yamlValue: any, baseContext = {}) {
-    const vl = await VariableManager.Instance.get(yamlValue, { $: this.element.$ || this.element, $$: this.element.$$, ...baseContext })
+    const vl = await VariableManager.Instance.get(yamlValue, this.getBaseContext(baseContext))
     return vl
   }
 

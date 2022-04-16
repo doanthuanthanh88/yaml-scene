@@ -9,6 +9,7 @@ import { Readable } from "stream";
 import { IFileAdapter } from "./IFileAdapter";
 
 export class Url implements IFileAdapter {
+  static readonly Initable = true
 
   constructor(public link: string, public config = {} as { readType?: 'stream' | 'buffer' }) {
     if (!link) {

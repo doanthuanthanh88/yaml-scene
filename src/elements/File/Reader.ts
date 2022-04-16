@@ -115,7 +115,7 @@ export default class Reader implements IElement {
       const AdapterClass = await FileAdapterFactory.GetAdapter(adapterName)
       const args = typeof adapter === 'object' ? adapter[adapterName] : undefined
       if (!_adapter) {
-        if (!['Resource', 'Url', 'File'].includes(adapterName)) {
+        if (!AdapterClass['Initable']) {
           _adapter = new Resource(this.path)
         }
       }

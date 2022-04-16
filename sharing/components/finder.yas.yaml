@@ -6,21 +6,22 @@
     loop: ${finderPath && require('fs').statSync(finderPath)?.isDirectory()}
     steps:
       - Script/Js: !function |
-          if (finderPath === '..') {
-            folders.pop()
-            finderPath = folders[folders.length-1]
-          } else {
-            folders.push(finderPath)
+          ({ finderPath, folders, $$text }) {
+            if (finderPath === '..') {
+              folders.pop()
+              finderPath = folders[folders.length-1]
+            } else {
+              folders.push(finderPath)
+            }
+            const p = require('path')
+            const f = require('fs').readdirSync(finderPath).map(e => {
+              const vl = p.join(finderPath, e)
+              const isDir = require('fs').statSync(vl).isDirectory()
+              return { title: e + $$text.green(isDir ? ' ⏎' : ''), value: vl }
+            })
+            if(folders.length > 1) f.splice(0, 0, {title: `..${$$text.green(' ⏎')}`, value: '..'})
+            await this.proxy.setVar('files', f)
           }
-          const p = require('path')
-          const f = require('fs').readdirSync(finderPath).map(e => {
-            const vl = p.join(finderPath, e)
-            const isDir = require('fs').statSync(vl).isDirectory()
-            return { title: e + $$text.green(isDir ? ' ⏎' : ''), value: vl }
-          })
-          if(folders.length > 1) f.splice(0, 0, {title: `..${$$text.green(' ⏎')}`, value: '..'})
-          await $.proxy.setVar('files', f)
-
       - UserInput:
           - title: ${finderTitle}
             type: autocomplete

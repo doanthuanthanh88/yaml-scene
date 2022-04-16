@@ -473,17 +473,16 @@ Embed javascript code into scene
 - Script/Js:
     title: Test something
     content: !function |
+      ({ name }) {
+        console.log('oldValue', name)
+        await this.proxy.setVar('newName', name + 10)      # `this` is referenced to `Js` element in `Script`
+      }
+
+- Script/Js: !function |
+    ({ name, age }) {                                 # "name", "age" are global variables
       console.log('oldValue', name)
-      await $.proxy.setVar('newName', name + 10)      # `$` is referenced to `Js` element in `Script`
-
-- Script/Js: !function |
-    console.log('oldValue', name)
-    $.proxy.vars.newName = name + 10                  # `$` is referenced to `Js` element in `Script`
-
-- Script/Js: !function |
-    ({ name, age })                                        # For best performance, you should add this line to asks vm provides some variables, not at all
-    console.log('oldValue', name)
-    $.proxy.vars.newName = name + 10                  # `$` is referenced to `Js` element in `Script`
+      this.proxy.vars.newName = name + 10                # `this` is referenced to `Js` element in `Script`
+    }
 
 - Echo: New value ${newName}
 ```
@@ -1180,7 +1179,9 @@ Currently only support chai `https://www.chaijs.com`
 - Validate:
     title: Customize validate by code
     chai: !function |
-      if (age <= 10) assert.fail('Age must be greater than 10')
+      ({ age, assert }) {
+        if (age <= 10) assert.fail('Age must be greater than 10')
+      }
 ```
 
 <br/>

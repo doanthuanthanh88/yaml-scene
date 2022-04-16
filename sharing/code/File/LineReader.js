@@ -7,9 +7,10 @@ steps:
   - LineReader:
       path: Path_of_file
       onEachLine: !function |
-        ({ file, list, $, $$remind, lastSummary, newEvent, isStart })
-        async (line, isFinished) => {
-          console.log(line, isFinished)
+        ({ file, list, $, $$remind, lastSummary, newEvent, isStart }) {
+          return async (line, isFinished) => {
+            console.log(line, isFinished)
+          }
         }
  */
 exports.default = class LineReader {

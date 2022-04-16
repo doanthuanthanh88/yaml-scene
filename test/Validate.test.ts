@@ -26,7 +26,9 @@ test('Validate with custom function', async () => {
 - Validate:
     title: Check custom function
     chai: !function |
-      assert.fail('Error here')
+      ({ assert }) {
+        assert.fail('Error here')
+      }
 `)
   } catch (err: any) {
     error = err

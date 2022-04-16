@@ -8,7 +8,7 @@ import { Scenario } from "./Scenario"
 
 export class VariableManager {
   private static readonly _NavPattern = /^(\$\{){1}([^\}]+)\}$/
-  private static readonly _PreloadVarPattern = /^\(\s*\{[a-zA-Z0-9_$,\s]+\}\s*\)$/
+  // private static readonly _PreloadVarPattern = /^\(\s*\{[a-zA-Z0-9_$,\s]+\}\s*\)$/
   private static _Instance: VariableManager
 
   static get Instance() {
@@ -99,35 +99,37 @@ export class VariableManager {
     }
   }
 
-  async eval(func?: string, baseCtx?: any) {
+  async eval(func?: string | Function, ctx = {} as any, mainContextProp?: string) {
     if (!func) throw new TraceError(`Could not eval with empty code`, { func })
-    let vl;
-    const ctx = { ...this.vars, ...baseCtx }
-    func = func.trim()
-    let isAsync = ''
-    if (!func.startsWith('return ')) {
-      if (func.includes('await ') || func.includes('Promise.') || func.includes('new Promise')) {
-        isAsync = 'async'
-      }
+    let _func: Function
+    // const ctx = { ...this.vars, ...baseCtx }
+    // func = func.trim()
+    // let isAsync = ''
+    // if (!func.startsWith('return ')) {
+    //   if (func.includes('await ') || func.includes('Promise.') || func.includes('new Promise')) {
+    //     isAsync = 'async'
+    //   }
+    // }
+    // const [firstLine] = func.split('\n', 1)
+    // let args: string
+    // if (firstLine && VariableManager._PreloadVarPattern.test(firstLine)) {
+    //   func = func.substring(firstLine.length)
+    //   args = firstLine
+    // } else {
+    //   args = `({${Object.keys(ctx).join(',')}})`
+    // }
+    // const evalStr = `vl = (${isAsync}${args} => {\n${func}\n}).call(${ctx[mainContextProp] || 'null'}, ctx)`
+    if (typeof func === 'string') {
+      eval(`_func = ${func}`) as Function
     }
-    const [firstLine] = func.split('\n', 1)
-    let args: string
-    if (firstLine && VariableManager._PreloadVarPattern.test(firstLine)) {
-      func = func.substring(firstLine.length)
-      args = firstLine
-    } else {
-      args = `({${Object.keys(ctx).join(',')}})`
-    }
-    const evalStr = `vl = (${isAsync}${args} => {\n${func}\n})(ctx)`
-    eval(evalStr)
-    return vl
+    return _func.call(ctx[mainContextProp] || null, ctx)
   }
 
-  async get(obj: any, baseCtx?: any, isPassed?: boolean) {
+  async get(obj: any, ctx?: any) {
     if (!obj) return obj
     if (Array.isArray(obj)) {
-      const ctx = isPassed ? baseCtx : { ...this.vars, ...baseCtx }
-      obj = await Promise.all(obj.map(o => this.get(o, ctx, true)))
+      // const ctx = isPassed ? baseCtx : { ...this.vars, ...baseCtx }
+      obj = await Promise.all(obj.map(o => this.get(o, ctx)))
     } else if (typeof obj === 'object') {
       if (obj instanceof Promise) {
         obj = await obj
@@ -137,14 +139,14 @@ export class VariableManager {
         obj = await obj.exec()
         return obj
       } else {
-        const ctx = isPassed ? baseCtx : { ...this.vars, ...baseCtx }
+        // const ctx = isPassed ? baseCtx : { ...this.vars, ...baseCtx }
         for (const [key, vl] of Object.entries(obj)) {
-          obj[key] = await this.get(vl, ctx, true)
+          obj[key] = await this.get(vl, ctx)
         }
       }
     } else if (this.isIncludeFormula(obj)) {
       let vl;
-      const ctx = isPassed ? baseCtx : { ...this.vars, ...baseCtx }
+      // const ctx = isPassed ? baseCtx : { ...this.vars, ...baseCtx }
       let evalStr = `let {${Object.keys(ctx).join(',')}} = ctx;\n`
       const m = obj.match(VariableManager._NavPattern)
       if (m) {

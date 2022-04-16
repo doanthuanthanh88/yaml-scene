@@ -3,7 +3,9 @@
       # type: text
       var: name
       format: !function |
-        vl => vl.toUpperCase()
+        (vl) {
+          return vl.toUpperCase()
+        }
       required: true
     - title: Enter password
       type: password

@@ -6,6 +6,7 @@ import merge from "lodash.merge";
 import { IFileAdapter } from "./IFileAdapter";
 
 export class File implements IFileAdapter {
+  static readonly Initable = true
 
   constructor(public path: string, public config = {} as { encoding?: WriteFileOptions, readType?: 'stream' | 'buffer' }) {
     if (!path) {
