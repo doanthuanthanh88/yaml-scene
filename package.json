@@ -1,6 +1,6 @@
 {
   "name": "yaml-scene",
-  "version": "2.0.0-alpha.1",
+  "version": "1.1.20",
   "description": "Platform to do everything with only yaml scenario files",
   "keywords": [
     "yaml",
@@ -24,8 +24,8 @@
     "install:dist": "yarn install --production --modules-folder ./dist/node_modules",
     "dev": "ts-node-dev --clear --rs --project tsconfig.json --ignore-watch [.*] --respawn --transpile-only -r tsconfig-paths/register --inspect-brk -- src/index.ts",
     "start": "node -r ts-node/register -r tsconfig-paths/register src/index.ts",
-    "test": "jest",
-    "test:debug": "node --inspect-brk node_modules/.bin/jest",
+    "test": "node --expose-gc node_modules/.bin/jest",
+    "test:debug": "node --expose-gc --inspect-brk node_modules/.bin/jest",
     "jsdoc": "npx jsdoc -c jsdoc.json",
     "doc": "yarn start scenes/guide.yas.yaml && yarn start ./scenes/generate_schema.yas.yaml",
     "prebuild": "yarn clean",

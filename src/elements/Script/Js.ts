@@ -16,15 +16,15 @@ import { IElement } from "../IElement";
 - Script/Js: 
     title: Test something
     content: !function |
-      ({ name }) {  
+      ({ name }) {                                        # Passed global variables into function                                    
         console.log('oldValue', name)
-        await this.proxy.setVar('newName', name + 10)      # `this` is referenced to `Js` element in `Script`
+        await this.proxy.setVar('newName', name + 10)     # `this` is referenced to `Js` element in `Script`
       }
 
 - Script/Js: !function |
-    ({ name, age }) {                                 # "name", "age" are global variables
+    ({ name, age }) {                                     # "name", "age" are global variables
       console.log('oldValue', name)
-      this.proxy.vars.newName = name + 10                # `this` is referenced to `Js` element in `Script`
+      this.proxy.vars.newName = name + 10                 # `this` is referenced to `Js` element in `Script`
     }
     
 - Echo: New value ${newName}

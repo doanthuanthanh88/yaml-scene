@@ -5,29 +5,30 @@
     var: json
 
 - Script/Js: |
-    const { templates, ...schema } = json
-
-    function parse(obj) {
-      if (Array.isArray(obj)) {
-        obj.forEach(o => typeof o === 'object' && parse(o))
-      } else if(typeof obj === 'object') {
-        const keys = Object.keys(obj)
-        keys.forEach(k => {
-          let key = k
-          if (key === '...') {
-            Object.assign(obj, templates[obj[key]])
-            delete obj[key]
-          }
-          if (obj[key] && typeof obj[key] === 'object') {
-            parse(obj[key])
-          }
-        })
+    ({ json }) {
+      const { templates, ...schema } = json
+      function parse(obj) {
+        if (Array.isArray(obj)) {
+          obj.forEach(o => typeof o === 'object' && parse(o))
+        } else if(typeof obj === 'object') {
+          const keys = Object.keys(obj)
+          keys.forEach(k => {
+            let key = k
+            if (key === '...') {
+              Object.assign(obj, templates[obj[key]])
+              delete obj[key]
+            }
+            if (obj[key] && typeof obj[key] === 'object') {
+              parse(obj[key])
+            }
+          })
+        }
       }
+
+      parse(schema)
+
+      this.proxy.vars.result = json
     }
-
-    parse(schema)
-
-    $.proxy.vars.result = json
 
 - File/Writer:
     path: ../schema.json
