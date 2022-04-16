@@ -27,8 +27,8 @@ Currently only support chai `https://www.chaijs.com`
 - Validate:
     title: Customize validate by code
     chai: !function |
-      ({ age, assert }) {
-        if (age <= 10) assert.fail('Age must be greater than 10')
+      ({ age, assert, expect, should }) {                           # "assert", "expect", "should" are chaijs functions
+        if (age <= 10) assert.fail('Age must be greater than 10')   # "this" is referenced to Validate element
       }
 */
 export default class Validate implements IElement {

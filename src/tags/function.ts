@@ -6,9 +6,15 @@ import { Functional } from './model/Functional'
 @description Write code as a function in js
 @group !Tags
 @example
+- Vars:
+    globalVar1: Global variable 01
+    
 - Script/Js: !function |
-    console.log('oldAge', age)
-    await $.proxy.setVar('newAge', age + 10)
+    ({ globalVar1, $ }) {                           # Load global variables into function
+                                                    # "$" always is the current element. In this example, "$" = Script/Js element
+      console.log('oldAge', age)
+      await this.proxy.setVar('newAge', age + 10)
+    }
 */
 export class FunctionScalar extends Type {
   constructor() {

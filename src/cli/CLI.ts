@@ -117,7 +117,6 @@ export class CLI {
         .action(async (extensionNames) => {
           if (!extensionNames.length) extensionNames.push('yaml-scene')
           extensionNames = extensionNames.map(extensionName => extensionName.includes('@') ? extensionName : `${extensionName}@${this.latestVersion}`)
-          console.log(extensionNames)
           await InstallationManager.Instance.upgradeExtensions(extensionNames)
           const jsonSchema = new JSONSchema()
           await jsonSchema.init()

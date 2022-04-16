@@ -16,7 +16,9 @@ import { QuestionType } from './QuestionType';
     - title: Enter your name
       type: text # Default is text if not specific
       format: !function |
-        vl => vl.toUpperCase()
+        (vl) {
+          return vl.toUpperCase()
+        }
       var: name
       required: true
 

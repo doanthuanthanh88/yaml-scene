@@ -219,9 +219,15 @@ A simple scenario file
 Write code as a function in js  
 
 ```yaml
+- Vars:
+    globalVar1: Global variable 01
+
 - Script/Js: !function |
-    console.log('oldAge', age)
-    await $.proxy.setVar('newAge', age + 10)
+    ({ globalVar1, $ }) {                           # Load global variables into function
+                                                    # "$" always is the current element. In this example, "$" = Script/Js element
+      console.log('oldAge', age)
+      await this.proxy.setVar('newAge', age + 10)
+    }
 ```
 
 <br/>
@@ -920,7 +926,9 @@ Get user input from keyboard
     - title: Enter your name
       type: text # Default is text if not specific
       format: !function |
-        vl => vl.toUpperCase()
+        (vl) {
+          return vl.toUpperCase()
+        }
       var: name
       required: true
 
@@ -1179,8 +1187,8 @@ Currently only support chai `https://www.chaijs.com`
 - Validate:
     title: Customize validate by code
     chai: !function |
-      ({ age, assert }) {
-        if (age <= 10) assert.fail('Age must be greater than 10')
+      ({ age, assert, expect, should }) {                           # "assert", "expect", "should" are chaijs functions
+        if (age <= 10) assert.fail('Age must be greater than 10')   # "this" is referenced to Validate element
       }
 ```
 
