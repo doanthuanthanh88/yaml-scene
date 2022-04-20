@@ -1,14 +1,13 @@
 import { TraceError } from "@app/utils/error/TraceError";
 import { FileUtils } from "@app/utils/FileUtils";
 import { WriteFileOptions } from "fs";
-import { File } from "./File";
-import { IFileAdapter } from "./IFileAdapter";
-import { Url } from "./Url";
+import { FileWriter } from "./FileWriter";
+import { IFileWriter } from "./IFileWriter";
 
-export class Resource implements IFileAdapter {
+export class ResourceWriter implements IFileWriter {
   static readonly Initable = true
   private existed: boolean | 'url'
-  private _adapter: IFileAdapter
+  private writer: IFileWriter
 
   get isFile() {
     return this.existed === true
@@ -16,18 +15,12 @@ export class Resource implements IFileAdapter {
 
   constructor(public path: string, public config = {} as { encoding?: WriteFileOptions, readType?: 'stream' | 'buffer' }) {
     this.existed = FileUtils.Existed(this.path)
-    if (!this.existed) {
-      throw new TraceError(`"${this.path}" is not valid`)
-    }
-    this._adapter = this.existed === 'url' ? new Url(this.path, this.config) : new File(this.path, this.config)
-  }
-
-  async read() {
-    return this._adapter.read()
+    if (this.existed === 'url') throw new TraceError(`"${this.path}" is not supported to write`)
+    this.writer = new FileWriter(this.path, this.config)
   }
 
   async write(data: any) {
-    return this._adapter.write(data)
+    await this.writer.write(data)
   }
 
 }

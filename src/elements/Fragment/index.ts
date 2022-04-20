@@ -10,11 +10,12 @@ import { load } from "js-yaml";
 import merge from 'lodash.merge';
 import { basename, dirname, join } from "path";
 import { ElementFactory } from "../ElementFactory";
-import { File } from "../File/adapter/File";
-import { IFileAdapter } from "../File/adapter/IFileAdapter";
-import { Password } from "../File/adapter/Password";
-import { Resource } from "../File/adapter/Resource";
-import { Text } from "../File/adapter/Text";
+import { IFileReader } from "../File/reader/IFileReader";
+import { PasswordReader } from "../File/reader/PasswordReader";
+import { ResourceReader } from "../File/reader/ResourceReader";
+import { TextReader } from "../File/reader/TextReader";
+import { FileWriter } from "../File/writer/FileWriter";
+import { PasswordWriter } from "../File/writer/PasswordWriter";
 import Group from "../Group";
 import UserInput from "../UserInput";
 
@@ -94,20 +95,20 @@ export default class Fragment extends Group {
     const existed = FileUtils.Existed(this.file)
     if (!existed) throw new TraceError(`Scenario file is not existed at "${this.file}"`)
 
-    let reader: IFileAdapter
+    let reader: IFileReader
     let scenarioObject: any
     let fileContent: string
-    const resource = new Resource(this.file)
+    const resource = new ResourceReader(this.file)
     let isLoaded: boolean
 
     do {
       if (isLoaded) isLoaded = false
       if (this.password) {
-        reader = new Password(resource, this.getPassword(this.password))
+        reader = new PasswordReader(resource, this.getPassword(this.password))
       } else {
         reader = resource
       }
-      reader = new Text(reader)
+      reader = new TextReader(reader)
 
       let enterPassword: boolean
       try {
@@ -154,7 +155,7 @@ export default class Fragment extends Group {
       this.scenarioPasswordFile = join(dirname(this.file), name.split('.', 1)[0])
 
       this.password = this.getPassword(pwd)
-      const writer = new Password(new File(this.scenarioPasswordFile), this.password)
+      const writer = new PasswordWriter(new FileWriter(this.scenarioPasswordFile), this.password)
       await writer.write(fileContent.replace(/^password:.+$/m, ''))
     }
 

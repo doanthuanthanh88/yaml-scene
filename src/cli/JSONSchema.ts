@@ -1,11 +1,11 @@
-import { Resource } from '@app/elements/File/adapter/Resource'
+import { ResourceReader } from '@app/elements/File/reader/ResourceReader'
+import { FileWriter } from '@app/elements/File/writer/FileWriter'
+import { JsonWriter } from '@app/elements/File/writer/JsonWriter'
 import { LoggerManager } from '@app/singleton/LoggerManager'
 import chalk from 'chalk'
 import merge from 'lodash.merge'
 import uniqWith from 'lodash.uniqwith'
 import { join } from "path"
-import { File } from "../elements/File/adapter/File"
-import { Json } from "../elements/File/adapter/Json"
 import { Scenario } from '../singleton/Scenario'
 import { FileUtils } from '../utils/FileUtils'
 
@@ -76,13 +76,13 @@ export class JSONSchema {
   async save(fout = join(__dirname, '../../schema.yas.json')) {
     fout = Scenario.Instance.resolvePath(fout)
     this.parse()
-    const f = new Json(new File(fout), { pretty: true })
+    const f = new JsonWriter(new FileWriter(fout), { pretty: true })
     await f.write(this.yamlScene)
     return fout
   }
 
   private async getFileData(urlOrPath: string) {
-    const resource = new Resource(urlOrPath)
+    const resource = new ResourceReader(urlOrPath)
     const content = await resource.read()
     return JSON.parse(content.toString())
   }

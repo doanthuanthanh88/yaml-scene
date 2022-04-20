@@ -3,22 +3,22 @@ import chalk from 'chalk';
 import merge from "lodash.merge";
 import { ElementProxy } from '../ElementProxy';
 import { IElement } from '../IElement';
-import { File } from './adapter/File';
-import { FileAdapterFactory } from './adapter/FileAdapterFactory';
-import { IFileAdapter } from './adapter/IFileAdapter';
+import { FileWriter } from './writer/FileWriter';
+import { FileWriterFactory } from './writer/FileWriterFactory';
+import { IFileWriter } from './writer/IFileWriter';
 
 /*****
 @name File/Writer
 @description Write content to a file
 File adapters:
 
-- [Read a text file](#user-content-file.adapter-text)
-- [Read a csv file](#user-content-file.adapter-csv)
-- [Read a json file](#user-content-file.adapter-json)
-- [Read a xml file](#user-content-file.adapter-xml)
-- [Read a yaml file](#user-content-file.adapter-yaml)
-- [Read a excel file](#user-content-file.adapter-excel)
-- [Read a encrypted file](#user-content-file.adapter-password)
+- [Read a text file](#user-content-file%2fwriter.adapter-text)
+- [Read a csv file](#user-content-file%2fwriter.adapter-csv)
+- [Read a json file](#user-content-file%2fwriter.adapter-json)
+- [Read a xml file](#user-content-file%2fwriter.adapter-xml)
+- [Read a yaml file](#user-content-file%2fwriter.adapter-yaml)
+- [Read a excel file](#user-content-file%2fwriter.adapter-excel)
+- [Read a encrypted file](#user-content-file%2fwriter.adapter-password)
 @group File, Output
 @exampleType custom
 @example
@@ -40,20 +40,12 @@ You can write a new adapter by yourself then use in adapters.
 
 **Write a custom adapter**
 
-1. Create your adapter in `CustomJson.ts`
+1. Create a your writer adapter in `CustomJsonWriter.ts`
   ```typescript
-  import { IFileAdapter } from "yaml-scene/utils/adapter/file/IFileAdapter"
+  import { IFileWriter } from "yaml-scene/utils/adapter/file/IFileWriter"
 
-  export class CustomJson implements IFileAdapter {
-    constructor(private file: IFileAdapter, public adapterConfig: { name: string, config: any }) { }
-
-    async read() {
-      const cnt = await this.file.read()
-
-      // Custom here
-      const obj = await JSON.parse(cnt.toString())
-      return obj
-    }
+  export class CustomJsonWriter implements IFileWriter {
+    constructor(private file: IFileWriter, public adapterConfig: { name: string, config: any }) { }
 
     async write(data: any) {
       // Custom here
@@ -89,10 +81,10 @@ You can write a new adapter by yourself then use in adapters.
       title: Write custom json file
       path: assets/data1.json
       adapters:
-        - YOUR_ADAPTER_PACKAGE/CustomJson:    # Use your adapter with adapter input config
+        - YOUR_ADAPTER_PACKAGE/CustomJsonWriter:    # Use your adapter with adapter input config
             name: a
             config: b
-        - Password: MyPassword                # Combine to other adapters            
+        - Password: MyPassword                      # Combine to other adapters            
       content:
         - name: name 1
           age: 1
@@ -112,15 +104,15 @@ export default class Writer implements IElement {
   adapters: (string | any)[]
 
   private async getAdapter() {
-    let _adapter: IFileAdapter
+    let _adapter: IFileWriter
     for (const adapter of this.adapters.reverse()) {
       const adapterName = typeof adapter === 'string' ? adapter : Object.keys(adapter)[0]
       if (!adapterName) throw new TraceError('"adapters" is not valid', { adapter })
-      const AdapterClass = await FileAdapterFactory.GetAdapter(adapterName)
+      const AdapterClass = await FileWriterFactory.GetWriter(adapterName)
       const args = typeof adapter === 'object' ? adapter[adapterName] : undefined
       if (!_adapter) {
         if (!AdapterClass['Initable']) {
-          _adapter = new File(this.path)
+          _adapter = new FileWriter(this.path)
         }
       }
       _adapter = new AdapterClass(_adapter || this.path, args)

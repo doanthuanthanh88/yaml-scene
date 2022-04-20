@@ -3,9 +3,9 @@ import chalk from 'chalk';
 import merge from "lodash.merge";
 import { ElementProxy } from '../ElementProxy';
 import { IElement } from '../IElement';
-import { FileAdapterFactory } from './adapter/FileAdapterFactory';
-import { IFileAdapter } from './adapter/IFileAdapter';
-import { Resource } from './adapter/Resource';
+import { FileReaderFactory } from './reader/FileReaderFactory';
+import { IFileReader } from './reader/IFileReader';
+import { ResourceReader } from './reader/ResourceReader';
 
 /*****
 @name File/Reader
@@ -13,13 +13,13 @@ import { Resource } from './adapter/Resource';
 
 File adapters:
 
-- [Read a text file](#user-content-file.adapter-text)
-- [Read a csv file](#user-content-file.adapter-csv)
-- [Read a json file](#user-content-file.adapter-json)
-- [Read a xml file](#user-content-file.adapter-xml)
-- [Read a yaml file](#user-content-file.adapter-yaml)
-- [Read a excel file](#user-content-file.adapter-excel)
-- [Read a encrypted file](#user-content-file.adapter-password)
+- [Read a text file](#user-content-file%2freader.adapter-text)
+- [Read a csv file](#user-content-file%2freader.adapter-csv)
+- [Read a json file](#user-content-file%2freader.adapter-json)
+- [Read a xml file](#user-content-file%2freader.adapter-xml)
+- [Read a yaml file](#user-content-file%2freader.adapter-yaml)
+- [Read a excel file](#user-content-file%2freader.adapter-excel)
+- [Read a encrypted file](#user-content-file%2freader.adapter-password)
 @group File, Input
 @exampleType custom
 @example
@@ -40,12 +40,12 @@ You can write a new adapter by yourself then use in adapters.
 
 **Write a custom adapter**
 
-1. Create your adapter in `CustomJson.ts`
+1. Create a your reader adapter in `CustomJsonReader.ts`
   ```typescript
-  import { IFileAdapter } from "yaml-scene/utils/adapter/file/IFileAdapter"
+  import { IFileReader } from "yaml-scene/utils/adapter/file/writer"
 
-  export class CustomJson implements IFileAdapter {
-    constructor(private file: IFileAdapter, public adapterConfig: { name: string, config: any }) { }
+  export class CustomJsonReader implements IFileReader {
+    constructor(private file: IFileReader, public adapterConfig: { name: string, config: any }) { }
 
     async read() {
       const cnt = await this.file.read()
@@ -54,13 +54,7 @@ You can write a new adapter by yourself then use in adapters.
       const obj = await JSON.parse(cnt.toString())
       return obj
     }
-
-    async write(data: any) {
-      // Custom here
-      const rs = await JSON.stringify(data)
-      
-      await this.file.write(rs)
-    }
+    
   }
 
   ```
@@ -89,8 +83,8 @@ You can write a new adapter by yourself then use in adapters.
       title: Read a file with custom adapter
       path: assets/data2.custom_adapter.json
       adapters:
-        - Password: MyPassword                # Combine to other adapters
-        - YOUR_ADAPTER_PACKAGE/CustomJson:    # Use your adapter with adapter input config
+        - Password: MyPassword                      # Combine to other adapters
+        - YOUR_ADAPTER_PACKAGE/CustomJsonReader:    # Use your adapter with adapter input config
             name: a
             config: b
       var: data
@@ -107,16 +101,15 @@ export default class Reader implements IElement {
   adapters: (string | any)[]
 
   private async getAdapter() {
-    let _adapter: IFileAdapter
+    let _adapter: IFileReader
     for (const adapter of this.adapters) {
       const adapterName = typeof adapter === 'string' ? adapter : Object.keys(adapter)[0]
       if (!adapterName) throw new TraceError('"adapters" is not valid', { adapter })
-
-      const AdapterClass = await FileAdapterFactory.GetAdapter(adapterName)
+      const AdapterClass = await FileReaderFactory.GetReader(adapterName)
       const args = typeof adapter === 'object' ? adapter[adapterName] : undefined
       if (!_adapter) {
         if (!AdapterClass['Initable']) {
-          _adapter = new Resource(this.path)
+          _adapter = new ResourceReader(this.path)
         }
       }
       _adapter = new AdapterClass(_adapter || this.path, args)

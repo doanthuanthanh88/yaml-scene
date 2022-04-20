@@ -1,11 +1,11 @@
-import { IFileAdapter } from '@app/elements/File/adapter/IFileAdapter';
+import { IFileWriter } from '@app/elements/File/writer/IFileWriter';
 import { Exporter } from '@app/utils/doc/Exporter';
 import { escape } from 'querystring';
 import { CommentInfo } from './CommentInfo';
 import GuideMD from './MD';
 
 export class CommentExporter implements Exporter<CommentInfo> {
-  constructor(private writer: IFileAdapter, public md: GuideMD) {
+  constructor(private writer: IFileWriter, public md: GuideMD) {
   }
 
   getHashLink(...txts: string[]) {

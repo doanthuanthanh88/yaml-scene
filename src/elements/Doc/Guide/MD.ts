@@ -1,5 +1,5 @@
 import { ElementProxy } from "@app/elements/ElementProxy";
-import { File } from "@app/elements/File/adapter/File";
+import { FileWriter } from "@app/elements/File/writer/FileWriter";
 import { IElement } from "@app/elements/IElement";
 import { TraceError } from "@app/utils/error/TraceError";
 import merge from "lodash.merge";
@@ -131,7 +131,7 @@ export default class GuideMD implements IElement {
 
   async exec() {
     this.proxy.logger.info('Scanning document...')
-    const scanner = new Scanner(new CommentExporter(new File(this.outFile), this), CommentParser)
+    const scanner = new Scanner(new CommentExporter(new FileWriter(this.outFile), this), CommentParser)
     scanner.event.on('scanfile', path => this.proxy.logger.debug('-', path))
     const commentModels = new Array<CommentInfo>()
     await Promise.all(

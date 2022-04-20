@@ -20,14 +20,6 @@ Describe all of elements in tool. (meaning, how to use...)
 | FILE | --- |
 |[File/Reader](#user-content-file%2c%20input-file%2freader)| Read a file then set content to a variable ...|  
 |[File/Writer](#user-content-file%2c%20output-file%2fwriter)| Write content to a file ...|  
-| FILE.ADAPTER | --- |
-|[Csv](#user-content-file.adapter-csv)| Read and write csv file. Used in File/Writer, File/Reader ...|  
-|[Excel](#user-content-file.adapter-excel)| Read and write excel file. Used in File/Writer, File/Reader ...|  
-|[Json](#user-content-file.adapter-json)| Read and write json file. Used in File/Writer, File/Reader ...|  
-|[Password](#user-content-file.adapter-password)| Read and write a encrypted file (`aes-128-cbc`). Used in File/Writer, File/Reader ...|  
-|[Text](#user-content-file.adapter-text)| Read and write text file. Used in File/Writer, File/Reader ...|  
-|[Xml](#user-content-file.adapter-xml)| Read and write xml file. Used in File/Writer, File/Reader ...|  
-|[Yaml](#user-content-file.adapter-yaml)| Read and write yaml file. Used in File/Writer, File/Reader ...|  
 | INPUT | --- |
 |[File/Reader](#user-content-file%2c%20input-file%2freader)| Read a file then set content to a variable ...|  
 |[UserInput](#user-content-input-userinput)| Get user input from keyboard ...|  
@@ -219,9 +211,15 @@ A simple scenario file
 Write code as a function in js  
 
 ```yaml
+- Vars:
+    globalVar1: Global variable 01
+
 - Script/Js: !function |
-    console.log('oldAge', age)
-    await $.proxy.setVar('newAge', age + 10)
+    ({ globalVar1, $ }) {                           # Load global variables into function
+                                                    # "$" always is the current element. In this example, "$" = Script/Js element
+      console.log('oldAge', age)
+      await this.proxy.setVar('newAge', age + 10)
+    }
 ```
 
 <br/>
@@ -473,15 +471,15 @@ Embed javascript code into scene
 - Script/Js:
     title: Test something
     content: !function |
-      ({ name }) {
+      ({ name }) {                                        # Passed global variables into function
         console.log('oldValue', name)
-        await this.proxy.setVar('newName', name + 10)      # `this` is referenced to `Js` element in `Script`
+        await this.proxy.setVar('newName', name + 10)     # `this` is referenced to `Js` element in `Script`
       }
 
 - Script/Js: !function |
-    ({ name, age }) {                                 # "name", "age" are global variables
+    ({ name, age }) {                                     # "name", "age" are global variables
       console.log('oldValue', name)
-      this.proxy.vars.newName = name + 10                # `this` is referenced to `Js` element in `Script`
+      this.proxy.vars.newName = name + 10                 # `this` is referenced to `Js` element in `Script`
     }
 
 - Echo: New value ${newName}
@@ -559,12 +557,12 @@ You can write a new adapter by yourself then use in adapters.
 
 **Write a custom adapter**
 
-1. Create your adapter in `CustomJson.ts`
+1. Create your adapter in `CustomJsonReader.ts`
   ```typescript
-  import { IFileAdapter } from "yaml-scene/utils/adapter/file/IFileAdapter"
+  import { IFileReader } from "yaml-scene/utils/adapter/file/writer"
 
-  export class CustomJson implements IFileAdapter {
-    constructor(private file: IFileAdapter, public adapterConfig: { name: string, config: any }) { }
+  export class CustomJsonReader implements IFileReader {
+    constructor(private file: IFileReader, public adapterConfig: { name: string, config: any }) { }
 
     async read() {
       const cnt = await this.file.read()
@@ -574,12 +572,6 @@ You can write a new adapter by yourself then use in adapters.
       return obj
     }
 
-    async write(data: any) {
-      // Custom here
-      const rs = await JSON.stringify(data)
-
-      await this.file.write(rs)
-    }
   }
 
   ```
@@ -608,8 +600,8 @@ You can write a new adapter by yourself then use in adapters.
       title: Read a file with custom adapter
       path: assets/data2.custom_adapter.json
       adapters:
-        - Password: MyPassword                # Combine to other adapters
-        - YOUR_ADAPTER_PACKAGE/CustomJson:    # Use your adapter with adapter input config
+        - Password: MyPassword                      # Combine to other adapters
+        - YOUR_ADAPTER_PACKAGE/CustomJsonReader:    # Use your adapter with adapter input config
             name: a
             config: b
       var: data
@@ -647,20 +639,12 @@ You can write a new adapter by yourself then use in adapters.
 
 **Write a custom adapter**
 
-1. Create your adapter in `CustomJson.ts`
+1. Create your adapter in `CustomJsonWriter.ts`
   ```typescript
-  import { IFileAdapter } from "yaml-scene/utils/adapter/file/IFileAdapter"
+  import { IFileWriter } from "yaml-scene/utils/adapter/file/IFileWriter"
 
-  export class CustomJson implements IFileAdapter {
-    constructor(private file: IFileAdapter, public adapterConfig: { name: string, config: any }) { }
-
-    async read() {
-      const cnt = await this.file.read()
-
-      // Custom here
-      const obj = await JSON.parse(cnt.toString())
-      return obj
-    }
+  export class CustomJsonWriter implements IFileWriter {
+    constructor(private file: IFileWriter, public adapterConfig: { name: string, config: any }) { }
 
     async write(data: any) {
       // Custom here
@@ -696,218 +680,16 @@ You can write a new adapter by yourself then use in adapters.
       title: Write custom json file
       path: assets/data1.json
       adapters:
-        - YOUR_ADAPTER_PACKAGE/CustomJson:    # Use your adapter with adapter input config
+        - YOUR_ADAPTER_PACKAGE/CustomJsonWriter:    # Use your adapter with adapter input config
             name: a
             config: b
-        - Password: MyPassword                # Combine to other adapters
+        - Password: MyPassword                      # Combine to other adapters
       content:
         - name: name 1
           age: 1
         - name: name 2
           age: 3
   ```
-<br/>
-
-<a id="user-content-file.adapter-csv" name="user-content-file.adapter-csv"></a>
-## Csv
-`File.Adapter`  
-Read and write csv file. Used in File/Writer, File/Reader  
-
-```yaml
-- File/Reader:
-    title: Read a csv file
-    path: assets/data1.csv
-    adapters:
-      - Csv
-    var: data                       # Set file content result to "data" variable
-
-- File/Writer:
-    title: Write to csv file
-    path: assets/data2.csv
-    adapters:
-      - Csv
-    content:
-      - name: name 1
-        age: 1
-      - name: name 2
-        age: 3
-```
-
-<br/>
-
-<a id="user-content-file.adapter-excel" name="user-content-file.adapter-excel"></a>
-## Excel
-`File.Adapter`  
-Read and write excel file. Used in File/Writer, File/Reader  
-
-```yaml
-- File/Reader:
-    title: Read text file 1 with password
-    path: assets/data1.xlsx
-    adapters:
-      - Excel: MyPassword           # Decrypt content with password is "MyPassword"
-          sheets:                   # Read data only these sheets
-            - name: Sheet 1         # Sheet name
-              range: 'A1:C9'        # Only take cell in the region
-              header:
-                rows: 1             # Skip, dont take data in these rows
-              columnToKey:          # Mapping column key (A,B,C) to name
-                A: foo name
-                B: qux label
-                C: poo title
-    var: data                       # Set file data result to "data" variable
-
-- File/Writer:
-    path: assets/data1.xlsx
-    adapters:
-      - Excel                       # Write data to excel format
-    content: [{
-      foo: 'bar',
-      qux: 'moo',
-      poo: null,
-      age: 1
-    },
-    {
-      foo: 'bar1',
-      qux: 'moo2',
-      poo: 444,
-      age: 2
-    }]
-```
-
-<br/>
-
-<a id="user-content-file.adapter-json" name="user-content-file.adapter-json"></a>
-## Json
-`File.Adapter`  
-Read and write json file. Used in File/Writer, File/Reader  
-
-```yaml
-- File/Reader:
-    title: Read a json file
-    path: assets/data1.json
-    adapters:
-      - Json
-    var: data                       # Set file content result to "data" variable
-
-- File/Writer:
-    title: Write to json file
-    path: assets/data2.json
-    adapters:
-      - Json
-    content:
-      - name: name 1
-        age: 1
-      - name: name 2
-        age: 3
-```
-
-<br/>
-
-<a id="user-content-file.adapter-password" name="user-content-file.adapter-password"></a>
-## Password
-`File.Adapter`  
-Read and write a encrypted file (`aes-128-cbc`). Used in File/Writer, File/Reader  
-
-```yaml
-- File/Reader:
-    title: Read a json file
-    path: assets/data1
-    adapters:
-      - Password: My Password       # The first: Decrypt file data with password
-      - Json                        # The second: Parse data to json before return result
-    var: data                       # Set file content result to "data" variable
-
-- File/Writer:
-    title: Write to json file
-    path: assets/data2
-    adapters:
-      - Json                        # The first: Convert to json format
-      - Password: My Password       # The second: Encrypt file content with password before save to file
-    content:
-      - name: name 1
-        age: 1
-      - name: name 2
-        age: 3
-```
-
-<br/>
-
-<a id="user-content-file.adapter-text" name="user-content-file.adapter-text"></a>
-## Text
-`File.Adapter`  
-Read and write text file. Used in File/Writer, File/Reader  
-
-```yaml
-- File/Reader:
-    title: Read a text file
-    path: assets/data1.txt
-    adapters:                       # Not set, it use `Text` to default adapter
-      - Text
-    var: data                       # Set file content result to "data" variable
-
-- File/Writer:
-    title: Write to text file
-    path: assets/data2.txt
-    adapters:                       # Not set, it use `Text` to default adapter
-      - Text
-    content: |
-      Hello world
-```
-
-<br/>
-
-<a id="user-content-file.adapter-xml" name="user-content-file.adapter-xml"></a>
-## Xml
-`File.Adapter`  
-Read and write xml file. Used in File/Writer, File/Reader  
-
-```yaml
-- File/Reader:
-    title: Read a xml file
-    path: assets/data1.xml
-    adapters:
-      - Xml
-    var: data                       # Set file content result to "data" variable
-
-- File/Writer:
-    title: Write to xml file
-    path: assets/data2.xml
-    adapters:
-      - Xml
-    content:
-      name: name 1
-      age: 1
-      class: 01
-```
-
-<br/>
-
-<a id="user-content-file.adapter-yaml" name="user-content-file.adapter-yaml"></a>
-## Yaml
-`File.Adapter`  
-Read and write yaml file. Used in File/Writer, File/Reader  
-
-```yaml
-- File/Reader:
-    title: Read a yaml file
-    path: assets/data1.yaml
-    adapters:
-      - Yaml
-    var: data                       # Set file content result to "data" variable
-
-- File/Writer:
-    title: Write to yaml file
-    path: assets/data2.yaml
-    adapters:
-      - Yaml
-    content:
-      - name: name 1
-        age: 1
-      - name: name 2
-        age: 3
-```
-
 <br/>
 
 <a id="user-content-input-userinput" name="user-content-input-userinput"></a>
@@ -920,7 +702,9 @@ Get user input from keyboard
     - title: Enter your name
       type: text # Default is text if not specific
       format: !function |
-        vl => vl.toUpperCase()
+        (vl) {
+          return vl.toUpperCase()
+        }
       var: name
       required: true
 
@@ -1179,8 +963,8 @@ Currently only support chai `https://www.chaijs.com`
 - Validate:
     title: Customize validate by code
     chai: !function |
-      ({ age, assert }) {
-        if (age <= 10) assert.fail('Age must be greater than 10')
+      ({ age, assert, expect, should }) {                           # "assert", "expect", "should" are chaijs functions
+        if (age <= 10) assert.fail('Age must be greater than 10')   # "this" is referenced to Validate element
       }
 ```
 

@@ -6,15 +6,14 @@ import https from 'https';
 import merge from "lodash.merge";
 import { parse, stringify } from "querystring";
 import { Readable } from "stream";
-import { IFileAdapter } from "./IFileAdapter";
+import { IFileReader } from "./IFileReader";
 
-export class Url implements IFileAdapter {
+export class UrlReader implements IFileReader {
   static readonly Initable = true
 
   constructor(public link: string, public config = {} as { readType?: 'stream' | 'buffer' }) {
-    if (!link) {
-      throw new TraceError(`"Link" is required`)
-    }
+    if (!link) throw new TraceError(`"Link" is required`)
+
     this.config = merge({ readType: 'buffer' }, this.config)
   }
 
@@ -28,10 +27,6 @@ export class Url implements IFileAdapter {
       default:
         throw new TraceError(`Adapter "File" is not support "readType" is "${this.config.readType}"`)
     }
-  }
-
-  async write(_data: any = '') {
-    throw new TraceError(`Url adapter not support to write`)
   }
 
   private async getBufferFromUrl(urlStr: string) {

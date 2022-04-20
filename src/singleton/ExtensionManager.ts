@@ -1,5 +1,5 @@
-import { File } from "@app/elements/File/adapter/File";
-import { Url } from "@app/elements/File/adapter/Url";
+import { UrlReader } from "@app/elements/File/reader/UrlReader";
+import { FileWriter } from "@app/elements/File/writer/FileWriter";
 import { IElement } from "@app/elements/IElement";
 import { Scenario } from "@app/singleton/Scenario";
 import { TraceError } from "@app/utils/error/TraceError";
@@ -84,11 +84,11 @@ export class ExtensionManager {
         throw new TraceError(`Could not found extensions "${name}" in "${localPath}"`, { localPath, name, pathExt })
       }
       if (exsited === 'url') {
-        const url = new Url(pathExt)
+        const url = new UrlReader(pathExt)
         const buf = await url.read()
 
         localPath = FileUtils.GetNewTempPathThenClean('.js')
-        const file = new File(localPath)
+        const file = new FileWriter(localPath)
         await file.write(buf)
 
       }
