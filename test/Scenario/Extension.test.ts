@@ -1,5 +1,7 @@
 import { Simulator } from "@app/Simulator"
+import { ExtensionManager } from "@app/singleton/ExtensionManager"
 import { Scenario } from "@app/singleton/Scenario"
+import { existsSync } from "fs"
 import { join } from "path"
 
 afterAll(async () => {
@@ -18,4 +20,15 @@ steps:
 - customFolder/custom2: 
     title: echo 02
   `)
+})
+
+test.skip('Auto install miss extensions', async () => {
+  await Simulator.Run(`
+logLevel: slient
+steps:
+- yas-http/Summary:
+    title: Testing result
+  `)
+
+  expect(existsSync(ExtensionManager.Instance.globalModuleManager?.get('yas-http'))).toBe(true)
 })

@@ -20,6 +20,22 @@ Describe all of elements in tool. (meaning, how to use...)
 | FILE | --- |
 |[File/Reader](#user-content-file%2c%20input-file%2freader)| Read a file then set content to a variable ...|  
 |[File/Writer](#user-content-file%2c%20output-file%2fwriter)| Write content to a file ...|  
+| FILE/READER.ADAPTER | --- |
+|[Csv](#user-content-file%2freader.adapter-csv)| Read a csv file. Used in File/Reader ...|  
+|[Excel](#user-content-file%2freader.adapter-excel)| Read an excel file. Used in File/Reader ...|  
+|[Json](#user-content-file%2freader.adapter-json)| Read a json file. Used in File/Reader ...|  
+|[Password](#user-content-file%2freader.adapter-password)| Read a encrypted file (`aes-128-cbc`). Used in File/Reader ...|  
+|[Text](#user-content-file%2freader.adapter-text)| Read a text file. Used in File/Reader ...|  
+|[Xml](#user-content-file%2freader.adapter-xml)| Read a xml file. Used in File/Reader ...|  
+|[Yaml](#user-content-file%2freader.adapter-yaml)| Read a yaml file. Used in File/Reader ...|  
+| FILE/WRITER.ADAPTER | --- |
+|[Csv](#user-content-file%2fwriter.adapter-csv)| Write a csv file. Used in File/Writer ...|  
+|[Excel](#user-content-file%2fwriter.adapter-excel)| Write an excel file. Used in File/Writer ...|  
+|[Json](#user-content-file%2fwriter.adapter-json)| Write a json file. Used in File/Writer ...|  
+|[Password](#user-content-file%2fwriter.adapter-password)| Write a encrypted file (`aes-128-cbc`). Used in File/Writer ...|  
+|[Text](#user-content-file%2fwriter.adapter-text)| Write a text file. Used in File/Writer ...|  
+|[Xml](#user-content-file%2fwriter.adapter-xml)| Write a xml file. Used in File/Writer ...|  
+|[Yaml](#user-content-file%2fwriter.adapter-yaml)| Write a yaml file. Used in File/Writer ...|  
 | INPUT | --- |
 |[File/Reader](#user-content-file%2c%20input-file%2freader)| Read a file then set content to a variable ...|  
 |[UserInput](#user-content-input-userinput)| Get user input from keyboard ...|  
@@ -533,13 +549,13 @@ Read a file then set content to a variable
 
 File adapters:
 
-- [Read a text file](#user-content-file.adapter-text)
-- [Read a csv file](#user-content-file.adapter-csv)
-- [Read a json file](#user-content-file.adapter-json)
-- [Read a xml file](#user-content-file.adapter-xml)
-- [Read a yaml file](#user-content-file.adapter-yaml)
-- [Read a excel file](#user-content-file.adapter-excel)
-- [Read a encrypted file](#user-content-file.adapter-password)  
+- [Read a text file](#user-content-file%2freader.adapter-text)
+- [Read a csv file](#user-content-file%2freader.adapter-csv)
+- [Read a json file](#user-content-file%2freader.adapter-json)
+- [Read a xml file](#user-content-file%2freader.adapter-xml)
+- [Read a yaml file](#user-content-file%2freader.adapter-yaml)
+- [Read a excel file](#user-content-file%2freader.adapter-excel)
+- [Read a encrypted file](#user-content-file%2freader.adapter-password)  
 ```yaml
 - File/Reader:
     title: Read a json file
@@ -557,7 +573,7 @@ You can write a new adapter by yourself then use in adapters.
 
 **Write a custom adapter**
 
-1. Create your adapter in `CustomJsonReader.ts`
+1. Create a your reader adapter in `CustomJsonReader.ts`
   ```typescript
   import { IFileReader } from "yaml-scene/utils/adapter/file/writer"
 
@@ -614,13 +630,13 @@ You can write a new adapter by yourself then use in adapters.
 Write content to a file
 File adapters:
 
-- [Read a text file](#user-content-file.adapter-text)
-- [Read a csv file](#user-content-file.adapter-csv)
-- [Read a json file](#user-content-file.adapter-json)
-- [Read a xml file](#user-content-file.adapter-xml)
-- [Read a yaml file](#user-content-file.adapter-yaml)
-- [Read a excel file](#user-content-file.adapter-excel)
-- [Read a encrypted file](#user-content-file.adapter-password)  
+- [Read a text file](#user-content-file%2fwriter.adapter-text)
+- [Read a csv file](#user-content-file%2fwriter.adapter-csv)
+- [Read a json file](#user-content-file%2fwriter.adapter-json)
+- [Read a xml file](#user-content-file%2fwriter.adapter-xml)
+- [Read a yaml file](#user-content-file%2fwriter.adapter-yaml)
+- [Read a excel file](#user-content-file%2fwriter.adapter-excel)
+- [Read a encrypted file](#user-content-file%2fwriter.adapter-password)  
 ```yaml
 - File/Writer:
     title: Write to a json file
@@ -639,7 +655,7 @@ You can write a new adapter by yourself then use in adapters.
 
 **Write a custom adapter**
 
-1. Create your adapter in `CustomJsonWriter.ts`
+1. Create a your writer adapter in `CustomJsonWriter.ts`
   ```typescript
   import { IFileWriter } from "yaml-scene/utils/adapter/file/IFileWriter"
 
@@ -690,6 +706,271 @@ You can write a new adapter by yourself then use in adapters.
         - name: name 2
           age: 3
   ```
+<br/>
+
+<a id="user-content-file%2freader.adapter-csv" name="user-content-file%2freader.adapter-csv"></a>
+## Csv
+`File/Reader.Adapter`  
+Read a csv file. Used in File/Reader  
+
+```yaml
+- File/Reader:
+    title: Read a csv file
+    path: assets/data1.csv
+    adapters:
+      - Csv
+    var: data                       # Set file content result to "data" variable
+```
+
+<br/>
+
+<a id="user-content-file%2freader.adapter-excel" name="user-content-file%2freader.adapter-excel"></a>
+## Excel
+`File/Reader.Adapter`  
+Read an excel file. Used in File/Reader  
+
+```yaml
+- File/Reader:
+    title: Read text file 1 with password
+    path: assets/data1.xlsx
+    adapters:
+      - Excel: MyPassword           # Decrypt content with password is "MyPassword"
+          sheets:                   # Read data only these sheets
+            - name: Sheet 1         # Sheet name
+              range: 'A1:C9'        # Only take cell in the region
+              header:
+                rows: 1             # Skip, dont take data in these rows
+              columnToKey:          # Mapping column key (A,B,C) to name
+                A: foo name
+                B: qux label
+                C: poo title
+    var: data                       # Set file data result to "data" variable
+```
+
+<br/>
+
+<a id="user-content-file%2freader.adapter-json" name="user-content-file%2freader.adapter-json"></a>
+## Json
+`File/Reader.Adapter`  
+Read a json file. Used in File/Reader  
+
+```yaml
+- File/Reader:
+    title: Read a json file
+    path: assets/data1.json
+    adapters:
+      - Json
+    var: data                       # Set file content result to "data" variable
+```
+
+<br/>
+
+<a id="user-content-file%2freader.adapter-password" name="user-content-file%2freader.adapter-password"></a>
+## Password
+`File/Reader.Adapter`  
+Read a encrypted file (`aes-128-cbc`). Used in File/Reader  
+
+```yaml
+- File/Reader:
+    title: Read a json file
+    path: assets/data1
+    adapters:
+      - Password: My Password       # The first: Decrypt file data with password
+      - Json                        # The second: Parse data to json before return result
+    var: data                       # Set file content result to "data" variable
+```
+
+<br/>
+
+<a id="user-content-file%2freader.adapter-text" name="user-content-file%2freader.adapter-text"></a>
+## Text
+`File/Reader.Adapter`  
+Read a text file. Used in File/Reader  
+
+```yaml
+- File/Reader:
+    title: Read a text file
+    path: assets/data1.txt
+    adapters:                       # Not set, it use `Text` to default adapter
+      - Text
+    var: data                       # Set file content result to "data" variable
+```
+
+<br/>
+
+<a id="user-content-file%2freader.adapter-xml" name="user-content-file%2freader.adapter-xml"></a>
+## Xml
+`File/Reader.Adapter`  
+Read a xml file. Used in File/Reader  
+
+```yaml
+- File/Reader:
+    title: Read a xml file
+    path: assets/data1.xml
+    adapters:
+      - Xml
+    var: data                       # Set file content result to "data" variable
+```
+
+<br/>
+
+<a id="user-content-file%2freader.adapter-yaml" name="user-content-file%2freader.adapter-yaml"></a>
+## Yaml
+`File/Reader.Adapter`  
+Read a yaml file. Used in File/Reader  
+
+```yaml
+- File/Reader:
+    title: Read a yaml file
+    path: assets/data1.yaml
+    adapters:
+      - Yaml
+    var: data                       # Set file content result to "data" variable
+```
+
+<br/>
+
+<a id="user-content-file%2fwriter.adapter-csv" name="user-content-file%2fwriter.adapter-csv"></a>
+## Csv
+`File/Writer.Adapter`  
+Write a csv file. Used in File/Writer  
+
+```yaml
+- File/Writer:
+    title: Write to csv file
+    path: assets/data2.csv
+    adapters:
+      - Csv
+    content:
+      - name: name 1
+        age: 1
+      - name: name 2
+        age: 3
+```
+
+<br/>
+
+<a id="user-content-file%2fwriter.adapter-excel" name="user-content-file%2fwriter.adapter-excel"></a>
+## Excel
+`File/Writer.Adapter`  
+Write an excel file. Used in File/Writer  
+
+```yaml
+- File/Writer:
+    path: assets/data1.xlsx
+    adapters:
+      - Excel                       # Write data to excel format
+    content: [{
+      foo: 'bar',
+      qux: 'moo',
+      poo: null,
+      age: 1
+    },
+    {
+      foo: 'bar1',
+      qux: 'moo2',
+      poo: 444,
+      age: 2
+    }]
+```
+
+<br/>
+
+<a id="user-content-file%2fwriter.adapter-json" name="user-content-file%2fwriter.adapter-json"></a>
+## Json
+`File/Writer.Adapter`  
+Write a json file. Used in File/Writer  
+
+```yaml
+- File/Writer:
+    title: Write to json file
+    path: assets/data2.json
+    adapters:
+      - Json
+    content:
+      - name: name 1
+        age: 1
+      - name: name 2
+        age: 3
+```
+
+<br/>
+
+<a id="user-content-file%2fwriter.adapter-password" name="user-content-file%2fwriter.adapter-password"></a>
+## Password
+`File/Writer.Adapter`  
+Write a encrypted file (`aes-128-cbc`). Used in File/Writer  
+
+```yaml
+- File/Writer:
+    title: Write to json file
+    path: assets/data2
+    adapters:
+      - Json                        # The first: Convert to json format
+      - Password: My Password       # The second: Encrypt file content with password before save to file
+    content:
+      - name: name 1
+        age: 1
+      - name: name 2
+        age: 3
+```
+
+<br/>
+
+<a id="user-content-file%2fwriter.adapter-text" name="user-content-file%2fwriter.adapter-text"></a>
+## Text
+`File/Writer.Adapter`  
+Write a text file. Used in File/Writer  
+
+```yaml
+- File/Writer:
+    title: Write to text file
+    path: assets/data2.txt
+    adapters:                       # Not set, it use `Text` to default adapter
+      - Text
+    content: |
+      Hello world
+```
+
+<br/>
+
+<a id="user-content-file%2fwriter.adapter-xml" name="user-content-file%2fwriter.adapter-xml"></a>
+## Xml
+`File/Writer.Adapter`  
+Write a xml file. Used in File/Writer  
+
+```yaml
+- File/Writer:
+    title: Write to xml file
+    path: assets/data2.xml
+    adapters:
+      - Xml
+    content:
+      name: name 1
+      age: 1
+      class: 01
+```
+
+<br/>
+
+<a id="user-content-file%2fwriter.adapter-yaml" name="user-content-file%2fwriter.adapter-yaml"></a>
+## Yaml
+`File/Writer.Adapter`  
+Write a yaml file. Used in File/Writer  
+
+```yaml
+- File/Writer:
+    title: Write to yaml file
+    path: assets/data2.yaml
+    adapters:
+      - Yaml
+    content:
+      - name: name 1
+        age: 1
+      - name: name 2
+        age: 3
+```
+
 <br/>
 
 <a id="user-content-input-userinput" name="user-content-input-userinput"></a>

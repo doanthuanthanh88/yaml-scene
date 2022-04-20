@@ -21,7 +21,7 @@ install:
 steps:
   - Echo: Done
 `)
-  expect(existsSync(join(localPath, 'node_modules', 'loglevel'))).toEqual(true)
+  expect(ExtensionManager.Instance.installModuleManager?.modules.some(module => existsSync(join(module, 'loglevel')))).toEqual(true)
 }, 120000)
 
 test('Test install and use packages in global modules', async () => {
@@ -33,5 +33,5 @@ install:
 steps:
   - Echo: Done
 `)
-  expect(ExtensionManager.Instance.globalModuleManager?.get('loglevel')?.length).toBeGreaterThan(0)
+  expect(ExtensionManager.Instance.globalModuleManager?.modules.some(module => existsSync(join(module, 'loglevel')))).toEqual(true)
 }, 120000)

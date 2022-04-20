@@ -5,10 +5,12 @@ import { Scenario } from "@app/singleton/Scenario";
 import { TraceError } from "@app/utils/error/TraceError";
 import { FileUtils } from "@app/utils/FileUtils";
 import { execSync } from "child_process";
-import { existsSync, statSync } from "fs";
+import { statSync } from "fs";
 import { basename, join } from "path";
 import { ExtensionNotFound } from "../utils/error/ExtensionNotFound";
+import { GlobalModuleManager } from "./GlobalModuleManager";
 import { InstallationManager } from "./InstallationManager";
+import { LocalModuleManager } from "./LocalModuleManager";
 import { LoggerManager } from "./LoggerManager";
 
 /*****
@@ -42,7 +44,7 @@ export class ExtensionManager {
 
   private extensionElements: { [key: string]: IElement } = {}
   public globalModuleManager?: GlobalModuleManager
-  private installModuleManager?: GlobalModuleManager
+  public installModuleManager?: GlobalModuleManager
   private localModuleManager?: LocalModuleManager
   private installExtensionPath?: string
 
@@ -67,7 +69,13 @@ export class ExtensionManager {
           obj = require(modulePath)
           obj = this.getObjectInExport(obj, p)
           this.extensionElements[p] = obj
-        } catch (err) {
+        } catch (error: any) {
+          let err: ExtensionNotFound
+          if (!(error instanceof ExtensionNotFound)) {
+            err = new ExtensionNotFound(p, `The scenario is using a new element "${p}"`)
+          } else {
+            err = error
+          }
           LoggerManager.GetLogger().trace(err1, err)
           await InstallationManager.Instance.installNow(err)
         }
@@ -122,9 +130,9 @@ export class ExtensionManager {
         if (!info.path) info.path = Scenario.Instance.element.rootDir
         this.installExtensionPath = info.path = Scenario.Instance.resolvePath(info.path)
         if (!this.installModuleManager) this.installModuleManager = new GlobalModuleManager()
+        FileUtils.MakeDirExisted(this.installExtensionPath, 'dir')
         this.installModuleManager.add(this.installExtensionPath)
 
-        FileUtils.MakeDirExisted(this.installExtensionPath, 'dir')
         const ext = new ExtensionNotFound(packageName, `Installing "${packageName}" ...`, 'local')
         ext.localPath = info.path
         ext.force = true
@@ -150,15 +158,9 @@ export class ExtensionManager {
           this.globalModuleManager = new GlobalModuleManager()
         }
         cnt.split('\n')
-          .map((f = '') => {
-            f = f.trim()
-            if (f && !f.endsWith('/node_modules')) {
-              f = join(f, 'node_modules')
-            }
-            return f
-          })
-          .filter((f) => f && existsSync(f) && !this.globalModuleManager.modules.includes(f))
-          .forEach(gd => this.globalModuleManager.modules.push(gd))
+          .map(f => f.trim())
+          .filter(f => f)
+          .forEach(gd => this.globalModuleManager.add(gd))
       } catch (err) {
         LoggerManager.GetLogger().trace(err)
       }
@@ -171,47 +173,4 @@ export class ExtensionManager {
   private getObjectInExport(obj: any, p: string) {
     return obj.default || obj[basename(p)]
   }
-}
-
-class LocalModuleManager {
-
-  modules: any
-
-  constructor() {
-    this.modules = {}
-  }
-
-  add(name: string, path: string) {
-    this.modules[name] = path
-  }
-
-  get(name: string) {
-    const localExtensionKey = Object.keys(this.modules).find(prefix => name.startsWith(prefix))
-    if (localExtensionKey) {
-      const path = this.modules[localExtensionKey]
-      const modulePath = join(path, name.replace(new RegExp(`^${localExtensionKey}\\/?`), ''))
-      return ExtensionManager.Resolve(modulePath)
-    }
-  }
-
-}
-
-class GlobalModuleManager {
-  modules: string[]
-
-  constructor() {
-    this.modules = []
-  }
-
-  add(path: string) {
-    this.modules.splice(0, 0, path)
-  }
-
-  get(name: string) {
-    for (const module of this.modules) {
-      return ExtensionManager.Resolve(join(module, name))
-    }
-    return ''
-  }
-
 }
