@@ -34,6 +34,10 @@ export class CommentInfo implements DataModel {
     }
     if (!this[this._current]) {
       this[this._current] = '';
+    } else if (isTagWithName) {
+      if (!this[this._current + '_s']) this[this._current + '_s'] = []
+      this[this._current + '_s'].push(this[this._current])
+      this[this._current] = ''
     }
     if (typeof this[this._current] === 'number') {
       this[this._current] = +(cnt?.trim());
@@ -43,15 +47,15 @@ export class CommentInfo implements DataModel {
   }
 
   get examples() {
-    switch (this.exampleType) {
-      case 'custom':
-        return `${this.example}`
-      default:
-        return this.example ? `
+    const examples = this['example_s'] || []
+    return [...examples, this.example].filter(e => !!e).map(example => {
+      if (this.exampleType === 'custom')
+        return `${example}`
+      return example ? `
 \`\`\`${this.exampleType || 'yaml'}
-${this.example}
+${example}
 \`\`\`
 ` : ''
-    }
+    }).join('\n')
   }
 }
