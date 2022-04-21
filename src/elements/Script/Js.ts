@@ -17,14 +17,17 @@ import { IElement } from "../IElement";
     title: Test something
     content: !function |
       ({ name }) {                                        # Passed global variables into function                                    
-        console.log('oldValue', name)
         await this.proxy.setVar('newName', name + 10)     # `this` is referenced to `Js` element in `Script`
       }
 
+@example
+- Vars:
+    name: 10
+    age: 10
+
 - Script/Js: !function |
     ({ name, age }) {                                     # "name", "age" are global variables
-      console.log('oldValue', name)
-      this.proxy.vars.newName = name + 10                 # `this` is referenced to `Js` element in `Script`
+      this.proxy.vars.newName = name + age                # `this` is referenced to `Js` element in `Script`
     }
     
 - Echo: New value ${newName}

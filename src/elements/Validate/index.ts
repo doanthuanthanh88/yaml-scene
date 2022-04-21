@@ -13,15 +13,18 @@ Currently only support chai `https://www.chaijs.com`
 - Validate:
     title: Expect method
     chai: ${expect(userInfo).to.have.property('display_name')}
+@example
 - Validate:
     title: Should method
     chai: ${userInfo.display_name.should.equal('thanh');}
+@example
 - Validate:
     title: Assert method
     chai: ${assert.equal(userInfo.display_name, 'thanh');}
+@example
 - Validate:
     title: Assert method          # Not define "chai" then it auto passes
-
+@example
 - Vars:
     age: 10
 - Validate:

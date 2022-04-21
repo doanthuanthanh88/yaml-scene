@@ -13,94 +13,104 @@ import { QuestionType } from './QuestionType';
 @group Input
 @example
 - UserInput:
-    - title: Enter your name
-      type: text # Default is text if not specific
-      format: !function |
-        (vl) {
+    title: Enter your name
+    format: !function |
+      (vl) {
           return vl.toUpperCase()
         }
       var: name
       required: true
-
-    - title: Enter password
-      type: password
-      var: pass
-
-    - title: Enter secret key
-      type: invisible
-      var: secret
-
-    - title: Enter your age
-      type: number
-      var: age
-
-    - title: Enter birthday
-      type: date
-      mask: YYYY-MM-DD HH:mm:ss # Default for date
-      var: birthday
-
-    - title: Enter current time
-      type: date
-      mask: HH:mm:ss
-      var: time
-
-    - title: Sex
-      type: select
-      var: sex
-      default: -1
-      choices:
-        - title: Male
-          value: 1
-          description: Des
-          disabled: false
-        - title: Female
-          value: -1
-
-    - title: Suggest Sex
-      type: autocomplete
-      var: suggestSex
-      choices:
-        - title: Male
-          value: 1
-          description: Des
-          disabled: false
-        - title: Female
-          value: -1
-
-    - title: Hobby
-      type: multiselect
-      var: hobbies
-      default:
-        - id0
-        - id1
-      choices:
-        - title: Play football
-          value: id0
-          description: Des
-          disabled: false
-        - title: Backet ball
-          value: id1
-
-    - title: Suggest Hobby
-      type: autocompleteMultiselect
-      var: suggestHobbies
-      choices:
-        - title: Play football
-          value: id0
-          description: Des
-          disabled: false
-        - title: Backet ball
-          value: id1
-
-    - title: Agree terms and conditions
-      type: toggle
-      var: agr
-      required: true
-
-    - title: Are you sure to submit ?
-      type: confirm
-      default: true
-      var: submit
+@example
+- UserInput:
+    title: Enter password
+    type: password
+    var: pass
+@example
+- UserInput:
+    title: Enter secret key
+    type: invisible
+    var: secret
+@example
+- UserInput:
+    title: Enter your age
+    type: number
+    var: age
+@example
+- UserInput:
+    title: Enter birthday
+    type: date
+    mask: YYYY-MM-DD HH:mm:ss # Default for date
+    var: birthday
+@example
+- UserInput:
+    title: Enter current time
+    type: date
+    mask: HH:mm:ss
+    var: time
+@example
+- UserInput:
+    title: Sex
+    type: select
+    var: sex
+    default: -1
+    choices:
+      - title: Male
+        value: 1
+        description: Des
+        disabled: false
+      - title: Female
+        value: -1
+@example
+- UserInput:
+    title: Suggest Sex
+    type: autocomplete
+    var: suggestSex
+    choices:
+      - title: Male
+        value: 1
+        description: Des
+        disabled: false
+      - title: Female
+        value: -1
+@example
+- UserInput:
+    title: Hobby
+    type: multiselect
+    var: hobbies
+    default:
+      - id0
+      - id1
+    choices:
+      - title: Play football
+        value: id0
+        description: Des
+        disabled: false
+      - title: Backet ball
+        value: id1
+@example
+- UserInput:
+    title: Suggest Hobby
+    type: autocompleteMultiselect
+    var: suggestHobbies
+    choices:
+      - title: Play football
+        value: id0
+        description: Des
+        disabled: false
+      - title: Backet ball
+        value: id1
+@example
+- UserInput:
+    title: Agree terms and conditions
+    type: toggle
+    var: agr
+    required: true
+@example
+- UserInput:
+    title: Are you sure to submit ?
+    type: confirm
+    default: true
+    var: submit
 */
 export default class UserInput implements IElement {
   proxy: ElementProxy<this>

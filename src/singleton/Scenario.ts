@@ -66,7 +66,7 @@ steps:                                              # Includes all which you wan
 @name Simple Scenario file
 @h1
 @order 2
-@description A simple scenario file
+@description Load then run a simple scenario file
 @example
 - Fragment ./scene1.yas.yaml                        # Includes all which you want to do (URL or file local)
 - Fragment ./scene2.yas.yaml

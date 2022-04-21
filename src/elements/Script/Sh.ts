@@ -10,13 +10,12 @@ import Exec from "../Exec";
 @example
 - Vars:
     name: 'thanh'
-
-### Short
+    
 - Script/Sh: |
     echo '${name}'
     yarn global dir
 
-### Full
+@example
 - Script/Sh:
     title: My command               # Job title
     bin: sh                         # Path to executor
@@ -27,6 +26,7 @@ import Exec from "../Exec";
       echo $1
       echo $2
 
+@example
 - Script/Sh:
     title: My command
     args:                           # Custom run script

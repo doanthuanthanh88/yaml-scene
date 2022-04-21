@@ -11,6 +11,8 @@ import { PrinterTransformFactory } from "./transform/PrinterTransformFactory"
 @description Print data to screen
 @group Output
 @example
+# Print text message
+
 - Echo: Hello world                       # Print white text
 
 - Echo/Green: Green text                  # Print green text
@@ -29,6 +31,19 @@ import { PrinterTransformFactory } from "./transform/PrinterTransformFactory"
     message: Hello
     color: green.bgRed
     pretty: true
+
+@example
+# Inspect data
+
+- Vars:
+    user:
+      name: thanh
+      sex: male
+
+- Echo: ${user}
+
+@example
+# Print object schema
 
 - Vars:
     user:

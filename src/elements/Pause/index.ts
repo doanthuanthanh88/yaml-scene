@@ -14,12 +14,15 @@ import { QuestionType } from "../UserInput/QuestionType"
     title: It keeps playing when user enter OR after 1 second, user not enter then it keeps playing
     timeout: 1s
 
+@example
 - Pause: 2s       # Delay 2 seconds then it keeps playing
 
+@example
 - Pause:
     title: Delay 3 seconds then it keeps playing
     time: 3s
 
+@example
 - Pause:          # It will be paused until user enter
 */
 export default class Pause implements IElement {

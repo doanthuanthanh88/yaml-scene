@@ -79,7 +79,7 @@ import { IElement } from "./IElement";
           $.proxy.vars.begin = Date.now()   # `$` is referenced to `Js` element in `Script`
       - Echo: ${Date.now() - begin}
       - Echo: ${Date.now() - begin}
-
+@example
 - Group:
     title: Pause or delay
     steps:
@@ -96,15 +96,10 @@ import { IElement } from "./IElement";
 @group Attribute
 @h1 ##
 @example
-# Loop in array
-- Vars:
-    i: 0
-    arr: [1, 2, 3, 4, 5]
-    obj:
-      name: name 1
-      age: 123
+# Loop element in Array
 
-- Echo: Init
+- Vars:
+    arr: [1, 2, 3, 4, 5]
 
 - Group:
     title: Loop each of items in an array
@@ -112,6 +107,13 @@ import { IElement } from "./IElement";
     steps:
       - Echo: key is ${$$.loopKey}
       - Echo: value is ${$$.loopValue}
+@example
+# Loop properties in Object
+
+- Vars:
+    obj:
+      name: name 1
+      age: 123
 
 - Group:
     title: Loop each of props in an object
@@ -119,7 +121,12 @@ import { IElement } from "./IElement";
     steps:
       - Echo: key is ${$$.loopKey}
       - Echo: value is ${$$.loopValue}
+@example
+# Loop by a conditional
 
+- Vars:
+    i: 0
+    
 - Group:
     title: Loop with specific condition ${i}
     loop: ${i < 10}

@@ -18,6 +18,7 @@ Describe all of elements in tool. (meaning, how to use...)
 |[Script/Js](#user-content-external-script%2fjs)| Embed javascript code into scene ...|  
 |[Script/Sh](#user-content-external-script%2fsh)| Embed shell script into scene ...|  
 | FILE | --- |
+|[File/Delete](#user-content-file-file%2fdelete)| Delete files or directories ...|  
 |[File/Reader](#user-content-file%2c%20input-file%2freader)| Read a file then set content to a variable ...|  
 |[File/Writer](#user-content-file%2c%20output-file%2fwriter)| Write content to a file ...|  
 | FILE/READER.ADAPTER | --- |
@@ -538,6 +539,30 @@ Embed shell script into scene
       echo ${name}
       echo $1
       echo $2
+```
+
+<br/>
+
+<a id="user-content-file-file%2fdelete" name="user-content-file-file%2fdelete"></a>
+## File/Delete
+`File`  
+Delete files or directories  
+
+```yaml
+- File/Delete:
+    title: Write to a json file
+    paths:
+      - /tmp/db.json
+      - /tmp/caches
+      - /tmp/caches/.*?\.tmp
+
+- File/Delete:
+    - /tmp/db.json
+    - /tmp/caches
+    - /tmp/caches/*.tmp
+    - /tmp/**\/*.tmp
+
+- File/Delete: /tmp/db.json
 ```
 
 <br/>

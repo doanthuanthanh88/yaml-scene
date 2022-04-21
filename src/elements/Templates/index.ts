@@ -8,22 +8,23 @@ It's only used for `extends` or `inherit` purposes
 @example
 - Templates:
     - Get:
-        ->: base1    # Declare a template with name is "base"
+        ->: base1                         # Declare a template with name is "base"
         baseURL: http://localhost:3001
 
+- Get:
+    <-: base1                             # Extends "base1" in template then add more information or overrided them before executing
+    url: /product/:id
+    params:
+      id: 1
+      
+@example
 - Templates:
-    base2: # Declare a template with name is "base"
+    base2:                                # Declare a template with name is "base"
       Get:
         baseURL: http://localhost:3000
 
 - Get:
-    <-: base1        # Extends "base1" in template then add more information or overrided them before executing
-    url: /product/:id
-    params:
-      id: 1
-
-- Get:
-    <-: base2        # Extends "base2" in template then add more information or overrided them before executing
+    <-: base2                             # Extends "base2" in template then add more information or overrided them before executing
     url: /product/:id
     params:
       id: 2

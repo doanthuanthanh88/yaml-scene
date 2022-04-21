@@ -27,6 +27,7 @@ const SALTED_PASSWORD = '|-YAML-SCENE-|'
 @example
 - Fragment: http://raw.github.../scenario1.yas.yaml
 
+@example
 - Fragment: 
     file: ./scenario1.yas.yaml
     password: $PASS_TO_DECRYPT
