@@ -107,6 +107,7 @@ export default class Echo implements IElement {
     const message = await this.proxy.getVar(this.message)
     const txt = this._transform.print(message)
     this.proxy.logger.info(txt)
+    return txt
   }
 
 }

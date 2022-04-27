@@ -91,7 +91,10 @@ Delay after a specific time before keep playing the nexts
           $.proxy.vars.begin = Date.now()   # `$` is referenced to `Js` element in `Script`
       - Echo: ${Date.now() - begin}
       - Echo: ${Date.now() - begin}
+```
 
+
+```yaml
 - Group:
     title: Pause or delay
     steps:
@@ -129,15 +132,10 @@ Check condition before decided to run this element or not
 Loop element in Array, Object or any conditional  
 
 ```yaml
-# Loop in array
-- Vars:
-    i: 0
-    arr: [1, 2, 3, 4, 5]
-    obj:
-      name: name 1
-      age: 123
+# Loop element in Array
 
-- Echo: Init
+- Vars:
+    arr: [1, 2, 3, 4, 5]
 
 - Group:
     title: Loop each of items in an array
@@ -145,6 +143,16 @@ Loop element in Array, Object or any conditional
     steps:
       - Echo: key is ${$$.loopKey}
       - Echo: value is ${$$.loopValue}
+```
+
+
+```yaml
+# Loop properties in Object
+
+- Vars:
+    obj:
+      name: name 1
+      age: 123
 
 - Group:
     title: Loop each of props in an object
@@ -152,6 +160,14 @@ Loop element in Array, Object or any conditional
     steps:
       - Echo: key is ${$$.loopKey}
       - Echo: value is ${$$.loopValue}
+```
+
+
+```yaml
+# Loop by a conditional
+
+- Vars:
+    i: 0
 
 - Group:
     title: Loop with specific condition ${i}
@@ -212,7 +228,7 @@ steps:                                              # Includes all which you wan
 
 
 # Simple Scenario file
-A simple scenario file  
+Load then run a simple scenario file  
 
 ```yaml
 - Fragment ./scene1.yas.yaml                        # Includes all which you want to do (URL or file local)
@@ -489,14 +505,20 @@ Embed javascript code into scene
     title: Test something
     content: !function |
       ({ name }) {                                        # Passed global variables into function
-        console.log('oldValue', name)
         await this.proxy.setVar('newName', name + 10)     # `this` is referenced to `Js` element in `Script`
       }
 
+```
+
+
+```yaml
+- Vars:
+    name: 10
+    age: 10
+
 - Script/Js: !function |
     ({ name, age }) {                                     # "name", "age" are global variables
-      console.log('oldValue', name)
-      this.proxy.vars.newName = name + 10                 # `this` is referenced to `Js` element in `Script`
+      this.proxy.vars.newName = name + age                # `this` is referenced to `Js` element in `Script`
     }
 
 - Echo: New value ${newName}
@@ -513,12 +535,14 @@ Embed shell script into scene
 - Vars:
     name: 'thanh'
 
-### Short
 - Script/Sh: |
     echo '${name}'
     yarn global dir
 
-### Full
+```
+
+
+```yaml
 - Script/Sh:
     title: My command               # Job title
     bin: sh                         # Path to executor
@@ -529,6 +553,10 @@ Embed shell script into scene
       echo $1
       echo $2
 
+```
+
+
+```yaml
 - Script/Sh:
     title: My command
     args:                           # Custom run script
@@ -555,13 +583,19 @@ Delete files or directories
       - /tmp/db.json
       - /tmp/caches
       - /tmp/caches/.*?\.tmp
+```
 
+
+```yaml
 - File/Delete:
     - /tmp/db.json
     - /tmp/caches
     - /tmp/caches/*.tmp
     - /tmp/**\/*.tmp
+```
 
+
+```yaml
 - File/Delete: /tmp/db.json
 ```
 
@@ -1005,94 +1039,137 @@ Get user input from keyboard
 
 ```yaml
 - UserInput:
-    - title: Enter your name
-      type: text # Default is text if not specific
-      format: !function |
-        (vl) {
+    title: Enter your name
+    format: !function |
+      (vl) {
           return vl.toUpperCase()
         }
       var: name
       required: true
+```
 
-    - title: Enter password
-      type: password
-      var: pass
 
-    - title: Enter secret key
-      type: invisible
-      var: secret
+```yaml
+- UserInput:
+    title: Enter password
+    type: password
+    var: pass
+```
 
-    - title: Enter your age
-      type: number
-      var: age
 
-    - title: Enter birthday
-      type: date
-      mask: YYYY-MM-DD HH:mm:ss # Default for date
-      var: birthday
+```yaml
+- UserInput:
+    title: Enter secret key
+    type: invisible
+    var: secret
+```
 
-    - title: Enter current time
-      type: date
-      mask: HH:mm:ss
-      var: time
 
-    - title: Sex
-      type: select
-      var: sex
-      default: -1
-      choices:
-        - title: Male
-          value: 1
-          description: Des
-          disabled: false
-        - title: Female
-          value: -1
+```yaml
+- UserInput:
+    title: Enter your age
+    type: number
+    var: age
+```
 
-    - title: Suggest Sex
-      type: autocomplete
-      var: suggestSex
-      choices:
-        - title: Male
-          value: 1
-          description: Des
-          disabled: false
-        - title: Female
-          value: -1
 
-    - title: Hobby
-      type: multiselect
-      var: hobbies
-      default:
-        - id0
-        - id1
-      choices:
-        - title: Play football
-          value: id0
-          description: Des
-          disabled: false
-        - title: Backet ball
-          value: id1
+```yaml
+- UserInput:
+    title: Enter birthday
+    type: date
+    mask: YYYY-MM-DD HH:mm:ss # Default for date
+    var: birthday
+```
 
-    - title: Suggest Hobby
-      type: autocompleteMultiselect
-      var: suggestHobbies
-      choices:
-        - title: Play football
-          value: id0
-          description: Des
-          disabled: false
-        - title: Backet ball
-          value: id1
 
-    - title: Agree terms and conditions
-      type: toggle
-      var: agr
-      required: true
+```yaml
+- UserInput:
+    title: Enter current time
+    type: date
+    mask: HH:mm:ss
+    var: time
+```
 
-    - title: Are you sure to submit ?
-      type: confirm
-      default: true
-      var: submit
+
+```yaml
+- UserInput:
+    title: Sex
+    type: select
+    var: sex
+    default: -1
+    choices:
+      - title: Male
+        value: 1
+        description: Des
+        disabled: false
+      - title: Female
+        value: -1
+```
+
+
+```yaml
+- UserInput:
+    title: Suggest Sex
+    type: autocomplete
+    var: suggestSex
+    choices:
+      - title: Male
+        value: 1
+        description: Des
+        disabled: false
+      - title: Female
+        value: -1
+```
+
+
+```yaml
+- UserInput:
+    title: Hobby
+    type: multiselect
+    var: hobbies
+    default:
+      - id0
+      - id1
+    choices:
+      - title: Play football
+        value: id0
+        description: Des
+        disabled: false
+      - title: Backet ball
+        value: id1
+```
+
+
+```yaml
+- UserInput:
+    title: Suggest Hobby
+    type: autocompleteMultiselect
+    var: suggestHobbies
+    choices:
+      - title: Play football
+        value: id0
+        description: Des
+        disabled: false
+      - title: Backet ball
+        value: id1
+```
+
+
+```yaml
+- UserInput:
+    title: Agree terms and conditions
+    type: toggle
+    var: agr
+    required: true
+```
+
+
+```yaml
+- UserInput:
+    title: Are you sure to submit ?
+    type: confirm
+    default: true
+    var: submit
 ```
 
 <br/>
@@ -1114,6 +1191,8 @@ Clear screen
 Print data to screen  
 
 ```yaml
+# Print text message
+
 - Echo: Hello world                       # Print white text
 
 - Echo/Green: Green text                  # Print green text
@@ -1132,6 +1211,25 @@ Print data to screen
     message: Hello
     color: green.bgRed
     pretty: true
+
+```
+
+
+```yaml
+# Inspect data
+
+- Vars:
+    user:
+      name: thanh
+      sex: male
+
+- Echo: ${user}
+
+```
+
+
+```yaml
+# Print object schema
 
 - Vars:
     user:
@@ -1155,6 +1253,10 @@ Import a scenario file (URL or file local) in the scenario.
 ```yaml
 - Fragment: http://raw.github.../scenario1.yas.yaml
 
+```
+
+
+```yaml
 - Fragment:
     file: ./scenario1.yas.yaml
     password: $PASS_TO_DECRYPT
@@ -1204,12 +1306,24 @@ Program will be paused and wait user input
     title: It keeps playing when user enter OR after 1 second, user not enter then it keeps playing
     timeout: 1s
 
+```
+
+
+```yaml
 - Pause: 2s       # Delay 2 seconds then it keeps playing
 
+```
+
+
+```yaml
 - Pause:
     title: Delay 3 seconds then it keeps playing
     time: 3s
 
+```
+
+
+```yaml
 - Pause:          # It will be paused until user enter
 ```
 
@@ -1223,22 +1337,26 @@ It's only used for `extends` or `inherit` purposes
 ```yaml
 - Templates:
     - Get:
-        ->: base1    # Declare a template with name is "base"
+        ->: base1                         # Declare a template with name is "base"
         baseURL: http://localhost:3001
 
-- Templates:
-    base2: # Declare a template with name is "base"
-      Get:
-        baseURL: http://localhost:3000
-
 - Get:
-    <-: base1        # Extends "base1" in template then add more information or overrided them before executing
+    <-: base1                             # Extends "base1" in template then add more information or overrided them before executing
     url: /product/:id
     params:
       id: 1
 
+```
+
+
+```yaml
+- Templates:
+    base2:                                # Declare a template with name is "base"
+      Get:
+        baseURL: http://localhost:3000
+
 - Get:
-    <-: base2        # Extends "base2" in template then add more information or overrided them before executing
+    <-: base2                             # Extends "base2" in template then add more information or overrided them before executing
     url: /product/:id
     params:
       id: 2
@@ -1255,15 +1373,30 @@ Currently only support chai `https://www.chaijs.com`
 - Validate:
     title: Expect method
     chai: ${expect(userInfo).to.have.property('display_name')}
+```
+
+
+```yaml
 - Validate:
     title: Should method
     chai: ${userInfo.display_name.should.equal('thanh');}
+```
+
+
+```yaml
 - Validate:
     title: Assert method
     chai: ${assert.equal(userInfo.display_name, 'thanh');}
+```
+
+
+```yaml
 - Validate:
     title: Assert method          # Not define "chai" then it auto passes
+```
 
+
+```yaml
 - Vars:
     age: 10
 - Validate:

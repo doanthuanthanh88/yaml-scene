@@ -23,7 +23,7 @@ test('Var is NOT overrided by env in fragment', async () => {
   expect(VariableManager.Instance.vars.text).toBe('local')
 })
 
-test.only('Var is overrided by args in fragment', async () => {
+test('Var is overrided by args in fragment', async () => {
   process.env.TEXT = 'global'
   await Simulator.Run(`
 - Vars:

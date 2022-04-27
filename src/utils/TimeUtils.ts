@@ -19,14 +19,18 @@ export class TimeUtils {
    * GetMsTime(5000) => 5000
    */
   static GetMsTime(time?: TimeUnit): number {
-    if (typeof time === 'string') {
-      return parseInt(eval(time.replace('ms', '').replace('h', '*60m').replace('m', '*60s').replace('s', '*1000')))
-    } else if (typeof time === 'number') {
-      return time
-    } else if (!time) {
-      return time
+    try {
+      if (typeof time === 'string') {
+        return parseInt(eval(time.replace('ms', '').replace('h', '*60m').replace('m', '*60s').replace('s', '*1000')))
+      } else if (typeof time === 'number') {
+        return time
+      } else if (!time) {
+        return time
+      }
+      throw new Error()
+    } catch {
+      throw new TraceError(`Time "${time}" is not valid`, { time })
     }
-    throw new TraceError(`Time "${time}" is not valid`, { time })
   }
 
   /**
@@ -46,6 +50,7 @@ export class TimeUtils {
    * @example Pretty(65000) => 1m5s 0ms
    */
   static Pretty(time: number): string {
+    if (typeof time !== 'number' || time < 0) throw new TypeError('Time is not valid')
     let h, m, s, ms
     const msg = []
     h = Math.floor(time / (60 * 60 * 1000))

@@ -212,16 +212,17 @@ export class ElementProxy<T extends IElement> {
    * @description Handle logic to inherit or expose a template before make the element init data
    * @param {any} props Passed value from yaml file to it before passed to element
    */
-  init(props: any) {
+  init(props: any): this {
     const exposeKeys = props && props['->']
     props = this.inherit(props)
     try {
       if (this.element.init) {
-        return this.element.init(props)
+        this.element.init(props)
       }
     } finally {
       this.expose(exposeKeys)
     }
+    return this
   }
 
   /**

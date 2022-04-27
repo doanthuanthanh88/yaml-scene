@@ -15,7 +15,7 @@
     "outDir": "dist"
   },
   "exclude": [
-    "node_modules",
-    "*.rm"
+    "**/*.rm",
+    "node_modules"
   ]
 }

@@ -60,7 +60,7 @@ export class FileUtils {
    * @example GetNewTempPath('abc.txt', 'node_modules') => /tmp/$UNIQUE/node_modules/abc.txt
    */
   static GetNewTempPath(ext = '', ...subPaths: string[]): string {
-    return join(this._DefaultTmpDir || (this._DefaultTmpDir = this.MakeDirExisted(join(process.env[YAML_SCENE_CACHED_DIR] || tmpdir(), 'yaml-scene.cached'), 'dir')), ...subPaths, this.UniqueName + ext)
+    return join(this._DefaultTmpDir || (this._DefaultTmpDir = this.MakeDirExisted(join(process.env[YAML_SCENE_CACHED_DIR] || tmpdir(), 'yaml-scene-cached'), 'dir')), ...subPaths, (!ext || ext.startsWith('.')) ? (this.UniqueName + ext) : ext)
   }
 
   private static _TempPathThenClean: string[]
@@ -74,13 +74,14 @@ export class FileUtils {
    */
   static GetNewTempPathThenClean(ext = '', ...subPaths: string[]): string {
     if (!this._TempPathThenClean) this._TempPathThenClean = []
-    const p = join(this._DefaultTmpDir || (this._DefaultTmpDir = this.MakeDirExisted(join(process.env[YAML_SCENE_CACHED_DIR] || tmpdir(), 'yaml-scene.cached'), 'dir')), ...subPaths, this.UniqueName + ext)
+    const p = this.GetNewTempPath(ext, ...subPaths)
     this._TempPathThenClean.push(p)
     return p
   }
 
   static CleanTempPath() {
     this._TempPathThenClean?.forEach(f => this.RemoveFilesDirs(f))
+    this._TempPathThenClean = undefined
   }
 
 }
