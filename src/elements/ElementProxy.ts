@@ -1,5 +1,6 @@
 import { Logger, LoggerManager, LogLevel } from "@app/singleton/LoggerManager";
 import { Scenario } from "@app/singleton/Scenario";
+import { ScenarioEvent } from "@app/singleton/ScenarioEvent";
 import { TemplateManager } from "@app/singleton/TemplateManager";
 import { VariableManager } from "@app/singleton/VariableManager";
 import { TraceError } from "@app/utils/error/TraceError";
@@ -16,6 +17,37 @@ import { IElement } from "./IElement";
 @group Attribute
 @order 0
 @h1 #
+*/
+
+/*****
+@name $id
+@description Element ID which is got the reference
+@group Attribute
+@h1 ##
+@exampleType custom
+@example
+```typescript
+import { Simulator } from 'yaml-scene/src/Simulator';
+import { Scenario } from 'yaml-scene/src/singleton/Scenario';
+
+(async () => {
+
+  const proms = Simulator.Run(`
+- Pause:
+    $id: pauseElement
+    title: Delay forever
+`)
+  await TimeUtils.Delay(500)
+  
+  // Check something here
+
+  ElementProxy.GetElementProxy<Pause>('pauseElement').element.stop()
+
+  await proms
+
+})()
+
+```
 */
 
 /*****
@@ -142,6 +174,12 @@ import { IElement } from "./IElement";
  */
 export class ElementProxy<T extends IElement> {
 
+  private static IdentityElementProxies: Map<string, any>
+
+  static GetElementProxy<T extends IElement>(id: string) {
+    return ElementProxy.IdentityElementProxies?.get(id) as ElementProxy<T>
+  }
+
   /** 
    * Get logger
    * @readonly
@@ -201,9 +239,12 @@ export class ElementProxy<T extends IElement> {
     return !!this.element.$$
   }
 
+  extra: { [key: string]: any }
+
   constructor(public element: T) {
     this.element.$ = this.element
     this.element.proxy = this
+    this.extra = {}
   }
 
   /**
@@ -213,6 +254,7 @@ export class ElementProxy<T extends IElement> {
    * @param {any} props Passed value from yaml file to it before passed to element
    */
   init(props: any): this {
+    this.registerIdentity(props)
     const exposeKeys = props && props['->']
     props = this.inherit(props)
     try {
@@ -428,6 +470,23 @@ export class ElementProxy<T extends IElement> {
       })
       delete this.element['->']
     }
+  }
+
+  private registerIdentity(props?: any) {
+    const id = (!Array.isArray(props) && typeof props === 'object') ? props.$id : undefined
+    if (!id) return
+    const existed = ElementProxy.GetElementProxy(id)
+    if (existed) {
+      throw new TraceError(`Element ID "${id}" is duplicated`)
+    }
+    if (!ElementProxy.IdentityElementProxies) {
+      ElementProxy.IdentityElementProxies = new Map<string, any>()
+      Scenario.Instance.events.once(ScenarioEvent.RESET, () => {
+        ElementProxy.IdentityElementProxies = undefined
+      })
+    }
+    ElementProxy.IdentityElementProxies.set(id, this)
+    delete props.$id
   }
 
 }

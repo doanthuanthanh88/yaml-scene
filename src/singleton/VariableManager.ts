@@ -5,6 +5,7 @@ import { MD5 } from "@app/utils/encrypt/MD5"
 import { TraceError } from "@app/utils/error/TraceError"
 import chalk from "chalk"
 import { Scenario } from "./Scenario"
+import { ScenarioEvent } from "./ScenarioEvent"
 
 export class VariableManager {
   private static readonly _NavPattern = /^(\$\{){1}([^\}]+)\}$/
@@ -13,7 +14,7 @@ export class VariableManager {
 
   static get Instance() {
     if (!this._Instance) {
-      Scenario.Instance.events.on('scenario.reset', () => {
+      Scenario.Instance.events.once(ScenarioEvent.RESET, () => {
         this._Instance = undefined
       })
       this._Instance = new VariableManager()

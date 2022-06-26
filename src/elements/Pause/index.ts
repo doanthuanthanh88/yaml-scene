@@ -3,6 +3,7 @@ import chalk from "chalk"
 import merge from "lodash.merge"
 import { ElementProxy } from "../ElementProxy"
 import { IElement } from "../IElement"
+import { AbsQuestion } from "../UserInput/AbsQuestion"
 import { QuestionBuilder } from "../UserInput/QuestionBuilder"
 import { QuestionType } from "../UserInput/QuestionType"
 
@@ -34,6 +35,8 @@ export default class Pause implements IElement {
   time?: number
   timeout?: number
 
+  private ques: AbsQuestion
+
   init(props: any) {
     if (props && typeof props === 'object') {
       merge(this, props)
@@ -54,17 +57,21 @@ export default class Pause implements IElement {
       if (this.time) {
         await TimeUtils.Delay(this.time)
       } else {
-        const ques = new QuestionBuilder()
+        this.ques = new QuestionBuilder()
           .type(QuestionType.CONFIRM)
           .title(chalk.yellow(this.title || 'Continue'))
           .default(true)
           .build()
-        tm = this.timeout && setTimeout(() => ques.sendKey(), this.timeout)
-        await ques.exec()
+        tm = this.timeout && setTimeout(() => this.stop(), this.timeout)
+        await this.ques.exec()
       }
     } finally {
       if (tm) clearTimeout(tm)
     }
+  }
+
+  stop() {
+    this.ques.sendKey()
   }
 
 }

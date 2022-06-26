@@ -6,71 +6,12 @@ import { Simulator } from '@app/Simulator'
 import { LoggerManager, LogLevel } from '@app/singleton/LoggerManager'
 import { VariableManager } from '@app/singleton/VariableManager'
 import { FileUtils } from '@app/utils/FileUtils'
-import { TimeUtils } from '@app/utils/TimeUtils'
-import chalk from 'chalk'
 import { EventEmitter } from "events"
 import { homedir } from 'os'
 import { basename, dirname, isAbsolute, join, resolve } from 'path'
 import { ExtensionManager } from './ExtensionManager'
-
-/*****
-@name Standard Scenario file
-@h1
-@order 1
-@description A standard scenario file
-@example
-title: Scene name                                   # Scene name
-description: Scene description                      # Scene description
-password:                                           # File will be encrypted to $FILE_NAME.encrypt to share to someone run it for privacy
-logLevel: debug                                     # How to show log is debug)
-                                                    # - slient: Dont show anything
-                                                    # - error: Show error log
-                                                    # - warn: Show warning log
-                                                    # - info: Show infor, error log
-                                                    # - debug: Show log details, infor, error log ( Default )
-                                                    # - trace: Show all of log
-install:                                            # Install extensions from npm registry
-  local:                                            # Install extensions to local path (npm install --prefix $path/node_modules)
-    path: ./                                        # There are some type of path
-                                                    # - ./test/:  Relative path from folder which includes a scenario file
-                                                    # - test/:    Relative path from folder which includes a scenario file
-                                                    # - ~/test:   Relative path from user home directory
-                                                    # - #/test:   Relative path from yaml-scene/src
-                                                    # - /test:    Absolute path
-    dependencies:
-      - lodash
-  global:                                           # Install extension to global (npm install -g)
-    dependencies:
-      - axios
-
-extensions:                                         # Extension elements.
-  extension_name1: ./cuz_extensions/custom1.js      # - Load a element in a file with exports.default (extension_name1:)
-  extensions_folders: ./cuz_extensions              # - Load elements in files in the folder with file name is element name (extensions_folders/custom1:)
-vars:                                               # Declare global variables, which can be replaced by env
-  url: http://localhost:3000                        # env URL=
-  token: ...                                        # env TOKEN=
-  user:
-    id_test: 1                                      # env USER_ID_TEST=
-stepDelay: 1s                                       # Each of steps will delay 1s before play the next
-steps:                                              # Includes all which you want to do (URL or file local)
-  - Fragment ./scene1.yas.yaml
-  - Fragment ./scene2.yas.yaml
-  - extension_name1:
-  - extensions_folders/custom1:
-  - Script/Js: |
-      require('lodash').merge({}, {})
-  - yas-sequence-diagram~SequenceDiagram:           # Load yas-sequence-diagram from npm/yarn global dirs then use class SequenceDiagram to handle
-*/
-
-/*****
-@name Simple Scenario file
-@h1
-@order 2
-@description Load then run a simple scenario file
-@example
-- Fragment ./scene1.yas.yaml                        # Includes all which you want to do (URL or file local)
-- Fragment ./scene2.yas.yaml
-*/
+import { ScenarioEvent } from './ScenarioEvent'
+import { ScenarioMonitor } from './ScenarioMonitor'
 
 export class Scenario extends Fragment {
   private static _Instance: ElementProxy<Scenario>
@@ -82,7 +23,8 @@ export class Scenario extends Fragment {
   }
 
   static Reset() {
-    this._Instance?.events.emit('scenario.reset')
+    this._Instance?.events.emit(ScenarioEvent.RESET)
+    // this._Instance?.events.removeAllListeners()
     this._Instance = undefined
   }
 
@@ -97,10 +39,13 @@ export class Scenario extends Fragment {
   }
 
   override async init(props: { file: string, password?: string, logLevel?: LogLevel }) {
-    if (!Simulator.IS_RUNNING) this.monitor()
+    if (!Simulator.IS_RUNNING) {
+      const monitorMonitor = new ScenarioMonitor(this)
+      monitorMonitor.monitor()
+    }
 
+    this.events.emit(ScenarioEvent.INIT, { time: Date.now() })
     super.init(props)
-    this.events.emit('scenario.init', { time: Date.now() })
 
     this.file = this.resolvePath(this.file)
 
@@ -117,23 +62,23 @@ export class Scenario extends Fragment {
   }
 
   override async prepare() {
-    this.events.emit('scenario.prepare', { time: Date.now() })
+    this.events.emit(ScenarioEvent.PREPARE, { time: Date.now() })
     await super.prepare()
     if (!this.title) this.title = basename(this.file)
     LoggerManager.SetDefaultLoggerLevel(this.logLevel)
   }
 
   override async exec() {
-    this.events.emit('scenario.exec', { time: Date.now() })
+    this.events.emit(ScenarioEvent.EXEC, { time: Date.now() })
     await super.exec()
 
     this.isPassed = true
   }
 
   override async dispose() {
-    this.events.emit('scenario.dispose', { time: Date.now(), isPassed: this.isPassed })
+    this.events.emit(ScenarioEvent.DISPOSE, { time: Date.now(), isPassed: this.isPassed })
     await super.dispose()
-    this.events.emit('scenario.end', { time: Date.now(), isPassed: this.isPassed })
+    this.events.emit(ScenarioEvent.END, { time: Date.now(), isPassed: this.isPassed })
     // this.events.removeAllListeners()
   }
 
@@ -148,42 +93,6 @@ export class Scenario extends Fragment {
     if (path.startsWith('#/')) return path.replace(/^\#/, join(__dirname, '..'))
     if (!isAbsolute(path)) return join(this.rootDir, path)
     return resolve(path)
-  }
-
-  private monitor() {
-    const executeTime = {
-      init: 0,
-      prepare: 0,
-      exec: 0,
-      dispose: 0
-    }
-    this.events
-      .on('scenario.init', ({ time }) => {
-        executeTime.init = time
-      })
-      .on('scenario.prepare', ({ time }) => {
-        executeTime.prepare = time
-      })
-      .on('scenario.exec', ({ time }) => {
-        executeTime.exec = time
-      })
-      .on('scenario.dispose', ({ time }) => {
-        executeTime.dispose = time
-      })
-      .on('scenario.end', ({ time, isPassed }) => {
-        if (isPassed) {
-          const msg = []
-          msg.push('\n')
-          msg.push(chalk.bgBlue.white(` Total ${TimeUtils.Pretty(time - executeTime.init)} `))
-          msg.push(chalk.bgCyan.white(` `))
-          msg.push(chalk.bgWhite.gray(` Init ${TimeUtils.Pretty(executeTime.prepare - executeTime.init)} `))
-          msg.push(chalk.bgYellow.gray(` Prepare ${TimeUtils.Pretty(executeTime.exec - executeTime.prepare)} `))
-          msg.push(chalk.bgGreen.white(` Execute ${TimeUtils.Pretty(executeTime.dispose - executeTime.exec)} `))
-          msg.push(chalk.bgGray.white(` Dispose ${TimeUtils.Pretty(time - executeTime.dispose)} `))
-          msg.push('\n')
-          LoggerManager.GetLogger().info(msg.join(''))
-        }
-      })
   }
 
 }

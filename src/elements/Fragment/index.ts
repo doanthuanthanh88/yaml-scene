@@ -123,8 +123,13 @@ export default class Fragment extends Group {
             enterPassword = true
           }
         }
-      } catch {
-        this.proxy.logger.error(chalk.red(`✗ Password is not valid`))
+      } catch (error: any) {
+        if (error.message?.includes('EVP_DecryptFinal_ex')) {
+          this.proxy.logger.error(new TraceError(chalk.red(`✗ Password is not valid`)))
+          this.proxy.logger.trace(error)
+        } else {
+          this.proxy.logger.error(new TraceError(error.message, { error }))
+        }
         enterPassword = true
       }
       if (enterPassword) {

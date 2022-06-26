@@ -12,6 +12,7 @@ import { GlobalModuleManager } from "./GlobalModuleManager";
 import { InstallationManager } from "./InstallationManager";
 import { LocalModuleManager } from "./LocalModuleManager";
 import { LoggerManager } from "./LoggerManager";
+import { ScenarioEvent } from "./ScenarioEvent";
 
 /*****
 @h2 #
@@ -27,7 +28,7 @@ export class ExtensionManager {
 
   static get Instance() {
     if (!this._Instance) {
-      Scenario.Instance.events.on('scenario.reset', () => {
+      Scenario.Instance.events.once(ScenarioEvent.RESET, () => {
         this._Instance = undefined
       })
       this._Instance = new ExtensionManager()

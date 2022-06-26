@@ -6,6 +6,7 @@ import { statSync } from 'fs';
 import { readdir } from 'fs/promises';
 import { join } from 'path';
 import { EventEmitter } from 'stream';
+import { ScannerEvent } from './ScannerEvent';
 
 export class Scanner implements IScanner {
 
@@ -29,7 +30,7 @@ export class Scanner implements IScanner {
       }
 
       if (st.isFile() && includePattern?.test(name)) {
-        this.event.emit('scanfile', path)
+        this.event.emit(ScannerEvent.SCAN_FILE, path)
         const commentModel = await new this.ParserClass(path, beginPattern, endPattern)
         return [commentModel]
       }

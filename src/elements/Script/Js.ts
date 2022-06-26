@@ -63,8 +63,6 @@ export default class Js implements IElement {
       const func = this._func.getFunctionFromBody()
       const rs = await this.proxy.call(func, undefined, this)
       return rs
-    } catch (err) {
-      debugger
     } finally {
       this.title && console.groupEnd()
     }

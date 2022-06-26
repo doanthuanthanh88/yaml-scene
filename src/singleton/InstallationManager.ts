@@ -8,13 +8,14 @@ import chalk from "chalk"
 import { join } from "path"
 import { LoggerManager } from "./LoggerManager"
 import { Scenario } from "./Scenario"
+import { ScenarioEvent } from "./ScenarioEvent"
 
 export class InstallationManager {
   private static _Instance: InstallationManager
 
   static get Instance() {
     if (!this._Instance) {
-      Scenario.Instance.events.on('scenario.reset', () => {
+      Scenario.Instance.events.once(ScenarioEvent.RESET, () => {
         this._Instance.stop()
         this._Instance = undefined
       })

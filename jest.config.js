@@ -4,7 +4,7 @@ module.exports = {
   testEnvironment: 'node',
   // verbose: true,
   roots: ["src", "test"],
-  detectLeaks: true,
+  // detectLeaks: true,
   logHeapUsage: true,
   detectOpenHandles: true,
   testTimeout: 60000,

@@ -32,8 +32,8 @@ describe('Delay', () => {
     await TimeUtils.Delay(time)
     const end = Date.now() - begin
     const ms = TimeUtils.GetMsTime(time)
-    expect(end).toBeGreaterThan(ms)
-    expect(end).toBeLessThan(ms + 50)
+    expect(end).toBeGreaterThanOrEqual(ms)
+    expect(end).toBeLessThanOrEqual(ms + 50)
   })
 })
 

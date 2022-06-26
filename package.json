@@ -23,7 +23,7 @@
     "build:docker": "yarn build && yarn install:dist && cp README.docker.md dist/README.md",
     "install:dist": "yarn install --production --modules-folder ./dist/node_modules",
     "dev": "ts-node-dev --clear --rs --project tsconfig.json --ignore-watch [.*] --respawn --transpile-only -r tsconfig-paths/register --inspect-brk -- src/index.ts",
-    "start": "node -r ts-node/register -r tsconfig-paths/register src/index.ts",
+    "start": "ts-node-dev --clear --rs --project tsconfig.json --ignore-watch [.*] --respawn --transpile-only -r tsconfig-paths/register -- src/index.ts",
     "test": "node --expose-gc node_modules/.bin/jest",
     "test:debug": "node --expose-gc --inspect-brk node_modules/.bin/jest",
     "jsdoc": "npx jsdoc -c jsdoc.json",
