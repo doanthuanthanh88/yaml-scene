@@ -253,7 +253,7 @@ export class ElementProxy<T extends IElement> {
    * @description Handle logic to inherit or expose a template before make the element init data
    * @param {any} props Passed value from yaml file to it before passed to element
    */
-  init(props: any): this {
+  init(props = {} as any): this {
     this.registerIdentity(props)
     const exposeKeys = props && props['->']
     props = this.inherit(props)
@@ -473,7 +473,7 @@ export class ElementProxy<T extends IElement> {
   }
 
   private registerIdentity(props?: any) {
-    const id = (!Array.isArray(props) && typeof props === 'object') ? props.$id : undefined
+    const id = (props && !Array.isArray(props) && typeof props === 'object') ? props.$id : undefined
     if (!id) return
     const existed = ElementProxy.GetElementProxy(id)
     if (existed) {

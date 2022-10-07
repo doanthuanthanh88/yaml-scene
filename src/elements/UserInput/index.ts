@@ -116,12 +116,24 @@ export default class UserInput implements IElement {
   proxy: ElementProxy<this>
   $$: IElement
   $: this
+  if?: any
+  delay?: any
+  async?: any
+  loop?: any
 
   private _questions: AbsQuestion[]
   private questionConfigs: any[]
 
-  init(_questionConfigs: any[] | any) {
-    this.questionConfigs = Array.isArray(_questionConfigs) ? _questionConfigs : [_questionConfigs]
+  init(props: any[] | any) {
+    if (props && !Array.isArray(props) && typeof props === 'object') {
+      let { if: if0, delay, async: async0, loop, ...__props } = props
+      this.if = if0
+      this.delay = delay
+      this.async = async0
+      this.loop = loop
+      props = __props
+    }
+    this.questionConfigs = Array.isArray(props) ? props : [props]
   }
 
   async prepare() {
