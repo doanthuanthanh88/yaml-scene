@@ -47,7 +47,6 @@ export class InstallationManager {
         if (log.error) throw log.error
         dependencies.forEach(e => LoggerManager.GetLogger().info(`${chalk.green('✔')} ${chalk.green(e)} ${chalk.gray(title)}`))
         errors = []
-        break
       } catch (err) {
         errors.push(err)
       }
